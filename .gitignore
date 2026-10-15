@@ -1,0 +1,11 @@
+# Python
+backend/.venv/
+backend/iris.db
+__pycache__/
+.pytest_cache/
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/qa-screenshots/
+*.tsbuildinfo
+.DS_Store
