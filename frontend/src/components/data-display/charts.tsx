@@ -3,18 +3,18 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import { fmtPct, fmtShortDate } from "@/lib/format";
 
 /**
- * Chart conventions (validated with the dataviz palette checks):
- * - at most two series per chart: series-1 deep teal (solid), series-2 muted teal (dashed);
- *   the pair passes CVD and normal-vision separation, and the dash adds a second encoding
+ * Chart conventions:
+ * - at most two series per chart: soft teal solid and bright teal dashed;
+ *   surface-aware variables and dashes preserve identity beyond color
  * - one y-axis; recessive grid; 2px lines; legend always shown for 2 series
  * - every chart has a "Show data table" alternative
  */
 export const SERIES = [
-  { color: "#103e46", dash: undefined },
-  { color: "#188f89", dash: "6 4" },
+  { color: "var(--iris-chart-1)", dash: undefined },
+  { color: "var(--iris-chart-2)", dash: "6 4" },
 ] as const;
-const AXIS = { fontSize: 12, fill: "#637579" };
-const GRID = "#e6edee";
+const AXIS = { fontSize: 12, fill: "var(--iris-chart-axis)" };
+const GRID = "var(--iris-chart-grid)";
 
 export interface SeriesDef { key: string; label: string }
 
@@ -38,7 +38,7 @@ function TipBox({ title, rows }: { title: string; rows: { label: string; value: 
       <p className="mb-1 font-medium text-ink">{title}</p>
       {rows.map((r) => (
         <p key={r.label} className="flex items-center gap-2 text-ink-2">
-          <svg width="14" height="6" aria-hidden><line x1="0" y1="3" x2="14" y2="3" stroke={SERIES[r.i]?.color ?? "#637579"} strokeWidth="2" strokeDasharray={SERIES[r.i]?.dash} /></svg>
+          <svg width="14" height="6" aria-hidden><line x1="0" y1="3" x2="14" y2="3" stroke={SERIES[r.i]?.color ?? "var(--iris-chart-axis)"} strokeWidth="2" strokeDasharray={SERIES[r.i]?.dash} /></svg>
           <span>{r.label}</span>
           <span className="ml-auto pl-3 font-medium text-ink tabular">{r.value}</span>
         </p>
@@ -91,11 +91,11 @@ export function TrendChart({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
             <CartesianGrid stroke={GRID} vertical={false} />
-            {highlight && <ReferenceArea x1={highlight.from} x2={highlight.to} fill="#eaf2f8" fillOpacity={0.9} ifOverflow="extendDomain" label={{ value: highlight.label, position: "insideTopLeft", fontSize: 11, fill: "#2e5f86" }} />}
+            {highlight && <ReferenceArea x1={highlight.from} x2={highlight.to} fill="var(--iris-chart-2)" fillOpacity={0.10} ifOverflow="extendDomain" label={{ value: highlight.label, position: "insideTopLeft", fontSize: 11, fill: "var(--iris-chart-axis)" }} />}
             <XAxis dataKey={xKey} tick={AXIS} tickLine={false} axisLine={{ stroke: GRID }} tickFormatter={(v: string) => fmtShortDate(v)} minTickGap={18} />
             <YAxis tick={AXIS} tickLine={false} axisLine={false} domain={percent ? [0, 1] : [0, yMax ?? "auto"]} tickFormatter={(v: number) => (percent ? `${Math.round(v * 100)}%` : String(v))} width={44} />
             <Tooltip
-              cursor={{ stroke: "#c5d2d5" }}
+              cursor={{ stroke: "var(--iris-chart-axis)" }}
               content={({ active, payload, label }) =>
                 active && payload?.length ? (
                   <TipBox title={`Week of ${fmtShortDate(String(label))}`} rows={series.map((s, i) => ({ label: s.label, value: fmt(payload.find((p) => p.dataKey === s.key)?.value), i }))} />
@@ -144,7 +144,7 @@ export function CountBars({ data: rawData, xKey, yKey, label, height = 180 }: { 
             <CartesianGrid stroke={GRID} vertical={false} />
             <XAxis dataKey={xKey} tick={AXIS} tickLine={false} axisLine={{ stroke: GRID }} tickFormatter={(v: string) => fmtShortDate(v)} minTickGap={18} />
             <YAxis tick={AXIS} tickLine={false} axisLine={false} allowDecimals={false} width={40} />
-            <Tooltip cursor={{ fill: "#e9f5f3" }} content={({ active, payload, label: l }) => (active && payload?.length ? <TipBox title={`Week of ${fmtShortDate(String(l))}`} rows={[{ label, value: String(payload[0].value), i: 0 }]} /> : null)} />
+            <Tooltip cursor={{ fill: "var(--iris-chart-grid)" }} content={({ active, payload, label: l }) => (active && payload?.length ? <TipBox title={`Week of ${fmtShortDate(String(l))}`} rows={[{ label, value: String(payload[0].value), i: 0 }]} /> : null)} />
             <Bar dataKey={yKey} fill={SERIES[0].color} radius={[3, 3, 0, 0]} isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>

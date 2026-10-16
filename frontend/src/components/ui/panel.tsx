@@ -1,12 +1,24 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** A bordered workspace section. Hierarchy comes from borders and spacing, not shadows. */
-export function Panel({ title, description, actions, children, className, bodyClassName, id, as: As = "section" }: {
+export type PanelVariant = "dark" | "secondary" | "metric" | "hero";
+export type PanelMotif = "records" | "trends" | "verify" | "network";
+
+const SURFACES: Record<PanelVariant, string> = {
+  dark: "iris-surface-dark",
+  secondary: "iris-surface-secondary",
+  metric: "iris-surface-metric iris-surface-light",
+  hero: "iris-surface-hero iris-surface-light",
+};
+
+/** Shared glass surface; existing panels default to readable dark content. */
+export function Panel({ title, description, actions, children, className, bodyClassName, id, as: As = "section", variant = "dark", motif }: {
   title?: ReactNode; description?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string; bodyClassName?: string; id?: string; as?: "section" | "div";
+  variant?: PanelVariant;
+  motif?: PanelMotif;
 }) {
   return (
-    <As id={id} className={cn("min-w-0 rounded-md border border-line bg-white", className)} aria-labelledby={title && id ? `${id}-title` : undefined}>
+    <As id={id} data-motif={motif} className={cn("iris-surface", SURFACES[variant], className)} aria-labelledby={title && id ? `${id}-title` : undefined}>
       {(title || actions) && (
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 border-b border-line px-4 py-3">
           <div className="min-w-0">

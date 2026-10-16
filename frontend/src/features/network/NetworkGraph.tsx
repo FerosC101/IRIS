@@ -2,19 +2,20 @@ import cytoscape, { type Core, type ElementDefinition } from "cytoscape";
 import { Maximize2, Minus, Plus, RotateCcw } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { IRIS_COLORS as colors } from "@/lib/design-tokens";
 import type { NetworkEdge, NetworkNode } from "@/types/api";
 
 export const NODE_SHAPE = { rhu: "ellipse", hospital: "round-rectangle", laboratory: "diamond", hub: "hexagon" } as const;
 export const STATUS_STYLE = {
-  normal: { fill: "#ffffff", border: "#103e46", style: "solid", width: 1.5 },
-  delayed: { fill: "#f8efe2", border: "#c58a40", style: "dashed", width: 2.5 },
-  missing: { fill: "#f8eae9", border: "#c45f59", style: "double", width: 5 },
-  no_schedule: { fill: "#f8fafa", border: "#637579", style: "dotted", width: 1.5 },
+  normal: { fill: colors.surface, border: colors.soft, style: "solid", width: 1.5 },
+  delayed: { fill: colors.surface, border: colors.attention, style: "dashed", width: 2.5 },
+  missing: { fill: colors.surface, border: colors.critical, style: "double", width: 5 },
+  no_schedule: { fill: colors.background, border: colors.soft, style: "dotted", width: 1.5 },
 } as const;
 export const EDGE_STYLE = {
-  reports_through: { color: "#9fb1b5", style: "solid", arrow: "triangle" },
-  specimen_referral: { color: "#477fa9", style: "dotted", arrow: "triangle" },
-  shared_resource: { color: "#188f89", style: "dashed", arrow: "none" },
+  reports_through: { color: colors.soft, style: "solid", arrow: "triangle" },
+  specimen_referral: { color: colors.light, style: "dotted", arrow: "triangle" },
+  shared_resource: { color: colors.bright, style: "dashed", arrow: "none" },
 } as const;
 
 export function NetworkGraph({ nodes, edges, visible, selected, onSelect }: {
@@ -47,9 +48,9 @@ export function NetworkGraph({ nodes, edges, visible, selected, onSelect }: {
         {
           selector: "node",
           style: {
-            label: "data(label)", "font-family": "Inter Variable, Inter, system-ui, sans-serif", "font-size": 12, "min-zoomed-font-size": 7, color: "#24383c",
+            label: "data(label)", "font-family": "Poppins, sans-serif", "font-size": 12, "min-zoomed-font-size": 7, color: colors.light,
             "text-valign": "bottom", "text-margin-y": 4, "text-wrap": "wrap", "text-max-width": "100px",
-            width: 24, height: 24, "background-color": "#fff", "border-color": "#103e46", "border-width": 1.5,
+            width: 24, height: 24, "background-color": colors.surface, "border-color": colors.soft, "border-width": 1.5,
           },
         },
         ...Object.entries(NODE_SHAPE).map(([t, shape]) => ({ selector: `node[type = "${t}"]`, style: { shape } })),
@@ -59,13 +60,13 @@ export function NetworkGraph({ nodes, edges, visible, selected, onSelect }: {
           selector: `node[status = "${s}"]`,
           style: { "background-color": v.fill, "border-color": v.border, "border-style": v.style, "border-width": v.width },
         })),
-        { selector: "edge", style: { width: 1.5, "curve-style": "bezier", "line-color": "#9fb1b5", "target-arrow-color": "#9fb1b5", "arrow-scale": 0.8 } },
+        { selector: "edge", style: { width: 1.5, "curve-style": "bezier", "line-color": colors.soft, "target-arrow-color": colors.soft, "arrow-scale": 0.8 } },
         ...Object.entries(EDGE_STYLE).map(([t, v]) => ({
           selector: `edge[type = "${t}"]`,
           style: { "line-color": v.color, "target-arrow-color": v.color, "line-style": v.style, "target-arrow-shape": v.arrow },
         })),
         { selector: ".hidden", style: { display: "none" } },
-        { selector: "node.selected", style: { "underlay-color": "#188f89", "underlay-opacity": 0.25, "underlay-padding": 7, "underlay-shape": "ellipse" } },
+        { selector: "node.selected", style: { "underlay-color": colors.bright, "underlay-opacity": 0.25, "underlay-padding": 7, "underlay-shape": "ellipse" } },
         { selector: "edge.adjacent", style: { width: 2.5 } },
       ],
     });

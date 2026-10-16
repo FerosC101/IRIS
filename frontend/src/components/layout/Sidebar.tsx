@@ -66,7 +66,7 @@ export function UserCard() {
 
 export function Sidebar() {
   return (
-    <aside className="sticky top-0 hidden h-dvh w-56 shrink-0 flex-col bg-teal-900 lg:flex">
+    <aside className="iris-sidebar sticky top-0 hidden h-dvh w-56 shrink-0 flex-col lg:flex">
       <div className="px-4 pt-5 pb-5">
         <Logo />
       </div>

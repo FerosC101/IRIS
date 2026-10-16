@@ -13,7 +13,7 @@ export function TabsList({ tabs, className, label }: { tabs: { value: string; la
       <T.List aria-label={label} className={cn("flex min-w-max gap-1 border-b border-line", className)}>
         {tabs.map((t) => (
           <T.Trigger key={t.value} value={t.value}
-            className="-mb-px min-h-11 border-b-2 border-transparent px-3 text-sm font-medium text-ink-2 hover:text-teal-900 data-[state=active]:border-teal-900 data-[state=active]:text-teal-900 sm:min-h-10">
+            className="-mb-px min-h-11 border-b-2 border-transparent px-3 text-sm font-medium text-ink-2 hover:text-brand-light data-[state=active]:border-brand-bright data-[state=active]:text-brand-light sm:min-h-10">
             {t.label}
           </T.Trigger>
         ))}

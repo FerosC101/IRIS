@@ -1,0 +1,120 @@
+/* IRIS / Login — faithful, editable CSS reconstruction of supplied reference.
+   Brand colors only, no external font/image dependency. All source images are local assets.
+   This is a STATIC mockup; Sign In and Forgot Password do not contact a server. */
+:root{
+  --ink:#04121C; --deep:#0A3A4A; --ocean:#0E6680;
+  --teal:#1A9EA0; --bright:#30C8C0; --soft:#98E0D8;
+  --white:#FFFFFF; --mist:#E6FFFC;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;width:100%;}
+body{font-family:Poppins,Inter,'Segoe UI',Arial,sans-serif;color:#F4FFFE;background:var(--ink);-webkit-font-smoothing:antialiased}
+.login-page{
+  isolation:isolate;position:relative;min-height:100vh;width:100%;overflow:hidden;
+  display:grid;grid-template-columns:minmax(0,51%) minmax(0,49%);
+  background:
+    radial-gradient(ellipse 43% 51% at 12% 6%,rgba(14,102,128,.63),transparent 78%),
+    radial-gradient(ellipse 35% 33% at 77% 5%,rgba(14,102,128,.39),transparent 78%),
+    radial-gradient(ellipse 43% 35% at 0% 93%,rgba(14,102,128,.25),transparent 85%),
+    radial-gradient(ellipse 36% 26% at 100% 73%,rgba(14,102,128,.23),transparent 88%),
+    linear-gradient(116deg,#052732 0%,#041923 45%,#04121C 69%,#052531 100%);
+}
+.login-page:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:url('iris_micrograin.png');opacity:.17;mix-blend-mode:soft-light}
+.login-atmosphere{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 42% 39% at 32% 31%,rgba(2,107,121,.11),transparent 76%),
+    radial-gradient(ellipse 31% 32% at 89% 33%,rgba(0,127,144,.12),transparent 85%);
+}
+.mesh-wave{position:absolute;left:0;right:0;bottom:-2px;height:72%;z-index:-1;
+  background:url('iris_mesh_wave.svg') center bottom / 100% 100% no-repeat;
+  opacity:.96;pointer-events:none;
+}
+.brand-area{position:relative;min-height:970px;padding:0 0 50px 0}
+.orbit{position:absolute;pointer-events:none;border:1px solid rgba(48,200,192,.13);border-radius:50%}
+.orbit-outer{width:588px;height:588px;top:22px;left:104px;box-shadow:0 0 0 57px rgba(21,138,148,.015),0 0 0 120px rgba(21,138,148,.009)}
+.orbit-inner{width:478px;height:478px;top:78px;left:158px;border-color:rgba(48,200,192,.19)}
+.orbit-outer i{position:absolute;width:5px;height:5px;border-radius:50%;background:#98E0D8;box-shadow:0 0 11px 2px rgba(48,200,192,.55)}
+.orbit-outer i:nth-child(1){top:92px;left:79px}.orbit-outer i:nth-child(2){top:73px;right:75px}
+.orbit-outer i:nth-child(3){top:302px;left:2px}.orbit-outer i:nth-child(4){top:333px;right:0}.orbit-outer i:nth-child(5){top:219px;left:166px}
+.logo-lockup{position:absolute;top:82px;left:177px;width:484px;text-align:center}
+.brand-mark{display:block;position:relative;width:446px;height:390px;object-fit:contain;margin:0 auto -25px;filter:drop-shadow(0 10px 24px rgba(0,203,201,.18))}
+.brand-name{font-size:83px;line-height:1.06;font-weight:700;letter-spacing:7.5px;color:#F4FFFF;
+ text-shadow:0 5px 25px rgba(140,240,243,.17)}
+.brand-fullname{white-space:nowrap;font-size:13.5px;letter-spacing:2.55px;color:#D4ECEE;margin-top:1px;font-weight:500}
+.brand-message{position:absolute;top:636px;left:146px;max-width:646px}
+.brand-message h2{font-size:47px;line-height:1.12;letter-spacing:-1.25px;font-weight:700;margin:0;color:#fff}
+.brand-message h2 span{display:block;color:#30C8C0;margin-top:0}
+.brand-message p{margin:22px 0 0;font-size:17px;line-height:1.62;max-width:630px;color:#D0E3E6}
+.brand-footer{position:absolute;bottom:49px;left:82px;color:#8CAFB6;font-size:11px;letter-spacing:.05px}
+.signin-area{display:flex;justify-content:center;align-items:center;position:relative;min-width:0;padding:54px 84px 54px 10px}
+.signin-card{position:relative;width:100%;max-width:590px;min-height:790px;overflow:hidden;
+   border:1px solid rgba(132,245,241,.74);border-radius:28px;
+   padding:49px 47px 34px;isolation:isolate;
+   background:
+     linear-gradient(130deg,rgba(164,241,236,.145),rgba(38,121,137,.07) 33%,rgba(3,29,44,.45) 68%,rgba(4,48,65,.44)),
+     radial-gradient(ellipse 65% 63% at 94% 0%,rgba(48,200,192,.12),transparent 90%),
+     rgba(5,42,57,.65);
+   box-shadow:0 23px 80px rgba(0,6,16,.35),0 0 31px rgba(48,200,192,.09),inset 0 1px 0 rgba(239,255,254,.28);
+   backdrop-filter:blur(19px);-webkit-backdrop-filter:blur(19px)
+}
+.signin-card:before{content:'';position:absolute;inset:0;border-radius:28px;pointer-events:none;
+  background:radial-gradient(ellipse 85% 70% at 97% 0%,rgba(83,213,221,.13),transparent 77%),linear-gradient(135deg,rgba(250,255,255,.10),transparent 26%,transparent 70%,rgba(48,200,192,.04));z-index:-1}
+.signin-card:after{content:'';position:absolute;right:-14px;bottom:-18px;width:175px;height:175px;border-radius:50%;
+ background:radial-gradient(circle,rgba(48,200,192,.10),transparent 78%);pointer-events:none}
+.card-top-glow{position:absolute;top:0;left:42px;right:42px;height:2px;
+ background:linear-gradient(90deg,transparent,rgba(217,255,253,.85),rgba(48,200,192,.22),transparent);opacity:.83;}
+.form-logo{display:block;width:136px;height:118px;object-fit:contain;object-position:left center;
+ margin:-1px 0 11px -5px;filter:drop-shadow(0 6px 13px rgba(48,200,192,.2))}
+.eyebrow{font-size:12px;letter-spacing:2.35px;font-weight:700;color:#30C8C0;margin:0 0 11px}
+h1{font-size:39px;letter-spacing:-.9px;margin:0 0 6px;line-height:1.19;color:white;font-weight:700}
+.card-subtitle{font-size:17px;line-height:1.5;color:#C3DDE2;margin:0}
+.auth-fields{margin:34px 0 0}
+.auth-fields label{display:block;color:#C0DBDF;font-size:15px;margin-bottom:9px;font-weight:400}
+.input-shell{height:56px;display:flex;align-items:center;gap:17px;border-radius:11px;padding:0 18px;
+  border:1px solid rgba(152,224,216,.46);background:linear-gradient(115deg,rgba(142,222,220,.075),rgba(4,35,48,.49));
+  box-shadow:inset 0 1px 0 rgba(240,255,253,.05);}
+.input-shell:focus-within{border-color:#30C8C0;box-shadow:0 0 0 3px rgba(48,200,192,.13)}
+.input-shell svg{width:22px;height:22px;fill:none;stroke:#B4DDE2;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.input-shell input{background:transparent;border:0;outline:0;width:100%;color:#EFFFFE;font-family:inherit;font-size:15.5px;font-weight:450;min-width:0}
+.password-label{margin-top:24px}
+.form-meta{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-top:21px;font-size:13.5px}
+.demo-state{color:#C4DEE0;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.demo-state i{display:block;width:9px;height:9px;border-radius:50%;background:#30C8C0;box-shadow:0 0 8px rgba(48,200,192,.18)}
+.form-meta a{color:#30F4E6;text-decoration:none;white-space:nowrap}
+.form-meta a:hover{text-decoration:underline}
+.signin-button{margin-top:31px;width:100%;height:64px;display:flex;align-items:center;justify-content:center;gap:15px;cursor:pointer;
+ color:#052737;font:700 17px Poppins,Inter,'Segoe UI',Arial,sans-serif;border-radius:11px;
+ border:1px solid rgba(240,255,254,.85);
+ background:linear-gradient(108deg,rgba(153,239,230,.96),rgba(48,200,192,.97) 59%,rgba(4,152,167,.95));
+ box-shadow:0 12px 23px rgba(1,17,29,.27),inset 0 1px 0 rgba(255,255,255,.56)}
+.signin-button:hover{filter:brightness(1.075)}
+.signin-button svg{height:22px;width:22px;fill:none;stroke:#06303B;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-disclaimer{display:flex;gap:14px;align-items:start;margin:26px 0 0;padding-top:22px;border-top:1px solid rgba(152,224,216,.22);
+ color:#BED8DC;font-size:13px;line-height:1.6}
+.card-disclaimer svg{width:29px;height:29px;flex:none;fill:none;stroke:#BDE9E9;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}
+/* Smaller screens: preserve content as accessible stacked areas, not a cropped desktop canvas. */
+@media(max-width:1150px){
+ .login-page{grid-template-columns:47% 53%}
+ .logo-lockup{left:5%;width:90%;top:108px}.brand-mark{width:min(100%,380px);height:340px}
+ .brand-name{font-size:62px}.brand-fullname{font-size:10.8px;letter-spacing:1px;white-space:normal}
+ .brand-message{top:605px;left:9%;max-width:85%}.brand-message h2{font-size:35px}.brand-message p{font-size:14px}
+ .orbit-outer{left:-12%;top:35px}.orbit-inner{left:-3%;top:87px}
+ .signin-area{padding:45px 40px 45px 0}.signin-card{padding:40px 32px;min-height:745px}.form-logo{width:109px;height:101px}
+ .brand-footer{left:9%}
+}
+@media(max-width:740px){
+ .login-page{display:flex;flex-direction:column;min-height:100vh}
+ .brand-area{min-height:360px}
+ .orbit{display:none}
+ .logo-lockup{position:relative;top:auto;left:auto;width:100%;padding-top:10px}
+ .brand-mark{height:170px;width:210px;margin:0 auto -14px}.brand-name{font-size:43px;letter-spacing:4px}
+ .brand-fullname{font-size:9px;letter-spacing:.8px}
+ .brand-message{position:relative;top:auto;left:auto;margin:12px auto 0;padding:0 24px;text-align:center;max-width:520px}
+ .brand-message h2{font-size:25px}.brand-message p{font-size:12px;margin-top:10px}
+ .brand-footer{display:none}
+ .signin-area{padding:8px 16px 28px}.signin-card{min-height:0;max-width:500px;padding:28px 24px;border-radius:20px}
+ .form-logo{width:79px;height:75px;margin:0 0 14px 0}.eyebrow{font-size:10px}h1{font-size:30px}
+ .card-subtitle{font-size:14px}.auth-fields{margin-top:24px}.auth-fields label{font-size:13px}
+ .form-meta{font-size:11px}.signin-button{height:54px;margin-top:25px}.card-disclaimer{font-size:11px}
+}

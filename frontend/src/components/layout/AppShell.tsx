@@ -53,7 +53,7 @@ export function AppShell() {
     window.scrollTo(0, 0);
   }, [loc.pathname]);
   return (
-    <div className="flex min-h-dvh bg-porcelain">
+    <div className="iris-atmosphere flex min-h-dvh">
       <a href="#main" className="sr-only z-[70] rounded bg-white px-3 py-2 text-sm text-teal-900 focus:not-sr-only focus:fixed focus:top-2 focus:left-2">
         Skip to main content
       </a>

@@ -43,7 +43,7 @@ export function DataTable<T>({
   };
   return (
     <>
-      <div className="hidden overflow-x-auto md:block">
+      <div className="hidden overflow-x-auto md:block" role="region" aria-label={caption} tabIndex={0}>
         <table className="w-full border-collapse text-[13.5px]" style={{ minWidth }}>
           <caption className="sr-only">{caption}</caption>
           <thead>

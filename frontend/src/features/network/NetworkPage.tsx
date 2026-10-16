@@ -33,7 +33,7 @@ function Legend({ labels }: { labels: Record<string, string> }) {
         <p className="mb-1.5 font-semibold text-ink-2">Unit type (shape)</p>
         <ul className="flex flex-col gap-1">
           {TYPES.map((t) => (
-            <li key={t} className="flex items-center gap-2"><svg width="16" height="16" aria-hidden fill="#fff" stroke="#103e46" strokeWidth="1.5">{SHAPE_ICON[t]}</svg>{UNIT_TYPE[t]}</li>
+            <li key={t} className="flex items-center gap-2"><svg width="16" height="16" aria-hidden fill={STATUS_STYLE.normal.fill} stroke={STATUS_STYLE.normal.border} strokeWidth="1.5">{SHAPE_ICON[t]}</svg>{UNIT_TYPE[t]}</li>
           ))}
         </ul>
       </div>
