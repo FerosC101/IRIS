@@ -5,13 +5,14 @@ import { OutcomeBadge } from "@/components/data-display/badges";
 import { ProportionBar, TrendChart } from "@/components/data-display/charts";
 import { DataTable } from "@/components/data-display/DataTable";
 import { FilterBar, FilterField } from "@/components/data-display/FilterBar";
+import { MetricCard } from "@/components/data-display/MetricCard";
 import { PageHeader } from "@/components/data-display/PageHeader";
 import { Select } from "@/components/ui/form";
-import { Panel } from "@/components/ui/panel";
+import { KeyValue, Panel } from "@/components/ui/panel";
 import { EmptyState, ErrorState, Loading } from "@/components/ui/states";
 import { useSession } from "@/hooks/useSession";
-import { fmtDate, fmtNum, fmtPct, fmtSigned } from "@/lib/format";
-import { UNIT_TYPE } from "@/lib/labels";
+import { fmtDate, fmtNum, fmtPct, fmtSigned, fmtPeriod } from "@/lib/format";
+import { OUTCOME_SOURCE, UNIT_TYPE } from "@/lib/labels";
 import { api } from "@/services/api";
 import type { Recovery, WindowMetrics } from "@/types/api";
 
@@ -32,7 +33,7 @@ function BeforeAfter({ rows }: { rows: Recovery["before_after"] }) {
     <DataTable caption="Before and after corrective actions" rows={rows} rowKey={(r) => r.assignment_id} mobileTitle={(r) => r.title} minWidth={1060}
       columns={[
         { key: "a", header: "Action", hideOnMobile: true, className: "min-w-[13rem]", cell: (r) => (
-          <div><Link to={`/follow-up?assignment=${r.assignment_id}`} className="font-medium text-teal-900 hover:underline">{r.title}</Link>
+          <div><Link to={`/follow-up?assignment=${r.assignment_id}`} className="font-medium text-teal-900 hover:underline">{r.title}</Link><p className="mt-1 text-xs"><Link to={`/investigations/${r.concern_id}`} className="text-info-ink hover:underline">{r.concern_id}</Link></p><p className="text-xs text-ink-2">{r.data_label}</p>
             <p className="text-xs text-ink-2">{r.target_unit_ids.map(unitName).slice(0, 3).join(", ")}{r.target_unit_ids.length > 3 ? "…" : ""} · completed {fmtDate(r.completed_at)}</p></div>
         ) },
         { key: "b", header: "Before the problem", cell: (r) => <Window w={r.before} label="Before" /> },
@@ -41,7 +42,7 @@ function BeforeAfter({ rows }: { rows: Recovery["before_after"] }) {
         { key: "c", header: "Change", align: "right", cell: (r) => fmtSigned(r.change_vs_during) },
         { key: "o", header: "Result", className: "min-w-[11rem]", cell: (r) => (
           <div className="flex flex-col items-start gap-1">
-                        {r.outcomes.length ? <OutcomeBadge status={r.outcomes[r.outcomes.length - 1].status} /> : <span className="text-xs text-ink-2">No outcome recorded</span>}
+                        {r.outcomes.length ? <><OutcomeBadge status={r.outcomes[r.outcomes.length - 1].status} /><span className="text-xs text-ink-2">{OUTCOME_SOURCE[r.outcomes[r.outcomes.length - 1].source] ?? r.outcomes[r.outcomes.length - 1].source}</span></> : <span className="text-xs text-ink-2">No outcome recorded</span>}
           </div>
         ) },
       ]} />
@@ -57,13 +58,15 @@ export function RecoveryPage() {
   const q = useQuery({ queryKey: ["recovery", f], queryFn: () => api.recovery(f), placeholderData: (p) => p });
   const active = Object.entries(f).filter(([k, v]) => v !== DEF[k as keyof typeof DEF]).length;
   const d = q.data;
+  const hasSeries = d?.series.some((row) => row.completeness !== null || row.timeliness !== null);
+  const scope = f.unit_id ? meta?.units.find((u) => u.id === f.unit_id)?.name ?? f.unit_id : f.province || "All dataset units";
   const units = meta?.units.filter((u) => u.unit_type !== "hub" && (!f.province || u.province === f.province) && (!f.unit_type || u.unit_type === f.unit_type)) ?? [];
   const weekOpts = meta?.weeks ?? [];
 
   return (
     <>
-      <PageHeader title="Recovery" description="Is reporting getting better, and did the actions help?" />
-      <div className="flex flex-col gap-5">
+      <PageHeader title="Recovery Assessment" description="Monitor reporting restoration and assess intervention progress." />
+      <div className="iris-workspace-stack">
         <FilterBar activeCount={active} onReset={() => setF(DEF)} label="Recovery filters">
           <FilterField label="Dataset" className="w-full md:w-64">{(id) => <Select id={id} value={f.dataset_id} onChange={(e) => setF({ ...DEF, dataset_id: e.target.value })}>{datasets.data?.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</Select>}</FilterField>
           <FilterField label="Province">{(id) => <Select id={id} value={f.province} onChange={(e) => setF({ ...f, province: e.target.value, unit_id: "" })}><option value="">All</option>{meta?.provinces.map((p) => <option key={p}>{p}</option>)}</Select>}</FilterField>
@@ -74,7 +77,15 @@ export function RecoveryPage() {
           <FilterField label="To">{(id) => <Select id={id} value={f.w_to} onChange={(e) => setF({ ...f, w_to: e.target.value })}>{weekOpts.map((w) => <option key={w.week} value={w.week} disabled={w.week < Number(f.w_from)}>{w.label}</option>)}</Select>}</FilterField>
         </FilterBar>
 
-        {q.error ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : !d ? <Loading /> : !d.completeness_available ? (
+        {datasets.error && <ErrorState error={datasets.error} onRetry={() => datasets.refetch()} title="Dataset options unavailable" />}
+        {d && !q.isPlaceholderData && <Panel className="iris-decision-hero iris-recovery-hero" motif="trends" bodyClassName="p-6 lg:p-8">
+          <p className="iris-eyebrow mb-3">Observed reporting restoration</p>
+          <h2 className="text-2xl font-semibold">{d.dataset.name}</h2>
+          <p className="mt-3 max-w-2xl text-sm">Examine received submissions and follow-up evidence over time. Reporting changes are observations; they do not establish that an intervention caused improvement.</p>
+          <div className="mt-5"><KeyValue columns={3} items={[{ label: "Reporting scope", value: scope }, { label: "Selected reporting weeks", value: fmtPeriod(weekOpts[Number(f.w_from)]?.start, weekOpts[Number(f.w_to)]?.end) }, { label: "Dataset classification", value: d.dataset.designation }]} /></div>
+          {d.causality_note && <p className="mt-4 text-xs text-ink-2">{d.causality_note}</p>}
+        </Panel>}
+        {q.error ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : !d || q.isPlaceholderData ? <Loading label="Loading selected recovery context" /> : !d.completeness_available ? (
           <Panel title="Recovery metrics">
             <div className="flex flex-col gap-3">
               {d.messages.map((m) => <p key={m} className="rounded-sm border border-line bg-porcelain px-3 py-2 text-sm text-ink">{m}</p>)}
@@ -84,27 +95,28 @@ export function RecoveryPage() {
         ) : (
           <>
             {d.overall && (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div className="rounded-md border border-line bg-white p-4"><p className="text-3xl font-semibold text-teal-900 tabular">{fmtPct(d.overall.completeness)}</p><p className="text-[13px] text-ink-2">of expected reports arrived</p></div>
-                <div className="rounded-md border border-line bg-white p-4"><p className="text-3xl font-semibold text-teal-900 tabular">{fmtPct(d.overall.timeliness)}</p><p className="text-[13px] text-ink-2">arrived on time</p></div>
-                <div className="rounded-md border border-line bg-white p-4"><p className="text-3xl font-semibold text-teal-900 tabular">{d.concern_totals?.open ?? 0}</p><p className="text-[13px] text-ink-2">concerns still open</p></div>
+              <div className="iris-phase4-metrics grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <MetricCard label="Reporting completeness" value={d.overall.completeness == null ? "Unavailable" : fmtPct(d.overall.completeness)} detail={`${fmtNum(d.overall.received)} received / ${fmtNum(d.overall.expected)} expected submissions.`} motif="records" />
+                <MetricCard label="Reporting timeliness" value={!d.timeliness_available || d.overall.timeliness == null ? "Unavailable" : fmtPct(d.overall.timeliness)} detail="Received by the due date / expected submissions." motif="trends" />
+                <MetricCard label="Reports not received" value={fmtNum(d.overall.not_received)} detail="Expected submissions missing in the selected reporting period." motif="verify" />
+                <MetricCard label="Open concerns" value={d.concern_totals?.open ?? "Unavailable"} detail="Dataset/unit selection; concern totals are not limited to selected weeks." motif="network" />
               </div>
             )}
-            <Panel title="Reports received each week" description={`${fmtNum(d.overall?.expected)} expected ${f.category ? categoryName(f.category) : "weekly"} reports in the selected weeks. Data: ${d.dataset.name} (simulated).`}>
-              {d.series.length === 0 ? <EmptyState title="No expected reports in this selection" /> : (
-                <TrendChart title="Completeness and timeliness" data={d.series} xKey="period_start" height={260} series={[{ key: "completeness", label: "Completeness" }, { key: "timeliness", label: "Timeliness" }]} />
+            <Panel title="Reporting recovery trend" motif="trends" description={`${fmtNum(d.overall?.expected)} expected ${f.category ? categoryName(f.category) : "weekly"} reports. ${d.frequency === "monthly" ? "Monthly series; week filters do not restrict monthly submissions." : "Selected reporting weeks."} Classification: ${d.dataset.designation}.`}>
+              {!hasSeries ? <EmptyState title={d.series.length ? "Reporting series unavailable" : "No expected reports in this selection"} /> : (
+                <TrendChart title="Completeness and timeliness" data={d.series} xKey="period_start" height={320} series={[{ key: "completeness", label: "Completeness" }, { key: "timeliness", label: "Timeliness" }]} />
               )}
               <p className="mt-2 text-xs text-ink-2">The latest week can still receive late reports. “Arrived” = received ÷ expected; “on time” = received by the due date ÷ expected.</p>
             </Panel>
             <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-              <Panel title="Open and closed concerns" description={d.concern_totals ? `${d.concern_totals.open} open · ${d.concern_totals.resolved} resolved · ${d.concern_totals.dismissed} dismissed in this scope.` : undefined}>
+              <Panel motif="network" title="Open and closed concerns" description={d.concern_totals ? `${d.concern_totals.open} open · ${d.concern_totals.resolved} resolved · ${d.concern_totals.dismissed} dismissed in this selection across all concern periods.` : undefined}>
                 <TrendChart title="Concerns open at week end and closed in week" percent={false} height={220} xKey="period_start"
                   data={d.concerns.map((c) => ({ ...c, closed: c.resolved + c.dismissed }))} series={[{ key: "open_at_end", label: "Open at end of week" }, { key: "closed", label: "Closed during week" }]} />
                 {!!d.concerns_after_snapshot && <p className="mt-1 text-xs text-ink-2">{d.concerns_after_snapshot} concern(s) were created after the dataset snapshot and are not shown on the timeline.</p>}
               </Panel>
-              <Panel title="How long concerns take to close" description="Median days from being flagged to being closed.">
+              <Panel variant="secondary" motif="verify" title="Time to resolution" description="Median days from being flagged to being closed.">
                 {d.resolution.length === 0 ? <p className="text-sm text-ink-2">No concerns in this scope.</p> : (
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto" role="region" aria-label="Concern resolution statistics" tabIndex={0}>
                     <table className="w-full min-w-[30rem] text-sm">
                       <caption className="sr-only">Time to resolution by concern type</caption>
                       <thead className="text-left text-xs text-ink-2"><tr><th scope="col" className="py-1.5 font-semibold">Concern type</th><th scope="col" className="py-1.5 text-right font-semibold">Resolved</th><th scope="col" className="py-1.5 text-right font-semibold">Median days</th><th scope="col" className="py-1.5 text-right font-semibold">Dismissed</th><th scope="col" className="py-1.5 text-right font-semibold">Median days</th><th scope="col" className="py-1.5 text-right font-semibold">Still open</th></tr></thead>
@@ -118,7 +130,7 @@ export function RecoveryPage() {
                 )}
               </Panel>
             </div>
-            <Panel title="Did the actions help?" description="Share of expected reports that arrived before the problem, during it, and after the action. Things can also improve for other reasons." bodyClassName="p-0">
+            <Panel title="Before, during and after corrective actions" motif="records" description="Observed submission windows supplied by the backend. These windows may extend beyond chart week/category filters; changes are not causal estimates." bodyClassName="p-0">
               <div className="px-4 py-2 md:p-0"><BeforeAfter rows={d.before_after} /></div>
             </Panel>
           </>

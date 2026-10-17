@@ -38,7 +38,7 @@ export function WeekStrip({ detail }: { detail: ConcernDetail }) {
   if (!units.length) return <p className="text-sm text-ink-2">No weekly data was stored for this concern.</p>;
   return (
     <div className="flex flex-col gap-3">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto" role="region" aria-label="Weekly reporting timeline" tabIndex={0}>
         <table className="border-separate border-spacing-1 text-[13px]">
           <caption className="sr-only">Weekly reporting for the affected units</caption>
           <thead>

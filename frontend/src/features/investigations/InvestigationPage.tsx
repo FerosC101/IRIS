@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Check, CheckCircle2, ClipboardList, Eye, MessageSquare, RotateCcw, UserPlus, XCircle } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { ConcernStatusBadge, SeverityBadge, SimulatedTag } from "@/components/data-display/badges";
+import { ConcernStatusBadge, SeverityBadge, SimulatedTag, VerificationBadge } from "@/components/data-display/badges";
 import { PageHeader } from "@/components/data-display/PageHeader";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/form";
@@ -63,10 +63,10 @@ function Stepper({ current }: { current: number }) {
 
 function Block({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-md border border-line bg-white p-4">
-      <h2 className="mb-2 text-[15px] font-semibold">{title}</h2>
+    <Panel motif="verify">
+      <h2 className="mb-3 text-[15px] font-semibold">{title}</h2>
       {children}
-    </section>
+    </Panel>
   );
 }
 
@@ -154,28 +154,39 @@ export function InvestigationPage() {
   return (
     <>
       <PageHeader
-        breadcrumbs={[{ label: "Concerns", to: "/investigations" }, { label: c.id }]}
-        title={c.title}
+        breadcrumbs={[{ label: "Investigations", to: "/investigations" }, { label: c.id }]}
+        title="Investigation Review"
+        description="Examine reporting evidence and document verification decisions."
         meta={<>
           <ConcernStatusBadge status={c.status} />
           <SeverityBadge severity={c.severity} />
+          <VerificationBadge verification={c.verification} />
           <span className="text-[13px] text-ink-2">{fmtPeriod(c.period_start, c.period_end)}</span>
           {c.simulated && <SimulatedTag />}
         </>}
       />
 
-      <div className="flex max-w-5xl flex-col gap-5">
-        <section aria-label="Next step" className="rounded-md border border-teal-900/20 bg-white p-4">
+      <div className="iris-workspace-stack">
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <Panel variant="secondary" motif="verify" title="Investigation brief">
+          <p className="iris-eyebrow mb-2">{c.id} | {c.concern_type_label}</p>
+          <h2 className="mb-2 text-lg font-semibold">{c.title}</h2>
+          <p className="text-sm leading-relaxed">{c.summary}</p>
+          <p className="mt-3 text-xs text-ink-2">{c.uncertainty_note}</p>
+          <div className="mt-4"><KeyValue columns={2} items={[{ label: "Affected entities", value: c.units.map((u) => u.name).join(", ") }, { label: "Detection method", value: c.detection_method_label }, { label: "Investigation owner", value: d.investigation?.owner ?? "Unassigned" }, { label: "Verification", value: c.verification }]} /></div>
+        </Panel>
+        <Panel variant="secondary" motif="network" title="Review and verification">
           <Stepper current={stepIndex(d)} />
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-4 flex flex-col gap-3">
             <p className="text-[15px] text-ink"><span className="font-semibold text-teal-900">Next: </span>{hint}</p>
-            <div className="flex flex-col gap-2 sm:flex-row sm:shrink-0">
+            <div className="flex flex-wrap gap-2">
               {primary && (primary.to
                 ? <Link to={primary.to} className={buttonVariants()}>{primary.icon}{primary.label}</Link>
                 : <Button onClick={primary.run} disabled={act.isPending}>{primary.icon}{primary.label}</Button>)}
               <ActionMenu items={more} />
             </div>
           </div>
+          <InlineError error={act.error} />
           {(d.investigation || c.follow_up_due) && (
             <p className="mt-3 border-t border-line pt-3 text-[13px] text-ink-2">
               {d.investigation && <>Owner: <span className="text-ink">{d.investigation.owner}</span></>}
@@ -183,7 +194,8 @@ export function InvestigationPage() {
               {c.follow_up_due && <>Due {fmtDate(c.follow_up_due)}</>}
             </p>
           )}
-        </section>
+        </Panel>
+        </div>
 
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList label="Concern sections" tabs={[
@@ -194,6 +206,7 @@ export function InvestigationPage() {
           ]} />
 
           <TabsContent value="summary" className="flex flex-col gap-4">
+            <Block title="Reporting timeline"><WeekStrip detail={d} /></Block>
             <Block title="What happened"><p className="text-sm text-ink">{c.summary}</p></Block>
             <Block title="What the data shows">
               <EvidenceList items={observed} />

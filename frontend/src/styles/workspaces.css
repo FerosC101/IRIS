@@ -33,3 +33,23 @@
     .iris-surface[data-motif]::after { display: none; }
   }
 }
+
+@layer components {
+  .iris-network-canvas { background: radial-gradient(circle, rgb(152 224 216 / .11) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(145deg, #0A3A4A, #04121C); }
+  .iris-finding { transition: background .18s; }
+  .iris-finding:hover, .iris-finding-selected { background: rgb(48 200 192 / .10); }
+  .iris-finding-selected { box-shadow: inset 3px 0 #30C8C0; }
+}
+
+/* Phase 4 compositions reuse the existing surface, typography and chart tokens. */
+@layer components {
+  .iris-decision-hero { background-size: cover; background-position: center; }
+  .iris-planner-hero { background-image: linear-gradient(90deg, rgb(4 18 28 / .97), rgb(10 58 74 / .88) 48%, rgb(10 58 74 / .28)), url('/brand/photo_reporting.webp'); }
+  .iris-recovery-hero { background-image: linear-gradient(115deg, rgb(10 58 74 / .97), rgb(4 18 28 / .90) 55%, rgb(14 102 128 / .30)), url('/brand/photo_review.webp'); }
+  .iris-evaluation-hero { background-image: linear-gradient(90deg, rgb(4 18 28 / .97), rgb(10 58 74 / .88) 57%, rgb(10 58 74 / .35)), url('/brand/healthcare_analysts.webp'); }
+}
+
+@layer components {
+  .iris-phase4-metrics .iris-metric { background-color: rgb(230 255 252 / .48); background-image: var(--iris-gradient-metric); backdrop-filter: blur(var(--iris-glass-blur)); }
+  @media (prefers-reduced-transparency: reduce) { .iris-phase4-metrics .iris-metric { background-color: #98E0D8; backdrop-filter: none; } }
+}

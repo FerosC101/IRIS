@@ -20,6 +20,7 @@ const FollowUpPage = lazy(() => import("@/features/interventions/FollowUpPage").
 const PlannerPage = lazy(() => import("@/features/interventions/PlannerPage").then((x) => ({ default: x.PlannerPage })));
 const InvestigationPage = lazy(() => import("@/features/investigations/InvestigationPage").then((x) => ({ default: x.InvestigationPage })));
 const InvestigationsPage = lazy(() => import("@/features/investigations/InvestigationsPage").then((x) => ({ default: x.InvestigationsPage })));
+const AnomalyPage = lazy(() => import("@/features/investigations/AnomalyPage").then((x) => ({ default: x.AnomalyPage })));
 const NetworkPage = lazy(() => import("@/features/network/NetworkPage").then((x) => ({ default: x.NetworkPage })));
 const RecoveryPage = lazy(() => import("@/features/recovery/RecoveryPage").then((x) => ({ default: x.RecoveryPage })));
 const HelpPage = lazy(() => import("@/features/settings/HelpPage").then((x) => ({ default: x.HelpPage })));
@@ -34,6 +35,7 @@ export const routes: RouteObject[] = [
       { path: "/", element: <OverviewPage /> },
       { path: "/investigations", element: guard(<InvestigationsPage />) },
       { path: "/investigations/:id", element: guard(<InvestigationPage />) },
+      { path: "/anomalies", element: guard(<AnomalyPage />) },
       { path: "/network", element: guard(<NetworkPage />) },
       { path: "/data", element: guard(<DataExplorerPage />) },
       { path: "/data/import", element: <RouteGuard><ImportWizard /></RouteGuard> },

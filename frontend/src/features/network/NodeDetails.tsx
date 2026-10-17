@@ -25,7 +25,7 @@ export function NodeDetails({ node }: { node: NetworkNode }) {
           <Badge tone="teal">{UNIT_TYPE[node.unit_type]}</Badge>
           <Badge tone={node.status === "missing" ? "critical" : node.status === "delayed" ? "attention" : "positive"}>{node.status_label}</Badge>
           {node.is_sentinel && <Badge>Sentinel site</Badge>}
-          <SimulatedTag />
+          {node.simulated && <SimulatedTag />}
         </div>
       </div>
       <KeyValue items={[
@@ -43,7 +43,7 @@ export function NodeDetails({ node }: { node: NetworkNode }) {
             {q.data.relationships.length === 0 ? <p className="text-sm text-ink-2">No relationships defined.</p> : (
               <ul className="flex flex-col gap-1 text-sm">
                 {q.data.relationships.map((r) => (
-                  <li key={r.id}><span className="text-ink-2">{r.direction === "outgoing" ? REL_LABEL[r.relationship_type] : REL_IN[r.relationship_type]}</span> {r.other_name}</li>
+                  <li key={r.id}><span className="text-ink-2">{r.direction === "outgoing" ? REL_LABEL[r.relationship_type] : REL_IN[r.relationship_type]}</span> <Link to={`/network?unit=${r.other_id}`} className="text-info-ink hover:underline">{r.other_name}</Link></li>
                 ))}
               </ul>
             )}

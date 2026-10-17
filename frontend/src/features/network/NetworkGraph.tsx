@@ -72,8 +72,10 @@ export function NetworkGraph({ nodes, edges, visible, selected, onSelect }: {
     });
     inst.on("tap", "node", (e) => onSelectRef.current(e.target.id()));
     inst.on("tap", (e) => { if (e.target === inst) onSelectRef.current(null); });
+    const observer = new ResizeObserver(() => inst.resize());
+    observer.observe(ref.current);
     cy.current = inst;
-    return () => inst.destroy();
+    return () => { observer.disconnect(); inst.destroy(); };
   }, [nodes, edges]);
 
   useEffect(() => {
@@ -97,7 +99,7 @@ export function NetworkGraph({ nodes, edges, visible, selected, onSelect }: {
 
   return (
     <div className="relative">
-      <div ref={ref} className="h-[24rem] w-full touch-none bg-porcelain sm:h-[30rem] lg:h-[40rem]" role="img"
+      <div ref={ref} className="h-[24rem] w-full touch-none iris-network-canvas sm:h-[30rem] lg:h-[40rem]" role="img"
         aria-label="Graph of simulated reporting units and their defined relationships. Use the list view for an accessible alternative." />
       <div className="absolute top-2 right-2 flex flex-col gap-1 rounded-md border border-line bg-white p-1 shadow-sm">
         <Button variant="ghost" size="icon" onClick={() => zoom(1.25)} aria-label="Zoom in"><Plus aria-hidden /></Button>

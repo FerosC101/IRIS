@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,10 +20,10 @@ export function ReasonDialog({
 }) {
   const form = useForm<{ text: string; due?: string }>({ resolver: zodResolver(reasonSchema.extend({ due: z.string().optional() })), defaultValues: { text: "", due: defaultDue } });
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) form.reset({ text: "", due: defaultDue }); onOpenChange(o); }}>
+    <Dialog open={open} onOpenChange={(o) => { if (pending) return; if (!o) form.reset({ text: "", due: defaultDue }); onOpenChange(o); }}>
       <DialogContent title={title} description={description}
         footer={<>
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button variant="secondary" disabled={pending} onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button type="submit" form="reason-form" variant={danger ? "danger" : "primary"} disabled={pending}>{pending ? "Saving…" : submitLabel}</Button>
         </>}>
         <form id="reason-form" noValidate className="flex flex-col gap-4" onSubmit={form.handleSubmit((v) => onSubmit(v.text, v.due))}>
@@ -48,11 +49,12 @@ export function AssignDialog({ open, onOpenChange, users, current, onSubmit, pen
   onSubmit: (v: { user_id: string; due?: string; note?: string }) => void; pending: boolean; error: unknown;
 }) {
   const form = useForm<z.infer<typeof assignSchema>>({ resolver: zodResolver(assignSchema), defaultValues: { user_id: current ?? "", due: "", note: "" } });
+  useEffect(() => { if (open) form.reset({ user_id: current ?? "", due: "", note: "" }); }, [open, current, form]);
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(o) => { if (!pending) onOpenChange(o); }}>
       <DialogContent title="Assign an owner" description="The owner checks the problem and records what happened."
         footer={<>
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button variant="secondary" disabled={pending} onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button type="submit" form="assign-form" disabled={pending}>{pending ? "Assigning…" : "Assign"}</Button>
         </>}>
         <form id="assign-form" noValidate className="flex flex-col gap-4" onSubmit={form.handleSubmit((v) => onSubmit({ user_id: v.user_id, due: v.due || undefined, note: v.note || undefined }))}>

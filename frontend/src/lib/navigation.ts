@@ -16,10 +16,11 @@ const ALL: Role[] = ["rhu_staff", "provincial_coordinator", "resu_analyst", "adm
 
 export const NAV: NavItem[] = [
   { to: "/", label: "Home", icon: Home, roles: ALL, group: "main", description: "What needs attention" },
-  { to: "/investigations", label: "Concerns", icon: Search, roles: ["rhu_staff", "provincial_coordinator", "resu_analyst"], group: "main", description: "Reporting problems to review" },
+  { to: "/investigations", label: "Investigations", icon: Search, roles: ["rhu_staff", "provincial_coordinator", "resu_analyst"], group: "main", description: "Reporting problems to review" },
   { to: "/planner", label: "Plan actions", icon: ListChecks, roles: ["provincial_coordinator", "resu_analyst"], group: "main", description: "Decide what to fix first" },
   { to: "/follow-up", label: "Track actions", icon: ClipboardCheck, roles: ["rhu_staff", "provincial_coordinator", "resu_analyst"], group: "main", description: "Actions in progress" },
-  { to: "/network", label: "Network", icon: Network, roles: ["provincial_coordinator", "resu_analyst", "admin"], group: "main", description: "How units are connected" },
+  { to: "/anomalies", label: "Anomaly Analysis", icon: Activity, roles: ["provincial_coordinator", "resu_analyst"], group: "main", description: "Analyze reporting signals and evidence" },
+  { to: "/network", label: "Reporting Network", icon: Network, roles: ["provincial_coordinator", "resu_analyst", "admin"], group: "main", description: "How units are connected" },
   { to: "/recovery", label: "Recovery", icon: Activity, roles: ["provincial_coordinator", "resu_analyst", "admin"], group: "main", description: "Is reporting improving?" },
   { to: "/data", label: "Data", icon: Table2, roles: ALL, group: "main", description: "Browse the records" },
   { to: "/evaluation", label: "Model evaluation", icon: FlaskConical, roles: ["resu_analyst", "admin"], group: "more", description: "How well detection works" },

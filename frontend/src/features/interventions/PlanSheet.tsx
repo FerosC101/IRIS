@@ -1,6 +1,6 @@
 import * as D from "@radix-ui/react-dialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AssignmentStatusBadge, PlanStatusBadge } from "@/components/data-display/badges";
 import { SimpleTable } from "@/components/data-display/charts";
@@ -22,6 +22,7 @@ export function PlanSheet({ planId, onClose }: { planId: string | null; onClose:
   const toast = useToast();
   const [note, setNote] = useState("");
   const [err, setErr] = useState<string | null>(null);
+  useEffect(() => { setNote(""); setErr(null); }, [planId]);
   const q = useQuery({ queryKey: ["plan", planId], queryFn: () => api.plan(planId!), enabled: !!planId });
   const m = useMutation({
     mutationFn: (decision: "approve" | "reject") => api.decidePlan(planId!, decision, note),
@@ -33,7 +34,7 @@ export function PlanSheet({ planId, onClose }: { planId: string | null; onClose:
     m.mutate(d);
   };
   return (
-    <D.Root open={!!planId} onOpenChange={(o) => { if (!o) { m.reset(); setErr(null); onClose(); } }}>
+    <D.Root open={!!planId} onOpenChange={(o) => { if (!o && !m.isPending) { m.reset(); setErr(null); onClose(); } }}>
       {planId && (
         <SheetContent title={q.data ? `${q.data.id} · ${q.data.name}` : planId} description="Intervention plan">
           <div className="flex flex-col gap-5 p-5">
@@ -42,7 +43,7 @@ export function PlanSheet({ planId, onClose }: { planId: string | null; onClose:
                 <div className="flex flex-wrap gap-2"><PlanStatusBadge status={q.data.status} /></div>
                 <KeyValue items={[
                   { label: "Method", value: METHOD_LABEL[q.data.method] },
-                  { label: "Budget", value: `${fmtNum(q.data.budget_hours, 1)} staff-hours` },
+                  { label: "Budget", value: `${String(q.data.budget_hours)} staff-hours` },
                   { label: "Total cost", value: `${fmtNum(q.data.total_cost_hours, 1)} h` },
                   { label: "Assumed benefit", value: `${fmtNum(q.data.total_expected_benefit, 1)} report-weeks` },
                   { label: "Created", value: `${fmtDateTime(q.data.created_at)} by ${q.data.created_by}` },
@@ -81,7 +82,7 @@ export function PlanSheet({ planId, onClose }: { planId: string | null; onClose:
                 {q.data.status === "draft" && (can("plan.decide") ? (
                   <div className="flex flex-col gap-3 border-t border-line pt-4">
                     <h3 className="text-sm font-semibold">Record a decision</h3>
-                    <Field label="Decision note" hint="Required when rejecting." error={err ?? undefined}>{(p) => <Textarea {...p} rows={3} value={note} onChange={(e) => setNote(e.target.value)} />}</Field>
+                    <Field label="Decision note" hint="Required when rejecting." error={err ?? undefined}>{(p) => <Textarea {...p} rows={3} maxLength={2000} value={note} onChange={(e) => setNote(e.target.value)} />}</Field>
                     <InlineError error={m.error} />
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <Button onClick={() => decide("approve")} disabled={m.isPending}>Approve plan</Button>
