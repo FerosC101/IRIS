@@ -19,6 +19,8 @@ export const api = {
   concern: (id: string) => request<ConcernDetail>(`/concerns/${id}`),
   concernAction: (id: string, action: "review" | "confirm" | "dismiss" | "clarify" | "respond" | "assign" | "notes" | "evidence" | "resolve" | "reopen", body: object) =>
     request<ConcernDetail>(`/concerns/${id}/${action}`, { method: "POST", json: body }),
+  updateChecklist: (id: string, itemId: number, body: { done?: boolean; note?: string }) =>
+    request<ConcernDetail>(`/concerns/${id}/checklist/${itemId}`, { method: "PATCH", json: body }),
   runDetection: (method: string) => request<{ created: string[]; skipped_existing: number; method: string; method_label: string }>("/detection/run", { method: "POST", json: { method } }),
 
   tasks: () => request<Task[]>("/tasks"),

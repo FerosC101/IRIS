@@ -1,6 +1,7 @@
 # Python
 backend/.venv/
 backend/iris.db
+backend/backups/
 __pycache__/
 .pytest_cache/
 # Node

@@ -35,6 +35,11 @@ class SummaryIn(BaseModel):
     summary: str = Field(max_length=4000)
 
 
+class ChecklistPatch(BaseModel):
+    done: bool | None = None
+    note: str | None = Field(default=None, max_length=2000)
+
+
 class EvidenceIn(BaseModel):
     title: str = Field(max_length=200)
     detail: str = Field(max_length=4000)

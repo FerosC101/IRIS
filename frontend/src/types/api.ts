@@ -107,6 +107,12 @@ export interface Concern {
   resolution_summary: string | null; resolved_at: string | null; simulated: boolean; units: ConcernUnit[];
 }
 
+/** A verification step. "resolution" is completed only by resolving the concern. */
+export interface ChecklistItem {
+  id: number; position: number; label: string; detail: string; kind: "check" | "resolution";
+  done: boolean; done_by: string | null; done_at: string | null; note: string;
+}
+
 export interface Evidence { id: number; kind: EvidenceKind; title: string; detail: string; data: Record<string, unknown>; created_at: string; created_by: string | null }
 
 export interface TimelineRow {
@@ -128,6 +134,7 @@ export interface ConcernDetail {
   next_step: { text: string; action: string | null };
   /** Backend rule: resolving needs a confirmed (human-reviewed) finding and evidence a person attached. */
   resolution_requirements: { verified: boolean; evidence_attached: boolean; can_resolve: boolean; missing: string[] };
+  checklist: { items: ChecklistItem[]; done: number; total: number };
   activity: { id: number; at: string; action: string; summary: string; actor: string; detail: Record<string, unknown> }[];
   related: QueueRow[];
   actions: { id: string; title: string; action_type: string; status: string }[];

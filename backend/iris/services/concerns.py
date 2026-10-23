@@ -21,7 +21,7 @@ from iris.models import (
     ReportingUnit,
     User,
 )
-from iris.services import audit, datasets
+from iris.services import audit, checklist, datasets
 from iris.services.clock import now, today
 from iris.services.concern_builder import ConcernSpec, build_specs, via_name
 from iris.services.context import Actor
@@ -109,6 +109,7 @@ def create_from_spec(session: Session, spec: ConcernSpec, dataset_id: str, creat
         c.evidence.append(EvidenceItem(kind=ev["kind"], title=ev["title"], detail=ev.get("detail", ""), data=ev.get("data", {}), created_at=created_at))
     session.add(c)
     session.flush()
+    checklist.create_items(session, c, created_at)
     audit.record(session, actor, "concern", c.id, "concern.created",
                  f"Concern flagged by {METHOD_LABELS[spec.detection_method]} detection: {c.title}", {"severity": c.severity}, at=created_at)
     return c
@@ -319,6 +320,7 @@ def resolve(session: Session, c: ReportingConcern, actor: Actor, summary: str, a
     c.resolution_summary = summary
     c.resolved_at = at or now()
     _touch(c, at)
+    checklist.complete_resolution(session, c, actor, at)
     _close_investigation(session, c, at)
     _note(session, c, actor, summary, "resolution", at)
     audit.record(session, actor, "concern", c.id, "concern.resolved", f"{actor.display_name} recorded a resolution for {c.id}.", {"summary": summary}, at=at)
@@ -335,6 +337,7 @@ def reopen(session: Session, c: ReportingConcern, actor: Actor, reason: str, at:
         c.verification = "unverified"
     c.resolved_at = None
     _touch(c, at)
+    checklist.reopen_resolution(session, c)
     _note(session, c, actor, reason, "note", at)
     audit.record(session, actor, "concern", c.id, "concern.reopened", f"{actor.display_name} reopened {c.id} (was {STATUS_LABELS[previous].lower()}).", {"reason": reason}, at=at)
 

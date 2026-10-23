@@ -350,3 +350,44 @@ def test_seeded_resolutions_meet_the_resolution_rule(client):
         d = client.get(f"/api/concerns/{r['id']}", headers=RESU).json()
         assert d["concern"]["verification"] == "confirmed", r["id"]
         assert any(e["kind"] == "attached" for e in d["evidence"]), r["id"]
+
+
+def test_checklist_tracks_who_checked_what(fresh):
+    c = fresh
+    cl = c.get("/api/concerns/INV-0021", headers=RESU).json()["checklist"]
+    assert cl["total"] == 5 and cl["done"] == 2
+    items = cl["items"]
+    assert items[0]["label"] == "Confirm submission was received" and items[0]["done_by"] == "RESU Surveillance Analyst (demo)"
+    assert items[-1]["kind"] == "resolution" and not items[-1]["done"]
+    third = items[2]["id"]
+    d = c.patch(f"/api/concerns/C-0021/checklist/{third}", json={"done": True, "note": "Register shows 3 cases in W39."}, headers=RESU).json()
+    it = next(i for i in d["checklist"]["items"] if i["id"] == third)
+    assert it["done"] and it["note"] == "Register shows 3 cases in W39." and it["done_at"]
+    assert d["checklist"]["done"] == 3 and d["activity"][0]["action"] == "concern.checklist_updated"
+    d = c.patch(f"/api/concerns/C-0021/checklist/{third}", json={"done": False}, headers=RESU).json()
+    it = next(i for i in d["checklist"]["items"] if i["id"] == third)
+    assert not it["done"] and it["done_by"] is None and it["note"] == "Register shows 3 cases in W39."
+    # The finding step is completed only by resolving, never ticked by hand.
+    assert c.patch(f"/api/concerns/C-0021/checklist/{items[-1]['id']}", json={"done": True}, headers=RESU).status_code == 409
+    assert c.patch(f"/api/concerns/C-0021/checklist/{third}", json={"done": True}, headers=RHU).status_code in (403, 404)
+    assert c.patch("/api/concerns/C-0021/checklist/999999", json={"done": True}, headers=RESU).status_code == 404
+    other = c.get("/api/concerns/C-0020", headers=RESU).json()["checklist"]["items"][0]["id"]
+    assert c.patch(f"/api/concerns/C-0021/checklist/{other}", json={"done": True}, headers=RESU).status_code == 404
+
+
+def test_resolving_completes_the_finding_step_and_reopening_clears_it(fresh):
+    c = fresh
+    c.post("/api/concerns/C-0020/confirm", json={"reason": "Unit confirmed the report was not sent."}, headers=PROV)
+    c.post("/api/concerns/C-0020/evidence", json={"title": "Report received", "detail": "The W40 report arrived on 9 Oct."}, headers=PROV)
+    d = c.post("/api/concerns/C-0020/resolve", json={"summary": "Report re-sent and received."}, headers=PROV).json()
+    assert d["checklist"]["items"][-1]["done"] and d["checklist"]["items"][-1]["done_by"] == "Malaya Provincial Coordinator (demo)"
+    first = d["checklist"]["items"][0]["id"]
+    assert c.patch(f"/api/concerns/C-0020/checklist/{first}", json={"done": True}, headers=PROV).status_code == 409  # closed
+    d = c.post("/api/concerns/C-0020/reopen", json={"reason": "The unit sent a corrected count."}, headers=PROV).json()
+    assert not d["checklist"]["items"][-1]["done"]
+
+
+def test_seeded_resolutions_have_completed_checklists(client):
+    for r in client.get("/api/concerns?status=resolved&page_size=100", headers=RESU).json()["rows"]:
+        cl = client.get(f"/api/concerns/{r['id']}", headers=RESU).json()["checklist"]
+        assert cl["total"] > 0 and cl["done"] == cl["total"], r["id"]

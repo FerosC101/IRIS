@@ -8,9 +8,9 @@ from iris import config
 from iris.db import get_session
 from iris.detection.methods import METHOD_LABELS
 from iris.models import InterventionAction, InterventionAssignment, Investigation, InvestigationNote, ReportingConcern, User
-from iris.schemas import AssignIn, BodyIn, DetectionRunIn, EvidenceIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
+from iris.schemas import AssignIn, BodyIn, ChecklistPatch, DetectionRunIn, EvidenceIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
 from iris.services import concerns as cs
-from iris.services import datasets, ids, interventions as iv, overview as ov, reports
+from iris.services import checklist, datasets, ids, interventions as iv, overview as ov, reports
 from iris.services.context import Actor, get_actor
 
 router = APIRouter(tags=["concerns"])
@@ -113,6 +113,7 @@ def concern_detail(concern_id: str, session: Session = Depends(get_session), act
                                                    "status": inv.status, "opened_at": inv.opened_at, "closed_at": inv.closed_at},
         "next_step": cs.next_step(session, c),
         "resolution_requirements": cs.resolution_requirements(c),
+        "checklist": checklist.as_dict(session, c.id),
         "activity": cs.activity(session, c),
         "related": [ov.concern_row(o, users, ids.investigation_ids(session)) for o in cs.related(session, c) if actor.role not in ("rhu_staff",) or actor.reporting_unit_id in {u.id for u in o.units}],
         "actions": [{"id": a.id, "title": a.title, "action_type": a.action_type, "status": a.status} for a in actions],
@@ -180,6 +181,13 @@ def note(concern_id: str, body: BodyIn, session: Session = Depends(get_session),
 def attach_evidence(concern_id: str, body: EvidenceIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
     c = cs.get(session, concern_id, actor)
     cs.attach_evidence(session, c, actor, body.title, body.detail, body.link)
+    return _done(session, c, actor)
+
+
+@router.patch("/concerns/{concern_id}/checklist/{item_id}")
+def update_checklist(concern_id: str, item_id: int, body: ChecklistPatch, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
+    c = cs.get(session, concern_id, actor)
+    checklist.update(session, c, actor, item_id, body.done, body.note)
     return _done(session, c, actor)
 
 
