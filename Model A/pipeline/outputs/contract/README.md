@@ -42,6 +42,22 @@ The simulated reporting network (`simulated: true`): facilities, provincial repo
 The proposal's results: objectives scorecard, detection metrics on real 2020 errors, shared-source identification with
 and without the graph, and recovery efficiency per planning policy. Same numbers as `outputs/results/RESULTS.md`.
 
+## `zero_priority.json`
+
+Model B · zero-report prioritizer (written when `python -m iris_pipeline zero-priority` has been run): every 2020 zero-case
+dengue report, ranked within its week, plus missing weeks returned as `Missing report (not ranked)`. Its own `disclaimer`
+replaces the shared one.
+
+| field | meaning |
+|---|---|
+| `priority_score`, `rank_in_week` | 0-100 ranking score and the order to verify within the week |
+| `priority` | High / Medium / Low (bands set on real 2019 normal zeros), or `Missing report (not ranked)` |
+| `p_priority`, `p_priority_low`, `p_priority_high` | calibrated share of comparable zeros expected to be wrong, 90% interval |
+| `top_indicators`, `explanation` | why the report was ranked where it is |
+| `data_warnings`, `verification_steps` | what the data can't show, and what to check |
+| `components` | each indicator's 0-1 value |
+| `model`, `summary` | weights and bands; results on real and synthetic sets, reported separately |
+
 ## Serving from FastAPI (example, not added to the team's code)
 
 ```python

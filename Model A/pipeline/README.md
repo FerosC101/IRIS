@@ -18,7 +18,7 @@ python -m pytest -q                # 76 tests
 streamlit run app/streamlit_app.py # dashboard
 ```
 
-Steps can also be run one at a time: `contract`, `select`, `model-a`, `model-b` (add `--quick` for a 3-replicate smoke run), `results`, `contract-json`. Model A fits are cached in `outputs/model_a_v2/_cache/`; delete it to recompute from scratch.
+Steps can also be run one at a time: `contract`, `select`, `model-a`, `model-b` (add `--quick` for a 3-replicate smoke run), `zero-priority`, `results`, `contract-json`. Model A fits are cached in `outputs/model_a_v2/_cache/`; delete it to recompute from scratch.
 
 The clean data files are not in git because their licences aren't confirmed. Rebuild them with `../MODEL A/scripts/clean_*.py` first.
 
@@ -44,6 +44,9 @@ The clean data files are not in git because their licences aren't confirmed. Reb
 | `outputs/model_b/report_b.md` | Steps 3 and 4 in plain words: graph ablation, policy comparison, old Model B on real labels |
 | `outputs/model_b/recovery_by_seed.csv` | Recovery simulation, one row per seed x policy x staff budget |
 | `outputs/model_b/plan_real_2020.csv` | A weekly action plan for the real 2020 alerts (leads to verify) |
+| `outputs/zero_priority/report.md` | Model B · zero-report prioritizer: approach, real vs synthetic results, sample output, limits |
+| `outputs/zero_priority/ranked_alerts_2020.csv` | Ranked 2020 zero reports with score, band, probability, reasons, warnings, verification steps |
+| `outputs/zero_priority/model.json` | Every learned value of the prioritizer (plain JSON) |
 
 ## Layout
 
@@ -69,6 +72,7 @@ The clean data files are not in git because their licences aren't confirmed. Reb
 | `model_b/recovery.py` | Weekly recovery simulation and its metrics |
 | `model_b/old_b.py` | Today's Model B rule, published and fixed, on real labels |
 | `model_b/real_plan.py` | Weekly plan for the real 2020 alerts |
+| `zero_priority/` | Model B · zero-report prioritizer: ranks zero-case dengue reports for verification (see its README) |
 | `evaluation/` | Shared metrics, split, reports and the combined results table |
 | `contract_json.py` | JSON files and schemas for the IRIS app |
 | `app/streamlit_app.py` | The dashboard (tested headless in `tests/test_app.py`) |

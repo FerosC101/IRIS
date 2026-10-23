@@ -133,3 +133,47 @@ def options(name: str) -> dict:
     o = copy.deepcopy(MODEL_OPTIONS_OFF)
     o.update(V2_CANDIDATES[name])
     return o
+
+# ---- Model B · zero-report prioritizer (zero_priority/) -------------------------------------------------------
+# Ranks explicit zero-case dengue reports for human verification. Every tuned value is chosen before 2020 is scored,
+# with the selection rule fixed here. Tuning objective: the mean of two average precisions, both pre-test:
+#   synthetic 2019 (injected zeros vs real 2019 normal zeros) and real 2016-2017 (swapped zeros vs normal zeros).
+# Design log: the first tuning pass used synthetic 2019 alone. It was saturated (5,661 of 39,348 settings within
+# 0.01 AP of the best) and the parsimony rule kept Model A's expected count alone, because injected zeros sit in
+# weeks with real cases. 2019 has no real bad zeros, so the 2016-2017 swaps were added to the objective. 2020 had not
+# been scored. Consequence: 2016-2017 results are in-sample (tuning fit), and 2020 is the only held-out test.
+ZERO_PRIORITY = {
+    "MODEL_VERSION": "zero_priority_v1",
+    # Fixed anchors that turn each indicator into a 0-1 component (documented, not tuned).
+    "P_LOW_SATURATION": 4.0,        # -log10(p_low) at which "unexpected" reaches 1 (p_low = 1e-4)
+    "EXPECTED_SATURATION": 50.0,    # expected cases at which "missing_cases" reaches 1
+    "RECENT_SATURATION": 30.0,      # recent median cases at which "recent_activity" reaches 1
+    "RECENT_REPORTS": 4,            # last reported weeks used for the recent median
+    "ON_OFF_WINDOW": 8,             # past reported weeks inspected for zero / non-zero switching
+    "ON_OFF_SATURATION": 4,         # switches at which "on_off" reaches 1
+    "SEASON_HALF_WIDTH": 2,         # +-weeks around the same week in the previous two years
+    # Tuned on 2019 (grid, then the rule below).
+    "GRID": {
+        "hist_weeks": [26, 52],             # history window for the location's zero share
+        "min_hist": [8, 13, 26],            # reported weeks needed before "rare_zero" is computed
+        "streak_saturation": [2, 4, 6],     # zeros in a row at which "streak" reaches 1
+        "weights": [0, 1, 2],               # each component's weight
+    },
+    # Selection rule: highest tuning objective (mean AP above); among settings within AP_TOLERANCE of the best,
+    # prefer the fewest non-zero weights, then the smallest total weight, then the higher objective.
+    "TUNING_REAL_YEARS": [2016, 2017],
+    "AP_TOLERANCE": 0.01,
+    # Priority bands from the false-alert rate on REAL 2019 normal zeros (production run): at most this share of
+    # normal zeros may be called High / at least Medium. Independent of the (synthetic) failure share.
+    "BAND_FAR": {"High": 0.05, "Medium": 0.25},
+    "WEEKLY_BUDGETS": [3, 5, 10],   # zero reports a national team can verify per week (evaluation)
+    "PROB_BOOTSTRAP": 200,          # resamples for the probability interval
+    "PROB_INTERVAL": 0.90,
+    # Design log: the first full run showed p_priority up to 99.9999% (the isotonic fit on 426 tuning rows saturates).
+    # A lead to verify is never certain, so the calibrated value is capped to [1%, 99%] before the prior shift.
+    # Changes probabilities only (not scores, ranks or bands); added after 2020 had been scored.
+    "PROB_CAP": 0.01,
+    # Supervised comparison on real swap labels (forward chaining: fit 2016 -> choose on 2017 -> refit 2016-2018).
+    "GBM_GRID": {"max_depth": [2, 3, 5], "learning_rate": [0.05, 0.1], "max_iter": [100, 300],
+                 "min_samples_leaf": [10, 40], "class_weight": [None, "balanced"]},
+}

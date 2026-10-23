@@ -5,9 +5,11 @@
   model-a    phase 2: freeze thresholds on 2019, score the 2020 test once, write outputs/model_a_v2/
   model-b    steps 3 + 4: synthetic network, graph ablation, Model B v2 optimizer, recovery simulation,
              old Model B on real labels, real 2020 plan (outputs/network/, outputs/model_b/)
+  zero-priority  Model B · zero-report prioritizer: rank zero-case dengue reports for verification
+             (outputs/zero_priority/; needs Model A v2's scores_v2.csv and config.json)
   results    step 5: one results table from the saved outputs (outputs/results/RESULTS.md, results.json)
   contract-json  JSON files + schemas for the IRIS app (outputs/contract/)
-  all        contract + select + model-a + model-b + results + contract-json
+  all        contract + select + model-a + model-b + zero-priority + results + contract-json
 
 Dashboard: streamlit run app/streamlit_app.py
 """
@@ -21,7 +23,7 @@ import time
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="iris_pipeline", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("step", choices=["contract", "select", "model-a", "model-b", "results", "contract-json", "all"])
+    ap.add_argument("step", choices=["contract", "select", "model-a", "model-b", "zero-priority", "results", "contract-json", "all"])
     ap.add_argument("--workers", type=int, default=None, help="parallel processes (default: CPU count - 1)")
     ap.add_argument("--quick", action="store_true", help="model-b: 2 tuning + 3 test replicates (a smoke run)")
     args = ap.parse_args(argv)
@@ -54,6 +56,9 @@ def main(argv=None) -> int:
     if args.step in ("model-b", "all"):
         from .model_b import run as run_b
         run_b.run(inp, args.workers, quick=args.quick)
+    if args.step in ("zero-priority", "all"):
+        from .zero_priority import run as run_zp
+        run_zp.run(args.workers)
     if args.step in ("results", "all"):
         from .evaluation.results import build as build_results
         build_results()
