@@ -38,7 +38,7 @@
   @media (min-width: 1280px) { .iris-nav-wrap { padding: 25px 33px 0; } }
   .iris-nav { position: relative; display: flex; align-items: center; gap: 16px; min-height: 60px; padding: 0 12px 0 20px; border-radius: 999px; background: #0A3A4A; color: #FFFFFF; }
   @media (min-width: 1024px) { .iris-nav { min-height: 70px; padding: 0 23px 0 24px; } }
-  .iris-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 26px; line-height: 1; letter-spacing: 0.01em; }
+  .iris-wordmark { font-family: var(--font-display); font-weight: 600; font-size: 25px; line-height: 1; letter-spacing: 0.01em; }
   .iris-nav-tab { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; font-size: 12.5px; font-weight: 400; color: #98E0D8; white-space: nowrap; transition: background-color var(--iris-transition), color var(--iris-transition); }
   .iris-nav-tab:hover { color: #FFFFFF; background: rgb(255 255 255 / 0.08); }
   .iris-nav-tab[aria-current="page"] { background: #FFFFFF; color: #04121C; font-weight: 500; }

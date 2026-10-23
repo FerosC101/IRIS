@@ -42,6 +42,7 @@ import stethoscopeWebp1440 from "./hero/optimized/hero-stethoscope-1440.webp";
 import stethoscopeWebp1920 from "./hero/optimized/hero-stethoscope-1920.webp";
 import stethoscopeWebp960 from "./hero/optimized/hero-stethoscope-960.webp";
 import logoDarkTeal from "./brand/logo-dark-teal.png";
+import logoWhite from "./brand/logo-white.png";
 
 export type PhotoKey = "stethoscope" | "maskedCloseup" | "orWindow" | "orLight" | "lightbox";
 
@@ -89,12 +90,12 @@ export const PHOTOS: Record<PhotoKey, Photo> = {
 };
 
 /**
- * Logo. The supplied dark-teal mark is used on light surfaces. Until a
- * transparent light mark is supplied, dark surfaces show the typeset
- * wordmark only: set `onDark` to that file's import to switch everywhere.
+ * Logo marks as supplied (transparent PNG, 527x527, mark only). The dark-teal
+ * mark is used on light surfaces and the white mark on dark ones; the "IRIS"
+ * wordmark is typeset next to it. Set `onDark` to null to show the wordmark alone.
  */
 export const BRAND: { alt: string; onLight: string; onDark: string | null } = {
   alt: "IRIS",
   onLight: logoDarkTeal,
-  onDark: null,
+  onDark: logoWhite,
 };

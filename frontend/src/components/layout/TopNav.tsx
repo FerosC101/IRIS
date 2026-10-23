@@ -147,7 +147,7 @@ export function TopNav() {
   return (
     <header className="iris-nav-wrap">
       <div className="iris-nav">
-        <Link to="/" className="flex min-h-11 shrink-0 items-center rounded-full px-1" aria-label="IRIS dashboard">
+        <Link to="/" className="flex min-h-11 shrink-0 items-center rounded-md" aria-label="IRIS dashboard">
           <Logo surface="dark" />
         </Link>
         <nav aria-label="Main" className="iris-nav-tabs hidden lg:block"><Tabs /></nav>
