@@ -189,3 +189,18 @@ describe("page filters and the global filter bar share the URL", () => {
     expect(loc.has("page")).toBe(false); // a new filter starts again at page 1
   });
 });
+
+describe("Design preview shows the shared components", () => {
+  it("renders every component card with its states", async () => {
+    const { DesignPreviewPage } = await import("@/features/design-preview/DesignPreviewPage");
+    setup(<DesignPreviewPage />, { path: "/design-preview" });
+    for (const title of ["Buttons", "Callouts", "Menus and popovers", "Modal, drawer and command palette", "Stepper and switches", "Error boundary", "Donut", "Heatmap", "Schematic map"]) {
+      expect(screen.getByRole("region", { name: title })).toBeInTheDocument();
+    }
+    expect(document.querySelectorAll('[data-force="hover"]').length).toBeGreaterThan(4);
+    expect(document.querySelectorAll('[data-force="focus"]').length).toBeGreaterThan(2);
+    expect(screen.getByRole("switch", { name: "Human verification required" })).toHaveAttribute("aria-checked", "true");
+    await userEvent.click(screen.getByRole("button", { name: "Make the sample fail" }));
+    expect(screen.getByRole("alert")).toHaveTextContent("This sample could not be shown");
+  });
+});

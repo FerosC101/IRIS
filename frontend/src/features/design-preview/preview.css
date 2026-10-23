@@ -1,0 +1,13 @@
+/* Design preview only: force hover and focus so every state can be seen at once.
+   The values mirror the components' own :hover / :focus-visible rules. */
+.iris-button-primary[data-force="hover"] { background: #0E6680; }
+.iris-button-secondary[data-force="hover"], .iris-button-ghost[data-force="hover"] { background: var(--iris-hover-surface); border-color: var(--iris-text-accent); }
+.iris-filter-chip[data-force="hover"] { border-color: #0E6680; }
+.iris-filter-chip[data-force="open"] { border-color: #0E6680; box-shadow: 0 0 0 3px rgb(14 102 128 / 0.15); }
+.iris-menu-item[data-force="hover"] { background: #E7F1F2; }
+.iris-nav-tab[data-force="hover"] { color: #FFFFFF; background: rgb(255 255 255 / 0.08); }
+.iris-hero__action[data-force="hover"] { background: #E7F1F2; }
+.iris-section-tab[data-force="hover"] { color: #0A3A4A; background: #E7F1F2; }
+[data-force="focus"] { outline: var(--iris-focus-ring); outline-offset: 3px; }
+.iris-nav [data-force="focus"] { outline-color: #98E0D8; }
+.pv-state-label { font-size: 11px; color: #4F6670; margin-bottom: 6px; }

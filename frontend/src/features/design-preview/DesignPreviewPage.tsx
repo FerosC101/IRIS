@@ -10,6 +10,7 @@ import { SectionTabs } from "@/components/shell/SectionTabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/useSession";
+import { ComponentStates } from "./ComponentStates";
 
 /**
  * Development-only gallery of the shell components (registered only when
@@ -111,6 +112,10 @@ export function DesignPreviewPage() {
             <Button disabled><Lock aria-hidden /> Resolve investigation</Button>
           </PhotoSurface>
         </div>
+      </Block>
+
+      <Block title="Shared components and their states" note="Hover, focus and open are forced on the labelled copies; the live components respond to the mouse and keyboard.">
+        <ComponentStates />
       </Block>
 
       <Block title="Tokens">

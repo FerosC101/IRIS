@@ -53,12 +53,12 @@ export function SchematicMap({ provinces, points, width = 1000, height = 1000, s
         </ul>
       ) : (
         <div className="relative rounded-md bg-mint-wash">
-          <svg viewBox={box.join(" ")} className="block h-auto w-full" role="group" aria-label={title}>
+          <svg viewBox={box.join(" ")} className="block h-auto max-h-[26rem] w-full" preserveAspectRatio="xMidYMid meet" role="group" aria-label={title}>
             {provinces.map((p) => (
               <g key={p.name}>
                 <polygon points={p.outline.map((o) => o.join(",")).join(" ")} fill="var(--color-mint)" stroke="var(--color-nav)" strokeWidth="2" strokeLinejoin="round" />
-                <text x={p.outline.reduce((s, o) => s + o[0], 0) / p.outline.length} y={Math.min(...p.outline.map((o) => o[1])) + 30} textAnchor="middle"
-                  className="fill-[var(--color-ink-2)] text-[22px] font-medium tracking-wide uppercase" aria-hidden>{p.name}</text>
+                <text x={p.outline.reduce((s, o) => s + o[0], 0) / p.outline.length} y={p.outline.reduce((s, o) => s + o[1], 0) / p.outline.length} textAnchor="middle" dominantBaseline="middle"
+                  className="fill-[var(--color-ink-2)] text-[18px] font-medium tracking-wide uppercase" opacity="0.8" aria-hidden>{p.name}</text>
               </g>
             ))}
             {points.map((p) => {
