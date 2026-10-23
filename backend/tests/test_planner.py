@@ -73,3 +73,22 @@ def test_assumptions_drive_cost_and_benefit():
     b = cost_actions(cand, merge_assumptions({"horizon_weeks": 8, "action_types": {"verify_contact": {"success_probability": 1.0}}}))[0]
     assert b.expected_benefit == 10 * 8 * 1.0
     assert a.expected_benefit < b.expected_benefit
+
+
+def test_fractional_budget_and_costs_never_exceed_budget():
+    # 1.5 + 0.3 h = 1.8 h, which rounds up to 2.0 h; it must not fit a 1.9 h budget.
+    cand = [Candidate("a", "c", "verify_contact", 1, 1, 10.0)]
+    a = cost_actions(cand, merge_assumptions({"action_types": {"verify_contact": {"hours_per_unit": 0.3}}}))
+    assert a[0].cost_hours == 2.0
+    assert optimize(a, 1.9) == []
+    assert optimize(a, 2.0) == ["a"]
+    # Raw (unrounded) costs: a 5.3 h budget must not buy 5.5 h of work.
+    acts = [Costed("x", "c1", 1, 2.75, 5, 0.5, 1, [], 0), Costed("y", "c2", 1, 2.75, 5, 0.5, 1, [], 1)]
+    chosen = optimize(acts, 5.3)
+    assert sum(c.cost_hours for c in acts if c.id in chosen) <= 5.3
+    rng = random.Random(21)
+    for _ in range(30):
+        acts = _random_actions(rng, rng.randint(1, 4))
+        budget = round(rng.uniform(0, 30), 2)
+        by = {x.id: x for x in acts}
+        assert sum(by[i].cost_hours for i in optimize(acts, budget)) <= budget + 1e-9
