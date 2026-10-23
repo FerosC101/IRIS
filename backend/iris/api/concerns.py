@@ -17,6 +17,7 @@ from iris.schemas import (
 )
 from iris.services import concerns as cs
 from iris.services import audit, checklist, datasets, ids, interventions as iv, overview as ov, reminders, reports
+from iris.services import detection_summary as detection_summary_service
 from iris.services.context import Actor, get_actor
 
 router = APIRouter(tags=["concerns"])
@@ -269,3 +270,11 @@ def list_reminders(unit_id: str | None = None, category_code: str | None = None,
                    session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> list[dict]:
     actor.require("concern.clarify")
     return reminders.history(session, unit_id, category_code, period_start)
+
+
+@router.get("/detection/summary")
+def detection_summary(dataset_id: str = config.DEMO_DATASET_ID, w_from: int | None = None, w_to: int | None = None, province: str | None = None,
+                      session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Weekly flags per detection method and channel, current parameters and the latest synthetic evaluation."""
+    actor.require("data.view")
+    return detection_summary_service.summary(session, dataset_id, w_from, w_to, province or None)

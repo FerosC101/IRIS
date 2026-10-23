@@ -501,3 +501,23 @@ def test_dataset_lineage_and_run_history(fresh):
     prov = c.get("/api/datasets/DS-DEMO-PROVINCIAL/lineage", headers=RESU).json()
     slots = next(s for s in prov["steps"] if s["id"] == "slots")
     assert slots["available"] is False and "Not calculable" in slots["detail"]
+
+
+def test_detection_summary_reports_real_output_and_labels_comparisons(client):
+    s = client.get("/api/detection/summary", headers=RESU).json()
+    assert s["available"] and s["in_use"] == "network" and s["human_verification_required"] is True
+    roles = {m["method"]: m["role_label"] for m in s["methods"]}
+    assert roles == {"network": "Network-aware (in use)", "threshold": "Comparison (evaluation only)", "ewma": "Comparison (evaluation only)"}
+    net = next(m for m in s["methods"] if m["method"] == "network")
+    assert [w["week"] for w in net["weeks"]] == list(range(20, 26))
+    for w in net["weeks"]:
+        assert w["total"] == w["delay"] + w["incomplete"] + w["count"] + w["zero_run"]
+    assert net["latest"]["zero_run"] >= 1  # Tala RHU II, ISO W40
+    keys = {p["key"]: p["value"] for p in s["parameters"]}
+    assert keys["zero_run_weeks"] == 3 and keys["history_weeks"] == 8
+    ev = s["evaluation"]
+    assert ev["replications"] == 20 and "not a measure of clinical performance" in ev["note"]
+    assert set(ev["by_method"]) == {"threshold", "ewma", "network"}
+    assert client.get("/api/detection/summary?w_from=5&w_to=2", headers=RESU).status_code == 422
+    assert client.get("/api/detection/summary", headers=RHU).status_code == 403
+    assert client.get("/api/detection/summary?dataset_id=DS-DEMO-PROVINCIAL", headers=RESU).json()["available"] is False

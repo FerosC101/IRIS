@@ -1,5 +1,5 @@
 import type {
-  Assignment, AuditRow, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
+  Assignment, AuditRow, DetectionSummary, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
   FilterOptions, ImportPreview, ImportRecord, ImportValidation, Meta, NetworkGraphData, Overview, Paged, Plan, Quality,
   Lineage, QueueRow, RecordDetail, Reminder, Severity, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
 } from "@/types/api";
@@ -31,6 +31,7 @@ export const api = {
   reminders: (p: Params) => request<Reminder[]>(`/reminders${qs(p)}`),
   updateChecklist: (id: string, itemId: number, body: { done?: boolean; note?: string }) =>
     request<ConcernDetail>(`/concerns/${id}/checklist/${itemId}`, { method: "PATCH", json: body }),
+  detectionSummary: (p: Params) => request<DetectionSummary>(`/detection/summary${qs(p)}`),
   runDetection: (method: string) => request<{ created: string[]; skipped_existing: number; method: string; method_label: string }>("/detection/run", { method: "POST", json: { method } }),
 
   tasks: () => request<Task[]>("/tasks"),

@@ -367,3 +367,27 @@ export interface Lineage {
   runs: { id: number; at: string; action: string; by: string; summary: string; elapsed_ms: number | null; simulated: boolean }[];
   note: string;
 }
+
+export type DetectionChannel = "delay" | "incomplete" | "count" | "zero_run";
+export interface DetectionWeek { week: number; iso_week: number; iso_label: string; total: number; delay: number; incomplete: number; count: number; zero_run: number }
+/** Real detector output and configuration. IRIS has no trained models; these are statistical methods. */
+export interface DetectionSummary {
+  dataset: { id: string; name: string; designation: Designation };
+  in_use: Method;
+  available: boolean;
+  message?: string;
+  channels: { key: DetectionChannel; label: string }[];
+  parameters: { key: string; label: string; value: number; unit: string; channel: DetectionChannel }[];
+  parameter_note: string;
+  human_verification_required: true;
+  human_verification_note: string;
+  window?: { from: number; to: number };
+  methods: { method: Method; label: string; role: "in_use" | "comparison"; role_label: string; weeks: DetectionWeek[]; latest: DetectionWeek }[];
+  evaluation?: null | {
+    experiment_id: string; name: string; created_at: string; replications: number | null; base_seed: number | null;
+    by_method: Record<Method, { precision: number | null; recall: number | null; false_alarm_rate: number | null; f1: number | null }>;
+    note: string;
+  };
+  disclaimer?: string;
+  note?: string;
+}
