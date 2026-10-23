@@ -10,8 +10,10 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from iris.models import AuditEvent, DataRecord, ReportingCategory, ReportingUnit
-from iris.services import datasets
+from iris import config
+from iris.models import AuditEvent, DataRecord, ReportingCategory, ReportingConcern, ReportingUnit
+from iris.services import datasets, ids
+from iris.services.concerns import OPEN_STATUSES
 
 SORTABLE = {"period_start", "unit_name", "category_code", "value", "status", "received_at", "days_late", "area"}
 
@@ -105,7 +107,36 @@ def rows(session: Session, dataset_id: str, page: int, page_size: int, sort: str
     cols = ["record_id", "unit_id", "unit_name", "province", "area", "unit_type", "category_code", "frequency", "period_start", "period_end",
             "week", "value", "value_status", "due_at", "received_at", "status", "days_late", "fields_complete", "revision"]
     out = [{c: _clean(r.get(c)) for c in cols} for r in chunk.to_dict("records")]
+    links, inv_ids = linked_concerns(session, dataset_id), ids.investigation_ids(session)
+    for r in out:
+        # Missing submissions make the merged column float; ids are integers.
+        r["record_id"] = None if r["record_id"] is None else int(r["record_id"])
+        r["revision"] = None if r["revision"] is None else int(r["revision"])
+        r["report_id"] = ids.report_id(r["record_id"])
+        r.update(link_fields(links, inv_ids, r["unit_id"], r["week"], r["category_code"]))
     return {"rows": out, "total": total, "page": page, "page_size": page_size, "pages": pages}
+
+
+def linked_concerns(session: Session, dataset_id: str) -> dict[tuple[str, int], list[tuple[ReportingConcern, set[str]]]]:
+    """(unit, week) -> concerns covering that unit-week, with the categories each one is about (empty = all)."""
+    out: dict[tuple[str, int], list[tuple[ReportingConcern, set[str]]]] = {}
+    for c in session.execute(select(ReportingConcern).where(ReportingConcern.dataset_id == dataset_id)).scalars():
+        cats = set((c.detection_detail or {}).get("categories") or ([c.category_code] if c.category_code else []))
+        if c.concern_type not in ("count_drop", "zero_case_run"):
+            cats = set()  # reporting problems concern every category the unit reports
+        for u in c.units:
+            for w in range(c.week_start_index, c.week_end_index + 1):
+                out.setdefault((u.id, w), []).append((c, cats))
+    return out
+
+
+def link_fields(links: dict, inv_ids: dict[str, str], unit_id: str | None, week: int | None, category: str | None) -> dict:
+    """The concern a report (or missing submission) belongs to: an open one first, then the most recent."""
+    match = [c for c, cats in links.get((unit_id, week), []) if not cats or category in cats] if unit_id and week is not None and week >= 0 else []
+    match.sort(key=lambda c: (c.status not in OPEN_STATUSES, -c.updated_at.timestamp()))
+    c = match[0] if match else None
+    return {"concern_id": c.id if c else None, "investigation_id": inv_ids.get(c.id) if c else None, "concern_status": c.status if c else None,
+            "concern_verification": c.verification if c else None, "concern_type": c.concern_type if c else None}
 
 
 def record_detail(session: Session, dataset_id: str, record_id: int) -> dict:
@@ -117,8 +148,12 @@ def record_detail(session: Session, dataset_id: str, record_id: int) -> dict:
     status = None
     if r.due_at and r.received_at:
         status = "on_time" if r.received_at <= r.due_at else "late"
+    ds = datasets.get_dataset(session, dataset_id)
+    week = config.week_index(r.period_start) if ds.has_expectations and r.period_end and (r.period_end - r.period_start).days == 6 else None
+    link = link_fields(linked_concerns(session, dataset_id), ids.investigation_ids(session), r.reporting_unit_id, week, r.category_code)
     return {
-        "id": r.id, "dataset_id": r.dataset_id, "unit": {"id": unit.id, "name": unit.name, "province": unit.province} if unit else None,
+        "id": r.id, "report_id": ids.report_id(r.id), "dataset_id": r.dataset_id, "dataset_name": ds.name, "designation": ds.designation,
+        "week": week, **link, "unit": {"id": unit.id, "name": unit.name, "province": unit.province} if unit else None,
         "area": r.area, "category_code": r.category_code, "period_start": r.period_start.isoformat(), "period_end": r.period_end.isoformat() if r.period_end else None,
         "value": r.value, "value_status": r.value_status, "due_at": r.due_at.isoformat() if r.due_at else None,
         "received_at": r.received_at.isoformat() if r.received_at else None, "status": status, "fields_complete": r.fields_complete,

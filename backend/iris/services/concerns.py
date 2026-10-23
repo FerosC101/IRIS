@@ -25,6 +25,7 @@ from iris.services import audit, datasets
 from iris.services.clock import now, today
 from iris.services.concern_builder import ConcernSpec, build_specs, via_name
 from iris.services.context import Actor
+from iris.services.ids import resolve_concern_id
 
 OPEN_STATUSES = ("open", "under_review", "clarification_requested", "in_investigation")
 CLOSED_STATUSES = ("resolved", "dismissed")
@@ -83,7 +84,8 @@ def ensure_visible(actor: Actor, concern: ReportingConcern) -> None:
 
 
 def get(session: Session, concern_id: str, actor: Actor | None = None) -> ReportingConcern:
-    c = session.get(ReportingConcern, concern_id)
+    """Look a concern up by its id or by its investigation id (``INV-0010``)."""
+    c = session.get(ReportingConcern, resolve_concern_id(session, concern_id))
     if c is None:
         raise HTTPException(status_code=404, detail=f"Concern {concern_id} was not found.")
     if actor is not None:

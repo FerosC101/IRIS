@@ -58,7 +58,7 @@ describe("FilterBar", () => {
 
 describe("QueueTable", () => {
   const row: QueueRow = {
-    kind: "follow_up", id: "F-0004", title: "Restore connection", units: ["RHU-KALINAW-1"], units_label: "Kalinaw RHU I + 1 more", province: "Malaya",
+    kind: "follow_up", id: "F-0004", investigation_id: "INV-0010", display_id: "F-0004", title: "Restore connection", units: ["RHU-KALINAW-1"], units_label: "Kalinaw RHU I + 1 more", province: "Malaya",
     category: null, period_start: "2026-08-31", period_end: "2026-09-20", concern_type: "shared_problem", concern_type_label: "Follow-up action",
     severity: "high", status: "in_progress", status_label: "In progress", verification: null, updated_at: "2026-09-02T09:00:00", assigned: "RESU Analyst",
     due: "2026-10-09", overdue: true, link: "/follow-up?assignment=F-0004",

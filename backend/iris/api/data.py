@@ -10,7 +10,7 @@ from iris import config
 from iris.db import get_session
 from iris.models import AuditEvent, DataRecord, Dataset, ImportRecord, ReportingConcern, ReportingUnit, User
 from iris.schemas import ImportCommitIn, ImportValidateIn, UnitPatch
-from iris.services import audit, datasets, explorer, imports, network
+from iris.services import audit, datasets, explorer, ids, imports, network
 from iris.services.clock import now
 from iris.services.context import Actor, get_actor
 
@@ -83,6 +83,16 @@ def records(dataset_id: str, page: int = Query(1, ge=1), page_size: int = Query(
 @router.get("/datasets/{dataset_id}/records/{record_id}")
 def record(dataset_id: str, record_id: int, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
     return explorer.record_detail(session, dataset_id, record_id)
+
+
+@router.get("/reports/{report_id}")
+def report_by_id(report_id: str, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Resolve a display report id (``RPT-0042``) to its record, in whichever dataset holds it."""
+    rid = ids.parse_report_id(report_id)
+    r = session.get(DataRecord, rid) if rid is not None else None
+    if r is None or (actor.role == "rhu_staff" and r.reporting_unit_id != actor.reporting_unit_id):
+        raise HTTPException(status_code=404, detail=f"Report {report_id} was not found.")
+    return explorer.record_detail(session, r.dataset_id, r.id)
 
 
 @router.get("/datasets/{dataset_id}/trends")

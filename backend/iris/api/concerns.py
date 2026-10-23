@@ -10,15 +10,16 @@ from iris.detection.methods import METHOD_LABELS
 from iris.models import InterventionAction, InterventionAssignment, Investigation, InvestigationNote, ReportingConcern, User
 from iris.schemas import AssignIn, BodyIn, DetectionRunIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
 from iris.services import concerns as cs
-from iris.services import datasets, interventions as iv, overview as ov, reports
+from iris.services import datasets, ids, interventions as iv, overview as ov, reports
 from iris.services.context import Actor, get_actor
 
 router = APIRouter(tags=["concerns"])
 
 
 def _concern_dict(session: Session, c: ReportingConcern, users: dict[str, str]) -> dict:
+    inv = session.execute(select(Investigation.id).where(Investigation.concern_id == c.id)).scalar_one_or_none()
     return {
-        "id": c.id, "dataset_id": c.dataset_id, "concern_type": c.concern_type, "concern_type_label": cs.TYPE_LABELS[c.concern_type],
+        "id": c.id, "investigation_id": inv, "display_id": inv or c.id, "dataset_id": c.dataset_id, "concern_type": c.concern_type, "concern_type_label": cs.TYPE_LABELS[c.concern_type],
         "title": c.title, "summary": c.summary, "severity": c.severity, "status": c.status, "status_label": cs.STATUS_LABELS[c.status],
         "verification": c.verification, "category_code": c.category_code, "categories": (c.detection_detail or {}).get("categories", []),
         "period_start": c.period_start, "period_end": c.period_end, "week_start_index": c.week_start_index, "week_end_index": c.week_end_index,
@@ -83,7 +84,8 @@ def list_concerns(
     pages = max(1, (total + page_size - 1) // page_size)
     page = min(page, pages)
     users = _users(session)
-    return {"rows": [ov.concern_row(c, users) for c in rows[(page - 1) * page_size: page * page_size]],
+    inv_ids = ids.investigation_ids(session)
+    return {"rows": [ov.concern_row(c, users, inv_ids) for c in rows[(page - 1) * page_size: page * page_size]],
             "total": total, "page": page, "page_size": page_size, "pages": pages}
 
 
@@ -111,7 +113,7 @@ def concern_detail(concern_id: str, session: Session = Depends(get_session), act
                                                    "status": inv.status, "opened_at": inv.opened_at, "closed_at": inv.closed_at},
         "next_step": cs.next_step(session, c),
         "activity": cs.activity(session, c),
-        "related": [ov.concern_row(o, users) for o in cs.related(session, c) if actor.role not in ("rhu_staff",) or actor.reporting_unit_id in {u.id for u in o.units}],
+        "related": [ov.concern_row(o, users, ids.investigation_ids(session)) for o in cs.related(session, c) if actor.role not in ("rhu_staff",) or actor.reporting_unit_id in {u.id for u in o.units}],
         "actions": [{"id": a.id, "title": a.title, "action_type": a.action_type, "status": a.status} for a in actions],
         "assignments": [{"id": a.id, "title": a.title, "status": a.status, "due_date": a.due_date} for a in assignments],
         "assignable_users": [{"id": u.id, "display_name": u.display_name, "role": u.role_id} for u in session.execute(select(User).where(User.role_id != "admin")).scalars()],

@@ -44,6 +44,10 @@ export interface Meta {
 export interface QueueRow {
   kind: "concern" | "follow_up";
   id: string;
+  /** INV-xxxx once the concern has an investigation. */
+  investigation_id: string | null;
+  /** Identifier to show: the investigation id when there is one, otherwise the item id. */
+  display_id: string;
   title: string;
   units: string[];
   units_label: string;
@@ -94,7 +98,7 @@ export interface Overview {
 export interface ConcernUnit { id: string; name: string; unit_type: UnitType; province: string }
 
 export interface Concern {
-  id: string; dataset_id: string; concern_type: ConcernType; concern_type_label: string; title: string; summary: string;
+  id: string; investigation_id: string | null; display_id: string; dataset_id: string; concern_type: ConcernType; concern_type_label: string; title: string; summary: string;
   severity: Severity; status: ConcernStatus; status_label: string; verification: Verification; category_code: string | null; categories: string[];
   period_start: string; period_end: string; week_start_index: number; week_end_index: number; primary_unit_id: string | null;
   province: string | null; shared_via: string | null; detection_method: Method; detection_method_label: string; score: number;
@@ -177,14 +181,22 @@ export interface DatasetDetail extends Dataset {
   quality: Quality;
   concerns: number;
 }
-export interface RecordRow {
+export interface RecordRow extends LinkedConcern {
   record_id: number | null; unit_id: string | null; unit_name: string | null; province: string | null; area: string | null; unit_type: UnitType | null;
   category_code: string | null; frequency: string | null; period_start: string; period_end: string | null; week: number | null;
   value: number | null; value_status: ValueStatus | null; due_at: string | null; received_at: string | null; status: SlotStatus;
   days_late: number | null; fields_complete: number | null; revision: number | null;
+  /** RPT-xxxx. Null for a missing submission, which is not a report. */
+  report_id: string | null;
 }
-export interface RecordDetail {
-  id: number; dataset_id: string; unit: { id: string; name: string; province: string } | null; area: string | null; category_code: string | null;
+/** The concern a report or missing submission belongs to, if any. */
+export interface LinkedConcern {
+  concern_id: string | null; investigation_id: string | null; concern_status: ConcernStatus | null;
+  concern_verification: Verification | null; concern_type: ConcernType | null;
+}
+export interface RecordDetail extends LinkedConcern {
+  id: number; report_id: string; dataset_id: string; dataset_name: string; designation: Designation; week: number | null;
+  unit: { id: string; name: string; province: string } | null; area: string | null; category_code: string | null;
   period_start: string; period_end: string | null; value: number | null; value_status: ValueStatus; due_at: string | null; received_at: string | null;
   status: "on_time" | "late" | null; fields_complete: number | null; source_row: number | null; revision: number; note: string;
   history: { at: string; summary: string; action: string }[];

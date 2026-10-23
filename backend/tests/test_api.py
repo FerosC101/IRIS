@@ -237,3 +237,33 @@ def test_flags_carry_a_simulated_reference_band(client):
     assert zero["data"]["reference_band"]["per"] == "week" and zero["data"]["reference_band"]["low"] > 0
     rows = client.get("/api/concerns/C-0012", headers=RESU).json()["timeline"]["units"]["RHU-TALA-1"]
     assert any(r["count_band"] for r in rows)
+
+
+def test_display_ids_and_linked_concerns(client):
+    rows = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-TALA-2&category=DENGUE&date_from=2026-09-07&page_size=10", headers=RESU).json()["rows"]
+    by_week = {r["week"]: r for r in rows}
+    assert by_week[24]["report_id"] == f"RPT-{by_week[24]['record_id']:04d}"
+    assert by_week[24]["value_status"] == "zero" and by_week[24]["concern_id"] == "C-0021"
+    assert by_week[22]["concern_id"] is None  # before the zero run
+    # A missing submission is not a report: it has no report id, but can still belong to a concern.
+    miss = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-SILANGAN&status=not_received&date_from=2026-09-28", headers=RESU).json()["rows"]
+    assert miss and all(r["report_id"] is None for r in miss) and miss[0]["concern_id"] == "C-0020"
+    # Count-type concerns link only their own category.
+    measles = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-TALA-2&category=MEASLES&date_from=2026-09-21", headers=RESU).json()["rows"]
+    assert all(r["concern_id"] != "C-0021" for r in measles)
+
+    d = client.get(f"/api/reports/{by_week[24]['report_id']}", headers=RESU).json()
+    assert d["id"] == by_week[24]["record_id"] and d["concern_id"] == "C-0021" and d["designation"] == "synthetic"
+    assert client.get("/api/reports/RPT-99999999", headers=RESU).status_code == 404
+    assert client.get(f"/api/reports/{by_week[24]['report_id']}", headers=RHU).status_code == 404  # another unit's report
+
+
+def test_investigation_ids_resolve_to_their_concern(client):
+    d = client.get("/api/concerns/INV-0010", headers=RESU).json()
+    assert d["concern"]["id"] == "C-0010" and d["concern"]["investigation_id"] == "INV-0010" and d["concern"]["display_id"] == "INV-0010"
+    q = client.get("/api/concerns?status=active&page_size=100", headers=RESU).json()["rows"]
+    row = next(r for r in q if r["id"] == "C-0010")
+    assert row["investigation_id"] == "INV-0010"
+    new = next(r for r in q if r["id"] == "C-0020")
+    assert new["investigation_id"] is None and new["display_id"] == "C-0020"
+    assert client.get("/api/concerns/INV-9999", headers=RESU).status_code == 404

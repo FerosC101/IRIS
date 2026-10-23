@@ -35,6 +35,8 @@ export const api = {
   deleteDataset: (id: string) => request<{ deleted: string }>(`/datasets/${id}`, { method: "DELETE" }),
   records: (id: string, p: Params) => request<Paged<RecordRow>>(`/datasets/${id}/records${qs(p)}`),
   record: (id: string, rid: number) => request<RecordDetail>(`/datasets/${id}/records/${rid}`),
+  /** A report by its display id (RPT-0042), in whichever dataset holds it. */
+  report: (reportId: string) => request<RecordDetail>(`/reports/${encodeURIComponent(reportId)}`),
   trends: (id: string, p: Params) => request<Trends>(`/datasets/${id}/trends${qs(p)}`),
   quality: (id: string, p: Params) => request<Quality>(`/datasets/${id}/quality${qs(p)}`),
   filters: (id: string) => request<FilterOptions>(`/datasets/${id}/filters`),
