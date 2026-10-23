@@ -24,6 +24,16 @@ export function setDemoUser(id: string) {
   currentUser = id;
 }
 
+/** Forget a stored demo user (for example one the server no longer recognises). */
+export function clearDemoUser() {
+  try {
+    window.localStorage.removeItem(USER_KEY);
+  } catch {
+    /* storage unavailable */
+  }
+  currentUser = null;
+}
+
 let currentUser: string | null = typeof window !== "undefined" ? getDemoUser() : null;
 
 export function activeUser(): string | null {
@@ -33,14 +43,17 @@ export function activeUser(): string | null {
 export class ApiError extends Error {
   status: number;
   issues: { row: number | null; column: string | null; message: string; value?: string | null }[];
-  constructor(status: number, message: string, issues: ApiError["issues"] = []) {
+  /** Machine-readable reason from the server, when it sends one (e.g. "unknown_demo_user"). */
+  code: string | null;
+  constructor(status: number, message: string, issues: ApiError["issues"] = [], code: string | null = null) {
     super(message);
     this.status = status;
     this.issues = issues;
+    this.code = code;
   }
 }
 
-function messageFrom(status: number, body: unknown): { message: string; issues: ApiError["issues"] } {
+function messageFrom(status: number, body: unknown): { message: string; issues: ApiError["issues"]; code?: string | null } {
   if (body && typeof body === "object" && "detail" in body) {
     const detail = (body as { detail: unknown }).detail;
     if (typeof detail === "string") return { message: detail, issues: [] };
@@ -50,8 +63,8 @@ function messageFrom(status: number, body: unknown): { message: string; issues: 
       return { message: `Some fields are invalid — ${parts.join("; ")}`, issues: [] };
     }
     if (detail && typeof detail === "object" && "message" in detail) {
-      const d = detail as { message: string; errors?: ApiError["issues"] };
-      return { message: d.message, issues: d.errors ?? [] };
+      const d = detail as { message: string; errors?: ApiError["issues"]; code?: string };
+      return { message: d.message, issues: d.errors ?? [], code: d.code ?? null };
     }
   }
   if (status === 0) return { message: "The IRIS server could not be reached. Check that the backend is running, then try again.", issues: [] };
@@ -78,7 +91,7 @@ export async function request<T>(path: string, init: RequestInit & { json?: unkn
   const data = text ? safeJson(text) : null;
   if (!res.ok) {
     const m = messageFrom(res.status, data);
-    throw new ApiError(res.status, m.message, m.issues);
+    throw new ApiError(res.status, m.message, m.issues, m.code ?? null);
   }
   return data as T;
 }

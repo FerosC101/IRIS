@@ -190,3 +190,14 @@ def test_unit_metadata_management(fresh):
 def test_detection_run_does_not_duplicate(fresh):
     r = fresh.post("/api/detection/run", json={"method": "network"}, headers=RESU).json()
     assert r["created"] == [] and r["skipped_existing"] > 0
+
+
+def test_unknown_demo_user_is_rejected_not_replaced(client):
+    r = client.get("/api/meta", headers=as_user("U-DOES-NOT-EXIST"))
+    assert r.status_code == 400
+    assert r.json()["detail"]["code"] == "unknown_demo_user"
+    # A rejected identity must not be able to act as the default analyst.
+    assert client.post("/api/detection/run", json={"method": "network"}, headers=as_user("U-DOES-NOT-EXIST")).status_code == 400
+    # No header at all still means the default demo user.
+    assert client.get("/api/meta").json()["actor"]["user_id"] == "U-RESU-1"
+    assert client.get("/api/meta", headers=PROV).json()["actor"]["user_id"] == "U-PROV-MLY"

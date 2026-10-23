@@ -65,9 +65,15 @@ class Actor:
 
 
 def get_actor(x_iris_user: str | None = Header(default=None), session: Session = Depends(get_session)) -> Actor:
-    user = session.get(User, x_iris_user or DEFAULT_USER)
-    if user is None:
-        user = session.get(User, DEFAULT_USER)
+    """Resolve the demo user. No header means the default demo user; an unknown
+    explicit user is an error, never silently replaced by another identity."""
+    requested = (x_iris_user or "").strip()
+    user = session.get(User, requested or DEFAULT_USER)
+    if user is None and requested:
+        raise HTTPException(status_code=400, detail={
+            "code": "unknown_demo_user",
+            "message": f"The demo user '{requested}' does not exist. Choose a demo role again.",
+        })
     if user is None:
         raise HTTPException(status_code=503, detail="Demo users are not initialised. Reset the demo data.")
     return Actor(user.id, user.role_id, user.display_name, user.reporting_unit_id, user.province)
