@@ -115,5 +115,7 @@ def week_labels() -> list[dict]:
     for t in range(config.N_WEEKS):
         s, e = config.week_start(t), config.week_end(t)
         out.append({"week": t, "start": s.isoformat(), "end": e.isoformat(), "iso_week": s.isocalendar().week,
-                    "label": f"W{s.isocalendar().week} · {s.strftime('%b')} {s.day}–{e.strftime('%b') + ' ' if e.month != s.month else ''}{e.day}"})
+                    "label": f"W{s.isocalendar().week} · {s.strftime('%b')} {s.day}–{e.strftime('%b') + ' ' if e.month != s.month else ''}{e.day}",
+                    # e.g. "ISO W40 · 28 Sep–04 Oct" (ISO weeks run Monday to Sunday)
+                    "iso_label": f"ISO W{s.isocalendar().week} · {s.strftime('%d %b')}–{e.strftime('%d %b')}"})
     return out

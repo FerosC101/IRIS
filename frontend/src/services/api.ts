@@ -1,7 +1,7 @@
 import type {
   Assignment, AuditRow, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
   FilterOptions, ImportPreview, ImportRecord, ImportValidation, Meta, NetworkGraphData, Overview, Paged, Plan, Quality,
-  QueueRow, RecordDetail, RecordRow, Recovery, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
+  QueueRow, RecordDetail, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
 } from "@/types/api";
 import { qs, request } from "./client";
 
@@ -67,6 +67,7 @@ export const api = {
   addOutcome: (id: string, body: { outcome_status: string; summary: string }) => request<Assignment>(`/assignments/${id}/outcomes`, { method: "POST", json: body }),
 
   recovery: (p: Params) => request<Recovery>(`/recovery${qs(p)}`),
+  surveillanceSummary: (p: Params) => request<SurveillanceSummary>(`/surveillance/summary${qs(p)}`),
   experiments: () => request<ExperimentSummary[]>("/experiments"),
   experiment: (id: string) => request<Experiment>(`/experiments/${id}`),
   runExperiment: (body: { name?: string; replications: number; base_seed: number }) => request<Experiment>("/experiments", { method: "POST", json: body }),

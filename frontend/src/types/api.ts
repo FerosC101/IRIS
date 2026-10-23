@@ -15,7 +15,7 @@ export type OutcomeStatus = "not_yet_verified" | "observed_unverified" | "verifi
 
 export interface Paged<T> { rows: T[]; total: number; page: number; page_size: number; pages: number }
 
-export interface WeekLabel { week: number; start: string; end: string; iso_week: number; label: string }
+export interface WeekLabel { week: number; start: string; end: string; iso_week: number; label: string; /** "ISO W40 · 28 Sep–04 Oct" */ iso_label: string }
 export interface Category { code: string; name: string; description: string; frequency: "weekly" | "monthly" }
 export interface DemoUser { id: string; display_name: string; role: Role; reporting_unit_id: string | null; province: string | null }
 export interface UnitSummary { id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean }
@@ -300,3 +300,31 @@ export interface Experiment extends ExperimentSummary {
 export interface AuditRow { id: number; at: string; actor: string; actor_role: Role | null; entity_type: string; entity_id: string; action: string; summary: string }
 export interface UnitRow { id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean; is_sentinel: boolean; notes: string; simulated: boolean; updated_at: string | null }
 export interface DemoScenario { id: string; kind: string; kind_label: string; units: string[]; unit_names: string[]; start_week: number; end_week: number; severity: Severity; description: string; is_disruption: boolean; period: string }
+
+/** Unit-level state of one expected weekly report. A missing submission is not a report; blank is not zero. */
+export type ReportState = "reported" | "zero" | "blank" | "missing" | "not_expected";
+export interface UnitCounts {
+  expected: number; received: number; on_time: number; late: number;
+  with_cases: number; zero: number; blank: number; missing: number;
+  completeness: number | null; timeliness: number | null;
+}
+export interface SurveillanceSummary {
+  dataset: { id: string; name: string; designation: Designation };
+  category: { code: string; name: string };
+  week: WeekLabel;
+  as_of: string;
+  available: boolean;
+  message?: string;
+  scope?: { role: Role; province: string | null; unit_type: string | null; unit_id: string | null };
+  units?: UnitCounts;
+  cases?: { total: number | null; previous_total: number | null; change: number | null; note: string };
+  flow?: { expected_units: number; reports_received: number; flags: number; under_verification: number; actions_assigned: number; flag_ids: string[]; verifying_ids: string[] };
+  trend?: { week: number; iso_week: number; start: string; end: string; cases: number | null; trailing_median: number | null; received: number; expected: number; blank: number; completeness: number | null }[];
+  trend_note?: string;
+  heatmap?: {
+    weeks: WeekLabel[];
+    units: { unit_id: string; name: string; unit_type: UnitType | null; province: string | null;
+      cells: { week: number; state: ReportState; value: number | null; report_id: string | null; record_id?: number | null; concern_id: string | null; investigation_id?: string | null }[] }[];
+  };
+  notes?: string[];
+}

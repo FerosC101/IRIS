@@ -267,3 +267,34 @@ def test_investigation_ids_resolve_to_their_concern(client):
     new = next(r for r in q if r["id"] == "C-0020")
     assert new["investigation_id"] is None and new["display_id"] == "C-0020"
     assert client.get("/api/concerns/INV-9999", headers=RESU).status_code == 404
+
+
+def test_surveillance_summary_keeps_zero_blank_and_missing_apart(client):
+    s = client.get("/api/surveillance/summary?category=DENGUE", headers=RESU).json()
+    assert s["available"] and s["week"]["week"] == 25 and s["week"]["iso_label"] == "ISO W40 · 28 Sep–04 Oct"
+    u = s["units"]
+    assert u["with_cases"] + u["zero"] + u["blank"] + u["missing"] == u["expected"] == 18
+    assert u["received"] == u["expected"] - u["missing"]
+    assert abs(u["completeness"] - u["received"] / u["expected"]) < 1e-9  # zero and blank reports count as received
+    tala2 = next(r for r in s["heatmap"]["units"] if r["unit_id"] == "RHU-TALA-2")
+    assert [c["state"] for c in tala2["cells"][-3:]] == ["zero", "zero", "zero"]
+    assert tala2["cells"][-1]["concern_id"] == "C-0021" and tala2["cells"][-1]["report_id"].startswith("RPT-")
+    silangan = next(r for r in s["heatmap"]["units"] if r["unit_id"] == "RHU-SILANGAN")
+    assert silangan["cells"][-1]["state"] == "missing" and silangan["cells"][-1]["report_id"] is None
+    assert "C-0021" in s["flow"]["flag_ids"] and s["flow"]["flags"] >= s["flow"]["under_verification"]
+    t = s["trend"]
+    assert len(t) == 12 and all(r["trailing_median"] is not None for r in t)
+    early = client.get("/api/surveillance/summary?category=DENGUE&week=3", headers=RESU).json()["trend"]
+    assert early[0]["trailing_median"] is None  # not enough prior weeks
+
+
+def test_surveillance_summary_scope_and_validation(client):
+    rhu = client.get("/api/surveillance/summary?category=DENGUE", headers=RHU).json()
+    assert rhu["units"]["expected"] == 1 and [r["unit_id"] for r in rhu["heatmap"]["units"]] == ["RHU-HIRAYA"]
+    prov = client.get("/api/surveillance/summary?category=DENGUE", headers=PROV).json()
+    assert prov["scope"]["province"] == "Malaya"
+    hosp = client.get("/api/surveillance/summary?category=DENGUE&unit_type=hospital", headers=RESU).json()
+    assert all(r["unit_type"] == "hospital" for r in hosp["heatmap"]["units"])
+    assert client.get("/api/surveillance/summary?category=DENGUE&week=99", headers=RESU).status_code == 422
+    assert client.get("/api/surveillance/summary?category=MCS", headers=RESU).status_code == 422
+    assert client.get("/api/surveillance/summary?dataset_id=DS-DEMO-PROVINCIAL", headers=RESU).json()["available"] is False
