@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import date
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
@@ -8,9 +10,12 @@ from iris import config
 from iris.db import get_session
 from iris.detection.methods import METHOD_LABELS
 from iris.models import InterventionAction, InterventionAssignment, Investigation, InvestigationNote, ReportingConcern, User
-from iris.schemas import ActionIn, AssignIn, BodyIn, ChecklistPatch, NewConcernIn, DetectionRunIn, EvidenceIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
+from iris.schemas import (
+    ActionIn, AssignIn, BodyIn, ChecklistPatch, DetectionRunIn, EvidenceIn, MessageIn, NewConcernIn, NoteIn, ReasonIn, ReminderIn, ReportIn,
+    SummaryIn,
+)
 from iris.services import concerns as cs
-from iris.services import checklist, datasets, ids, interventions as iv, overview as ov, reports
+from iris.services import checklist, datasets, ids, interventions as iv, overview as ov, reminders, reports
 from iris.services.context import Actor, get_actor
 
 router = APIRouter(tags=["concerns"])
@@ -242,3 +247,18 @@ def submit_report(body: ReportIn, session: Session = Depends(get_session), actor
     late = bool(rec.due_at and rec.received_at and rec.received_at > rec.due_at)
     return {"id": rec.id, "revision": rec.revision, "value": rec.value, "value_status": rec.value_status,
             "received_at": rec.received_at, "due_at": rec.due_at, "late": late}
+
+
+@router.post("/reminders")
+def send_reminder(body: ReminderIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Record a simulated reminder for a missing submission. Nothing is sent."""
+    out = reminders.send(session, actor, body.unit_id, body.category_code, body.period_start, body.message)
+    session.commit()
+    return out
+
+
+@router.get("/reminders")
+def list_reminders(unit_id: str | None = None, category_code: str | None = None, period_start: date | None = None,
+                   session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> list[dict]:
+    actor.require("concern.clarify")
+    return reminders.history(session, unit_id, category_code, period_start)

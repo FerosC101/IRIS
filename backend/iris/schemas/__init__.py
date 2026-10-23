@@ -48,6 +48,13 @@ class NewConcernIn(BaseModel):
     dataset_id: str | None = None
 
 
+class ReminderIn(BaseModel):
+    unit_id: str
+    category_code: str
+    period_start: date
+    message: str | None = Field(default=None, max_length=2000)
+
+
 class ActionIn(BaseModel):
     action_type: str = Field(max_length=40)
     title: str = Field(max_length=255)

@@ -1,7 +1,7 @@
 import type {
   Assignment, AuditRow, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
   FilterOptions, ImportPreview, ImportRecord, ImportValidation, Meta, NetworkGraphData, Overview, Paged, Plan, Quality,
-  QueueRow, RecordDetail, Severity, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
+  QueueRow, RecordDetail, Reminder, Severity, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
 } from "@/types/api";
 import { qs, request } from "./client";
 
@@ -25,6 +25,10 @@ export const api = {
   /** Add one corrective action; it is recorded as an approved single-action plan and tracked as follow-up. */
   addAction: (id: string, body: { action_type: string; title: string; assignee_user_id?: string | null; due_date?: string | null; note?: string }) =>
     request<ConcernDetail>(`/concerns/${id}/actions`, { method: "POST", json: body }),
+  /** Records a simulated reminder for a missing submission; nothing is sent. */
+  sendReminder: (body: { unit_id: string; category_code: string; period_start: string; message?: string }) =>
+    request<Reminder>("/reminders", { method: "POST", json: body }),
+  reminders: (p: Params) => request<Reminder[]>(`/reminders${qs(p)}`),
   updateChecklist: (id: string, itemId: number, body: { done?: boolean; note?: string }) =>
     request<ConcernDetail>(`/concerns/${id}/checklist/${itemId}`, { method: "PATCH", json: body }),
   runDetection: (method: string) => request<{ created: string[]; skipped_existing: number; method: string; method_label: string }>("/detection/run", { method: "POST", json: { method } }),

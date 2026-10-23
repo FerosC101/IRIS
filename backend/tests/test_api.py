@@ -435,3 +435,19 @@ def test_add_corrective_action_from_an_investigation(fresh):
     assert f["concern_id"] == "C-0021" and f["follow_up_notes"][0]["text"] == "Bring the W38–W40 register pages."
     c.post("/api/concerns/C-0020/dismiss", json={"reason": "Report was sent by courier."}, headers=PROV)
     assert c.post("/api/concerns/C-0020/actions", json=body, headers=PROV).status_code == 409
+
+
+def test_reminders_are_simulated_and_only_for_missing_reports(fresh):
+    c = fresh
+    body = {"unit_id": "RHU-SILANGAN", "category_code": "DENGUE", "period_start": "2026-09-28", "message": "Please send the W40 report."}
+    r = c.post("/api/reminders", json=body, headers=PROV)
+    assert r.status_code == 200
+    rem = r.json()
+    assert rem["simulated"] is True and rem["delivered"] is False and "No message was sent" in rem["summary"]
+    hist = c.get("/api/reminders?unit_id=RHU-SILANGAN&category_code=DENGUE&period_start=2026-09-28", headers=PROV).json()
+    assert [h["id"] for h in hist] == [rem["id"]] and hist[0]["message"] == "Please send the W40 report."
+    received = {**body, "unit_id": "RHU-HABAGAT", "period_start": "2026-09-21"}
+    assert c.post("/api/reminders", json=received, headers=PROV).status_code == 409
+    assert c.post("/api/reminders", json={**body, "unit_id": "RHU-HIRAYA"}, headers=PROV).status_code == 403  # other province
+    assert c.post("/api/reminders", json=body, headers=RHU).status_code == 403
+    assert c.post("/api/reminders", json={**body, "category_code": "LABCONF"}, headers=PROV).status_code == 404

@@ -340,3 +340,9 @@ export interface SurveillanceSummary {
   };
   notes?: string[];
 }
+
+/** A reminder recorded for a missing submission. Simulated: nothing is sent. */
+export interface Reminder {
+  id: number; at: string; by: string | null; unit_id: string; category_code: string | null; period_start: string | null;
+  message: string | null; simulated: true; delivered: false; summary: string; note: string;
+}
