@@ -353,3 +353,17 @@ export interface Reminder {
   id: number; at: string; by: string | null; unit_id: string; category_code: string | null; period_start: string | null;
   message: string | null; simulated: true; delivered: false; summary: string; note: string;
 }
+
+export interface LineageStep {
+  id: string; kind: "source" | "ingest" | "import" | "validate" | "derive" | "analysis" | "review" | "respond";
+  label: string; detail: string; at?: string; by?: string | null; available?: boolean; status?: string; designation?: Designation;
+  checksum?: string | null; checksum_basis?: string | null; count?: number; open?: number;
+}
+export interface Lineage {
+  dataset: { id: string; name: string; designation: Designation; is_demo: boolean };
+  steps: LineageStep[];
+  edges: [string, string][];
+  /** Seeding, resets, detection runs, imports and experiments that touched this dataset. */
+  runs: { id: number; at: string; action: string; by: string; summary: string; elapsed_ms: number | null; simulated: boolean }[];
+  note: string;
+}

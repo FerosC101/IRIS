@@ -483,3 +483,21 @@ def test_dataset_checksums_and_integrity(fresh):
     ds = c.post("/api/imports/commit", json={"token": p["token"], "mapping": mapping, "metadata": meta}, headers=ADMIN).json()
     assert ds["checksum"] == hashlib.sha256(CSV_OK.encode()).hexdigest() and ds["checksum_basis"] == "uploaded_file"
     assert c.get(f"/api/datasets/{ds['id']}", headers=RESU).json()["integrity"]["records_unchanged"] is True
+
+
+def test_dataset_lineage_and_run_history(fresh):
+    c = fresh
+    assert c.get("/api/datasets/DS-DEMO-FACILITY/lineage", headers=RHU).status_code == 403
+    r = c.post("/api/detection/run", json={"method": "threshold"}, headers=RESU).json()
+    lin = c.get("/api/datasets/DS-DEMO-FACILITY/lineage", headers=RESU).json()
+    kinds = [s["kind"] for s in lin["steps"]]
+    assert kinds[:2] == ["source", "ingest"] and kinds[-4:] == ["derive", "analysis", "review", "respond"]
+    assert lin["steps"][1]["checksum"] and lin["steps"][1]["checksum_basis"] == "canonical_records"
+    assert lin["edges"][0] == ["source", "ingest"]
+    run = next(x for x in lin["runs"] if x["action"] == "detection.run")
+    assert run["by"] == "RESU Surveillance Analyst (demo)" and run["elapsed_ms"] is not None
+    assert str(len(r["created"])) in run["summary"]
+    assert any(x["action"] == "demo.seeded" and x["simulated"] for x in lin["runs"])
+    prov = c.get("/api/datasets/DS-DEMO-PROVINCIAL/lineage", headers=RESU).json()
+    slots = next(s for s in prov["steps"] if s["id"] == "slots")
+    assert slots["available"] is False and "Not calculable" in slots["detail"]

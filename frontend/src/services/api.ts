@@ -1,7 +1,7 @@
 import type {
   Assignment, AuditRow, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
   FilterOptions, ImportPreview, ImportRecord, ImportValidation, Meta, NetworkGraphData, Overview, Paged, Plan, Quality,
-  QueueRow, RecordDetail, Reminder, Severity, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
+  Lineage, QueueRow, RecordDetail, Reminder, Severity, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
 } from "@/types/api";
 import { qs, request } from "./client";
 
@@ -51,6 +51,7 @@ export const api = {
   report: (reportId: string) => request<RecordDetail>(`/reports/${encodeURIComponent(reportId)}`),
   trends: (id: string, p: Params) => request<Trends>(`/datasets/${id}/trends${qs(p)}`),
   quality: (id: string, p: Params) => request<Quality>(`/datasets/${id}/quality${qs(p)}`),
+  lineage: (id: string) => request<Lineage>(`/datasets/${id}/lineage`),
   filters: (id: string) => request<FilterOptions>(`/datasets/${id}/filters`),
 
   importPreview: (file: File) => {

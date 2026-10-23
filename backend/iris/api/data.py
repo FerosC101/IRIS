@@ -10,7 +10,7 @@ from iris import config
 from iris.db import get_session
 from iris.models import AuditEvent, DataRecord, Dataset, ImportRecord, ReportingConcern, ReportingUnit, User
 from iris.schemas import ImportCommitIn, ImportValidateIn, UnitPatch
-from iris.services import audit, datasets, explorer, ids, imports, network
+from iris.services import audit, datasets, explorer, ids, imports, lineage, network
 from iris.services.clock import now
 from iris.services.context import Actor, get_actor
 
@@ -248,3 +248,10 @@ def audit_log(entity_type: str | None = None, actor_id: str | None = None, searc
     return {"rows": [{"id": e.id, "at": e.at, "actor": users.get(e.actor_user_id or "", "System"), "actor_role": e.actor_role, "entity_type": e.entity_type,
                       "entity_id": e.entity_id, "action": e.action, "summary": e.summary} for e in rows[(page - 1) * page_size: page * page_size]],
             "total": total, "page": page, "pages": pages, "page_size": page_size}
+
+
+@router.get("/datasets/{dataset_id}/lineage")
+def dataset_lineage(dataset_id: str, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Where the dataset came from, what was derived from it, and the runs that touched it."""
+    actor.require("data.view")
+    return lineage.lineage(session, dataset_id)

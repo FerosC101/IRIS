@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from datetime import date
 
 from fastapi import APIRouter, Depends, Query
@@ -15,7 +16,7 @@ from iris.schemas import (
     SummaryIn,
 )
 from iris.services import concerns as cs
-from iris.services import checklist, datasets, ids, interventions as iv, overview as ov, reminders, reports
+from iris.services import audit, checklist, datasets, ids, interventions as iv, overview as ov, reminders, reports
 from iris.services.context import Actor, get_actor
 
 router = APIRouter(tags=["concerns"])
@@ -230,7 +231,13 @@ def reopen(concern_id: str, body: ReasonIn, session: Session = Depends(get_sessi
 @router.post("/detection/run")
 def run_detection(body: DetectionRunIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
     actor.require("detection.run")
-    created, skipped = cs.run_detection(session, body.dataset_id or config.DEMO_DATASET_ID, body.method, actor)
+    dataset_id = body.dataset_id or config.DEMO_DATASET_ID
+    started = time.perf_counter()
+    created, skipped = cs.run_detection(session, dataset_id, body.method, actor)
+    elapsed_ms = int((time.perf_counter() - started) * 1000)
+    audit.record(session, actor, "dataset", dataset_id, "detection.run",
+                 f"{actor.display_name} ran {METHOD_LABELS[body.method]} detection: {len(created)} new concern(s), {skipped} already open.",
+                 {"method": body.method, "created": [c.id for c in created], "skipped_existing": skipped, "elapsed_ms": elapsed_ms})
     session.commit()
     return {"created": [c.id for c in created], "skipped_existing": skipped, "method": body.method, "method_label": METHOD_LABELS[body.method]}
 
