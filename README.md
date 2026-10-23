@@ -12,6 +12,10 @@ The workflow it supports:
 
 ---
 
+## Documentation
+
+- **[User guide (PDF)](docs/IRIS-User-Guide.pdf)**: a screen-by-screen guide with screenshots, for staff and reviewers. Its source is `docs/user-guide.html`. Rebuild it with `node scripts/capture-docs.mjs` then `node scripts/build-user-guide.mjs` (from `frontend/`, with both servers running).
+
 ## Quick start
 
 Requirements: Python 3.11+ with [uv](https://docs.astral.sh/uv/), Node.js 20+ and npm.

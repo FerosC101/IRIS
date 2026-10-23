@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>IRIS User Guide</title>
+<style>
+  @font-face { font-family: "Inter"; src: url("../frontend/node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "Plex Mono"; src: url("../frontend/node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2") format("woff2"); }
+  @page { size: A4; margin: 20mm 18mm 20mm 18mm; }
+  @page :first { margin: 0; }
+  :root {
+    --teal-900: #103e46; --teal-700: #17646b; --teal-600: #188f89; --aqua: #e9f5f3; --mist: #eaf2f8; --porcelain: #f8fafa;
+    --line: #dce5e7; --ink: #24383c; --ink-2: #637579; --critical: #c45f59; --critical-bg: #f8eae9; --attention-bg: #f8efe2; --attention-ink: #82561b; --info-ink: #2e5f86;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: "Inter", system-ui, sans-serif; font-size: 10pt; line-height: 1.55; color: var(--ink); }
+  h1, h2, h3 { color: var(--teal-900); line-height: 1.2; margin: 0; }
+  h2 { font-size: 18pt; font-weight: 650; margin-bottom: 4mm; padding-bottom: 2mm; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 11.5pt; font-weight: 650; margin: 5mm 0 1.5mm; break-after: avoid; }
+  p { margin: 0 0 2.5mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
+  li { margin-bottom: 1mm; }
+  strong { font-weight: 620; color: var(--ink); }
+  code { font-family: "Plex Mono", ui-monospace, monospace; font-size: 8.8pt; background: var(--porcelain); border: 1px solid var(--line); border-radius: 2px; padding: 0 1mm; }
+  pre { font-family: "Plex Mono", ui-monospace, monospace; font-size: 8.6pt; background: var(--porcelain); border: 1px solid var(--line); border-radius: 3px; padding: 3mm 4mm; white-space: pre-wrap; margin: 0 0 3mm; }
+  .chapter { break-before: page; }
+  .lead { font-size: 11pt; color: var(--ink); }
+  .muted { color: var(--ink-2); }
+  .small { font-size: 8.8pt; }
+
+  figure { margin: 3mm 0 5mm; break-inside: avoid; }
+  figure img { display: block; width: auto; max-width: 100%; max-height: 135mm; margin: 0 auto; border: 1px solid var(--line); border-radius: 3px; }
+  figure.full img { max-height: none; width: 100%; }
+  figure.short img { max-height: 112mm; }
+  figcaption { font-size: 8.6pt; color: var(--ink-2); margin-top: 1.5mm; }
+  figcaption b { color: var(--teal-900); font-weight: 600; }
+  .phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; align-items: start; }
+  .phones img { border-radius: 4px; max-height: 150mm; }
+  .crop { max-height: 120mm; overflow: hidden; border: 1px solid var(--line); border-radius: 3px; }
+  .crop img { border: 0; border-radius: 0; }
+
+  .phones figure { margin: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 1mm 0 4mm; font-size: 9pt; break-inside: avoid; }
+  th { text-align: left; font-weight: 600; color: var(--ink-2); font-size: 8.4pt; background: var(--porcelain); }
+  th, td { padding: 1.6mm 2.2mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+
+  .note { border-left: 3px solid var(--teal-600); background: var(--aqua); padding: 2.5mm 4mm; border-radius: 0 3px 3px 0; margin: 3mm 0 4mm; break-inside: avoid; }
+  .note.warn { border-left-color: #c58a40; background: var(--attention-bg); }
+  .note p:last-child { margin: 0; }
+  .tip-title { font-weight: 650; color: var(--teal-900); }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; margin: 3mm 0 4mm; }
+  .step { border: 1px solid var(--line); border-radius: 3px; padding: 3mm; background: #fff; }
+  .step .n { display: inline-flex; width: 6mm; height: 6mm; border-radius: 50%; background: var(--teal-900); color: #fff; font-size: 8.5pt; font-weight: 650; align-items: center; justify-content: center; margin-bottom: 1.5mm; }
+  .step b { display: block; color: var(--teal-900); font-weight: 650; }
+  .step span { font-size: 8.8pt; color: var(--ink-2); }
+
+  .pill { display: inline-block; font-size: 8.2pt; font-weight: 550; padding: 0 1.6mm; border-radius: 2px; line-height: 1.6; white-space: nowrap; }
+  .p-info { background: var(--mist); color: var(--info-ink); } .p-warn { background: var(--attention-bg); color: var(--attention-ink); }
+  .p-teal { background: var(--aqua); color: var(--teal-900); } .p-ok { background: var(--aqua); color: #0e6a65; } .p-grey { background: var(--porcelain); color: var(--ink-2); border: 1px solid var(--line); }
+
+  /* Cover */
+  .cover { height: 297mm; display: flex; flex-direction: column; justify-content: space-between; padding: 26mm 22mm 20mm; background: var(--teal-900); color: #fff; }
+  .cover .brand { display: flex; align-items: center; gap: 4mm; }
+  .cover .brand span { font-size: 22pt; font-weight: 750; letter-spacing: 0.08em; }
+  .cover h1 { color: #fff; font-size: 34pt; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4mm; }
+  .cover .sub { font-size: 13pt; color: #cfe7e3; margin-bottom: 10mm; }
+  .cover .tag { font-size: 12pt; color: #fff; border-left: 3px solid #7fc4be; padding-left: 4mm; }
+  .cover .shot { border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); width: 100%; }
+  .cover .meta { font-size: 9pt; color: #cfe7e3; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 4mm; }
+
+  .toc { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 10mm; }
+  .toc li { display: flex; gap: 3mm; padding: 0.7mm 0; border-bottom: 1px solid var(--line); break-inside: avoid; }
+  .toc .num { color: var(--teal-600); font-weight: 650; width: 6mm; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" width="40" height="40" aria-hidden="true"><g stroke="#E9F5F3" stroke-width="2" stroke-linecap="round"><line x1="16" y1="16" x2="16" y2="6.5"/><line x1="16" y1="16" x2="7.5" y2="21.5"/><line x1="16" y1="16" x2="24.5" y2="21.5"/><line x1="7.5" y1="21.5" x2="24.5" y2="21.5" stroke-opacity="0.45"/></g><circle cx="16" cy="16" r="3.6" fill="#E9F5F3"/><circle cx="16" cy="6.5" r="2.8" fill="#7FC4BE"/><circle cx="7.5" cy="21.5" r="2.8" fill="#7FC4BE"/><circle cx="24.5" cy="21.5" r="2.8" fill="#7FC4BE"/></svg>
+    <span>IRIS</span>
+  </div>
+  <div>
+    <h1>User Guide</h1>
+    <p class="sub">Integrated Reporting Intervention System — research prototype</p>
+    <p class="tag">See the connections. Restore what matters.</p>
+  </div>
+  <img class="shot" src="screenshots/01-home.png" alt="IRIS home screen" />
+  <div class="meta"><span>Version 0.1 · October 2026</span><span>All data shown is simulated. Not an official DOH system.</span></div>
+</section>
+
+<!-- CONTENTS -->
+<section class="chapter">
+  <h2>Contents</h2>
+  <ol class="toc">
+    <li><span class="num">1</span>What IRIS does</li>
+    <li><span class="num">2</span>Getting around</li>
+    <li><span class="num">3</span>Home: what needs attention</li>
+    <li><span class="num">4</span>Concerns</li>
+    <li><span class="num">5</span>Working on a concern</li>
+    <li><span class="num">6</span>Plan actions</li>
+    <li><span class="num">7</span>Track actions</li>
+    <li><span class="num">8</span>Network</li>
+    <li><span class="num">9</span>Recovery</li>
+    <li><span class="num">10</span>Data</li>
+    <li><span class="num">11</span>Importing a CSV file</li>
+    <li><span class="num">12</span>Model evaluation</li>
+    <li><span class="num">13</span>Data sources and settings</li>
+    <li><span class="num">14</span>Using IRIS on a phone</li>
+    <li><span class="num">15</span>Glossary</li>
+    <li><span class="num">16</span>Limitations</li>
+    <li><span class="num">A</span>Running IRIS on a computer</li>
+  </ol>
+
+  <h2 style="margin-top:6mm">1. What IRIS does</h2>
+  <p class="lead">IRIS helps the people who manage disease-reporting networks notice when reports stop arriving, find out why, decide what to fix first, and check whether reporting recovered.</p>
+  <p>It is designed for Regional Epidemiology and Surveillance Units (RESUs), provincial coordinators, Rural Health Unit (RHU) staff and data managers. IRIS compares the reports expected from each unit with those that arrived, and raises a <strong>concern</strong> when something looks unusual: missing or late reports, blank forms, or a sudden drop in case counts.</p>
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><b>Review</b><span>Open a concern and see why it was flagged.</span></div>
+    <div class="step"><div class="n">2</div><b>Verify</b><span>Confirm it with the unit, or close it as not a problem.</span></div>
+    <div class="step"><div class="n">3</div><b>Act</b><span>Choose what to fix first within your staff time.</span></div>
+    <div class="step"><div class="n">4</div><b>Check recovery</b><span>See whether reporting improved afterwards.</span></div>
+  </div>
+
+  <div class="note warn">
+    <p><strong>Important:</strong> IRIS is a research prototype. It is not an officially deployed Department of Health system and is not endorsed by any government agency. Every province, municipality, facility, person and relationship in this guide is <strong>simulated</strong>, and no patient information is used.</p>
+  </div>
+
+  <h3>Key ideas</h3>
+  <ul>
+    <li><strong>IRIS never acts on its own.</strong> It flags and suggests; people decide. Confirming, closing or approving anything needs a written reason, and every change is recorded.</li>
+    <li><strong>Facts and guesses are kept apart.</strong> Each concern separates what the data shows from possible explanations that still need checking.</li>
+    <li><strong>An unusual number is not proof.</strong> A drop in case counts might be under-reporting, a data-entry slip or a genuine decline. IRIS says so.</li>
+  </ul>
+</section>
+
+<!-- 2 -->
+<section class="chapter">
+  <h2>2. Getting around</h2>
+  <p>The menu on the left lists the main pages. Less frequently used pages are under <strong>More</strong>. On a phone the menu opens from the button at the top right (see section 14).</p>
+  <table>
+    <tr><th style="width:28%">Page</th><th>Question it answers</th></tr>
+    <tr><td><strong>Home</strong></td><td>What needs attention right now?</td></tr>
+    <tr><td><strong>Concerns</strong></td><td>Which reporting problems were found, and why?</td></tr>
+    <tr><td><strong>Plan actions</strong></td><td>With the staff time we have, what should we fix first?</td></tr>
+    <tr><td><strong>Track actions</strong></td><td>What happened after we acted?</td></tr>
+    <tr><td><strong>Network</strong></td><td>How are reporting units connected? Could problems be linked?</td></tr>
+    <tr><td><strong>Recovery</strong></td><td>Is reporting getting better?</td></tr>
+    <tr><td><strong>Data</strong></td><td>What do the records actually show, and what is missing?</td></tr>
+    <tr><td>More → <strong>Model evaluation</strong></td><td>How well does IRIS spot real problems?</td></tr>
+    <tr><td>More → <strong>Data sources</strong></td><td>Where did the data come from, and can it be trusted?</td></tr>
+    <tr><td>More → <strong>Settings</strong>, <strong>Help</strong></td><td>Display options, accessibility, and definitions.</td></tr>
+  </table>
+
+  <h3>Roles</h3>
+  <p>What you see depends on your role. In this demo you can switch roles with the <strong>Viewing as</strong> selector at the bottom of the menu. That switch exists only for trying the demo; it is not real sign-in security.</p>
+  <table>
+    <tr><th style="width:26%">Role</th><th style="width:34%">Demo users</th><th>Typical work</th></tr>
+    <tr><td><strong>RHU reporting staff</strong></td><td>Hiraya RHU Encoder, Kalinaw RHU I Nurse</td><td>Send missing reports, answer questions about their unit, see actions planned for them.</td></tr>
+    <tr><td><strong>Provincial coordinator</strong></td><td>Malaya, Masagana and Tahimik Provincial Coordinators</td><td>Review concerns in their province, ask units questions, plan and track actions.</td></tr>
+    <tr><td><strong>RESU analyst</strong></td><td>RESU Surveillance Analyst, RESU Epidemiologist</td><td>Everything: region-wide review, checking for new concerns, approving plans, model evaluation.</td></tr>
+    <tr><td><strong>Administrator / data manager</strong></td><td>Data Manager</td><td>Import and validate data files, edit reporting-unit details, review the activity log.</td></tr>
+  </table>
+  <p class="small muted">A thin blue line at the top of every page reminds you that the data is simulated. Select “About this demo” to read the limitations.</p>
+</section>
+
+<!-- 3 -->
+<section class="chapter">
+  <h2>3. Home: what needs attention</h2>
+  <p>Home is the starting point. It lists everything open that you are responsible for, with the most urgent items first: overdue items, then high priority.</p>
+  <figure class="short">
+    <img src="screenshots/01-home.png" alt="Home page" />
+    <figcaption><b>Figure 1.</b> Home for a RESU analyst: the short “How IRIS works” guide, the list of open items, and how many expected reports arrived.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>How IRIS works</strong>: a four-step reminder. Close it with the ✕ once you no longer need it.</li>
+    <li><strong>Status buttons</strong> (All open, New, Being reviewed, Waiting for reply, Being fixed): show only items in that state. The number is how many there are.</li>
+    <li><strong>Each row</strong> shows a coloured priority dot (red high, amber medium, grey low), the problem, the unit, the reporting weeks and who is handling it. Select a row to open it.</li>
+    <li><strong>Rows starting with “Action:”</strong> are approved fixes in progress, not new problems.</li>
+    <li><strong>Reports received</strong> shows the share of expected reports that arrived in the latest week, with a 12-week trend.</li>
+    <li>Use the period selector at the top right (latest week, 4 weeks, 13 weeks, all weeks) to look further back.</li>
+  </ul>
+  <div class="note"><p><span class="tip-title">For RHU staff:</span> Home shows <strong>Your to-do list</strong> with each missing report and any question from your coordinator. See section 14.</p></div>
+</section>
+
+<!-- 4 -->
+<section class="chapter">
+  <h2>4. Concerns</h2>
+  <p>A <strong>concern</strong> is a possible reporting problem that IRIS found in the data. The Concerns page lists them all.</p>
+  <figure class="short">
+    <img src="screenshots/02-concerns.png" alt="Concerns list" />
+    <figcaption><b>Figure 2.</b> The Concerns list with status buttons, search and the Filters button.</figcaption>
+  </figure>
+  <ul>
+    <li>Use the <strong>status buttons</strong> to switch between open, new, waiting, being fixed, closed or all concerns.</li>
+    <li>Type in <strong>Search</strong> to find a unit, a concern ID (for example <code>C-0010</code>) or a word.</li>
+    <li>Select <strong>Filters</strong> to narrow by type, priority or province.</li>
+    <li>Analysts can select <strong>Check for new concerns</strong> to scan the data again. Existing concerns are never changed or duplicated.</li>
+  </ul>
+  <h3>Types of concern</h3>
+  <table>
+    <tr><th style="width:30%">Type</th><th>Meaning</th></tr>
+    <tr><td>Missing submission</td><td>Expected reports did not arrive.</td></tr>
+    <tr><td>Late report</td><td>Reports arrived after the due date (weekly reports are due Tuesday 5 pm after the week).</td></tr>
+    <tr><td>Incomplete record</td><td>Reports arrived with blank fields or an incomplete form.</td></tr>
+    <tr><td>Unexpected drop in counts</td><td>Reports arrived, but case counts were far below the unit's recent weeks.</td></tr>
+    <tr><td>Possible shared problem</td><td>Several <em>connected</em> units had problems at the same time, which may point to a common cause such as a shared hub or internet connection.</td></tr>
+  </table>
+</section>
+
+<!-- 5 -->
+<section class="chapter">
+  <h2>5. Working on a concern</h2>
+  <p>Opening a concern shows a progress bar with four steps (<strong>Review → Verify → Act → Close</strong>), a sentence saying what to do <strong>next</strong>, and one main button for that step.</p>
+  <figure>
+    <img src="screenshots/03-concern-summary.png" alt="Concern page summary" />
+    <figcaption><b>Figure 3.</b> A confirmed shared problem. The next step is to track the action already approved for it.</figcaption>
+  </figure>
+  <p>The page has four tabs:</p>
+  <ul>
+    <li><strong>Summary</strong>: <em>What happened</em>, <em>What the data shows</em> (facts from the records) and <em>Not yet known</em> (possible explanations that a person still needs to check), plus the units involved.</li>
+    <li><strong>Week by week</strong>: a simple grid of each unit's reporting per week (Figure 5).</li>
+    <li><strong>Notes &amp; history</strong>: add notes and see every change, who made it and when.</li>
+    <li><strong>More details</strong>: how the concern was detected, reasons recorded, actions taken and related concerns.</li>
+  </ul>
+</section>
+
+<section>
+  <h3>Taking action</h3>
+  <p>The main button changes with the step: <strong>Start review</strong>, then <strong>Confirm it's a real problem</strong>, then <strong>Plan an action</strong> or <strong>Track the action</strong>. All other options are in <strong>More actions</strong>.</p>
+  <figure>
+    <img src="screenshots/05-concern-actions.png" alt="More actions menu" />
+    <figcaption><b>Figure 4.</b> The More actions menu on a new concern. The table under “What the data shows” compares reported counts with recent weeks.</figcaption>
+  </figure>
+  <table>
+    <tr><th style="width:32%">Action</th><th>What it does</th></tr>
+    <tr><td>Start review</td><td>Tells others you are looking at it.</td></tr>
+    <tr><td>Ask the unit a question</td><td>Sends a question to the reporting unit; it appears in their to-do list. Status becomes <span class="pill p-warn">Waiting for reply</span>.</td></tr>
+    <tr><td>Confirm it's a real problem</td><td>Records that the problem was verified. <strong>A short reason is required.</strong></td></tr>
+    <tr><td>Assign an owner</td><td>Makes one person responsible, with an optional due date.</td></tr>
+    <tr><td>Mark as resolved</td><td>Closes it with a summary of what fixed it. <strong>Required.</strong></td></tr>
+    <tr><td>Close as not a problem</td><td>Closes a false alarm. <strong>A reason is required.</strong> It can be reopened later.</td></tr>
+  </table>
+  <h3>Statuses</h3>
+  <p>
+    <span class="pill p-info">New</span> not looked at yet ·
+    <span class="pill p-info">Being reviewed</span> someone is checking ·
+    <span class="pill p-warn">Waiting for reply</span> a question was sent to the unit ·
+    <span class="pill p-teal">Being fixed</span> confirmed or assigned ·
+    <span class="pill p-ok">Resolved</span> closed with a summary ·
+    <span class="pill p-grey">Not a problem</span> closed as a false alarm.
+  </p>
+</section>
+
+<section>
+  <h3>Week by week</h3>
+  <p>The <strong>Week by week</strong> tab shows each affected unit as a row and each week as a column. Shaded column headings mark the weeks in this concern.</p>
+  <figure>
+    <img src="screenshots/04-concern-week-by-week.png" alt="Week by week grid" />
+    <figcaption><b>Figure 5.</b> A hub outage: five units reporting through the same hub had missing (✕) or late (clock) reports in the same three weeks.</figcaption>
+  </figure>
+  <table>
+    <tr><th style="width:20%">Symbol</th><th>Meaning</th></tr>
+    <tr><td>✓ (green)</td><td>All expected reports arrived on time.</td></tr>
+    <tr><td>Clock (amber)</td><td>Some reports were late.</td></tr>
+    <tr><td>✕ (red)</td><td>Some reports did not arrive.</td></tr>
+    <tr><td>½ (amber)</td><td>Reports arrived but forms were incomplete.</td></tr>
+  </table>
+  <p>For a drop in counts, the grid shows the number of cases each week instead; red cells are less than half of what was expected. Select <strong>Show the numbers</strong> for the exact counts.</p>
+  <div class="note"><p><span class="tip-title">Simulation answer key:</span> under <em>More details</em>, the demo can show what was really injected into the simulated data, so you can check your judgement. Turn it off in Settings.</p></div>
+</section>
+
+<!-- 6 -->
+<section class="chapter">
+  <h2>6. Plan actions</h2>
+  <p>When several problems compete for limited staff time, this page suggests which corrective actions to do first.</p>
+  <figure>
+    <img src="screenshots/06-plan-actions.png" alt="Plan actions page" />
+    <figcaption><b>Figure 6.</b> With 40 staff-hours, IRIS suggests a plan and compares it with simply doing the highest-priority items first.</figcaption>
+  </figure>
+  <ol>
+    <li>Enter the <strong>staff-hours</strong> you have, or drag the slider.</li>
+    <li>Read the <strong>suggested plan</strong>. It updates by itself and says how many actions it includes, the hours used, and roughly how many missing reports it should bring back over the next few weeks.</li>
+    <li>Select <strong>Save this plan</strong>. It is saved as a <span class="pill p-info">Draft</span>.</li>
+    <li>A coordinator or analyst opens it under <strong>Saved plans</strong> and selects <strong>Approve plan</strong> (or <strong>Reject plan</strong> with a reason). Approval creates the actions in Track actions.</li>
+  </ol>
+  <p><strong>Choose which actions to consider</strong> lets you leave actions out. <strong>Change the assumptions</strong> lets advanced users adjust estimated hours and chances of success.</p>
+  <div class="note warn"><p>The estimates come from demonstration assumptions, not evidence of real-world effectiveness. Approving a plan does not contact any facility.</p></div>
+</section>
+
+<!-- 7 -->
+<section class="chapter">
+  <h2>7. Track actions</h2>
+  <p>Approved actions appear here until they are closed. Each one moves through <strong>Planned → Approved → Done → Outcome</strong>.</p>
+  <figure>
+    <img src="screenshots/07-track-actions.png" alt="Track actions with an action open" />
+    <figcaption><b>Figure 7.</b> An overdue action opened in the side panel, with its progress and the update form.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>Start</strong> when work begins.</li>
+    <li><strong>Mark as done</strong>: first describe <em>what was done</em>.</li>
+    <li>Add a <strong>result</strong>: <span class="pill p-warn">Not checked yet</span>, <span class="pill p-info">Improvement seen, not confirmed</span>, or <span class="pill p-ok">Confirmed by reviewer</span> (coordinators and analysts only).</li>
+    <li><strong>Close</strong> once a result is recorded. <strong>Cancel action</strong> needs a reason.</li>
+  </ul>
+  <p class="muted small">Reporting can improve for reasons unrelated to an action, so a result records what was seen, not proof that the action caused it.</p>
+</section>
+
+<!-- 8 -->
+<section class="chapter">
+  <h2>8. Network</h2>
+  <p>The Network page shows how reporting units are connected, which helps you judge whether problems in several places might share a cause.</p>
+  <figure>
+    <img src="screenshots/08-network.png" alt="Network map with a hub selected" />
+    <figcaption><b>Figure 8.</b> The simulated network with the Tahimik reporting hub selected. The panel shows its connections, reporting history and concerns.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>Shapes</strong> show the kind of unit: circle = RHU, rounded square = hospital, diamond = laboratory, hexagon = reporting hub.</li>
+    <li><strong>Borders</strong> show recent reporting: plain = normal, dashed amber = some late, thick red = missing reports.</li>
+    <li><strong>Lines</strong>: solid = reports through, dotted = sends specimens to, dashed = shares an encoder or internet connection.</li>
+    <li>Click a unit to see its details. Use + / − / fit / reset to move around, or switch to <strong>List</strong> for a table.</li>
+    <li><strong>Filters</strong> limit by province, unit type, weeks or status.</li>
+  </ul>
+</section>
+
+<!-- 9 -->
+<section class="chapter">
+  <h2>9. Recovery</h2>
+  <p>Recovery answers “is reporting getting better, and did our actions help?”</p>
+  <figure>
+    <img src="screenshots/09-recovery.png" alt="Recovery page" />
+    <figcaption><b>Figure 9.</b> Three headline numbers, reports received each week, and how concerns were opened and closed.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>Arrived</strong> = reports received ÷ reports expected. <strong>On time</strong> = reports received by the due date ÷ reports expected.</li>
+    <li>The chart shows both per week: solid line for arrived, dashed for on time. Select <strong>Show data table</strong> for the exact values.</li>
+    <li><strong>Did the actions help?</strong> compares reporting before the problem, during it, and after each completed action.</li>
+    <li>If a dataset has no reporting schedule, IRIS says <em>“Not calculable from this dataset”</em> instead of guessing.</li>
+  </ul>
+</section>
+
+<!-- 10 -->
+<section class="chapter">
+  <h2>10. Data</h2>
+  <p>The Data page lets you look at the records behind every concern.</p>
+  <figure>
+    <img src="screenshots/10-data-reports.png" alt="Data page reports tab" />
+    <figcaption><b>Figure 10.</b> The Reports tab. Expected reports that never arrived are listed as “Not received”, so gaps are visible.</figcaption>
+  </figure>
+  <p>The four tabs are <strong>Reports</strong> (select a row for its details and change history), <strong>Trends</strong> (one small chart per disease or province, on the same scale), <strong>What's missing</strong> and <strong>About this data</strong> (source, coverage, limitations and field definitions).</p>
+</section>
+
+<section>
+  <h3>What's missing</h3>
+  <figure>
+    <img src="screenshots/11-data-missing.png" alt="What's missing tab" />
+    <figcaption><b>Figure 11.</b> Missing values are kept separate from zeros, with a breakdown by reporting unit.</figcaption>
+  </figure>
+  <div class="note"><p><span class="tip-title">Blank is not zero.</span> <em>Zero reported</em> means the unit said there were no cases. <em>Blank</em> means the field was left empty. <em>Not received</em> means the report never arrived. IRIS never treats a blank or a missing report as zero.</p></div>
+</section>
+
+<!-- 11 -->
+<section class="chapter">
+  <h2>11. Importing a CSV file</h2>
+  <p>Analysts and administrators can add their own data from <strong>Data</strong> or <strong>Data sources</strong> using <strong>Import CSV</strong>. There are four short steps, and nothing is saved until you confirm.</p>
+  <ol>
+    <li><strong>Upload</strong> a CSV file (UTF-8, header row, up to 5 MB).</li>
+    <li><strong>Map columns</strong>: tell IRIS which column is the week, the value, the disease, the area and so on. Likely matches are pre-selected.</li>
+    <li><strong>Validate</strong>: IRIS lists every problem by row and column, such as unreadable dates, negative or non-numeric counts, unknown units or duplicate rows. Fix the file and upload again if needed.</li>
+    <li><strong>Describe and confirm</strong>: name the dataset, give its source and say whether it is real, synthetic or of unknown origin.</li>
+  </ol>
+  <figure class="crop">
+    <img src="screenshots/14-import-mapping.png" alt="Import mapping step" />
+  </figure>
+  <figcaption style="margin-top:-3mm;margin-bottom:5mm"><b>Figure 12.</b> Step 2: mapping the file's columns, with a preview of the rows.</figcaption>
+  <figure>
+    <img src="screenshots/15-import-validation.png" alt="Import validation step" />
+    <figcaption><b>Figure 13.</b> Step 3: the file passed validation. Note the counts of reported, zero and blank values.</figcaption>
+  </figure>
+</section>
+
+<!-- 12 -->
+<section class="chapter">
+  <h2>12. Model evaluation</h2>
+  <p>IRIS has three ways of spotting reporting problems. This page tests them on simulated data where the true answer is known, so you can see how often each is right.</p>
+  <figure>
+    <img src="screenshots/12-model-evaluation.png" alt="Model evaluation page" />
+    <figcaption><b>Figure 14.</b> A plain summary, then the methods side by side.</figcaption>
+  </figure>
+  <table>
+    <tr><th style="width:26%">Method</th><th>How it works</th></tr>
+    <tr><td>Statistical threshold</td><td>Compares each week with the unit's own recent weeks.</td></tr>
+    <tr><td>Time-series (EWMA)</td><td>Smooths the same signal over time to catch problems that last several weeks.</td></tr>
+    <tr><td>Network-aware</td><td>Also checks whether connected units had problems in the same week.</td></tr>
+  </table>
+  <p>No method is best at everything: one may catch more problems while another raises fewer false alarms. Results are calculated from tests that were actually run, never typed in. Analysts can <strong>Run a new test</strong>, and <strong>More results</strong> breaks them down further.</p>
+</section>
+
+<!-- 13 -->
+<section class="chapter">
+  <h2>13. Data sources and settings</h2>
+  <figure>
+    <img src="screenshots/13-data-sources.png" alt="Data sources page" />
+    <figcaption><b>Figure 15.</b> Data sources: each dataset with its origin, coverage and validation status.</figcaption>
+  </figure>
+  <p><strong>Data sources</strong> (under More) has five tabs: <strong>Datasets</strong>, <strong>Import history</strong> (including rejected files and why), <strong>Reporting units</strong> (administrators can edit names, notes and status), <strong>System activity</strong> (every change, who made it and when) and <strong>Demo scenarios</strong> (choose which simulated problems to include and reset the demo).</p>
+  <p><strong>Settings</strong> (under More) includes the role switch; table density and date format; larger text, reduced motion, underlined links and a stronger keyboard focus outline; the simulation answer key; and <strong>Reset demo data</strong>, which discards all demo changes.</p>
+</section>
+
+<!-- 14 -->
+<section class="chapter">
+  <h2>14. Using IRIS on a phone</h2>
+  <p>Every page works on a phone. The menu opens from the ☰ button, buttons are large enough to tap, and wide tables become cards or scroll on their own.</p>
+  <div class="phones">
+    <figure><img src="screenshots/16-mobile-rhu-home.png" alt="RHU home on a phone" /><figcaption><b>Figure 16.</b> RHU staff to-do list.</figcaption></figure>
+    <figure><img src="screenshots/17-mobile-concern.png" alt="Concern on a phone" /><figcaption><b>Figure 17.</b> Replying to a coordinator's question.</figcaption></figure>
+    <figure><img src="screenshots/18-mobile-menu.png" alt="Phone menu" /><figcaption><b>Figure 18.</b> The menu for RHU staff.</figcaption></figure>
+  </div>
+  <h3>For RHU staff</h3>
+  <ol>
+    <li>Open <strong>Home</strong>. <em>Your to-do list</em> shows reports that have not arrived.</li>
+    <li>Select <strong>Submit report</strong>, type the number of cases and submit. Enter <strong>0</strong> if there were no cases; tick <em>Value not available</em> only if the count really is unknown.</li>
+    <li>If your coordinator asked a question, select <strong>Reply</strong> and answer it.</li>
+  </ol>
+</section>
+
+<!-- 15 -->
+<section class="chapter">
+  <h2>15. Glossary</h2>
+  <table>
+    <tr><th style="width:28%">Term</th><th>Meaning</th></tr>
+    <tr><td>Reporting unit</td><td>A facility that sends reports: an RHU, hospital or laboratory.</td></tr>
+    <tr><td>Reporting hub</td><td>A point through which several units send their reports, such as a provincial office.</td></tr>
+    <tr><td>Expected reports</td><td>The reports a unit should send, according to its reporting schedule.</td></tr>
+    <tr><td>Concern</td><td>A possible reporting problem found in the data, waiting for a person to review it.</td></tr>
+    <tr><td>Possible shared problem</td><td>Connected units had problems at the same time; a common cause is possible but not proven.</td></tr>
+    <tr><td>Arrived (completeness)</td><td>Reports received ÷ reports expected.</td></tr>
+    <tr><td>On time (timeliness)</td><td>Reports received by the due date ÷ reports expected.</td></tr>
+    <tr><td>Staff-hours</td><td>The time available for corrective actions, used by Plan actions.</td></tr>
+    <tr><td>Catches problems (recall)</td><td>Of the real problems, the share a method found.</td></tr>
+    <tr><td>Flags that are real (precision)</td><td>Of the weeks a method flagged, the share that were real problems.</td></tr>
+    <tr><td>False alarm</td><td>A flag on a week with no real reporting problem.</td></tr>
+    <tr><td>Simulated</td><td>Generated by the IRIS simulator for demonstration; not real data.</td></tr>
+  </table>
+
+  <h2 style="margin-top:8mm; break-before: avoid">16. Limitations</h2>
+  <ul>
+    <li>IRIS is a research prototype, not an official or endorsed government system.</li>
+    <li>All demonstration data, places, facilities and relationships are simulated. Province and municipality names are fictional.</li>
+    <li>Detection settings and planning estimates were set for the simulation and have not been validated on real surveillance data.</li>
+    <li>Model evaluation uses simulated scenarios with known answers; real-world performance may differ.</li>
+    <li>“Did the actions help?” shows what happened afterwards, not proof that an action caused it.</li>
+    <li>The role switch is for the demo only and is not real sign-in security.</li>
+    <li>Data is stored in a local database file; files being imported are held in memory until confirmed and are lost if the server restarts.</li>
+  </ul>
+</section>
+
+<!-- Appendix -->
+<section class="chapter">
+  <h2>Appendix A. Running IRIS on a computer</h2>
+  <p>IRIS has two parts: a Python server that holds the data and calculations, and a web app that people use in the browser. You need Python 3.11 or newer with <code>uv</code>, and Node.js 20 or newer.</p>
+  <h3>1. Get the code</h3>
+  <pre>git clone https://github.com/FerosC101/IRIS.git
+cd IRIS</pre>
+  <h3>2. Start the server (terminal 1)</h3>
+  <pre>cd backend
+uv sync
+uv run uvicorn iris.main:app --port 8000</pre>
+  <p>The first start creates the demo database and simulated data; this takes a few seconds.</p>
+  <h3>3. Start the web app (terminal 2)</h3>
+  <pre>cd frontend
+npm install
+npm run dev</pre>
+  <p>Open <strong>http://localhost:5180</strong> in a browser.</p>
+  <h3>Checking that everything works</h3>
+  <pre>cd backend  &amp;&amp; uv run pytest        # server tests
+cd frontend &amp;&amp; npm test             # web app tests
+cd frontend &amp;&amp; npm run qa:e2e       # clicks through the main workflows (servers running)</pre>
+  <h3>Updating this guide</h3>
+  <p>With both parts running, <code>node scripts/capture-docs.mjs</code> (in <code>frontend</code>) retakes all screenshots, and <code>node scripts/build-user-guide.mjs</code> rebuilds this PDF from <code>docs/user-guide.html</code>.</p>
+</section>
+
+</body>
+</html>

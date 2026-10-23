@@ -153,7 +153,8 @@ export function InvestigationPage() {
     more.push({ label: "Reopen", icon: <RotateCcw aria-hidden />, onSelect: () => open("reopen") });
   }
 
-  const observed = d.evidence.filter((e) => (e.kind === "observed" || e.kind === "confirmed_by_reviewer" || e.kind === "attached") && e.detail !== c.summary);
+  // Keep every observed item (and its table) but drop text that repeats "What happened".
+  const observed = d.evidence.filter((e) => e.kind === "observed" || e.kind === "confirmed_by_reviewer").map((e) => (e.detail === c.summary ? { ...e, detail: "" } : e));
   const unknown = d.evidence.filter((e) => e.kind === "possible_explanation" || e.kind === "requires_verification");
   const answerKey = d.evidence.filter((e) => e.kind === "simulated_example" && e.title.startsWith("Simulation answer key"));
 
