@@ -1,0 +1,1979 @@
+{
+  "run_id": "20261023T151711Z",
+  "results": {
+    "Real 2020 (test): swapped zeros": {
+      "kind": "real",
+      "zero_reports": 1367,
+      "positives": 157,
+      "negatives": 1210,
+      "positive_share": 0.11485003657644477,
+      "methods": {
+        "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.9199057745959889,
+          "average_precision": 0.47862545932093864,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.21685082872928177,
+            "f1": 0.3564131668558456,
+            "false_alert_rate": 0.46859504132231405,
+            "tp": 157,
+            "fp": 567,
+            "events": 44,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.07643312101910828,
+              "precision": 0.08053691275167785,
+              "false_alert_rate": 0.11322314049586776
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.1337579617834395,
+              "precision": 0.08860759493670886,
+              "false_alert_rate": 0.17851239669421487
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.2802547770700637,
+              "precision": 0.09843400447427293,
+              "false_alert_rate": 0.3330578512396694
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              1.0,
+              1.0
+            ],
+            "false_alert_rate_ci": [
+              0.3999715678310317,
+              0.5474584166368629
+            ],
+            "f1_ci": [
+              0.29721607108256987,
+              0.41190219177806897
+            ],
+            "auc_ci": [
+              0.8876809279040735,
+              0.9472170089124866
+            ]
+          }
+        },
+        "Equal weights (untuned reference)": {
+          "auc": 0.7886982155077118,
+          "average_precision": 0.28230261834410625,
+          "high_band": {
+            "recall": 0.6560509554140127,
+            "precision": 0.2761394101876676,
+            "f1": 0.38867924528301884,
+            "false_alert_rate": 0.2231404958677686,
+            "tp": 103,
+            "fp": 270,
+            "events": 44,
+            "events_detected": 0.8409090909090909,
+            "weeks_to_detect": 0.972972972972973
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.07643312101910828,
+              "precision": 0.08053691275167785,
+              "false_alert_rate": 0.11322314049586776
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.1337579617834395,
+              "precision": 0.08860759493670886,
+              "false_alert_rate": 0.17851239669421487
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.28662420382165604,
+              "precision": 0.10067114093959731,
+              "false_alert_rate": 0.3322314049586777
+            }
+          ]
+        },
+        "Model A v2 alone": {
+          "auc": 0.6558509238300785,
+          "average_precision": 0.17048005665887772,
+          "high_band": {
+            "recall": 0.3885350318471338,
+            "precision": 0.23106060606060605,
+            "f1": 0.28978622327790976,
+            "false_alert_rate": 0.16776859504132233,
+            "tp": 61,
+            "fp": 203,
+            "events": 44,
+            "events_detected": 0.38636363636363635,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.08280254777070063,
+              "precision": 0.087248322147651,
+              "false_alert_rate": 0.11239669421487604
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.1337579617834395,
+              "precision": 0.08860759493670886,
+              "false_alert_rate": 0.17851239669421487
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.27388535031847133,
+              "precision": 0.09619686800894854,
+              "false_alert_rate": 0.3338842975206612
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.25146008803854286,
+              0.5097403619197481
+            ],
+            "false_alert_rate_ci": [
+              0.1056970045340959,
+              0.2385497322193437
+            ],
+            "f1_ci": [
+              0.18804091266719122,
+              0.39230201149425287
+            ],
+            "auc_ci": [
+              0.5681860689206407,
+              0.7320529511024082
+            ]
+          }
+        },
+        "Zero-streak length (baseline)": {
+          "auc": 0.2964915512975733,
+          "average_precision": 0.10083285524947412,
+          "high_band": {
+            "recall": 0.03821656050955414,
+            "precision": 0.025423728813559324,
+            "f1": 0.030534351145038167,
+            "false_alert_rate": 0.19008264462809918,
+            "tp": 6,
+            "fp": 230,
+            "events": 44,
+            "events_detected": 0.11363636363636363,
+            "weeks_to_detect": 1.6
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.01910828025477707,
+              "precision": 0.020134228187919462,
+              "false_alert_rate": 0.1206611570247934
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.03184713375796178,
+              "precision": 0.02109704641350211,
+              "false_alert_rate": 0.19173553719008266
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.08280254777070063,
+              "precision": 0.029082774049217,
+              "false_alert_rate": 0.3586776859504132
+            }
+          ]
+        },
+        "Historical mean, 26 weeks (baseline)": {
+          "auc": 0.4363083644786019,
+          "average_precision": 0.09478526865274602,
+          "high_band": {
+            "recall": 0.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "false_alert_rate": 0.050413223140495865,
+            "tp": 0,
+            "fp": 61,
+            "events": 44,
+            "events_detected": 0.0,
+            "weeks_to_detect": NaN
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.09554140127388536,
+              "precision": 0.10067114093959731,
+              "false_alert_rate": 0.11074380165289256
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.14012738853503184,
+              "precision": 0.09282700421940929,
+              "false_alert_rate": 0.17768595041322313
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.267515923566879,
+              "precision": 0.09395973154362416,
+              "false_alert_rate": 0.3347107438016529
+            }
+          ]
+        },
+        "Old Model B rule (fixed)": {
+          "auc": 0.3904116439437806,
+          "average_precision": 0.08738775710802654,
+          "high_band": {
+            "recall": 0.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "false_alert_rate": 0.04214876033057851,
+            "tp": 0,
+            "fp": 51,
+            "events": 44,
+            "events_detected": 0.0,
+            "weeks_to_detect": NaN
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.08917197452229299,
+              "precision": 0.09395973154362416,
+              "false_alert_rate": 0.1115702479338843
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.1337579617834395,
+              "precision": 0.08860759493670886,
+              "false_alert_rate": 0.17851239669421487
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.25477707006369427,
+              "precision": 0.0894854586129754,
+              "false_alert_rate": 0.33636363636363636
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.0,
+              0.0
+            ],
+            "false_alert_rate_ci": [
+              0.0243531202435312,
+              0.06503759155735132
+            ],
+            "f1_ci": [
+              0.0,
+              0.0
+            ],
+            "auc_ci": [
+              0.3038634861934914,
+              0.47882082973837464
+            ]
+          }
+        },
+        "Supervised GBM on real swap labels (experiment)": {
+          "auc": 0.8001447596988999,
+          "average_precision": 0.3398025955140954,
+          "high_band": {
+            "recall": 0.9490445859872612,
+            "precision": 0.26512455516014233,
+            "f1": 0.41446453407510425,
+            "false_alert_rate": 0.3413223140495868,
+            "tp": 149,
+            "fp": 413,
+            "events": 44,
+            "events_detected": 0.9318181818181818,
+            "weeks_to_detect": 0.1951219512195122
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.09554140127388536,
+              "precision": 0.10067114093959731,
+              "false_alert_rate": 0.11074380165289256
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.1464968152866242,
+              "precision": 0.0970464135021097,
+              "false_alert_rate": 0.1768595041322314
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.28662420382165604,
+              "precision": 0.10067114093959731,
+              "false_alert_rate": 0.3322314049586777
+            }
+          ]
+        }
+      },
+      "oracle_weekly_budget": [
+        {
+          "k_per_week": 3,
+          "reviews": 149,
+          "recall": 0.09554140127388536,
+          "precision": 0.10067114093959731,
+          "false_alert_rate": 0.11074380165289256
+        },
+        {
+          "k_per_week": 5,
+          "reviews": 237,
+          "recall": 0.1592356687898089,
+          "precision": 0.10548523206751055,
+          "false_alert_rate": 0.17520661157024794
+        },
+        {
+          "k_per_week": 10,
+          "reviews": 447,
+          "recall": 0.3184713375796178,
+          "precision": 0.11185682326621924,
+          "false_alert_rate": 0.328099173553719
+        }
+      ],
+      "calibration": {
+        "Model B \u00b7 zero-report prioritizer": {
+          "brier": 0.2082282756819908,
+          "mean_predicted": 0.42654161414672737,
+          "observed_share": 0.11485003657644477,
+          "reliability": [
+            {
+              "bin": "0.00-0.05",
+              "n": 113,
+              "mean_predicted": 0.005702819411418403,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.05-0.10",
+              "n": 181,
+              "mean_predicted": 0.06167153809417755,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.10-0.20",
+              "n": 284,
+              "mean_predicted": 0.19274214856581354,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.20-0.40",
+              "n": 312,
+              "mean_predicted": 0.3413496583275308,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.40-0.60",
+              "n": 2,
+              "mean_predicted": 0.5549124107496068,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.60-1.00",
+              "n": 475,
+              "mean_predicted": 0.8608962760792842,
+              "observed_share": 0.33052631578947367
+            }
+          ]
+        },
+        "Supervised GBM on real swap labels (experiment)": {
+          "brier": 0.18419805756971094,
+          "mean_predicted": 0.18734201853481225,
+          "observed_share": 0.11485003657644477,
+          "reliability": [
+            {
+              "bin": "0.00-0.05",
+              "n": 970,
+              "mean_predicted": 0.006844835505317409,
+              "observed_share": 0.08144329896907217
+            },
+            {
+              "bin": "0.05-0.10",
+              "n": 31,
+              "mean_predicted": 0.06738244326786302,
+              "observed_share": 0.8387096774193549
+            },
+            {
+              "bin": "0.10-0.20",
+              "n": 14,
+              "mean_predicted": 0.1898759304157269,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.20-0.40",
+              "n": 119,
+              "mean_predicted": 0.308973505742589,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.40-0.60",
+              "n": 25,
+              "mean_predicted": 0.4547490265999798,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.60-1.00",
+              "n": 208,
+              "mean_predicted": 0.9450642176992259,
+              "observed_share": 0.25
+            }
+          ]
+        }
+      }
+    },
+    "Real 2016-2017 (tuning, in-sample): swapped zeros": {
+      "kind": "real",
+      "zero_reports": 1292,
+      "positives": 370,
+      "negatives": 922,
+      "positive_share": 0.28637770897832815,
+      "methods": {
+        "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.9970276132965937,
+          "average_precision": 0.9922413799059133,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.7184466019417476,
+            "f1": 0.8361581920903954,
+            "false_alert_rate": 0.15726681127982647,
+            "tp": 370,
+            "fp": 145,
+            "events": 87,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13513513513513514,
+              "precision": 0.10141987829614604,
+              "false_alert_rate": 0.4804772234273319
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2702702702702703,
+              "precision": 0.12406947890818859,
+              "false_alert_rate": 0.7657266811279827
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              1.0,
+              1.0
+            ],
+            "false_alert_rate_ci": [
+              0.10472338738407438,
+              0.22229238423268266
+            ],
+            "f1_ci": [
+              0.7765775052192065,
+              0.8862606982275228
+            ],
+            "auc_ci": [
+              0.9948069825814849,
+              0.9987512570551617
+            ]
+          }
+        },
+        "Equal weights (untuned reference)": {
+          "auc": 0.9726358679720936,
+          "average_precision": 0.9461887321764749,
+          "high_band": {
+            "recall": 0.8891891891891892,
+            "precision": 0.8545454545454545,
+            "f1": 0.8715231788079469,
+            "false_alert_rate": 0.06073752711496746,
+            "tp": 329,
+            "fp": 56,
+            "events": 87,
+            "events_detected": 0.9770114942528736,
+            "weeks_to_detect": 0.5411764705882353
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13513513513513514,
+              "precision": 0.10141987829614604,
+              "false_alert_rate": 0.4804772234273319
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2702702702702703,
+              "precision": 0.12406947890818859,
+              "false_alert_rate": 0.7657266811279827
+            }
+          ]
+        },
+        "Model A v2 alone": {
+          "auc": 0.9316702819956616,
+          "average_precision": 0.8654415113260192,
+          "high_band": {
+            "recall": 0.6567567567567567,
+            "precision": 0.8496503496503497,
+            "f1": 0.7408536585365852,
+            "false_alert_rate": 0.046637744034707156,
+            "tp": 243,
+            "fp": 43,
+            "events": 87,
+            "events_detected": 0.6896551724137931,
+            "weeks_to_detect": 0.1
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.07837837837837838,
+              "precision": 0.0935483870967742,
+              "false_alert_rate": 0.3047722342733189
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13243243243243244,
+              "precision": 0.09939148073022312,
+              "false_alert_rate": 0.48156182212581344
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.26756756756756755,
+              "precision": 0.1228287841191067,
+              "false_alert_rate": 0.7668112798264642
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.5555419722901386,
+              0.7417498945435598
+            ],
+            "false_alert_rate_ci": [
+              0.02928683100732536,
+              0.0656376890499603
+            ],
+            "f1_ci": [
+              0.6561320393308646,
+              0.8077510819314099
+            ],
+            "auc_ci": [
+              0.9034494481950819,
+              0.9564951034230644
+            ]
+          }
+        },
+        "Zero-streak length (baseline)": {
+          "auc": 0.2430981415254734,
+          "average_precision": 0.27725784309546264,
+          "high_band": {
+            "recall": 0.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "false_alert_rate": 0.20498915401301518,
+            "tp": 0,
+            "fp": 189,
+            "events": 87,
+            "events_detected": 0.0,
+            "weeks_to_detect": NaN
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.010810810810810811,
+              "precision": 0.012903225806451613,
+              "false_alert_rate": 0.3318872017353579
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.04864864864864865,
+              "precision": 0.036511156186612576,
+              "false_alert_rate": 0.5151843817787418
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.15405405405405406,
+              "precision": 0.0707196029776675,
+              "false_alert_rate": 0.8123644251626898
+            }
+          ]
+        },
+        "Historical mean, 26 weeks (baseline)": {
+          "auc": 0.8747918743038049,
+          "average_precision": 0.7378660303300218,
+          "high_band": {
+            "recall": 0.15945945945945947,
+            "precision": 0.8939393939393939,
+            "f1": 0.2706422018348624,
+            "false_alert_rate": 0.007592190889370932,
+            "tp": 59,
+            "fp": 7,
+            "events": 87,
+            "events_detected": 0.20689655172413793,
+            "weeks_to_detect": 0.7777777777777778
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13513513513513514,
+              "precision": 0.10141987829614604,
+              "false_alert_rate": 0.4804772234273319
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2702702702702703,
+              "precision": 0.12406947890818859,
+              "false_alert_rate": 0.7657266811279827
+            }
+          ]
+        },
+        "Old Model B rule (fixed)": {
+          "auc": 0.8530090285513279,
+          "average_precision": 0.638334207618527,
+          "high_band": {
+            "recall": 0.02702702702702703,
+            "precision": 0.5555555555555556,
+            "f1": 0.05154639175257733,
+            "false_alert_rate": 0.008676789587852495,
+            "tp": 10,
+            "fp": 8,
+            "events": 87,
+            "events_detected": 0.034482758620689655,
+            "weeks_to_detect": 2.6666666666666665
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13513513513513514,
+              "precision": 0.10141987829614604,
+              "false_alert_rate": 0.4804772234273319
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2648648648648649,
+              "precision": 0.12158808933002481,
+              "false_alert_rate": 0.7678958785249458
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.0,
+              0.0625460790884718
+            ],
+            "false_alert_rate_ci": [
+              0.0,
+              0.0247731878733289
+            ],
+            "f1_ci": [
+              0.0,
+              0.11772095772982553
+            ],
+            "auc_ci": [
+              0.8045979253891092,
+              0.8937499131750312
+            ]
+          }
+        },
+        "Supervised GBM on real swap labels (experiment)": {
+          "auc": 0.9997713548689687,
+          "average_precision": 0.999420107681768,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.8958837772397095,
+            "f1": 0.9450830140485313,
+            "false_alert_rate": 0.046637744034707156,
+            "tp": 370,
+            "fp": 43,
+            "events": 87,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13513513513513514,
+              "precision": 0.10141987829614604,
+              "false_alert_rate": 0.4804772234273319
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2702702702702703,
+              "precision": 0.12406947890818859,
+              "false_alert_rate": 0.7657266811279827
+            }
+          ]
+        }
+      },
+      "oracle_weekly_budget": [
+        {
+          "k_per_week": 3,
+          "reviews": 310,
+          "recall": 0.08108108108108109,
+          "precision": 0.0967741935483871,
+          "false_alert_rate": 0.3036876355748373
+        },
+        {
+          "k_per_week": 5,
+          "reviews": 493,
+          "recall": 0.13513513513513514,
+          "precision": 0.10141987829614604,
+          "false_alert_rate": 0.4804772234273319
+        },
+        {
+          "k_per_week": 10,
+          "reviews": 806,
+          "recall": 0.2702702702702703,
+          "precision": 0.12406947890818859,
+          "false_alert_rate": 0.7657266811279827
+        }
+      ],
+      "calibration": {
+        "Model B \u00b7 zero-report prioritizer": {
+          "brier": 0.049142513134526326,
+          "mean_predicted": 0.3676731785028529,
+          "observed_share": 0.28637770897832815,
+          "reliability": [
+            {
+              "bin": "0.00-0.05",
+              "n": 311,
+              "mean_predicted": 0.004167842131134835,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.05-0.10",
+              "n": 197,
+              "mean_predicted": 0.05992688403728564,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.10-0.20",
+              "n": 221,
+              "mean_predicted": 0.19052783090331865,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.20-0.40",
+              "n": 141,
+              "mean_predicted": 0.324146202074345,
+              "observed_share": 0.0070921985815602835
+            },
+            {
+              "bin": "0.60-1.00",
+              "n": 422,
+              "mean_predicted": 0.8865419110081557,
+              "observed_share": 0.8744075829383886
+            }
+          ]
+        },
+        "Supervised GBM on real swap labels (experiment)": {
+          "brier": 0.006467969591467768,
+          "mean_predicted": 0.29333429962352037,
+          "observed_share": 0.28637770897832815,
+          "reliability": [
+            {
+              "bin": "0.00-0.05",
+              "n": 908,
+              "mean_predicted": 0.0038991166287587996,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.20-0.40",
+              "n": 4,
+              "mean_predicted": 0.29759142136160355,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.60-1.00",
+              "n": 380,
+              "mean_predicted": 0.9848872408663917,
+              "observed_share": 0.9736842105263158
+            }
+          ]
+        }
+      }
+    },
+    "Synthetic 2019 (tuning): injected zeros": {
+      "kind": "synthetic",
+      "zero_reports": 426,
+      "positives": 284,
+      "negatives": 142,
+      "positive_share": 0.6666666666666666,
+      "methods": {
+        "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.9107815909541758,
+          "average_precision": 0.9455814829224953,
+          "high_band": {
+            "recall": 0.7746478873239436,
+            "precision": 0.944206008583691,
+            "f1": 0.8510638297872342,
+            "false_alert_rate": 0.09154929577464789,
+            "tp": 220,
+            "fp": 13,
+            "events": 202,
+            "events_detected": 0.7623762376237624,
+            "weeks_to_detect": 0.006493506493506494
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5,
+              "precision": 0.9281045751633987,
+              "false_alert_rate": 0.07746478873239436
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7429577464788732,
+              "precision": 0.8307086614173228,
+              "false_alert_rate": 0.3028169014084507
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9577464788732394,
+              "precision": 0.6956521739130435,
+              "false_alert_rate": 0.8380281690140845
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.6973544311714304,
+              0.8421099792491982
+            ],
+            "false_alert_rate_ci": [
+              0.04309423813734159,
+              0.18615725359911395
+            ],
+            "f1_ci": [
+              0.7982824490743043,
+              0.896679355890964
+            ],
+            "auc_ci": [
+              0.8334300123800318,
+              0.9500699004020935
+            ]
+          }
+        },
+        "Equal weights (untuned reference)": {
+          "auc": 0.8873239436619719,
+          "average_precision": 0.9382271663442322,
+          "high_band": {
+            "recall": 0.7183098591549296,
+            "precision": 0.9577464788732394,
+            "f1": 0.8209255533199195,
+            "false_alert_rate": 0.06338028169014084,
+            "tp": 204,
+            "fp": 9,
+            "events": 202,
+            "events_detected": 0.698019801980198,
+            "weeks_to_detect": 0.07092198581560284
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.4894366197183099,
+              "precision": 0.9084967320261438,
+              "false_alert_rate": 0.09859154929577464
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7253521126760564,
+              "precision": 0.8110236220472441,
+              "false_alert_rate": 0.3380281690140845
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9612676056338029,
+              "precision": 0.6982097186700768,
+              "false_alert_rate": 0.8309859154929577
+            }
+          ]
+        },
+        "Model A v2 alone": {
+          "auc": 0.9328754215433446,
+          "average_precision": 0.9632761064160419,
+          "high_band": {
+            "recall": 0.7816901408450704,
+            "precision": 0.9568965517241379,
+            "f1": 0.8604651162790697,
+            "false_alert_rate": 0.07042253521126761,
+            "tp": 222,
+            "fp": 10,
+            "events": 202,
+            "events_detected": 0.7821782178217822,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5140845070422535,
+              "precision": 0.954248366013072,
+              "false_alert_rate": 0.04929577464788732
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7535211267605634,
+              "precision": 0.84251968503937,
+              "false_alert_rate": 0.28169014084507044
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.971830985915493,
+              "precision": 0.7058823529411765,
+              "false_alert_rate": 0.8098591549295775
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.7017105263157895,
+              0.8561151079136691
+            ],
+            "false_alert_rate_ci": [
+              0.028563357546408395,
+              0.15223554459883457
+            ],
+            "f1_ci": [
+              0.8102215930181365,
+              0.9052248062015503
+            ],
+            "auc_ci": [
+              0.8693784732576392,
+              0.9662826868779594
+            ]
+          }
+        },
+        "Zero-streak length (baseline)": {
+          "auc": 0.42367585796468954,
+          "average_precision": 0.63811292629804,
+          "high_band": {
+            "recall": 0.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "false_alert_rate": 0.035211267605633804,
+            "tp": 0,
+            "fp": 5,
+            "events": 202,
+            "events_detected": 0.0,
+            "weeks_to_detect": NaN
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.31690140845070425,
+              "precision": 0.5882352941176471,
+              "false_alert_rate": 0.44366197183098594
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.5809859154929577,
+              "precision": 0.6496062992125984,
+              "false_alert_rate": 0.6267605633802817
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9154929577464789,
+              "precision": 0.6649616368286445,
+              "false_alert_rate": 0.9225352112676056
+            }
+          ]
+        },
+        "Historical mean, 26 weeks (baseline)": {
+          "auc": 0.873041063281095,
+          "average_precision": 0.9230634287976981,
+          "high_band": {
+            "recall": 0.4859154929577465,
+            "precision": 0.9583333333333334,
+            "f1": 0.6448598130841121,
+            "false_alert_rate": 0.04225352112676056,
+            "tp": 138,
+            "fp": 6,
+            "events": 202,
+            "events_detected": 0.5099009900990099,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5140845070422535,
+              "precision": 0.954248366013072,
+              "false_alert_rate": 0.04929577464788732
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7429577464788732,
+              "precision": 0.8307086614173228,
+              "false_alert_rate": 0.3028169014084507
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9612676056338029,
+              "precision": 0.6982097186700768,
+              "false_alert_rate": 0.8309859154929577
+            }
+          ]
+        },
+        "Old Model B rule (fixed)": {
+          "auc": 0.8590061495734973,
+          "average_precision": 0.9033349287731318,
+          "high_band": {
+            "recall": 0.30633802816901406,
+            "precision": 0.9354838709677419,
+            "f1": 0.4615384615384615,
+            "false_alert_rate": 0.04225352112676056,
+            "tp": 87,
+            "fp": 6,
+            "events": 202,
+            "events_detected": 0.3069306930693069,
+            "weeks_to_detect": 0.1774193548387097
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5,
+              "precision": 0.9281045751633987,
+              "false_alert_rate": 0.07746478873239436
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7359154929577465,
+              "precision": 0.8228346456692913,
+              "false_alert_rate": 0.31690140845070425
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9647887323943662,
+              "precision": 0.7007672634271099,
+              "false_alert_rate": 0.823943661971831
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.22398561057816962,
+              0.3825867658276124
+            ],
+            "false_alert_rate_ci": [
+              0.0,
+              0.1334836065573769
+            ],
+            "f1_ci": [
+              0.35809519475791773,
+              0.5463194804112418
+            ],
+            "auc_ci": [
+              0.7249808963833388,
+              0.923922204219682
+            ]
+          }
+        },
+        "Supervised GBM on real swap labels (experiment)": {
+          "auc": 0.8279111287442967,
+          "average_precision": 0.8873815532873546,
+          "high_band": {
+            "recall": 0.16901408450704225,
+            "precision": 0.8135593220338984,
+            "f1": 0.27988338192419826,
+            "false_alert_rate": 0.07746478873239436,
+            "tp": 48,
+            "fp": 11,
+            "events": 202,
+            "events_detected": 0.12376237623762376,
+            "weeks_to_detect": 0.12
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.4753521126760563,
+              "precision": 0.8823529411764706,
+              "false_alert_rate": 0.1267605633802817
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7253521126760564,
+              "precision": 0.8110236220472441,
+              "false_alert_rate": 0.3380281690140845
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9401408450704225,
+              "precision": 0.6828644501278772,
+              "false_alert_rate": 0.8732394366197183
+            }
+          ]
+        }
+      },
+      "oracle_weekly_budget": [
+        {
+          "k_per_week": 3,
+          "reviews": 153,
+          "recall": 0.528169014084507,
+          "precision": 0.9803921568627451,
+          "false_alert_rate": 0.02112676056338028
+        },
+        {
+          "k_per_week": 5,
+          "reviews": 254,
+          "recall": 0.7852112676056338,
+          "precision": 0.8779527559055118,
+          "false_alert_rate": 0.21830985915492956
+        },
+        {
+          "k_per_week": 10,
+          "reviews": 391,
+          "recall": 0.9788732394366197,
+          "precision": 0.710997442455243,
+          "false_alert_rate": 0.795774647887324
+        }
+      ]
+    },
+    "Synthetic 2020 (test): injected zeros": {
+      "kind": "synthetic",
+      "zero_reports": 1710,
+      "positives": 297,
+      "negatives": 1210,
+      "positive_share": 0.19708029197080293,
+      "methods": {
+        "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.636828338481231,
+          "average_precision": 0.29429014375114315,
+          "high_band": {
+            "recall": 0.6801346801346801,
+            "precision": 0.25093167701863356,
+            "f1": 0.3666061705989111,
+            "false_alert_rate": 0.4983471074380165,
+            "tp": 202,
+            "fp": 603,
+            "events": 223,
+            "events_detected": 0.6502242152466368,
+            "weeks_to_detect": 0.013793103448275862
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.19528619528619529,
+              "precision": 0.4084507042253521,
+              "false_alert_rate": 0.06942148760330578
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.3367003367003367,
+              "precision": 0.425531914893617,
+              "false_alert_rate": 0.1115702479338843
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.5757575757575758,
+              "precision": 0.37093275488069416,
+              "false_alert_rate": 0.2396694214876033
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.6068683687002653,
+              0.754282105333601
+            ],
+            "false_alert_rate_ci": [
+              0.4295019280027883,
+              0.5692711934725487
+            ],
+            "f1_ci": [
+              0.3025033929445219,
+              0.42941010674892904
+            ],
+            "auc_ci": [
+              0.5755566664945339,
+              0.693574694967309
+            ]
+          }
+        },
+        "Equal weights (untuned reference)": {
+          "auc": 0.6926802459860311,
+          "average_precision": 0.3476758114488374,
+          "high_band": {
+            "recall": 0.48148148148148145,
+            "precision": 0.3575,
+            "f1": 0.41032998565279766,
+            "false_alert_rate": 0.21239669421487603,
+            "tp": 143,
+            "fp": 257,
+            "events": 223,
+            "events_detected": 0.4439461883408072,
+            "weeks_to_detect": 0.1414141414141414
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.21212121212121213,
+              "precision": 0.44680851063829785,
+              "false_alert_rate": 0.06446280991735537
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.35353535353535354,
+              "precision": 0.44871794871794873,
+              "false_alert_rate": 0.10661157024793388
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.6161616161616161,
+              "precision": 0.3952483801295896,
+              "false_alert_rate": 0.23140495867768596
+            }
+          ]
+        },
+        "Model A v2 alone": {
+          "auc": 0.8083980298856331,
+          "average_precision": 0.5059854580373953,
+          "high_band": {
+            "recall": 0.5117845117845118,
+            "precision": 0.48717948717948717,
+            "f1": 0.4991789819376027,
+            "false_alert_rate": 0.1322314049586777,
+            "tp": 152,
+            "fp": 160,
+            "events": 223,
+            "events_detected": 0.47085201793721976,
+            "weeks_to_detect": 0.009523809523809525
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.24242424242424243,
+              "precision": 0.5070422535211268,
+              "false_alert_rate": 0.05785123966942149
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.38047138047138046,
+              "precision": 0.4808510638297872,
+              "false_alert_rate": 0.10082644628099173
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.6801346801346801,
+              "precision": 0.4353448275862069,
+              "false_alert_rate": 0.21652892561983472
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.43306879213021315,
+              0.595323979284596
+            ],
+            "false_alert_rate_ci": [
+              0.08627726270947923,
+              0.1914980460269214
+            ],
+            "f1_ci": [
+              0.42088595484117874,
+              0.5742364731367088
+            ],
+            "auc_ci": [
+              0.7589225778231391,
+              0.8480159992731061
+            ]
+          }
+        },
+        "Zero-streak length (baseline)": {
+          "auc": 0.2835114227676211,
+          "average_precision": 0.1645659123340705,
+          "high_band": {
+            "recall": 0.006734006734006734,
+            "precision": 0.007326007326007326,
+            "f1": 0.007017543859649123,
+            "false_alert_rate": 0.22396694214876034,
+            "tp": 2,
+            "fp": 271,
+            "events": 223,
+            "events_detected": 0.008968609865470852,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06734006734006734,
+              "precision": 0.13333333333333333,
+              "false_alert_rate": 0.10743801652892562
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.13468013468013468,
+              "precision": 0.16,
+              "false_alert_rate": 0.17355371900826447
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.27946127946127947,
+              "precision": 0.16767676767676767,
+              "false_alert_rate": 0.34049586776859503
+            }
+          ]
+        },
+        "Historical mean, 26 weeks (baseline)": {
+          "auc": 0.7959429000751315,
+          "average_precision": 0.4916287056231808,
+          "high_band": {
+            "recall": 0.2558922558922559,
+            "precision": 0.59375,
+            "f1": 0.35764705882352943,
+            "false_alert_rate": 0.04297520661157025,
+            "tp": 76,
+            "fp": 52,
+            "events": 223,
+            "events_detected": 0.22869955156950672,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.25252525252525254,
+              "precision": 0.5434782608695652,
+              "false_alert_rate": 0.05206611570247934
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.37037037037037035,
+              "precision": 0.4721030042918455,
+              "false_alert_rate": 0.10165289256198347
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.632996632996633,
+              "precision": 0.4051724137931034,
+              "false_alert_rate": 0.228099173553719
+            }
+          ]
+        },
+        "Old Model B rule (fixed)": {
+          "auc": 0.76578456743746,
+          "average_precision": 0.419595860120879,
+          "high_band": {
+            "recall": 0.16161616161616163,
+            "precision": 0.48484848484848486,
+            "f1": 0.24242424242424243,
+            "false_alert_rate": 0.04214876033057851,
+            "tp": 48,
+            "fp": 51,
+            "events": 223,
+            "events_detected": 0.14349775784753363,
+            "weeks_to_detect": 0.34375
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.2255892255892256,
+              "precision": 0.4855072463768116,
+              "false_alert_rate": 0.05867768595041322
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.3569023569023569,
+              "precision": 0.452991452991453,
+              "false_alert_rate": 0.10578512396694215
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.6060606060606061,
+              "precision": 0.3870967741935484,
+              "false_alert_rate": 0.23553719008264462
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.10713332486019318,
+              0.21962074396460515
+            ],
+            "false_alert_rate_ci": [
+              0.02362688045862029,
+              0.06361537394503984
+            ],
+            "f1_ci": [
+              0.17159090909090913,
+              0.319845516690245
+            ],
+            "auc_ci": [
+              0.7199739267771708,
+              0.8056099872947075
+            ]
+          }
+        },
+        "Supervised GBM on real swap labels (experiment)": {
+          "auc": 0.5830731558004285,
+          "average_precision": 0.26729590476016907,
+          "high_band": {
+            "recall": 0.24242424242424243,
+            "precision": 0.16216216216216217,
+            "f1": 0.19433198380566805,
+            "false_alert_rate": 0.3074380165289256,
+            "tp": 72,
+            "fp": 372,
+            "events": 223,
+            "events_detected": 0.2242152466367713,
+            "weeks_to_detect": 0.02
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.18518518518518517,
+              "precision": 0.39855072463768115,
+              "false_alert_rate": 0.06859504132231405
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.2962962962962963,
+              "precision": 0.3826086956521739,
+              "false_alert_rate": 0.11735537190082644
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.5185185185185185,
+              "precision": 0.33771929824561403,
+              "false_alert_rate": 0.24958677685950414
+            }
+          ]
+        }
+      },
+      "oracle_weekly_budget": [
+        {
+          "k_per_week": 3,
+          "reviews": 156,
+          "recall": 0.37037037037037035,
+          "precision": 0.7482993197278912,
+          "false_alert_rate": 0.030578512396694214
+        },
+        {
+          "k_per_week": 5,
+          "reviews": 260,
+          "recall": 0.5892255892255892,
+          "precision": 0.7056451612903226,
+          "false_alert_rate": 0.0603305785123967
+        },
+        {
+          "k_per_week": 10,
+          "reviews": 515,
+          "recall": 0.9191919191919192,
+          "precision": 0.5711297071129707,
+          "false_alert_rate": 0.16942148760330578
+        }
+      ]
+    },
+    "Synthetic 2020 (test): regional gap entered as zero": {
+      "kind": "synthetic",
+      "zero_reports": 1710,
+      "positives": 46,
+      "negatives": 1210,
+      "positive_share": 0.03662420382165605,
+      "methods": {
+        "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.8982572763205174,
+          "average_precision": 0.15014591867002144,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.07087827426810478,
+            "f1": 0.1323741007194245,
+            "false_alert_rate": 0.4983471074380165,
+            "tp": 46,
+            "fp": 603,
+            "events": 46,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.034482758620689655,
+              "false_alert_rate": 0.06942148760330578
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03571428571428571,
+              "false_alert_rate": 0.1115702479338843
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.03333333333333333,
+              "false_alert_rate": 0.2396694214876033
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              1.0,
+              1.0
+            ],
+            "false_alert_rate_ci": [
+              0.433128167134196,
+              0.576095611740773
+            ],
+            "f1_ci": [
+              0.11240508418620007,
+              0.1518871461021126
+            ],
+            "auc_ci": [
+              0.86082551222043,
+              0.9280827461805081
+            ]
+          }
+        },
+        "Equal weights (untuned reference)": {
+          "auc": 0.6249550844412505,
+          "average_precision": 0.05776613232757098,
+          "high_band": {
+            "recall": 0.34782608695652173,
+            "precision": 0.05860805860805861,
+            "f1": 0.10031347962382445,
+            "false_alert_rate": 0.21239669421487603,
+            "tp": 16,
+            "fp": 257,
+            "events": 46,
+            "events_detected": 0.34782608695652173,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.037037037037037035,
+              "false_alert_rate": 0.06446280991735537
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03731343283582089,
+              "false_alert_rate": 0.10661157024793388
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.1956521739130435,
+              "precision": 0.031141868512110725,
+              "false_alert_rate": 0.23140495867768596
+            }
+          ]
+        },
+        "Model A v2 alone": {
+          "auc": 0.4315846209126842,
+          "average_precision": 0.032658729712328735,
+          "high_band": {
+            "recall": 0.10869565217391304,
+            "precision": 0.030303030303030304,
+            "f1": 0.04739336492890995,
+            "false_alert_rate": 0.1322314049586777,
+            "tp": 5,
+            "fp": 160,
+            "events": 46,
+            "events_detected": 0.10869565217391304,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.0410958904109589,
+              "false_alert_rate": 0.05785123966942149
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03937007874015748,
+              "false_alert_rate": 0.10082644628099173
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.1956521739130435,
+              "precision": 0.033210332103321034,
+              "false_alert_rate": 0.21652892561983472
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.02127659574468085,
+              0.2047509671179882
+            ],
+            "false_alert_rate_ci": [
+              0.07950530773694496,
+              0.1918502275120337
+            ],
+            "f1_ci": [
+              0.009651771336553946,
+              0.10329416791283907
+            ],
+            "auc_ci": [
+              0.3418637073443102,
+              0.5162163872242764
+            ]
+          }
+        },
+        "Zero-streak length (baseline)": {
+          "auc": 0.36173194394538266,
+          "average_precision": 0.03545801402837389,
+          "high_band": {
+            "recall": 0.13043478260869565,
+            "precision": 0.021660649819494584,
+            "f1": 0.03715170278637771,
+            "false_alert_rate": 0.22396694214876034,
+            "tp": 6,
+            "fp": 271,
+            "events": 46,
+            "events_detected": 0.13043478260869565,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.022556390977443608,
+              "false_alert_rate": 0.10743801652892562
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.023255813953488372,
+              "false_alert_rate": 0.17355371900826447
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.15217391304347827,
+              "precision": 0.016706443914081145,
+              "false_alert_rate": 0.34049586776859503
+            }
+          ]
+        },
+        "Historical mean, 26 weeks (baseline)": {
+          "auc": 0.35375494071146246,
+          "average_precision": 0.02639755149596812,
+          "high_band": {
+            "recall": 0.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "false_alert_rate": 0.04297520661157025,
+            "tp": 0,
+            "fp": 52,
+            "events": 46,
+            "events_detected": 0.0,
+            "weeks_to_detect": NaN
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.045454545454545456,
+              "false_alert_rate": 0.05206611570247934
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.0390625,
+              "false_alert_rate": 0.10165289256198347
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.03496503496503497,
+              "false_alert_rate": 0.228099173553719
+            }
+          ]
+        },
+        "Old Model B rule (fixed)": {
+          "auc": 0.3174811354653252,
+          "average_precision": 0.024908058445697268,
+          "high_band": {
+            "recall": 0.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "false_alert_rate": 0.04214876033057851,
+            "tp": 0,
+            "fp": 51,
+            "events": 46,
+            "events_detected": 0.0,
+            "weeks_to_detect": NaN
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.04054054054054054,
+              "false_alert_rate": 0.05867768595041322
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03759398496240601,
+              "false_alert_rate": 0.10578512396694215
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.03389830508474576,
+              "false_alert_rate": 0.23553719008264462
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.0,
+              0.0
+            ],
+            "false_alert_rate_ci": [
+              0.025015418660985132,
+              0.06452846481218774
+            ],
+            "f1_ci": [
+              0.0,
+              0.0
+            ],
+            "auc_ci": [
+              0.24485268651740144,
+              0.3961514934580354
+            ]
+          }
+        },
+        "Supervised GBM on real swap labels (experiment)": {
+          "auc": 0.7696730147323033,
+          "average_precision": 0.08797449086993595,
+          "high_band": {
+            "recall": 0.8043478260869565,
+            "precision": 0.09046454767726161,
+            "f1": 0.16263736263736261,
+            "false_alert_rate": 0.3074380165289256,
+            "tp": 37,
+            "fp": 372,
+            "events": 46,
+            "events_detected": 0.8043478260869565,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.03488372093023256,
+              "false_alert_rate": 0.06859504132231405
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.034013605442176874,
+              "false_alert_rate": 0.11735537190082644
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.03205128205128205,
+              "false_alert_rate": 0.24958677685950414
+            }
+          ]
+        }
+      },
+      "oracle_weekly_budget": [
+        {
+          "k_per_week": 3,
+          "reviews": 156,
+          "recall": 0.06521739130434782,
+          "precision": 0.025423728813559324,
+          "false_alert_rate": 0.09504132231404959
+        },
+        {
+          "k_per_week": 5,
+          "reviews": 260,
+          "recall": 0.10869565217391304,
+          "precision": 0.024875621890547265,
+          "false_alert_rate": 0.16198347107438016
+        },
+        {
+          "k_per_week": 10,
+          "reviews": 515,
+          "recall": 0.21739130434782608,
+          "precision": 0.026881720430107527,
+          "false_alert_rate": 0.2991735537190083
+        }
+      ]
+    }
+  },
+  "diagnostics": {
+    "normal_zeros": {
+      "2019": {
+        "count": 142,
+        "mean_region_other_zero_share": 0.030809859154929578,
+        "share_above_high_cut": 0.04929577464788732
+      },
+      "2020": {
+        "count": 1210,
+        "mean_region_other_zero_share": 0.35960842188114917,
+        "share_above_high_cut": 0.46859504132231405
+      }
+    },
+    "swaps_2020": {
+      "weeks_with_swaps": 5,
+      "max_swaps_in_a_week": 34,
+      "max_zero_reports_in_a_week": 63,
+      "locations": 126
+    }
+  },
+  "tuning": {
+    "grid_size": 39348,
+    "best_objective": 0.9754841159254006,
+    "n_within_tolerance": 3868,
+    "chosen": {
+      "objective": 0.9689114314142043,
+      "ap_synthetic_2019": 0.9455814829224953,
+      "ap_real_2016_2017": 0.9922413799059133
+    },
+    "equal_weights": {
+      "objective": 0.9595832619748081,
+      "ap_synthetic_2019": 0.9491508636406017,
+      "ap_real_2016_2017": 0.9700156603090145
+    },
+    "synthetic_2019": {
+      "positives": 284,
+      "negatives": 142
+    },
+    "real_2016_2017": {
+      "positives": 370,
+      "negatives": 922
+    }
+  },
+  "supervised": {
+    "chosen": {
+      "max_depth": 3,
+      "learning_rate": 0.05,
+      "max_iter": 100,
+      "min_samples_leaf": 40,
+      "class_weight": "balanced"
+    },
+    "validation_ap_2017": 0.9952385861813128,
+    "grid_size": 48,
+    "train_rows": 1552,
+    "train_positives": 370
+  },
+  "calibration": {
+    "prior_shift": 0.15651438240270732,
+    "train_share": 0.6666666666666666,
+    "real_share": 0.23840206185567012,
+    "method": "isotonic on the score (2019 tuning rows), prior-shifted to the real 2016-2018 share of swapped zeros"
+  }
+}

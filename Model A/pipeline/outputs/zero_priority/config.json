@@ -1,0 +1,139 @@
+{
+  "run_id": "20261023T151711Z",
+  "package_version": "0.2.0",
+  "model_version": "zero_priority_v1",
+  "inputs": {
+    "dengue_table": "surveillance.csv",
+    "sha256": {
+      "surveillance.csv": "d58ede172a8c213f67e04d00700cf49ddd426b885008d90d711a454a7938fecd",
+      "shared/calendar_weeks.csv": "28c20a1f0614fa621f2e3f2b7eb94f9bbc0038b01b4ced83fa3e2616d663b267",
+      "shared/locations.csv": "da1aba98fda636a2c97d17f1f696e44d04d99931dd23b82b048eea8831c196f3",
+      "synthetic/model_a_injected_failures.csv": "37a646a92a2a9750c3e2b883b8563fa58d9983f8aae115e0688cc41b0ae89e2f"
+    }
+  },
+  "model_a": {
+    "variant": "recent1+uncertainty",
+    "run_id": "20261023T075030Z-73b3e833"
+  },
+  "split": {
+    "train": [
+      2016,
+      2018
+    ],
+    "tune": 2019,
+    "test": 2020
+  },
+  "settings": {
+    "MODEL_VERSION": "zero_priority_v1",
+    "P_LOW_SATURATION": 4.0,
+    "EXPECTED_SATURATION": 50.0,
+    "RECENT_SATURATION": 30.0,
+    "RECENT_REPORTS": 4,
+    "ON_OFF_WINDOW": 8,
+    "ON_OFF_SATURATION": 4,
+    "SEASON_HALF_WIDTH": 2,
+    "GRID": {
+      "hist_weeks": [
+        26,
+        52
+      ],
+      "min_hist": [
+        8,
+        13,
+        26
+      ],
+      "streak_saturation": [
+        2,
+        4,
+        6
+      ],
+      "weights": [
+        0,
+        1,
+        2
+      ]
+    },
+    "TUNING_REAL_YEARS": [
+      2016,
+      2017
+    ],
+    "AP_TOLERANCE": 0.01,
+    "BAND_FAR": {
+      "High": 0.05,
+      "Medium": 0.25
+    },
+    "WEEKLY_BUDGETS": [
+      3,
+      5,
+      10
+    ],
+    "PROB_BOOTSTRAP": 200,
+    "PROB_INTERVAL": 0.9,
+    "PROB_CAP": 0.01,
+    "GBM_GRID": {
+      "max_depth": [
+        "2",
+        "3",
+        "5"
+      ],
+      "learning_rate": [
+        "0.05",
+        "0.1"
+      ],
+      "max_iter": [
+        "100",
+        "300"
+      ],
+      "min_samples_leaf": [
+        "10",
+        "40"
+      ],
+      "class_weight": [
+        "None",
+        "balanced"
+      ]
+    }
+  },
+  "chosen": {
+    "hist_weeks": 26,
+    "min_hist": 8,
+    "streak_saturation": 2,
+    "weights": {
+      "unexpected": 1,
+      "missing_cases": 0,
+      "rare_zero": 0,
+      "streak": 0,
+      "recent_activity": 0,
+      "on_off": 0,
+      "regional": 1
+    },
+    "bands": {
+      "High": 31.70980923533593,
+      "Medium": 19.983968666029238
+    }
+  },
+  "thresholds_5pct_far_2019": {
+    "Model B \u00b7 zero-report prioritizer": 31.70980923533593,
+    "Equal weights (untuned reference)": 49.58042026304236,
+    "Model A v2 alone": 2.0714638963024865,
+    "Zero-streak length (baseline)": 5.0,
+    "Historical mean, 26 weeks (baseline)": 35.26923076923077,
+    "Old Model B rule (fixed)": 87.7717019822283,
+    "Supervised GBM on real swap labels (experiment)": 0.009826502730258388
+  },
+  "supervised": {
+    "chosen": {
+      "max_depth": 3,
+      "learning_rate": 0.05,
+      "max_iter": 100,
+      "min_samples_leaf": 40,
+      "class_weight": "balanced"
+    },
+    "validation_ap_2017": 0.9952385861813128,
+    "grid_size": 48,
+    "train_rows": 1552,
+    "train_positives": 370
+  },
+  "api_check_max_score_gap": 2.4879870736072007e-05,
+  "runtime_s": 19.4
+}
