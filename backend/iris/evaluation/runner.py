@@ -41,11 +41,20 @@ def _ratio(num: float, den: float) -> float | None:
     return None if den == 0 else float(num) / float(den)
 
 
+def _f1(precision: float | None, recall: float | None) -> float | None:
+    """Harmonic mean; undefined only when precision or recall is undefined."""
+    if precision is None or recall is None:
+        return None
+    if precision + recall == 0:
+        return 0.0
+    return 2 * precision * recall / (precision + recall)
+
+
 def _binary_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred, labels=[False, True]).ravel()
     precision = _ratio(tp, tp + fp)
     recall = _ratio(tp, tp + fn)
-    f1 = None if not precision or not recall else 2 * precision * recall / (precision + recall)
+    f1 = _f1(precision, recall)
     return {
         "tp": int(tp), "fp": int(fp), "fn": int(fn), "tn": int(tn),
         "precision": precision, "recall": recall, "false_alarm_rate": _ratio(fp, fp + tn), "f1": f1,
