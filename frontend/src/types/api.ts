@@ -108,7 +108,10 @@ export interface Evidence { id: number; kind: EvidenceKind; title: string; detai
 export interface TimelineRow {
   week: number; in_concern: boolean; expected: number; on_time: number; late: number; not_received: number; incomplete: number;
   cases: number; deficit: number; baseline_median: number; history_weeks: number; own_z: number; score: number; flagged: boolean;
-  count_expected: number | null; count_p: number | null; peer_support: number; peer_affected: string[];
+  count_expected: number | null; count_p: number | null;
+  /** Simulated 90% reference band for the weekly count (Poisson, unit history). Not a forecast. */
+  count_band: [number, number] | null;
+  peer_support: number; peer_affected: string[];
 }
 
 export interface ConcernDetail {

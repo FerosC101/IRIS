@@ -226,3 +226,14 @@ def test_zero_case_run_concern_from_demo_scenario(client):
     assert any("not a missing submission" in e["detail"] for e in d["evidence"])
     # The answer key ties it to the injected scenario.
     assert any((e["data"].get("scenario") or {}).get("id") == "S11-ZERO-TALA2" for e in d["evidence"])
+
+
+def test_flags_carry_a_simulated_reference_band(client):
+    for cid in ("C-0021", "C-0012"):
+        ev = client.get(f"/api/concerns/{cid}", headers=RESU).json()["evidence"]
+        band = next(e["data"]["reference_band"] for e in ev if "reference_band" in e["data"])
+        assert band["label"] == "Simulated reference band" and 0 <= band["low"] <= band["high"]
+    zero = next(e for e in client.get("/api/concerns/C-0021", headers=RESU).json()["evidence"] if "reference_band" in e["data"])
+    assert zero["data"]["reference_band"]["per"] == "week" and zero["data"]["reference_band"]["low"] > 0
+    rows = client.get("/api/concerns/C-0012", headers=RESU).json()["timeline"]["units"]["RHU-TALA-1"]
+    assert any(r["count_band"] for r in rows)

@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
+from scipy.stats import poisson
 
 from iris import config
 from iris.data.world import CATEGORY_BY_CODE
@@ -52,6 +53,32 @@ class ConcernSpec:
     @property
     def detection_week(self) -> int:
         return self.w0 if self.detected_w is None else self.detected_w
+
+
+REFERENCE_LEVEL = 0.9
+
+
+def reference_band(mean: float, per: str, category: str | None = None) -> dict | None:
+    """Central 90% Poisson interval around a mean taken from the unit's own previous weeks.
+
+    It shows the range of counts the simple model would usually produce. It is
+    simulated: not a forecast, and not a verified expected count.
+    """
+    if mean is None or not np.isfinite(mean) or mean < 0:
+        return None
+    tail = (1 - REFERENCE_LEVEL) / 2
+    return {
+        "low": int(poisson.ppf(tail, mean)), "high": int(poisson.ppf(1 - tail, mean)), "mean": round(float(mean), 2),
+        "level": REFERENCE_LEVEL, "per": per, "category": category,
+        "label": "Simulated reference band",
+        "source": "Poisson model of the unit's previous weeks",
+        "note": "Simulated from the unit's recent reports. Not a forecast or a verified expected count; seasonality and reporting changes may affect it.",
+    }
+
+
+def _band_pair(mean) -> list[int] | None:
+    band = None if pd.isna(mean) else reference_band(float(mean), "week")
+    return [band["low"], band["high"]] if band else None
 
 
 def period_text(w0: int, w1: int) -> str:
@@ -204,6 +231,7 @@ def _week_rows(results: pd.DataFrame, unit_id: str, w0: int, w1: int, last_week:
             "baseline_median": round(float(r.baseline_median), 3), "history_weeks": int(r.history_weeks),
             "own_z": round(float(r.own_z), 2), "score": round(float(r.score), 2), "flagged": bool(r.flagged),
             "count_expected": None if pd.isna(r.count_expected) else round(float(r.count_expected), 1),
+            "count_band": _band_pair(r.count_expected),
             "count_p": None if pd.isna(r.count_p) else float(r.count_p),
             "peer_support": round(float(r.peer_support), 2),
             "peer_affected": list(r.peer_affected) if isinstance(r.peer_affected, list) else [],
@@ -361,7 +389,8 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
                     {"kind": "observed", "title": f"{streak} consecutive zero-case reports for {cat_name}",
                      "detail": summary,
                      "data": {"category": code, "run_weeks": list(range(w0, w1 + 1)), "run_length": streak,
-                              "baseline_mean": round(mean, 2), "baseline_weeks": n_hist, "p_run": p_run}},
+                              "baseline_mean": round(mean, 2), "baseline_weeks": n_hist, "p_run": p_run,
+                              "reference_band": reference_band(mean, "week", code)}},
                     {"kind": "observed", "title": "These are received reports, not missing ones",
                      "detail": "Zero-case reports count toward completeness. A missing submission would be a different problem.", "data": {}},
                     {"kind": "possible_explanation", "title": "Zero may be valid",
@@ -407,7 +436,8 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
                 cats = [b["category"] for b in breakdown if b["expected"] and b["observed"] < 0.5 * b["expected"]][:3]
                 evidence = [
                     {"kind": "observed", "title": "Reported counts were much lower than recent weeks", "detail": summary,
-                     "data": {"observed": obs, "expected": round(exp_, 1), "by_category": breakdown}},
+                     "data": {"observed": obs, "expected": round(exp_, 1), "by_category": breakdown,
+                              "reference_band": reference_band(exp_, "period")}},
                     {"kind": "possible_explanation", "title": "Several explanations are possible",
                      "detail": "Possible explanations include under-reporting, a data-entry error, or a genuine decline in cases (for example the end of a seasonal peak). "
                                "An unusual count alone is not evidence of under-reporting.", "data": {}},

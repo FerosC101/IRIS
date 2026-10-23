@@ -122,3 +122,12 @@ def test_zero_run_ignores_categories_where_zeros_are_usual():
 
 def test_zero_run_needs_enough_history():
     assert not any(_zero_flags(_slots("A", "DENGUE", [5, 6, "zero", "zero", "zero", "zero"])).values())
+
+
+def test_reference_band_is_a_labelled_poisson_interval():
+    from iris.services.concern_builder import reference_band
+
+    b = reference_band(3.25, "week", "DENGUE")
+    assert (b["low"], b["high"]) == (1, 6)
+    assert b["label"] == "Simulated reference band" and "Not a forecast" in b["note"]
+    assert reference_band(float("nan"), "week") is None
