@@ -132,5 +132,10 @@ class ExperimentIn(BaseModel):
     base_seed: int = Field(default=7100, ge=0, le=10_000_000)
 
 
+RESET_CONFIRMATION = "RESET"
+
+
 class ResetIn(BaseModel):
     scenario_ids: list[str] | None = None
+    #: The caller must type RESET: resetting deletes every change made in the demo.
+    confirm: str | None = Field(default=None, max_length=20)

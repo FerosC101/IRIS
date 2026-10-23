@@ -201,3 +201,15 @@ def test_unknown_demo_user_is_rejected_not_replaced(client):
     # No header at all still means the default demo user.
     assert client.get("/api/meta").json()["actor"]["user_id"] == "U-RESU-1"
     assert client.get("/api/meta", headers=PROV).json()["actor"]["user_id"] == "U-PROV-MLY"
+
+
+def test_demo_reset_requires_typed_confirmation(fresh):
+    c = fresh
+    assert c.post("/api/concerns/C-0020/notes", json={"body": "Note that must survive a refused reset."}, headers=PROV).status_code == 200
+    assert c.post("/api/demo/reset", json={}, headers=RESU).status_code == 422
+    r = c.post("/api/demo/reset", json={"confirm": "reset please"}, headers=RESU)
+    assert r.status_code == 422 and "Type RESET" in r.json()["detail"]
+    notes = c.get("/api/concerns/C-0020", headers=PROV).json()["notes"]
+    assert any(n["body"] == "Note that must survive a refused reset." for n in notes)
+    assert c.post("/api/demo/reset", json={"confirm": "RESET"}, headers=RESU).status_code == 200
+    assert not any(n["body"].startswith("Note that must survive") for n in c.get("/api/concerns/C-0020", headers=PROV).json()["notes"])

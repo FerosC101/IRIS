@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -12,7 +12,7 @@ from iris.db import get_session
 from iris.detection.methods import METHOD_LABELS
 from iris.models import ReportingCategory, ReportingUnit, Role, User
 from iris.optimization.planner import ACTION_TYPES
-from iris.schemas import ResetIn
+from iris.schemas import RESET_CONFIRMATION, ResetIn
 from iris.services import audit, datasets
 from iris.services.concerns import STATUS_LABELS, TYPE_LABELS
 from iris.services.context import PERMISSIONS, Actor, get_actor
@@ -59,7 +59,12 @@ def scenarios() -> list[dict]:
 
 @router.post("/demo/reset")
 def reset(body: ResetIn, actor: Actor = Depends(get_actor)) -> dict:
-    """Rebuild the demo database. Available to every demo role: it is a demo control, not a data operation."""
+    """Rebuild the demo database. Available to every demo role: it is a demo control, not a data operation.
+
+    Destructive: every table is recreated, so the caller must send the typed confirmation.
+    """
+    if (body.confirm or "").strip() != RESET_CONFIRMATION:
+        raise HTTPException(status_code=422, detail=f"Type {RESET_CONFIRMATION} to confirm. Resetting deletes every change made in this demo.")
     result = seed.reset(body.scenario_ids)
     from iris.db import SessionLocal
     with SessionLocal() as s:

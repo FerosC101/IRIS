@@ -20,7 +20,7 @@ def client():
 @pytest.fixture()
 def fresh(client):
     """Reset the demo database before a test that mutates it."""
-    r = client.post("/api/demo/reset", json={})
+    r = client.post("/api/demo/reset", json={"confirm": "RESET"})
     assert r.status_code == 200
     return client
 

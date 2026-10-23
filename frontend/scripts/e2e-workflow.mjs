@@ -22,7 +22,7 @@ async function as(user, width = 1440) {
 }
 
 let page = await as("U-RESU-1");
-await page.request.post(`${BASE}/api/demo/reset`, { data: {}, headers: { "X-IRIS-User": "U-ADMIN" } });
+await page.request.post(`${BASE}/api/demo/reset`, { data: { confirm: "RESET" }, headers: { "X-IRIS-User": "U-ADMIN" } });
 
 await step("concern: start review, confirm with reason, assign, note, resolve", async () => {
   await page.goto(`${BASE}/investigations/C-0019`);

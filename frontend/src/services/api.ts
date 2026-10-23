@@ -10,7 +10,9 @@ type Params = Record<string, string | number | boolean | null | undefined>;
 export const api = {
   meta: () => request<Meta>("/meta"),
   scenarios: () => request<DemoScenario[]>("/demo/scenarios"),
-  resetDemo: (scenario_ids?: string[]) => request<{ concerns: number; records: number; scenarios: string[] }>("/demo/reset", { method: "POST", json: { scenario_ids: scenario_ids ?? null } }),
+  /** Destructive: `confirm` must be the typed word RESET. */
+  resetDemo: (confirm: string, scenario_ids?: string[]) =>
+    request<{ concerns: number; records: number; scenarios: string[] }>("/demo/reset", { method: "POST", json: { scenario_ids: scenario_ids ?? null, confirm } }),
 
   overview: (p: Params) => request<Overview>(`/overview${qs(p)}`),
   concerns: (p: Params) => request<Paged<QueueRow>>(`/concerns${qs(p)}`),
