@@ -1,0 +1,101 @@
+/* IRIS light foundation. Cards are white with a 1px border; dark surfaces are
+   explicit (.iris-surface-dark) and rescope the text tokens so the same
+   utilities stay legible on them. */
+:root {
+  --iris-background: #F7F9F9;
+  --iris-surface-solid: #FFFFFF;
+  --iris-surface-subtle: #E7F1F2;
+  --iris-text-heading: #0A3A4A;
+  --iris-text-accent: #0E6680;
+  --iris-text-muted: #4F6670;
+  --iris-border: 1px solid #A9BAC0;
+  --iris-hover-surface: #E7F1F2;
+  --iris-focus-ring: 2px solid #0E6680;
+  --iris-transition: 160ms ease;
+  --iris-radius-control: 6px;
+  --iris-radius-card: 8px;
+  --iris-radius-feature: 8px;
+  --iris-space-1: 0.25rem;
+  --iris-space-2: 0.5rem;
+  --iris-space-3: 0.75rem;
+  --iris-space-4: 1rem;
+  --iris-space-6: 1.5rem;
+  --iris-space-8: 2rem;
+  --iris-space-12: 3rem;
+  --iris-type-heading: clamp(1.5rem, 1.2rem + 0.9vw, 1.875rem);
+  --iris-type-subtitle: 0.875rem;
+  --iris-type-body: 0.875rem;
+  --iris-type-label: 0.8125rem;
+  --iris-type-metric: clamp(1.875rem, 1.5rem + 1vw, 2.5rem);
+  --iris-weight-body: 400;
+  --iris-weight-label: 500;
+  --iris-weight-heading: 500;
+  --iris-weight-metric: 500;
+  /* Charts: solid observed series, dashed comparison series. */
+  --iris-chart-1: #0E6680;
+  --iris-chart-2: #7893A8;
+  --iris-chart-axis: #4F6670;
+  --iris-chart-grid: #DCE4E6;
+}
+
+@layer components {
+  .iris-atmosphere { background-color: var(--iris-background); }
+
+  .iris-surface { position: relative; min-width: 0; border: var(--iris-border); border-radius: var(--iris-radius-card); background-color: var(--iris-surface-solid); }
+  .iris-surface-secondary { background-color: var(--iris-surface-subtle); border-color: #C5D6DA; }
+  .iris-surface-metric, .iris-surface-light, .iris-surface-hero { background-color: var(--iris-surface-solid); }
+
+  /* Dark card: nav, "Signals, not conclusions", queue panel, photo heroes. */
+  .iris-surface-dark, .iris-dark-scope, .iris-sidebar, .iris-decision-hero {
+    color-scheme: dark;
+    color: #E6FFFC;
+    background-color: #0A3A4A;
+    border-color: #0A3A4A;
+    --color-ink: #E6FFFC;
+    --color-ink-2: #B9D8DC;
+    --color-line: rgb(152 224 216 / 0.24);
+    --color-line-strong: rgb(152 224 216 / 0.46);
+    --color-teal-900: #98E0D8;
+    --color-critical-ink: #F2B3AD;
+    --color-attention-ink: #F0CF8A;
+    --color-positive-ink: #A7DDBF;
+    --color-info-ink: #98E0D8;
+    --color-info-bg: rgb(152 224 216 / 0.14);
+    --color-porcelain: rgb(152 224 216 / 0.12);
+    --color-critical-bg: rgb(182 95 89 / 0.28);
+    --color-attention-bg: rgb(201 138 26 / 0.24);
+    --color-positive-bg: rgb(62 142 102 / 0.28);
+    --iris-surface-solid: #0A3A4A;
+    --iris-surface-subtle: rgb(152 224 216 / 0.08);
+    --iris-text-heading: #FFFFFF;
+    --iris-text-accent: #98E0D8;
+    --iris-text-muted: #B9D8DC;
+    --iris-hover-surface: rgb(152 224 216 / 0.12);
+    --iris-focus-ring: 2px solid #98E0D8;
+    --iris-chart-1: #98E0D8;
+    --iris-chart-2: #5DD9DB;
+    --iris-chart-axis: #B9D8DC;
+    --iris-chart-grid: rgb(152 224 216 / 0.18);
+  }
+
+  .iris-type-heading { font-family: var(--font-display); font-size: var(--iris-type-heading); font-weight: var(--iris-weight-heading); letter-spacing: -0.015em; }
+  .iris-type-subtitle { font-size: var(--iris-type-subtitle); color: var(--iris-text-muted); }
+  .iris-type-label { font-size: var(--iris-type-label); font-weight: var(--iris-weight-label); }
+  .iris-type-metric { font-family: var(--font-display); font-size: var(--iris-type-metric); font-weight: var(--iris-weight-metric); letter-spacing: -0.02em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+
+  .iris-button { border: 1px solid transparent; border-radius: var(--iris-radius-control); transition: background-color var(--iris-transition), border-color var(--iris-transition), color var(--iris-transition); }
+  .iris-button-primary { color: #FFFFFF; background: #0A3A4A; }
+  .iris-button-primary:hover:not(:disabled) { background: #0E6680; }
+  .iris-button-secondary { color: var(--color-ink); background: var(--iris-surface-solid); border-color: var(--color-line-strong); }
+  .iris-button-secondary:hover:not(:disabled), .iris-button-ghost:hover:not(:disabled) { background: var(--iris-hover-surface); border-color: var(--iris-text-accent); }
+  .iris-button-ghost, .iris-button-link { color: var(--iris-text-accent); background: transparent; }
+  .iris-button-danger { color: var(--color-critical-ink); border-color: rgb(182 95 89 / 0.5); background: var(--color-critical-bg); }
+  .iris-button-danger:hover:not(:disabled) { border-color: var(--color-critical); }
+  .iris-surface-dark .iris-button-primary, .iris-dark-scope .iris-button-primary { color: #0A3A4A; background: #FFFFFF; }
+  .iris-surface-dark .iris-button-primary:hover:not(:disabled), .iris-dark-scope .iris-button-primary:hover:not(:disabled) { background: #E7F1F2; }
+
+  .iris-control { background: var(--iris-surface-solid); transition: border-color var(--iris-transition); }
+  .iris-control:hover:not(:disabled) { border-color: var(--iris-text-accent); }
+  .iris-control:disabled { opacity: 0.6; cursor: not-allowed; }
+  .iris-badge { min-height: 22px; border-radius: 4px; padding: 1px 8px; font-weight: 600; }
+}

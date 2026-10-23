@@ -4,18 +4,20 @@ export type Role = "rhu_staff" | "provincial_coordinator" | "resu_analyst" | "ad
 export type Severity = "high" | "medium" | "low";
 export type ConcernStatus = "open" | "under_review" | "clarification_requested" | "in_investigation" | "resolved" | "dismissed";
 export type Verification = "unverified" | "confirmed" | "dismissed";
-export type ConcernType = "missing_submission" | "late_report" | "incomplete_record" | "count_drop" | "shared_problem";
-export type EvidenceKind = "observed" | "possible_explanation" | "requires_verification" | "confirmed_by_reviewer" | "simulated_example";
+export type ConcernType = "missing_submission" | "late_report" | "incomplete_record" | "count_drop" | "shared_problem" | "zero_case_run" | "reviewer_raised";
+export type EvidenceKind = "observed" | "possible_explanation" | "requires_verification" | "confirmed_by_reviewer" | "attached" | "simulated_example";
 export type SlotStatus = "on_time" | "late" | "not_received" | "received";
 export type ValueStatus = "reported" | "zero" | "blank";
 export type Method = "threshold" | "ewma" | "network";
+/** How a concern was raised: a detection method, or "human" for a reviewer. */
+export type ConcernMethod = Method | "human";
 export type Designation = "synthetic" | "real" | "unknown";
 export type AssignmentStatus = "approved" | "in_progress" | "completed" | "closed" | "cancelled";
 export type OutcomeStatus = "not_yet_verified" | "observed_unverified" | "verified";
 
 export interface Paged<T> { rows: T[]; total: number; page: number; page_size: number; pages: number }
 
-export interface WeekLabel { week: number; start: string; end: string; iso_week: number; label: string }
+export interface WeekLabel { week: number; start: string; end: string; iso_week: number; label: string; /** "ISO W40 · 28 Sep–04 Oct" */ iso_label: string }
 export interface Category { code: string; name: string; description: string; frequency: "weekly" | "monthly" }
 export interface DemoUser { id: string; display_name: string; role: Role; reporting_unit_id: string | null; province: string | null }
 export interface UnitSummary { id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean }
@@ -44,6 +46,10 @@ export interface Meta {
 export interface QueueRow {
   kind: "concern" | "follow_up";
   id: string;
+  /** INV-xxxx once the concern has an investigation. */
+  investigation_id: string | null;
+  /** Identifier to show: the investigation id when there is one, otherwise the item id. */
+  display_id: string;
   title: string;
   units: string[];
   units_label: string;
@@ -94,13 +100,19 @@ export interface Overview {
 export interface ConcernUnit { id: string; name: string; unit_type: UnitType; province: string }
 
 export interface Concern {
-  id: string; dataset_id: string; concern_type: ConcernType; concern_type_label: string; title: string; summary: string;
+  id: string; investigation_id: string | null; display_id: string; dataset_id: string; concern_type: ConcernType; concern_type_label: string; title: string; summary: string;
   severity: Severity; status: ConcernStatus; status_label: string; verification: Verification; category_code: string | null; categories: string[];
   period_start: string; period_end: string; week_start_index: number; week_end_index: number; primary_unit_id: string | null;
-  province: string | null; shared_via: string | null; detection_method: Method; detection_method_label: string; score: number;
+  province: string | null; shared_via: string | null; detection_method: ConcernMethod; detection_method_label: string; score: number;
   uncertainty_note: string; created_at: string; updated_at: string; assigned_user_id: string | null; assigned_user: string | null;
   assigned_role: string | null; follow_up_due: string | null; confirmation_reason: string | null; dismissal_reason: string | null;
   resolution_summary: string | null; resolved_at: string | null; simulated: boolean; units: ConcernUnit[];
+}
+
+/** A verification step. "resolution" is completed only by resolving the concern. */
+export interface ChecklistItem {
+  id: number; position: number; label: string; detail: string; kind: "check" | "resolution";
+  done: boolean; done_by: string | null; done_at: string | null; note: string;
 }
 
 export interface Evidence { id: number; kind: EvidenceKind; title: string; detail: string; data: Record<string, unknown>; created_at: string; created_by: string | null }
@@ -108,7 +120,10 @@ export interface Evidence { id: number; kind: EvidenceKind; title: string; detai
 export interface TimelineRow {
   week: number; in_concern: boolean; expected: number; on_time: number; late: number; not_received: number; incomplete: number;
   cases: number; deficit: number; baseline_median: number; history_weeks: number; own_z: number; score: number; flagged: boolean;
-  count_expected: number | null; count_p: number | null; peer_support: number; peer_affected: string[];
+  count_expected: number | null; count_p: number | null;
+  /** Simulated 90% reference band for the weekly count (Poisson, unit history). Not a forecast. */
+  count_band: [number, number] | null;
+  peer_support: number; peer_affected: string[];
 }
 
 export interface ConcernDetail {
@@ -119,17 +134,24 @@ export interface ConcernDetail {
   notes: { id: number; note_type: string; body: string; created_at: string; author: string }[];
   investigation: { id: string; owner: string; owner_user_id: string; status: "open" | "closed"; opened_at: string; closed_at: string | null } | null;
   next_step: { text: string; action: string | null };
+  /** Backend rule: resolving needs a confirmed (human-reviewed) finding and evidence a person attached. */
+  resolution_requirements: { verified: boolean; evidence_attached: boolean; can_resolve: boolean; missing: string[] };
+  checklist: { items: ChecklistItem[]; done: number; total: number };
   activity: { id: number; at: string; action: string; summary: string; actor: string; detail: Record<string, unknown> }[];
   related: QueueRow[];
   actions: { id: string; title: string; action_type: string; status: string }[];
-  assignments: { id: string; title: string; status: AssignmentStatus; due_date: string }[];
+  assignments: { id: string; title: string; status: AssignmentStatus; due_date: string; assignee_user_id: string | null; assignee: string | null;
+    responsible_role: Role; evidence_of_completion: string | null }[];
   assignable_users: { id: string; display_name: string; role: Role }[];
   detection_params: Record<string, number>;
 }
 
 export interface NetworkNode {
   id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean; is_sentinel: boolean;
-  x: number; y: number; status: "normal" | "delayed" | "missing" | "no_schedule"; status_label: string;
+  x: number; y: number;
+  /** Schematic, fictional map position (0-1000); null when not defined. */
+  geo_x: number | null; geo_y: number | null;
+  status: "normal" | "delayed" | "missing" | "no_schedule"; status_label: string;
   completeness: number | null; timeliness: number | null; expected: number; open_concerns: number; downstream_units: number | null;
   degree: number; simulated: boolean;
 }
@@ -139,6 +161,7 @@ export interface NetworkGraphData {
   defined: boolean; message?: string; nodes: NetworkNode[]; edges: NetworkEdge[];
   relationship_types: { type: RelationshipType; description: string }[]; status_labels: Record<string, string>;
   window: { from: number; to: number }; note: string;
+  geography?: { available: boolean; width: number; height: number; provinces: { name: string; outline: [number, number][] }[]; note: string };
 }
 export interface SlotSummary { expected: number; received: number; on_time: number; late: number; not_received: number; completeness: number | null; timeliness: number | null }
 export interface UnitDetail {
@@ -155,6 +178,8 @@ export interface Dataset {
   imported_at: string; imported_by: string | null; coverage_start: string | null; coverage_end: string | null; row_count: number;
   validation_status: "valid" | "valid_with_warnings" | "invalid"; known_limitations: string[]; has_expectations: boolean;
   has_timestamps: boolean; has_units: boolean; is_demo: boolean;
+  /** SHA-256 recorded at ingestion: of the uploaded file, or of a canonical record export for generated data. */
+  checksum: string | null; checksum_basis: "uploaded_file" | "canonical_records" | null; checksum_algorithm: "SHA-256" | null;
 }
 export interface ImportIssue { row: number | null; column: string | null; value?: string | null; message: string }
 export interface ImportRecord { id: string; dataset_id?: string | null; filename: string; at: string; by: string | null; status: "accepted" | "rejected" | "cancelled"; row_count: number; errors: ImportIssue[]; warnings: ImportIssue[] }
@@ -173,15 +198,24 @@ export interface DatasetDetail extends Dataset {
   imports: ImportRecord[];
   quality: Quality;
   concerns: number;
+  integrity: { recorded: boolean; records_unchanged: boolean | null; current_records_checksum: string | null; records_checksum_at_ingestion?: string; note: string };
 }
-export interface RecordRow {
+export interface RecordRow extends LinkedConcern {
   record_id: number | null; unit_id: string | null; unit_name: string | null; province: string | null; area: string | null; unit_type: UnitType | null;
   category_code: string | null; frequency: string | null; period_start: string; period_end: string | null; week: number | null;
   value: number | null; value_status: ValueStatus | null; due_at: string | null; received_at: string | null; status: SlotStatus;
   days_late: number | null; fields_complete: number | null; revision: number | null;
+  /** RPT-xxxx. Null for a missing submission, which is not a report. */
+  report_id: string | null;
 }
-export interface RecordDetail {
-  id: number; dataset_id: string; unit: { id: string; name: string; province: string } | null; area: string | null; category_code: string | null;
+/** The concern a report or missing submission belongs to, if any. */
+export interface LinkedConcern {
+  concern_id: string | null; investigation_id: string | null; concern_status: ConcernStatus | null;
+  concern_verification: Verification | null; concern_type: ConcernType | null;
+}
+export interface RecordDetail extends LinkedConcern {
+  id: number; report_id: string; dataset_id: string; dataset_name: string; designation: Designation; week: number | null;
+  unit: { id: string; name: string; province: string } | null; area: string | null; category_code: string | null;
   period_start: string; period_end: string | null; value: number | null; value_status: ValueStatus; due_at: string | null; received_at: string | null;
   status: "on_time" | "late" | null; fields_complete: number | null; source_row: number | null; revision: number; note: string;
   history: { at: string; summary: string; action: string }[];
@@ -266,7 +300,7 @@ export interface MethodResult {
   by_kind: { kind: string; label: string; unit_weeks: number; recall: number | null; events: number; event_detection_rate: number | null; median_delay_weeks: number | null }[];
   by_severity: { severity: Severity; unit_weeks: number; recall: number | null }[];
   false_alarm_context: Record<"background" | "holiday" | "outbreak" | "after_disruption", number>;
-  false_alarm_channel: Record<"reporting_delay" | "count_drop_only" | "incomplete_only", number>;
+  false_alarm_channel: Record<"reporting_delay" | "count_drop_only" | "incomplete_only" | "zero_run_only", number>;
   shared_identification: null | { shared_detections: number; shared_labelled_shared: number | null; isolated_detections: number; isolated_labelled_shared: number | null };
 }
 export interface ExperimentSummary {
@@ -283,5 +317,77 @@ export interface Experiment extends ExperimentSummary {
 }
 
 export interface AuditRow { id: number; at: string; actor: string; actor_role: Role | null; entity_type: string; entity_id: string; action: string; summary: string }
-export interface UnitRow { id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean; is_sentinel: boolean; notes: string; simulated: boolean; updated_at: string | null }
+export interface UnitRow { id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean; is_sentinel: boolean; notes: string; simulated: boolean; updated_at: string | null; geo_x: number | null; geo_y: number | null }
 export interface DemoScenario { id: string; kind: string; kind_label: string; units: string[]; unit_names: string[]; start_week: number; end_week: number; severity: Severity; description: string; is_disruption: boolean; period: string }
+
+/** Unit-level state of one expected weekly report. A missing submission is not a report; blank is not zero. */
+export type ReportState = "reported" | "zero" | "blank" | "missing" | "not_expected";
+export interface UnitCounts {
+  expected: number; received: number; on_time: number; late: number;
+  with_cases: number; zero: number; blank: number; missing: number;
+  completeness: number | null; timeliness: number | null;
+}
+export interface SurveillanceSummary {
+  dataset: { id: string; name: string; designation: Designation };
+  category: { code: string; name: string };
+  week: WeekLabel;
+  as_of: string;
+  available: boolean;
+  message?: string;
+  scope?: { role: Role; province: string | null; unit_type: string | null; unit_id: string | null };
+  units?: UnitCounts;
+  cases?: { total: number | null; previous_total: number | null; change: number | null; note: string };
+  flow?: { expected_units: number; reports_received: number; flags: number; under_verification: number; actions_assigned: number; flag_ids: string[]; verifying_ids: string[] };
+  trend?: { week: number; iso_week: number; start: string; end: string; cases: number | null; trailing_median: number | null; received: number; expected: number; blank: number; completeness: number | null }[];
+  trend_note?: string;
+  heatmap?: {
+    weeks: WeekLabel[];
+    units: { unit_id: string; name: string; unit_type: UnitType | null; province: string | null;
+      cells: { week: number; state: ReportState; value: number | null; report_id: string | null; record_id?: number | null; concern_id: string | null; investigation_id?: string | null }[] }[];
+  };
+  notes?: string[];
+}
+
+/** A reminder recorded for a missing submission. Simulated: nothing is sent. */
+export interface Reminder {
+  id: number; at: string; by: string | null; unit_id: string; category_code: string | null; period_start: string | null;
+  message: string | null; simulated: true; delivered: false; summary: string; note: string;
+}
+
+export interface LineageStep {
+  id: string; kind: "source" | "ingest" | "import" | "validate" | "derive" | "analysis" | "review" | "respond";
+  label: string; detail: string; at?: string; by?: string | null; available?: boolean; status?: string; designation?: Designation;
+  checksum?: string | null; checksum_basis?: string | null; count?: number; open?: number;
+}
+export interface Lineage {
+  dataset: { id: string; name: string; designation: Designation; is_demo: boolean };
+  steps: LineageStep[];
+  edges: [string, string][];
+  /** Seeding, resets, detection runs, imports and experiments that touched this dataset. */
+  runs: { id: number; at: string; action: string; by: string; summary: string; elapsed_ms: number | null; simulated: boolean }[];
+  note: string;
+}
+
+export type DetectionChannel = "delay" | "incomplete" | "count" | "zero_run";
+export interface DetectionWeek { week: number; iso_week: number; iso_label: string; total: number; delay: number; incomplete: number; count: number; zero_run: number }
+/** Real detector output and configuration. IRIS has no trained models; these are statistical methods. */
+export interface DetectionSummary {
+  dataset: { id: string; name: string; designation: Designation };
+  in_use: Method;
+  available: boolean;
+  message?: string;
+  channels: { key: DetectionChannel; label: string }[];
+  parameters: { key: string; label: string; value: number; unit: string; channel: DetectionChannel }[];
+  parameter_note: string;
+  human_verification_required: true;
+  human_verification_note: string;
+  window?: { from: number; to: number };
+  methods: { method: Method; label: string; role: "in_use" | "comparison"; role_label: string; weeks: DetectionWeek[]; latest: DetectionWeek }[];
+  evaluation?: null | {
+    experiment_id: string; name: string; created_at: string; replications: number | null; base_seed: number | null;
+    by_method: Record<Method, { precision: number | null; recall: number | null; false_alarm_rate: number | null; f1: number | null }>;
+    note: string;
+  };
+  disclaimer?: string;
+  note?: string;
+}

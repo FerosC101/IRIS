@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { fmtPct, fmtPeriod, fmtSigned, setDateStyle } from "@/lib/format";
-import { canAccess, navFor } from "@/lib/navigation";
+import { canAccess, navFor, sectionTabs, topNavFor } from "@/lib/navigation";
 import { reportSchema } from "@/features/overview/SubmitReportDialog";
 import { metaSchema } from "@/features/data-management/ImportWizard";
 import { reasonSchema } from "@/features/investigations/ActionDialogs";
@@ -26,19 +26,28 @@ describe("format", () => {
 });
 
 describe("role-aware navigation", () => {
-  it("restricts analysis pages by role", () => {
-    expect(canAccess("/planner", "rhu_staff")).toBe(false);
-    expect(canAccess("/planner", "provincial_coordinator")).toBe(true);
-    expect(canAccess("/evaluation", "admin")).toBe(true);
+  it("restricts pages by role, using the most specific route", () => {
+    expect(canAccess("/investigations/plan", "rhu_staff")).toBe(false);
+    expect(canAccess("/investigations/plan", "provincial_coordinator")).toBe(true);
+    expect(canAccess("/investigations/follow-up", "rhu_staff")).toBe(true);
+    expect(canAccess("/data/evaluation", "admin")).toBe(true);
     expect(canAccess("/investigations/C-0001", "admin")).toBe(false);
-    expect(canAccess("/data/import", "rhu_staff")).toBe(true); // route-level; the API still refuses the import
+    expect(canAccess("/data/import", "rhu_staff")).toBe(false);
+    expect(canAccess("/data", "provincial_coordinator")).toBe(false);
+    expect(canAccess("/reports", "rhu_staff")).toBe(true);
+    expect(canAccess("/reports/analysis", "rhu_staff")).toBe(false);
     expect(canAccess("/", "rhu_staff")).toBe(true);
   });
-  it("gives every role a home page, settings and help", () => {
+  it("gives every role the dashboard, settings and help", () => {
     for (const r of ["rhu_staff", "provincial_coordinator", "resu_analyst", "admin"] as const) {
       const labels = navFor(r).map((n) => n.label);
-      expect(labels).toEqual(expect.arrayContaining(["Home", "Settings", "Help"]));
+      expect(labels).toEqual(expect.arrayContaining(["Dashboard", "Settings", "Help"]));
     }
+  });
+  it("shows the five main sections only to roles that can open them", () => {
+    expect(topNavFor("resu_analyst").map((n) => n.label)).toEqual(["Dashboard", "Reports & Analysis", "Reporting Network", "Investigations & Actions", "Data & Models"]);
+    expect(topNavFor("rhu_staff").map((n) => n.label)).toEqual(["Dashboard", "Reports & Analysis", "Investigations & Actions"]);
+    expect(sectionTabs("investigations", "rhu_staff").map((n) => n.to)).toEqual(["/investigations", "/investigations/follow-up"]);
   });
 });
 

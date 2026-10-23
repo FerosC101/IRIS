@@ -9,6 +9,10 @@ All methods share two simple channels so that comparisons isolate the
   whose mean is the unit's recent average (only assessed when the week's
   reports were mostly received, so missing reports are not mistaken for a
   drop). A count drop is *not* proof of under-reporting.
+* Zero-case run: a unit submitted explicit zero-case reports for a category
+  for several consecutive weeks, and such a run is improbable under a Poisson
+  model with the unit's own recent mean for that category. Zero-case reports
+  are reports: the run may be valid, and a flag does not establish a cause.
 
 The reporting-delay channel differs by method:
 
@@ -29,6 +33,8 @@ from dataclasses import asdict, dataclass
 import numpy as np
 import pandas as pd
 from scipy.stats import poisson
+
+from iris.detection.features import ZERO_RUN_MIN_MEAN
 
 METHODS = ("threshold", "ewma", "network")
 METHOD_LABELS = {
@@ -60,6 +66,10 @@ class DetectionParams:
     count_min_expected: float = 4.0
     count_min_history: int = 4
     count_min_received_share: float = 0.75
+    zero_run_weeks: int = 3
+    zero_run_p: float = 0.001
+    zero_run_min_history: int = 4
+    zero_run_min_mean: float = ZERO_RUN_MIN_MEAN
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -108,6 +118,10 @@ def _count_channel(cases: np.ndarray, reports: np.ndarray, received_share: np.nd
 
 def own_evidence(features: pd.DataFrame, params: DetectionParams) -> pd.DataFrame:
     """Per-unit baselines, z-scores, EWMA and the shared channels."""
+    missing = {"zero_streak": 0, "zero_baseline": np.nan, "zero_baseline_n": 0, "zero_category": None}
+    missing = {k: v for k, v in missing.items() if k not in features.columns}
+    if missing:  # features built without per-category zero-run information
+        features = features.assign(**missing)
     parts = []
     for unit_id, g in features.groupby("unit_id", sort=True):
         g = g.sort_values("week").copy()
@@ -136,6 +150,13 @@ def own_evidence(features: pd.DataFrame, params: DetectionParams) -> pd.DataFram
         g["count_p"] = pval
         g["count_flag"] = cflag
         g["incomplete_flag"] = g["incomplete_share"] >= params.incomplete_share
+        streak = g["zero_streak"].to_numpy(dtype=float)
+        base = g["zero_baseline"].to_numpy(dtype=float)
+        enough = ((g["zero_baseline_n"].to_numpy() >= params.zero_run_min_history) & ~np.isnan(base)
+                  & (np.nan_to_num(base) >= params.zero_run_min_mean))
+        p_run = np.where(enough & (streak > 0), np.exp(-streak * np.nan_to_num(base)), np.nan)
+        g["zero_run_p"] = p_run
+        g["zero_run_flag"] = (streak >= params.zero_run_weeks) & enough & (np.nan_to_num(p_run, nan=1.0) < params.zero_run_p)
         parts.append(g)
     return pd.concat(parts, ignore_index=True) if parts else features.copy()
 
@@ -176,7 +197,7 @@ def detect(features: pd.DataFrame, method: str, params: DetectionParams | None =
         raise ValueError(f"Unknown method {method!r}")
     ev = evidence if evidence is not None else own_evidence(features, params)
     if ev.empty:
-        return ev.assign(flagged=False, score=0.0, delay_flag=False, method=method)
+        return ev.assign(flagged=False, score=0.0, delay_flag=False, zero_run_flag=False, method=method)
     if method == "threshold":
         score = ev["own_z"]
         delay_flag = (ev["own_z"] >= params.threshold_z) & (ev["deficit"] >= params.threshold_min_deficit)
@@ -195,7 +216,7 @@ def detect(features: pd.DataFrame, method: str, params: DetectionParams | None =
     out["method"] = method
     out["score"] = score.round(3)
     out["delay_flag"] = delay_flag
-    out["flagged"] = delay_flag | out["count_flag"] | out["incomplete_flag"]
+    out["flagged"] = delay_flag | out["count_flag"] | out["incomplete_flag"] | out["zero_run_flag"]
     return out
 
 

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import time
+from datetime import date
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
@@ -8,22 +11,27 @@ from iris import config
 from iris.db import get_session
 from iris.detection.methods import METHOD_LABELS
 from iris.models import InterventionAction, InterventionAssignment, Investigation, InvestigationNote, ReportingConcern, User
-from iris.schemas import AssignIn, BodyIn, DetectionRunIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
+from iris.schemas import (
+    ActionIn, AssignIn, BodyIn, ChecklistPatch, DetectionRunIn, EvidenceIn, MessageIn, NewConcernIn, NoteIn, ReasonIn, ReminderIn, ReportIn,
+    SummaryIn,
+)
 from iris.services import concerns as cs
-from iris.services import datasets, interventions as iv, overview as ov, reports
+from iris.services import audit, checklist, datasets, ids, interventions as iv, overview as ov, reminders, reports
+from iris.services import detection_summary as detection_summary_service
 from iris.services.context import Actor, get_actor
 
 router = APIRouter(tags=["concerns"])
 
 
 def _concern_dict(session: Session, c: ReportingConcern, users: dict[str, str]) -> dict:
+    inv = session.execute(select(Investigation.id).where(Investigation.concern_id == c.id)).scalar_one_or_none()
     return {
-        "id": c.id, "dataset_id": c.dataset_id, "concern_type": c.concern_type, "concern_type_label": cs.TYPE_LABELS[c.concern_type],
+        "id": c.id, "investigation_id": inv, "display_id": inv or c.id, "dataset_id": c.dataset_id, "concern_type": c.concern_type, "concern_type_label": cs.TYPE_LABELS[c.concern_type],
         "title": c.title, "summary": c.summary, "severity": c.severity, "status": c.status, "status_label": cs.STATUS_LABELS[c.status],
         "verification": c.verification, "category_code": c.category_code, "categories": (c.detection_detail or {}).get("categories", []),
         "period_start": c.period_start, "period_end": c.period_end, "week_start_index": c.week_start_index, "week_end_index": c.week_end_index,
         "primary_unit_id": c.primary_unit_id, "province": c.province, "shared_via": c.shared_via,
-        "detection_method": c.detection_method, "detection_method_label": METHOD_LABELS.get(c.detection_method, c.detection_method),
+        "detection_method": c.detection_method, "detection_method_label": cs.METHOD_DISPLAY.get(c.detection_method, c.detection_method),
         "score": c.score, "uncertainty_note": c.uncertainty_note, "created_at": c.created_at, "updated_at": c.updated_at,
         "assigned_user_id": c.assigned_user_id, "assigned_user": users.get(c.assigned_user_id or ""), "assigned_role": c.assigned_role,
         "follow_up_due": c.follow_up_due, "confirmation_reason": c.confirmation_reason, "dismissal_reason": c.dismissal_reason,
@@ -83,8 +91,17 @@ def list_concerns(
     pages = max(1, (total + page_size - 1) // page_size)
     page = min(page, pages)
     users = _users(session)
-    return {"rows": [ov.concern_row(c, users) for c in rows[(page - 1) * page_size: page * page_size]],
+    inv_ids = ids.investigation_ids(session)
+    return {"rows": [ov.concern_row(c, users, inv_ids) for c in rows[(page - 1) * page_size: page * page_size]],
             "total": total, "page": page, "page_size": page_size, "pages": pages}
+
+
+@router.post("/concerns")
+def create_concern(body: NewConcernIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Open an investigation by hand. It starts unverified, with an owner and a checklist."""
+    c = cs.create_manual(session, actor, body.dataset_id or config.DEMO_DATASET_ID, body.unit_ids, body.category_code or None,
+                         body.week_from, body.week_to, body.title, body.reason, body.severity, body.assignee_user_id, body.due)
+    return _done(session, c, actor)
 
 
 @router.get("/concerns/{concern_id}")
@@ -110,10 +127,14 @@ def concern_detail(concern_id: str, session: Session = Depends(get_session), act
         "investigation": None if inv is None else {"id": inv.id, "owner": users.get(inv.owner_user_id), "owner_user_id": inv.owner_user_id,
                                                    "status": inv.status, "opened_at": inv.opened_at, "closed_at": inv.closed_at},
         "next_step": cs.next_step(session, c),
+        "resolution_requirements": cs.resolution_requirements(c),
+        "checklist": checklist.as_dict(session, c.id),
         "activity": cs.activity(session, c),
-        "related": [ov.concern_row(o, users) for o in cs.related(session, c) if actor.role not in ("rhu_staff",) or actor.reporting_unit_id in {u.id for u in o.units}],
+        "related": [ov.concern_row(o, users, ids.investigation_ids(session)) for o in cs.related(session, c) if actor.role not in ("rhu_staff",) or actor.reporting_unit_id in {u.id for u in o.units}],
         "actions": [{"id": a.id, "title": a.title, "action_type": a.action_type, "status": a.status} for a in actions],
-        "assignments": [{"id": a.id, "title": a.title, "status": a.status, "due_date": a.due_date} for a in assignments],
+        "assignments": [{"id": a.id, "title": a.title, "status": a.status, "due_date": a.due_date, "assignee_user_id": a.assignee_user_id,
+                         "assignee": users.get(a.assignee_user_id or ""), "responsible_role": a.responsible_role,
+                         "evidence_of_completion": a.evidence_of_completion} for a in assignments],
         "assignable_users": [{"id": u.id, "display_name": u.display_name, "role": u.role_id} for u in session.execute(select(User).where(User.role_id != "admin")).scalars()],
         "detection_params": detail.get("params", {}),
     }
@@ -173,6 +194,27 @@ def note(concern_id: str, body: BodyIn, session: Session = Depends(get_session),
     return _done(session, c, actor)
 
 
+@router.post("/concerns/{concern_id}/evidence")
+def attach_evidence(concern_id: str, body: EvidenceIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
+    c = cs.get(session, concern_id, actor)
+    cs.attach_evidence(session, c, actor, body.title, body.detail, body.link)
+    return _done(session, c, actor)
+
+
+@router.post("/concerns/{concern_id}/actions")
+def add_action(concern_id: str, body: ActionIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
+    c = cs.get(session, concern_id, actor)
+    iv.add_direct_action(session, actor, c, body.action_type, body.title, body.assignee_user_id, body.due_date, body.note)
+    return _done(session, c, actor)
+
+
+@router.patch("/concerns/{concern_id}/checklist/{item_id}")
+def update_checklist(concern_id: str, item_id: int, body: ChecklistPatch, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
+    c = cs.get(session, concern_id, actor)
+    checklist.update(session, c, actor, item_id, body.done, body.note)
+    return _done(session, c, actor)
+
+
 @router.post("/concerns/{concern_id}/resolve")
 def resolve(concern_id: str, body: SummaryIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
     c = cs.get(session, concern_id, actor)
@@ -190,7 +232,13 @@ def reopen(concern_id: str, body: ReasonIn, session: Session = Depends(get_sessi
 @router.post("/detection/run")
 def run_detection(body: DetectionRunIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
     actor.require("detection.run")
-    created, skipped = cs.run_detection(session, body.dataset_id or config.DEMO_DATASET_ID, body.method, actor)
+    dataset_id = body.dataset_id or config.DEMO_DATASET_ID
+    started = time.perf_counter()
+    created, skipped = cs.run_detection(session, dataset_id, body.method, actor)
+    elapsed_ms = int((time.perf_counter() - started) * 1000)
+    audit.record(session, actor, "dataset", dataset_id, "detection.run",
+                 f"{actor.display_name} ran {METHOD_LABELS[body.method]} detection: {len(created)} new concern(s), {skipped} already open.",
+                 {"method": body.method, "created": [c.id for c in created], "skipped_existing": skipped, "elapsed_ms": elapsed_ms})
     session.commit()
     return {"created": [c.id for c in created], "skipped_existing": skipped, "method": body.method, "method_label": METHOD_LABELS[body.method]}
 
@@ -207,3 +255,26 @@ def submit_report(body: ReportIn, session: Session = Depends(get_session), actor
     late = bool(rec.due_at and rec.received_at and rec.received_at > rec.due_at)
     return {"id": rec.id, "revision": rec.revision, "value": rec.value, "value_status": rec.value_status,
             "received_at": rec.received_at, "due_at": rec.due_at, "late": late}
+
+
+@router.post("/reminders")
+def send_reminder(body: ReminderIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Record a simulated reminder for a missing submission. Nothing is sent."""
+    out = reminders.send(session, actor, body.unit_id, body.category_code, body.period_start, body.message)
+    session.commit()
+    return out
+
+
+@router.get("/reminders")
+def list_reminders(unit_id: str | None = None, category_code: str | None = None, period_start: date | None = None,
+                   session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> list[dict]:
+    actor.require("concern.clarify")
+    return reminders.history(session, unit_id, category_code, period_start)
+
+
+@router.get("/detection/summary")
+def detection_summary(dataset_id: str = config.DEMO_DATASET_ID, w_from: int | None = None, w_to: int | None = None, province: str | None = None,
+                      session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Weekly flags per detection method and channel, current parameters and the latest synthetic evaluation."""
+    actor.require("data.view")
+    return detection_summary_service.summary(session, dataset_id, w_from, w_to, province or None)

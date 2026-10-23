@@ -43,7 +43,7 @@ export function SettingsPage() {
         </Panel>
         <Panel title="Demo data">
           <div className="flex flex-col gap-3">
-            <p className="text-sm">Regenerate the simulated dataset and discard every change made in this demo. To choose which scenarios are injected, use <Link className="font-medium text-teal-900 hover:underline" to="/data-management?tab=scenarios">Data sources → Demo scenarios</Link>.</p>
+            <p className="text-sm">Regenerate the simulated dataset and discard every change made in this demo. To choose which scenarios are injected, use <Link className="font-medium text-teal-900 hover:underline" to="/data?tab=scenarios">Data sources → Demo scenarios</Link>.</p>
             <div><ResetDemo /></div>
           </div>
         </Panel>

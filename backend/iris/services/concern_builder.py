@@ -12,15 +12,17 @@ from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
+from scipy.stats import poisson
 
 from iris import config
+from iris.data.world import CATEGORY_BY_CODE
 from iris.detection.methods import METHOD_LABELS, DetectionParams
 
 
 @dataclass
 class Segment:
     unit_id: str
-    channel: str  # delay | incomplete | count
+    channel: str  # delay | incomplete | count | zero_run
     w0: int
     w1: int
     rows: pd.DataFrame
@@ -44,6 +46,39 @@ class ConcernSpec:
     categories: list[str]
     detail: dict
     evidence: list[dict] = field(default_factory=list)
+    #: Week the flag was first raised, when it differs from the start of the period
+    #: it describes (a zero-case run is detected on its last week but covers the run).
+    detected_w: int | None = None
+
+    @property
+    def detection_week(self) -> int:
+        return self.w0 if self.detected_w is None else self.detected_w
+
+
+REFERENCE_LEVEL = 0.9
+
+
+def reference_band(mean: float, per: str, category: str | None = None) -> dict | None:
+    """Central 90% Poisson interval around a mean taken from the unit's own previous weeks.
+
+    It shows the range of counts the simple model would usually produce. It is
+    simulated: not a forecast, and not a verified expected count.
+    """
+    if mean is None or not np.isfinite(mean) or mean < 0:
+        return None
+    tail = (1 - REFERENCE_LEVEL) / 2
+    return {
+        "low": int(poisson.ppf(tail, mean)), "high": int(poisson.ppf(1 - tail, mean)), "mean": round(float(mean), 2),
+        "level": REFERENCE_LEVEL, "per": per, "category": category,
+        "label": "Simulated reference band",
+        "source": "Poisson model of the unit's previous weeks",
+        "note": "Simulated from the unit's recent reports. Not a forecast or a verified expected count; seasonality and reporting changes may affect it.",
+    }
+
+
+def _band_pair(mean) -> list[int] | None:
+    band = None if pd.isna(mean) else reference_band(float(mean), "week")
+    return [band["low"], band["high"]] if band else None
 
 
 def period_text(w0: int, w1: int) -> str:
@@ -57,7 +92,9 @@ def _channel(row) -> str:
         return "delay"
     if row.incomplete_flag:
         return "incomplete"
-    return "count"
+    if row.count_flag:
+        return "count"
+    return "zero_run"
 
 
 def segments(results: pd.DataFrame) -> list[Segment]:
@@ -167,6 +204,8 @@ def _severity(kind: str, n_units: int, n_weeks: int, missing_share: float) -> st
         return "low"
     if kind == "count_drop":
         return "high" if n_weeks >= 3 else "medium"
+    if kind == "zero_case_run":
+        return "medium"
     return "medium" if n_weeks >= 2 else "low"
 
 
@@ -179,7 +218,7 @@ def via_name(via: str | None, unit_names: dict[str, str]) -> str:
     return unit_names.get(via, via)
 
 
-def _week_rows(results: pd.DataFrame, unit_id: str, w0: int, w1: int, last_week: int) -> list[dict]:
+def week_rows(results: pd.DataFrame, unit_id: str, w0: int, w1: int, last_week: int) -> list[dict]:
     g = results[(results["unit_id"] == unit_id) & (results["week"] >= max(0, w0 - 3)) & (results["week"] <= min(last_week, w1 + 2))]
     rows = []
     for r in g.sort_values("week").itertuples(index=False):
@@ -192,6 +231,7 @@ def _week_rows(results: pd.DataFrame, unit_id: str, w0: int, w1: int, last_week:
             "baseline_median": round(float(r.baseline_median), 3), "history_weeks": int(r.history_weeks),
             "own_z": round(float(r.own_z), 2), "score": round(float(r.score), 2), "flagged": bool(r.flagged),
             "count_expected": None if pd.isna(r.count_expected) else round(float(r.count_expected), 1),
+            "count_band": _band_pair(r.count_expected),
             "count_p": None if pd.isna(r.count_p) else float(r.count_p),
             "peer_support": round(float(r.peer_support), 2),
             "peer_affected": list(r.peer_affected) if isinstance(r.peer_affected, list) else [],
@@ -229,6 +269,11 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
         unit_ids = sorted({s.unit_id for s in segs})
         w0, w1 = min(s.w0 for s in segs), max(s.w1 for s in segs)
         rows = pd.concat([s.rows for s in segs], ignore_index=True)
+        detected_w = None
+        if len(segs) == 1 and segs[0].channel == "zero_run":
+            # Describe the whole run of zero-case reports, not only the weeks after it became unusual.
+            detected_w = w0
+            w0 = w0 - int(rows.iloc[0]["zero_streak"]) + 1
         n_weeks = w1 - w0 + 1
         expected = int(rows["n_expected"].sum())
         on_time = int(rows["n_on_time"].sum())
@@ -238,7 +283,7 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
         period = period_text(w0, w1)
         detail = {
             "weeks": [w for w in range(w0, w1 + 1)],
-            "units": {u: _week_rows(results, u, w0, w1, last_week) for u in unit_ids},
+            "units": {u: week_rows(results, u, w0, w1, last_week) for u in unit_ids},
             "method": method,
             "params": {k: v for k, v in params.as_dict().items()},
         }
@@ -326,6 +371,41 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
                 evidence.append({"kind": "requires_verification", "title": "Confirm with the unit",
                                  "detail": f"Ask {uname} whether reports were prepared and submitted through another channel, and the reason for the delay.", "data": {}})
                 cats = []
+            elif seg.channel == "zero_run":
+                kind = "zero_case_run"
+                first = rows.iloc[0]
+                code = str(first["zero_category"])
+                cat_name = CATEGORY_BY_CODE[code].name if code in CATEGORY_BY_CODE else code
+                streak = int(rows.iloc[-1]["zero_streak"])
+                mean = float(first["zero_baseline"])
+                n_hist = int(first["zero_baseline_n"])
+                p_run = float(np.exp(-streak * mean))
+                score = round(float(-np.log10(max(p_run, 1e-300))), 2)
+                title = f"Zero-case run — {uname}"
+                summary = (f"{uname} submitted {cat_name.lower()} reports with zero cases for {streak} consecutive weeks ({period}). "
+                           f"In its previous {n_hist} weeks it reported a mean of {mean:.1f} cases per week. "
+                           "The reports were received, so this is not a missing submission.")
+                evidence = [
+                    {"kind": "observed", "title": f"{streak} consecutive zero-case reports for {cat_name}",
+                     "detail": summary,
+                     "data": {"category": code, "run_weeks": list(range(w0, w1 + 1)), "run_length": streak,
+                              "baseline_mean": round(mean, 2), "baseline_weeks": n_hist, "p_run": p_run,
+                              "reference_band": reference_band(mean, "week", code)}},
+                    {"kind": "observed", "title": "These are received reports, not missing ones",
+                     "detail": "Zero-case reports count toward completeness. A missing submission would be a different problem.", "data": {}},
+                    {"kind": "possible_explanation", "title": "Zero may be valid",
+                     "detail": "Possible explanations include a genuine absence of cases, the end of a seasonal increase, or a data-entry or form error. "
+                               "A flag does not establish a cause.", "data": {}},
+                    {"kind": "requires_verification", "title": "Reconcile the zero counts with the source register",
+                     "detail": f"Ask {uname} to compare the reported zeros with its case register or logbook for these weeks.", "data": {}},
+                ]
+                cats = [code]
+                common_uncertainty = (
+                    f"Detection channel: zero-case run (shared by every detection method; this concern came from the {method_label} run). "
+                    f"Probability of a run this long under the unit's recent mean, from a simple Poisson model: about {p_run:.1e}. "
+                    "This measures how unusual the run is, not whether the reports are wrong."
+                )
+                hist_caveat = f" Baseline: the unit's previous {n_hist} received {cat_name.lower()} reports before the run."
             elif seg.channel == "incomplete":
                 kind = "incomplete_record"
                 n_inc = int(rows["n_incomplete"].sum())
@@ -356,7 +436,8 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
                 cats = [b["category"] for b in breakdown if b["expected"] and b["observed"] < 0.5 * b["expected"]][:3]
                 evidence = [
                     {"kind": "observed", "title": "Reported counts were much lower than recent weeks", "detail": summary,
-                     "data": {"observed": obs, "expected": round(exp_, 1), "by_category": breakdown}},
+                     "data": {"observed": obs, "expected": round(exp_, 1), "by_category": breakdown,
+                              "reference_band": reference_band(exp_, "period")}},
                     {"kind": "possible_explanation", "title": "Several explanations are possible",
                      "detail": "Possible explanations include under-reporting, a data-entry error, or a genuine decline in cases (for example the end of a seasonal peak). "
                                "An unusual count alone is not evidence of under-reporting.", "data": {}},
@@ -375,7 +456,8 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
             province=provinces[0] if len(provinces) == 1 else None,
             primary_unit_id=primary, shared_via=via if len(unit_ids) > 1 else None,
             detection_method=method, uncertainty_note=uncertainty, categories=cats,
-            detail=detail, evidence=evidence,
+            detail=detail, evidence=evidence, detected_w=detected_w,
         ))
-    specs.sort(key=lambda s: (s.w0, s.unit_ids[0]))
+    # Order by the week each flag was raised, so identifiers follow detection order.
+    specs.sort(key=lambda s: (s.detection_week, s.unit_ids[0]))
     return specs

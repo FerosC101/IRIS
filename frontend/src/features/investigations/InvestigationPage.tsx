@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Check, CheckCircle2, ClipboardList, Eye, MessageSquare, RotateCcw, UserPlus, XCircle } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, ClipboardList, Eye, MessageSquare, Paperclip, RotateCcw, UserPlus, XCircle } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { ConcernStatusBadge, SeverityBadge, SimulatedTag } from "@/components/data-display/badges";
+import { ConcernStatusBadge, SeverityBadge, SimulatedTag, VerificationBadge } from "@/components/data-display/badges";
 import { PageHeader } from "@/components/data-display/PageHeader";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/form";
@@ -20,11 +20,11 @@ import { cn } from "@/lib/utils";
 import { api } from "@/services/api";
 import type { ConcernDetail } from "@/types/api";
 import { QueueTable } from "../overview/QueueTable";
-import { AssignDialog, ReasonDialog } from "./ActionDialogs";
+import { AssignDialog, EvidenceDialog, ReasonDialog } from "./ActionDialogs";
 import { EvidenceList, ObservationTimeline, TechnicalDetails } from "./EvidenceSections";
 import { WeekStrip } from "./WeekStrip";
 
-type DialogKind = null | "confirm" | "dismiss" | "clarify" | "respond" | "resolve" | "reopen" | "assign";
+type DialogKind = null | "confirm" | "dismiss" | "clarify" | "respond" | "resolve" | "reopen" | "assign" | "evidence";
 
 const NOTE_LABEL: Record<string, string> = {
   note: "Note", clarification_request: "Question to the unit", clarification_response: "Reply from the unit",
@@ -63,10 +63,10 @@ function Stepper({ current }: { current: number }) {
 
 function Block({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-md border border-line bg-white p-4">
-      <h2 className="mb-2 text-[15px] font-semibold">{title}</h2>
+    <Panel motif="verify">
+      <h2 className="mb-3 text-[15px] font-semibold">{title}</h2>
       {children}
-    </section>
+    </Panel>
   );
 }
 
@@ -125,13 +125,18 @@ export function InvestigationPage() {
   } else if (c.verification !== "confirmed" && can("concern.confirm")) {
     primary = { label: "Confirm it's a real problem", icon: <CheckCircle2 aria-hidden />, run: () => open("confirm") };
     if (c.status === "clarification_requested") hint = "Waiting for the unit to reply. Confirm or close it once you know more.";
-  } else if (d.next_step.action === "plan" && role && canAccess("/planner", role)) {
-    primary = { label: "Plan an action", icon: <ArrowRight aria-hidden />, to: `/planner?concern=${c.id}` };
+  } else if (d.next_step.action === "plan" && role && canAccess("/investigations/plan", role)) {
+    primary = { label: "Plan an action", icon: <ArrowRight aria-hidden />, to: `/investigations/plan?concern=${c.id}` };
   } else if (d.next_step.action === "follow_up") {
     const a = d.assignments.find((x) => x.status === "approved" || x.status === "in_progress");
-    primary = { label: "Track the action", icon: <ArrowRight aria-hidden />, to: `/follow-up${a ? `?assignment=${a.id}` : ""}` };
-  } else if (can("concern.resolve")) {
+    primary = { label: "Track the action", icon: <ArrowRight aria-hidden />, to: `/investigations/follow-up${a ? `?assignment=${a.id}` : ""}` };
+  } else if (d.next_step.action === "evidence" && can("concern.evidence")) {
+    primary = { label: "Attach evidence", icon: <Paperclip aria-hidden />, run: () => open("evidence") };
+  } else if (can("concern.resolve") && d.resolution_requirements.can_resolve) {
     primary = { label: "Mark as resolved", icon: <ClipboardList aria-hidden />, run: () => open("resolve") };
+  } else if (can("concern.resolve") && d.resolution_requirements.missing.length) {
+    hint = `Before this can be resolved: ${d.resolution_requirements.missing.join(" ")}`;
+    if (!d.resolution_requirements.evidence_attached && can("concern.evidence")) primary = { label: "Attach evidence", icon: <Paperclip aria-hidden />, run: () => open("evidence") };
   }
 
   const more: MenuItem[] = [];
@@ -140,8 +145,9 @@ export function InvestigationPage() {
     if (c.verification !== "confirmed" && can("concern.confirm") && !primary?.label.startsWith("Confirm")) more.push({ label: "Confirm it's a real problem", icon: <CheckCircle2 aria-hidden />, onSelect: () => open("confirm") });
     if (can("concern.clarify") && c.status !== "clarification_requested") more.push({ label: "Ask the unit a question", icon: <MessageSquare aria-hidden />, onSelect: () => open("clarify") });
     if (c.status === "clarification_requested" && can("concern.respond") && primary?.label !== "Reply to the question") more.push({ label: "Add the unit's reply", icon: <MessageSquare aria-hidden />, onSelect: () => open("respond") });
+    if (can("concern.evidence") && primary?.label !== "Attach evidence") more.push({ label: "Attach evidence", icon: <Paperclip aria-hidden />, onSelect: () => open("evidence") });
     if (can("concern.assign")) more.push({ label: d.investigation ? "Change owner" : "Assign an owner", icon: <UserPlus aria-hidden />, onSelect: () => open("assign") });
-    if (can("concern.resolve") && primary?.label !== "Mark as resolved") more.push({ label: "Mark as resolved", icon: <ClipboardList aria-hidden />, onSelect: () => open("resolve") });
+    if (can("concern.resolve") && d.resolution_requirements.can_resolve && primary?.label !== "Mark as resolved") more.push({ label: "Mark as resolved", icon: <ClipboardList aria-hidden />, onSelect: () => open("resolve") });
     if (can("concern.dismiss")) more.push({ label: "Close as not a problem", icon: <XCircle aria-hidden />, danger: true, onSelect: () => open("dismiss") });
   } else if (can("concern.reopen")) {
     more.push({ label: "Reopen", icon: <RotateCcw aria-hidden />, onSelect: () => open("reopen") });
@@ -155,28 +161,39 @@ export function InvestigationPage() {
   return (
     <>
       <PageHeader
-        breadcrumbs={[{ label: "Concerns", to: "/investigations" }, { label: c.id }]}
-        title={c.title}
+        breadcrumbs={[{ label: "Investigations", to: "/investigations" }, { label: c.id }]}
+        title="Investigation Review"
+        description="Examine reporting evidence and document verification decisions."
         meta={<>
           <ConcernStatusBadge status={c.status} />
           <SeverityBadge severity={c.severity} />
+          <VerificationBadge verification={c.verification} />
           <span className="text-[13px] text-ink-2">{fmtPeriod(c.period_start, c.period_end)}</span>
           {c.simulated && <SimulatedTag />}
         </>}
       />
 
-      <div className="flex max-w-5xl flex-col gap-5">
-        <section aria-label="Next step" className="rounded-md border border-teal-900/20 bg-white p-4">
+      <div className="iris-workspace-stack">
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <Panel variant="secondary" motif="verify" title="Investigation brief">
+          <p className="iris-eyebrow mb-2">{c.id} | {c.concern_type_label}</p>
+          <h2 className="mb-2 text-lg font-semibold">{c.title}</h2>
+          <p className="text-sm leading-relaxed">{c.summary}</p>
+          <p className="mt-3 text-xs text-ink-2">{c.uncertainty_note}</p>
+          <div className="mt-4"><KeyValue columns={2} items={[{ label: "Affected entities", value: c.units.map((u) => u.name).join(", ") }, { label: "Detection method", value: c.detection_method_label }, { label: "Investigation owner", value: d.investigation?.owner ?? "Unassigned" }, { label: "Verification", value: c.verification }]} /></div>
+        </Panel>
+        <Panel variant="secondary" motif="network" title="Review and verification">
           <Stepper current={stepIndex(d)} />
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-4 flex flex-col gap-3">
             <p className="text-[15px] text-ink"><span className="font-semibold text-teal-900">Next: </span>{hint}</p>
-            <div className="flex flex-col gap-2 sm:flex-row sm:shrink-0">
+            <div className="flex flex-wrap gap-2">
               {primary && (primary.to
                 ? <Link to={primary.to} className={buttonVariants()}>{primary.icon}{primary.label}</Link>
                 : <Button onClick={primary.run} disabled={act.isPending}>{primary.icon}{primary.label}</Button>)}
               <ActionMenu items={more} />
             </div>
           </div>
+          <InlineError error={act.error} />
           {(d.investigation || c.follow_up_due) && (
             <p className="mt-3 border-t border-line pt-3 text-[13px] text-ink-2">
               {d.investigation && <>Owner: <span className="text-ink">{d.investigation.owner}</span></>}
@@ -184,7 +201,8 @@ export function InvestigationPage() {
               {c.follow_up_due && <>Due {fmtDate(c.follow_up_due)}</>}
             </p>
           )}
-        </section>
+        </Panel>
+        </div>
 
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList label="Concern sections" tabs={[
@@ -195,6 +213,7 @@ export function InvestigationPage() {
           ]} />
 
           <TabsContent value="summary" className="flex flex-col gap-4">
+            <Block title="Reporting timeline"><WeekStrip detail={d} /></Block>
             <Block title="What happened"><p className="text-sm text-ink">{c.summary}</p></Block>
             <Block title="What the data shows">
               <EvidenceList items={observed} />
@@ -266,7 +285,7 @@ export function InvestigationPage() {
               <KeyValue items={[
                 { label: "ID", value: <span className="font-mono text-xs">{c.id}</span> },
                 { label: "Type", value: c.concern_type_label },
-                { label: "Found by", value: `${c.detection_method_label} check · ${fmtDate(c.created_at)}` },
+                { label: "Found by", value: `${c.detection_method_label}${c.detection_method === "human" ? "" : " check"} · ${fmtDate(c.created_at)}` },
                 { label: "Owner", value: d.investigation ? `${d.investigation.owner} (since ${fmtDate(d.investigation.opened_at)})` : "Not assigned" },
                 ...(c.confirmation_reason ? [{ label: "Why it was confirmed", value: c.confirmation_reason }] : []),
                 ...(c.dismissal_reason ? [{ label: "Why it was closed", value: c.dismissal_reason }] : []),
@@ -277,7 +296,7 @@ export function InvestigationPage() {
               <Block title="Actions taken">
                 <ul className="flex flex-col gap-2 text-sm">
                   {d.assignments.map((a) => (
-                    <li key={a.id}><Link to={`/follow-up?assignment=${a.id}`} className="font-medium text-teal-900 hover:underline">{a.title}</Link>
+                    <li key={a.id}><Link to={`/investigations/follow-up?assignment=${a.id}`} className="font-medium text-teal-900 hover:underline">{a.title}</Link>
                       <p className="text-xs text-ink-2">{ASSIGNMENT_STATUS[a.status].label} · due {fmtDate(a.due_date)}</p></li>
                   ))}
                 </ul>
@@ -315,6 +334,8 @@ export function InvestigationPage() {
         onSubmit={(t) => act.mutate({ action: "resolve", body: { summary: t }, msg: "Marked as resolved." })} />
       <ReasonDialog open={dialog === "reopen"} onOpenChange={(o) => !o && setDialog(null)} title="Reopen concern" label="Why reopen it?" submitLabel="Reopen"
         pending={act.isPending} error={act.error} onSubmit={(t) => act.mutate({ action: "reopen", body: { reason: t }, msg: "Concern reopened." })} />
+      <EvidenceDialog open={dialog === "evidence"} onOpenChange={(o) => !o && setDialog(null)} pending={act.isPending} error={act.error}
+        onSubmit={(v) => act.mutate({ action: "evidence", body: v, msg: "Evidence attached." })} />
       <AssignDialog open={dialog === "assign"} onOpenChange={(o) => !o && setDialog(null)} users={d.assignable_users} current={d.investigation?.owner_user_id}
         pending={act.isPending} error={act.error} onSubmit={(v) => act.mutate({ action: "assign", body: v, msg: "Owner assigned." })} />
     </>

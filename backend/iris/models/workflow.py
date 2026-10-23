@@ -64,7 +64,8 @@ class EvidenceItem(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     concern_id: Mapped[str] = mapped_column(ForeignKey("reporting_concerns.id"))
-    #: observed | possible_explanation | requires_verification | confirmed_by_reviewer | simulated_example
+    #: observed | possible_explanation | requires_verification | confirmed_by_reviewer | attached | simulated_example
+    #: ("attached" = evidence a person attached; created_by records who)
     kind: Mapped[str] = mapped_column(String(40))
     title: Mapped[str] = mapped_column(String(255))
     detail: Mapped[str] = mapped_column(Text, default="")
@@ -93,4 +94,23 @@ class InvestigationNote(Base):
     #: note | clarification_request | clarification_response | resolution | confirmation | dismissal
     note_type: Mapped[str] = mapped_column(String(40), default="note")
     body: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime)
+
+
+class InvestigationChecklistItem(Base):
+    """One verification step for a concern. Who ticked it and when is recorded."""
+
+    __tablename__ = "investigation_checklist_items"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    concern_id: Mapped[str] = mapped_column(ForeignKey("reporting_concerns.id"), index=True)
+    position: Mapped[int] = mapped_column(Integer)
+    label: Mapped[str] = mapped_column(String(200))
+    detail: Mapped[str] = mapped_column(Text, default="")
+    #: check (ticked by a person) | resolution (completed by resolving the concern)
+    kind: Mapped[str] = mapped_column(String(20), default="check")
+    done: Mapped[bool] = mapped_column(Boolean, default=False)
+    done_by: Mapped[str | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    done_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    note: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime)

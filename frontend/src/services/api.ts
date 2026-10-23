@@ -1,7 +1,7 @@
 import type {
-  Assignment, AuditRow, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
+  Assignment, AuditRow, DetectionSummary, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
   FilterOptions, ImportPreview, ImportRecord, ImportValidation, Meta, NetworkGraphData, Overview, Paged, Plan, Quality,
-  QueueRow, RecordDetail, RecordRow, Recovery, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
+  Lineage, QueueRow, RecordDetail, Reminder, Severity, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
 } from "@/types/api";
 import { qs, request } from "./client";
 
@@ -10,13 +10,28 @@ type Params = Record<string, string | number | boolean | null | undefined>;
 export const api = {
   meta: () => request<Meta>("/meta"),
   scenarios: () => request<DemoScenario[]>("/demo/scenarios"),
-  resetDemo: (scenario_ids?: string[]) => request<{ concerns: number; records: number; scenarios: string[] }>("/demo/reset", { method: "POST", json: { scenario_ids: scenario_ids ?? null } }),
+  /** Destructive: `confirm` must be the typed word RESET. */
+  resetDemo: (confirm: string, scenario_ids?: string[]) =>
+    request<{ concerns: number; records: number; scenarios: string[] }>("/demo/reset", { method: "POST", json: { scenario_ids: scenario_ids ?? null, confirm } }),
 
   overview: (p: Params) => request<Overview>(`/overview${qs(p)}`),
   concerns: (p: Params) => request<Paged<QueueRow>>(`/concerns${qs(p)}`),
   concern: (id: string) => request<ConcernDetail>(`/concerns/${id}`),
-  concernAction: (id: string, action: "review" | "confirm" | "dismiss" | "clarify" | "respond" | "assign" | "notes" | "resolve" | "reopen", body: object) =>
+  concernAction: (id: string, action: "review" | "confirm" | "dismiss" | "clarify" | "respond" | "assign" | "notes" | "evidence" | "resolve" | "reopen", body: object) =>
     request<ConcernDetail>(`/concerns/${id}/${action}`, { method: "POST", json: body }),
+  /** Open an investigation by hand. It starts unverified, with an owner and a checklist. */
+  createConcern: (body: { unit_ids: string[]; category_code?: string | null; week_from: number; week_to: number; title: string; reason: string;
+    severity?: Severity; assignee_user_id?: string | null; due?: string | null }) => request<ConcernDetail>("/concerns", { method: "POST", json: body }),
+  /** Add one corrective action; it is recorded as an approved single-action plan and tracked as follow-up. */
+  addAction: (id: string, body: { action_type: string; title: string; assignee_user_id?: string | null; due_date?: string | null; note?: string }) =>
+    request<ConcernDetail>(`/concerns/${id}/actions`, { method: "POST", json: body }),
+  /** Records a simulated reminder for a missing submission; nothing is sent. */
+  sendReminder: (body: { unit_id: string; category_code: string; period_start: string; message?: string }) =>
+    request<Reminder>("/reminders", { method: "POST", json: body }),
+  reminders: (p: Params) => request<Reminder[]>(`/reminders${qs(p)}`),
+  updateChecklist: (id: string, itemId: number, body: { done?: boolean; note?: string }) =>
+    request<ConcernDetail>(`/concerns/${id}/checklist/${itemId}`, { method: "PATCH", json: body }),
+  detectionSummary: (p: Params) => request<DetectionSummary>(`/detection/summary${qs(p)}`),
   runDetection: (method: string) => request<{ created: string[]; skipped_existing: number; method: string; method_label: string }>("/detection/run", { method: "POST", json: { method } }),
 
   tasks: () => request<Task[]>("/tasks"),
@@ -33,8 +48,11 @@ export const api = {
   deleteDataset: (id: string) => request<{ deleted: string }>(`/datasets/${id}`, { method: "DELETE" }),
   records: (id: string, p: Params) => request<Paged<RecordRow>>(`/datasets/${id}/records${qs(p)}`),
   record: (id: string, rid: number) => request<RecordDetail>(`/datasets/${id}/records/${rid}`),
+  /** A report by its display id (RPT-0042), in whichever dataset holds it. */
+  report: (reportId: string) => request<RecordDetail>(`/reports/${encodeURIComponent(reportId)}`),
   trends: (id: string, p: Params) => request<Trends>(`/datasets/${id}/trends${qs(p)}`),
   quality: (id: string, p: Params) => request<Quality>(`/datasets/${id}/quality${qs(p)}`),
+  lineage: (id: string) => request<Lineage>(`/datasets/${id}/lineage`),
   filters: (id: string) => request<FilterOptions>(`/datasets/${id}/filters`),
 
   importPreview: (file: File) => {
@@ -63,6 +81,7 @@ export const api = {
   addOutcome: (id: string, body: { outcome_status: string; summary: string }) => request<Assignment>(`/assignments/${id}/outcomes`, { method: "POST", json: body }),
 
   recovery: (p: Params) => request<Recovery>(`/recovery${qs(p)}`),
+  surveillanceSummary: (p: Params) => request<SurveillanceSummary>(`/surveillance/summary${qs(p)}`),
   experiments: () => request<ExperimentSummary[]>("/experiments"),
   experiment: (id: string) => request<Experiment>(`/experiments/${id}`),
   runExperiment: (body: { name?: string; replications: number; base_seed: number }) => request<Experiment>("/experiments", { method: "POST", json: body }),

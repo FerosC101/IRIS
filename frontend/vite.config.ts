@@ -7,9 +7,12 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: { alias: { "@": path.resolve(import.meta.dirname, "src") } },
+  // Optional, for isolated QA runs next to a normal dev server:
+  // IRIS_API_URL points the proxy at another backend; IRIS_VITE_CACHE keeps a separate dependency cache.
+  cacheDir: process.env.IRIS_VITE_CACHE ?? "node_modules/.vite",
   server: {
     port: 5180,
-    proxy: { "/api": { target: "http://127.0.0.1:8000", changeOrigin: true } },
+    proxy: { "/api": { target: process.env.IRIS_API_URL ?? "http://127.0.0.1:8000", changeOrigin: true } },
   },
   test: {
     environment: "jsdom",

@@ -10,7 +10,7 @@ from iris import config
 from iris.db import get_session
 from iris.models import AuditEvent, DataRecord, Dataset, ImportRecord, ReportingConcern, ReportingUnit, User
 from iris.schemas import ImportCommitIn, ImportValidateIn, UnitPatch
-from iris.services import audit, datasets, explorer, imports, network
+from iris.services import audit, datasets, explorer, ids, imports, lineage, network
 from iris.services.clock import now
 from iris.services.context import Actor, get_actor
 
@@ -25,6 +25,7 @@ def _dataset_dict(ds: Dataset) -> dict:
         "validation_status": ds.validation_status, "known_limitations": ds.known_limitations,
         "has_expectations": ds.has_expectations, "has_timestamps": ds.has_timestamps, "has_units": ds.has_units,
         "is_demo": ds.is_demo,
+        "checksum": ds.checksum, "checksum_basis": ds.checksum_basis, "checksum_algorithm": "SHA-256" if ds.checksum else None,
     }
 
 
@@ -46,7 +47,20 @@ def dataset_detail(dataset_id: str, session: Session = Depends(get_session), act
                      "row_count": i.row_count, "errors": i.errors, "warnings": i.warnings} for i in imps],
         "quality": q,
         "concerns": session.query(ReportingConcern).filter(ReportingConcern.dataset_id == dataset_id).count(),
+        "integrity": _integrity(session, ds),
     }
+
+
+def _integrity(session: Session, ds: Dataset) -> dict:
+    """Whether the records still match the canonical checksum recorded at ingestion."""
+    if not ds.records_checksum:
+        return {"recorded": False, "records_unchanged": None, "current_records_checksum": None,
+                "note": "No checksum was recorded when this dataset was ingested."}
+    current = datasets.records_checksum(session, ds.id)
+    same = current == ds.records_checksum
+    return {"recorded": True, "records_unchanged": same, "current_records_checksum": current, "records_checksum_at_ingestion": ds.records_checksum,
+            "note": "Records match the checksum recorded at ingestion." if same else
+            "Records changed after ingestion (for example, reports submitted or corrected in IRIS)."}
 
 
 @router.delete("/datasets/{dataset_id}")
@@ -80,9 +94,26 @@ def records(dataset_id: str, page: int = Query(1, ge=1), page_size: int = Query(
     return explorer.rows(session, dataset_id, page, page_size, sort, order, **_filters(search, province, unit_id, category, status, date_from, date_to))
 
 
+def _visible_record(session: Session, actor: Actor, record_id: int | None, label: str) -> DataRecord:
+    """A record the actor may read. RHU staff see only their own unit's records; to them
+    another unit's record does not exist (404), as with concerns."""
+    r = session.get(DataRecord, record_id) if record_id is not None else None
+    if r is None or (actor.role == "rhu_staff" and r.reporting_unit_id != actor.reporting_unit_id):
+        raise HTTPException(status_code=404, detail=f"{label} was not found.")
+    return r
+
+
 @router.get("/datasets/{dataset_id}/records/{record_id}")
 def record(dataset_id: str, record_id: int, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    _visible_record(session, actor, record_id, f"Record {record_id}")
     return explorer.record_detail(session, dataset_id, record_id)
+
+
+@router.get("/reports/{report_id}")
+def report_by_id(report_id: str, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Resolve a display report id (``RPT-0042``) to its record, in whichever dataset holds it."""
+    r = _visible_record(session, actor, ids.parse_report_id(report_id), f"Report {report_id}")
+    return explorer.record_detail(session, r.dataset_id, r.id)
 
 
 @router.get("/datasets/{dataset_id}/trends")
@@ -182,7 +213,8 @@ def get_unit(unit_id: str, dataset_id: str = config.DEMO_DATASET_ID, session: Se
 @router.get("/units")
 def list_units(session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> list[dict]:
     return [{"id": u.id, "name": u.name, "unit_type": u.unit_type, "province": u.province, "municipality": u.municipality,
-             "active": u.active, "is_sentinel": u.is_sentinel, "notes": u.notes, "simulated": u.simulated, "updated_at": u.updated_at}
+             "active": u.active, "is_sentinel": u.is_sentinel, "notes": u.notes, "simulated": u.simulated, "updated_at": u.updated_at,
+             "geo_x": u.geo_x, "geo_y": u.geo_y}
             for u in session.execute(select(ReportingUnit).order_by(ReportingUnit.province, ReportingUnit.unit_type, ReportingUnit.name)).scalars()]
 
 
@@ -223,3 +255,10 @@ def audit_log(entity_type: str | None = None, actor_id: str | None = None, searc
     return {"rows": [{"id": e.id, "at": e.at, "actor": users.get(e.actor_user_id or "", "System"), "actor_role": e.actor_role, "entity_type": e.entity_type,
                       "entity_id": e.entity_id, "action": e.action, "summary": e.summary} for e in rows[(page - 1) * page_size: page * page_size]],
             "total": total, "page": page, "pages": pages, "page_size": page_size}
+
+
+@router.get("/datasets/{dataset_id}/lineage")
+def dataset_lineage(dataset_id: str, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Where the dataset came from, what was derived from it, and the runs that touched it."""
+    actor.require("data.view")
+    return lineage.lineage(session, dataset_id)

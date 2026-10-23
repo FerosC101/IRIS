@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -9,7 +9,7 @@ from iris.db import get_session
 from iris.evaluation.runner import EvaluationConfig, run_evaluation
 from iris.models import ExperimentRun, User
 from iris.schemas import ExperimentIn
-from iris.services import audit, recovery
+from iris.services import audit, recovery, surveillance
 from iris.services.clock import now
 from iris.services.context import Actor, get_actor
 
@@ -72,3 +72,11 @@ def create_experiment(body: ExperimentIn, session: Session = Depends(get_session
     if run.status == "failed":
         raise HTTPException(status_code=500, detail=f"The evaluation failed: {run.error}")
     return get_experiment(run_id, session, actor)
+
+
+@router.get("/surveillance/summary")
+def surveillance_summary(category: str = "DENGUE", week: int | None = None, province: str | None = None, unit_type: str | None = None,
+                         dataset_id: str = config.DEMO_DATASET_ID, heat_weeks: int = Query(6, ge=1, le=26), trend_weeks: int = Query(12, ge=2, le=26),
+                         session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Weekly reporting summary for one category: received, zero-case, blank and missing reports kept separate."""
+    return surveillance.summary(session, actor, dataset_id, category, week, province or None, unit_type or None, heat_weeks, trend_weeks)

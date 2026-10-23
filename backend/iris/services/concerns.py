@@ -17,14 +17,16 @@ from iris.models import (
     InterventionAssignment,
     Investigation,
     InvestigationNote,
+    ReportingCategory,
     ReportingConcern,
     ReportingUnit,
     User,
 )
-from iris.services import audit, datasets
+from iris.services import audit, checklist, datasets
 from iris.services.clock import now, today
-from iris.services.concern_builder import ConcernSpec, build_specs, via_name
+from iris.services.concern_builder import ConcernSpec, build_specs, via_name, week_rows
 from iris.services.context import Actor
+from iris.services.ids import resolve_concern_id
 
 OPEN_STATUSES = ("open", "under_review", "clarification_requested", "in_investigation")
 CLOSED_STATUSES = ("resolved", "dismissed")
@@ -43,7 +45,13 @@ TYPE_LABELS = {
     "incomplete_record": "Incomplete record",
     "count_drop": "Unexpected drop in counts",
     "shared_problem": "Possible shared problem",
+    "zero_case_run": "Zero-case run",
+    "reviewer_raised": "Raised by a reviewer",
 }
+
+#: Concerns opened by a person rather than a detector.
+HUMAN_METHOD = "human"
+METHOD_DISPLAY = {**METHOD_LABELS, HUMAN_METHOD: "Raised by a reviewer"}
 
 MIN_REASON = 10
 
@@ -82,7 +90,8 @@ def ensure_visible(actor: Actor, concern: ReportingConcern) -> None:
 
 
 def get(session: Session, concern_id: str, actor: Actor | None = None) -> ReportingConcern:
-    c = session.get(ReportingConcern, concern_id)
+    """Look a concern up by its id or by its investigation id (``INV-0010``)."""
+    c = session.get(ReportingConcern, resolve_concern_id(session, concern_id))
     if c is None:
         raise HTTPException(status_code=404, detail=f"Concern {concern_id} was not found.")
     if actor is not None:
@@ -106,8 +115,59 @@ def create_from_spec(session: Session, spec: ConcernSpec, dataset_id: str, creat
         c.evidence.append(EvidenceItem(kind=ev["kind"], title=ev["title"], detail=ev.get("detail", ""), data=ev.get("data", {}), created_at=created_at))
     session.add(c)
     session.flush()
+    checklist.create_items(session, c, created_at)
     audit.record(session, actor, "concern", c.id, "concern.created",
                  f"Concern flagged by {METHOD_LABELS[spec.detection_method]} detection: {c.title}", {"severity": c.severity}, at=created_at)
+    return c
+
+
+def create_manual(session: Session, actor: Actor, dataset_id: str, unit_ids: list[str], category_code: str | None, w0: int, w1: int,
+                  title: str, reason: str, severity: str = "medium", assignee_id: str | None = None, due: date | None = None,
+                  at: datetime | None = None) -> ReportingConcern:
+    """A concern raised by a person. Like every concern it starts unverified: raising it is not a finding."""
+    actor.require("concern.assign")
+    ds = datasets.get_dataset(session, dataset_id)
+    title = (title or "").strip()
+    if len(title) < 5:
+        raise HTTPException(status_code=422, detail="Give the investigation a title (at least 5 characters).")
+    reason = _reason(reason, "opening this investigation")
+    if severity not in ("high", "medium", "low"):
+        raise HTTPException(status_code=422, detail="Priority must be high, medium or low.")
+    if not unit_ids:
+        raise HTTPException(status_code=422, detail="Choose at least one reporting unit.")
+    units = [session.get(ReportingUnit, u) for u in dict.fromkeys(unit_ids)]
+    if any(u is None or u.unit_type == "hub" for u in units):
+        raise HTTPException(status_code=422, detail="Choose reporting units that submit reports (not hubs).")
+    if actor.role == "provincial_coordinator" and actor.province and any(u.province != actor.province for u in units):
+        raise HTTPException(status_code=403, detail=f"Coordinators can open investigations only for units in {actor.province}.")
+    if not (0 <= w0 <= w1 <= config.N_WEEKS - 1):
+        raise HTTPException(status_code=422, detail=f"Choose a week range between 0 and {config.N_WEEKS - 1}, start before end.")
+    if category_code and session.get(ReportingCategory, category_code) is None:
+        raise HTTPException(status_code=422, detail=f"Unknown reporting category {category_code}.")
+    at = at or now()
+    results = datasets.detection(session, dataset_id, "network")
+    last = int(results["week"].max()) if results is not None and not results.empty else 0
+    timeline = {u.id: week_rows(results, u.id, w0, w1, last) for u in units} if results is not None else {}
+    provinces = {u.province for u in units}
+    c = ReportingConcern(
+        id=next_concern_id(session), dataset_id=dataset_id, concern_type="reviewer_raised", title=title, summary=reason,
+        severity=severity, status="under_review", verification="unverified", category_code=category_code,
+        period_start=config.week_start(w0), period_end=config.week_end(w1), week_start_index=w0, week_end_index=w1,
+        primary_unit_id=units[0].id if len(units) == 1 else None, province=provinces.pop() if len(provinces) == 1 else None,
+        detection_method=HUMAN_METHOD, score=0.0, created_at=at, updated_at=at, simulated=ds.designation == "synthetic",
+        uncertainty_note="Raised by a reviewer, not by a detector. Nothing about it has been verified yet.",
+        detection_detail={"weeks": list(range(w0, w1 + 1)), "units": timeline, "method": HUMAN_METHOD, "params": {},
+                          "categories": [category_code] if category_code else []},
+    )
+    c.units = units
+    c.evidence.append(EvidenceItem(kind="requires_verification", title=f"Raised by {actor.display_name}", detail=reason, data={},
+                                   created_at=at, created_by=actor.user_id))
+    session.add(c)
+    session.flush()
+    checklist.create_items(session, c, at)
+    audit.record(session, actor, "concern", c.id, "concern.created", f"{actor.display_name} opened {c.id} for investigation: {title}",
+                 {"severity": severity, "human": True}, at=at)
+    assign(session, c, actor, assignee_id or actor.user_id, due, at=at)
     return c
 
 
@@ -264,14 +324,59 @@ def add_note(session: Session, c: ReportingConcern, actor: Actor, body: str, at:
     return n
 
 
+def attach_evidence(session: Session, c: ReportingConcern, actor: Actor, title: str, detail: str, link: str | None = None,
+                    at: datetime | None = None) -> EvidenceItem:
+    """Evidence a person attaches (a description and optionally a link). Files are not stored."""
+    actor.require("concern.evidence")
+    _require_open(c, "attach evidence")
+    title = (title or "").strip()
+    if len(title) < 3:
+        raise HTTPException(status_code=422, detail="Give the evidence a short title (at least 3 characters).")
+    detail = _reason(detail, "what this evidence shows")
+    link = (link or "").strip() or None
+    if link and not link.lower().startswith(("http://", "https://")):
+        raise HTTPException(status_code=422, detail="Links must start with http:// or https://.")
+    item = EvidenceItem(kind="attached", title=title, detail=detail, data={"link": link} if link else {},
+                        created_at=at or now(), created_by=actor.user_id)
+    c.evidence.append(item)
+    _touch(c, at)
+    audit.record(session, actor, "concern", c.id, "concern.evidence_attached", f"{actor.display_name} attached evidence to {c.id}: {title}",
+                 {"title": title, "link": link}, at=at)
+    return item
+
+
+def resolution_requirements(c: ReportingConcern) -> dict:
+    """What must be true before a concern can be resolved.
+
+    A detector flag is never a finding: resolving needs a human-reviewed finding
+    (the concern confirmed with a reason) and at least one piece of evidence a
+    person attached.
+    """
+    verified = c.verification == "confirmed"
+    evidence = any(e.kind == "attached" for e in c.evidence)
+    missing = []
+    if not verified:
+        missing.append("Record a human-reviewed finding: confirm the concern with a reason.")
+    if not evidence:
+        missing.append("Attach evidence of what was checked.")
+    return {"verified": verified, "evidence_attached": evidence, "can_resolve": c.status in OPEN_STATUSES and not missing, "missing": missing}
+
+
 def resolve(session: Session, c: ReportingConcern, actor: Actor, summary: str, at: datetime | None = None) -> None:
     actor.require("concern.resolve")
     _require_open(c, "resolve it")
+    req = resolution_requirements(c)
+    if req["missing"]:
+        raise HTTPException(status_code=409, detail={
+            "code": "resolution_requirements", "missing": req["missing"],
+            "message": f"{c.id} cannot be resolved yet. " + " ".join(req["missing"]),
+        })
     summary = _reason(summary, "the resolution")
     c.status = "resolved"
     c.resolution_summary = summary
     c.resolved_at = at or now()
     _touch(c, at)
+    checklist.complete_resolution(session, c, actor, at)
     _close_investigation(session, c, at)
     _note(session, c, actor, summary, "resolution", at)
     audit.record(session, actor, "concern", c.id, "concern.resolved", f"{actor.display_name} recorded a resolution for {c.id}.", {"summary": summary}, at=at)
@@ -288,6 +393,7 @@ def reopen(session: Session, c: ReportingConcern, actor: Actor, reason: str, at:
         c.verification = "unverified"
     c.resolved_at = None
     _touch(c, at)
+    checklist.reopen_resolution(session, c)
     _note(session, c, actor, reason, "note", at)
     audit.record(session, actor, "concern", c.id, "concern.reopened", f"{actor.display_name} reopened {c.id} (was {STATUS_LABELS[previous].lower()}).", {"reason": reason}, at=at)
 
@@ -326,6 +432,8 @@ def next_step(session: Session, c: ReportingConcern) -> dict:
             "late_report": f"Ask {unit} why the reports were late.",
             "incomplete_record": f"Ask {unit} whether the blank fields mean zero cases.",
             "count_drop": f"Ask {unit} to check the counts against its case register.",
+            "zero_case_run": f"Ask {unit} to check the zero-case reports against its case register.",
+            "reviewer_raised": "Work through the checklist, then confirm it or close it as not a problem.",
         }
         return {"text": by_type.get(c.concern_type, "Verify the concern."), "action": "clarify"}
     # in_investigation
@@ -339,6 +447,8 @@ def next_step(session: Session, c: ReportingConcern) -> dict:
         return {"text": "Plan an action to fix it.", "action": "plan"}
     if approved.status in ("approved", "in_progress"):
         return {"text": "An action is under way. Track it until it is done.", "action": "follow_up"}
+    if not resolution_requirements(c)["evidence_attached"]:
+        return {"text": "The action is done. Attach evidence of what was checked, then mark this as resolved.", "action": "evidence"}
     return {"text": "The action is done. If reporting is back to normal, mark this as resolved.", "action": "resolve"}
 
 

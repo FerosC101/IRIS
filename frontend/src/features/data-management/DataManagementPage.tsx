@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil, Upload } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { DesignationBadge, SimulatedTag } from "@/components/data-display/badges";
+import { Link, useSearchParams } from "react-router-dom";
+import { mergeSearch } from "@/lib/url";
+import { SimulatedTag } from "@/components/data-display/badges";
 import { DataTable } from "@/components/data-display/DataTable";
-import { PageHeader } from "@/components/data-display/PageHeader";
+import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Checkbox, Field, Input, Select, Textarea } from "@/components/ui/form";
 import { Pagination } from "@/components/ui/pagination";
@@ -15,41 +16,13 @@ import { EmptyState, ErrorState, InlineError, Loading } from "@/components/ui/st
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { useSession } from "@/hooks/useSession";
 import { useToast } from "@/hooks/useToast";
-import { fmtDate, fmtDateTime, fmtNum, fmtPeriod } from "@/lib/format";
+import { fmtDateTime, fmtNum } from "@/lib/format";
 import { UNIT_TYPE } from "@/lib/labels";
 import { api } from "@/services/api";
-import type { Dataset, ImportRecord, UnitRow } from "@/types/api";
+import type { ImportRecord, UnitRow } from "@/types/api";
+import { DatasetRegistry } from "./DatasetRegistry";
+export { ValidationBadge } from "./DatasetBadges";
 import { ResetDemo } from "./ResetDemo";
-
-const VALIDATION = { valid: { label: "Valid", tone: "positive" }, valid_with_warnings: { label: "Valid with warnings", tone: "attention" }, invalid: { label: "Invalid", tone: "critical" } } as const;
-export function ValidationBadge({ status }: { status: Dataset["validation_status"] }) {
-  const v = VALIDATION[status];
-  return <Badge tone={v.tone}>{v.label}</Badge>;
-}
-
-function DatasetsTab() {
-  const nav = useNavigate();
-  const q = useQuery({ queryKey: ["datasets"], queryFn: api.datasets });
-  if (q.error) return <ErrorState error={q.error} onRetry={() => q.refetch()} />;
-  if (!q.data) return <Loading />;
-  return (
-    <Panel bodyClassName="p-0">
-      <div className="px-4 md:px-0">
-        <DataTable<Dataset> caption="Datasets" rows={q.data} rowKey={(d) => d.id} onRowClick={(d) => nav(`/data-management/${d.id}`)} mobileTitle={(d) => d.name} minWidth={900}
-          columns={[
-            { key: "name", header: "Dataset", hideOnMobile: true, cell: (d) => <Link to={`/data-management/${d.id}`} className="font-medium text-teal-900 hover:underline">{d.name}</Link> },
-            { key: "designation", header: "Designation", cell: (d) => <DesignationBadge designation={d.designation} /> },
-            { key: "source", header: "Source", className: "max-w-xs", cell: (d) => <span className="line-clamp-2">{d.source}</span> },
-            { key: "level", header: "Level", cell: (d) => d.geographic_level },
-            { key: "coverage", header: "Coverage", className: "whitespace-nowrap", cell: (d) => (d.coverage_start ? fmtPeriod(d.coverage_start, d.coverage_end) : "—") },
-            { key: "rows", header: "Rows", align: "right", cell: (d) => fmtNum(d.row_count) },
-            { key: "valid", header: "Validation", cell: (d) => <ValidationBadge status={d.validation_status} /> },
-            { key: "imported", header: "Imported", className: "whitespace-nowrap", cell: (d) => fmtDate(d.imported_at) },
-          ]} />
-      </div>
-    </Panel>
-  );
-}
 
 export function ImportHistory({ rows }: { rows: ImportRecord[] }) {
   if (!rows.length) return <EmptyState title="No imports yet">Files uploaded through the CSV import appear here, including rejected ones.</EmptyState>;
@@ -62,7 +35,7 @@ export function ImportHistory({ rows }: { rows: ImportRecord[] }) {
             <span className="text-sm font-medium">{i.filename}</span>
             <Badge tone={i.status === "accepted" ? "positive" : i.status === "rejected" ? "critical" : "neutral"}>{i.status === "accepted" ? "Accepted" : i.status === "rejected" ? "Rejected" : "Cancelled"}</Badge>
           </div>
-          <p className="text-xs text-ink-2">{fmtDateTime(i.at)} · {i.by ?? "—"} · {fmtNum(i.row_count)} rows{i.dataset_id ? <> · <Link to={`/data-management/${i.dataset_id}`} className="text-teal-900 hover:underline">{i.dataset_id}</Link></> : null}</p>
+          <p className="text-xs text-ink-2">{fmtDateTime(i.at)} · {i.by ?? "—"} · {fmtNum(i.row_count)} rows{i.dataset_id ? <> · <Link to={`/data/datasets/${i.dataset_id}`} className="text-teal-900 hover:underline">{i.dataset_id}</Link></> : null}</p>
           {(i.errors.length > 0 || i.warnings.length > 0) && (
             <details className="mt-1.5 text-[13px]">
               <summary className="cursor-pointer font-medium text-teal-900">{i.errors.length} error(s), {i.warnings.length} warning(s)</summary>
@@ -185,11 +158,11 @@ export function DataManagementPage() {
   ];
   return (
     <>
-      <PageHeader title="Data sources" description="Where the data comes from, file imports, reporting units and activity log."
-        actions={can("dataset.import") ? <Link to="/data/import" className={buttonVariants()}><Upload aria-hidden /> Import CSV</Link> : undefined} />
-      <Tabs value={tab} onValueChange={(v) => setParams({ tab: v })}>
+      <ScreenHeader screen="data" />
+      <div className="mt-[25px]" />
+      <Tabs value={tab} onValueChange={(v) => setParams((prev) => mergeSearch(prev, { tab: v }))}>
         <TabsList label="Data management sections" tabs={tabs} />
-        <TabsContent value="datasets"><DatasetsTab /></TabsContent>
+        <TabsContent value="datasets"><DatasetRegistry /></TabsContent>
         <TabsContent value="imports"><ImportsTab /></TabsContent>
         <TabsContent value="units"><UnitsTab /></TabsContent>
         {can("audit.view") && <TabsContent value="activity"><AuditTab /></TabsContent>}

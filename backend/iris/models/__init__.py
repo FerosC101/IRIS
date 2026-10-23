@@ -13,6 +13,7 @@ from iris.models.data import DataRecord, Dataset, ImportRecord, ReportingExpecta
 from iris.models.workflow import (  # noqa: F401
     EvidenceItem,
     Investigation,
+    InvestigationChecklistItem,
     InvestigationNote,
     ReportingConcern,
     concern_units,

@@ -8,13 +8,13 @@ const TONES: Record<Tone, string> = {
   attention: "bg-attention-bg text-attention-ink ring-attention/25",
   info: "bg-info-bg text-info-ink ring-info/20",
   positive: "bg-positive-bg text-positive-ink ring-positive/20",
-  teal: "bg-aqua-50 text-teal-900 ring-teal-900/10",
+  teal: "bg-info-bg text-info-ink ring-info/30",
 };
 
 /** Small status label. Always carries text, never colour alone. */
 export function Badge({ tone = "neutral", children, className, icon }: { tone?: Tone; children: ReactNode; className?: string; icon?: ReactNode }) {
   return (
-    <span className={cn("inline-flex max-w-full items-center gap-1 rounded-sm px-1.5 py-px text-xs font-medium leading-5 ring-1 ring-inset [&_svg]:size-3.5", TONES[tone], className)}>
+    <span className={cn("iris-badge inline-flex max-w-full items-center gap-1 text-xs leading-5 ring-1 ring-inset [&_svg]:size-3.5", TONES[tone], className)}>
       {icon}
       {children}
     </span>

@@ -21,8 +21,8 @@ export function PageHeader({ title, description, breadcrumbs, actions, meta }: {
       )}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-[22px] font-semibold tracking-tight sm:text-2xl">{title}</h1>
-          {description && <p className="mt-1 max-w-3xl text-sm text-ink-2">{description}</p>}
+          <h1 className="iris-type-heading break-words">{title}</h1>
+          {description && <p className="iris-type-subtitle mt-2 max-w-3xl">{description}</p>}
           {meta && <div className="mt-2 flex flex-wrap items-center gap-2">{meta}</div>}
         </div>
         {actions && <div className="flex flex-wrap gap-2 sm:shrink-0 sm:justify-end [&>*]:flex-1 sm:[&>*]:flex-none">{actions}</div>}

@@ -7,14 +7,16 @@ export const Dialog = D.Root;
 export const DialogTrigger = D.Trigger;
 export const DialogClose = D.Close;
 
-export function DialogContent({ title, description, children, className, footer }: { title: string; description?: ReactNode; children?: ReactNode; className?: string; footer?: ReactNode }) {
+const DIALOG_WIDTH = { sm: "sm:w-[min(28rem,calc(100vw-2rem))]", md: "sm:w-[min(36rem,calc(100vw-2rem))]", lg: "sm:w-[min(48rem,calc(100vw-2rem))]" } as const;
+
+export function DialogContent({ title, description, children, className, footer, size = "md" }: { title: string; description?: ReactNode; children?: ReactNode; className?: string; footer?: ReactNode; size?: keyof typeof DIALOG_WIDTH }) {
   return (
     <D.Portal>
       <D.Overlay className="fixed inset-0 z-50 bg-teal-900/40" />
       <D.Content
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-lg border border-line bg-white shadow-md",
-          "sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-[min(36rem,calc(100vw-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg",
+          "sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg", DIALOG_WIDTH[size],
           className,
         )}
         aria-describedby={description ? undefined : undefined}
@@ -36,14 +38,18 @@ export function DialogContent({ title, description, children, className, footer 
 }
 
 /** Side sheet (right on desktop, full width on phones). */
-export function SheetContent({ title, description, children, className, side = "right" }: { title: string; description?: ReactNode; children: ReactNode; className?: string; side?: "right" | "left" }) {
+const SHEET_WIDTH = { md: "sm:w-[min(32rem,100vw)]", lg: "sm:w-[min(44rem,100vw)]" } as const;
+
+export function SheetContent({ title, description, children, className, side = "right", footer, size = "md" }: {
+  title: string; description?: ReactNode; children: ReactNode; className?: string; side?: "right" | "left"; footer?: ReactNode; size?: keyof typeof SHEET_WIDTH;
+}) {
   return (
     <D.Portal>
       <D.Overlay className="fixed inset-0 z-50 bg-teal-900/40" />
       <D.Content
         className={cn(
-          "fixed inset-y-0 z-50 flex w-full flex-col border-line bg-white shadow-md sm:w-[min(32rem,100vw)]",
-          side === "right" ? "right-0 sm:border-l" : "left-0 w-[min(20rem,88vw)] border-r sm:w-[20rem]",
+          "fixed inset-y-0 z-50 flex w-full flex-col border-line bg-white shadow-md",
+          side === "right" ? cn("right-0 sm:border-l", SHEET_WIDTH[size]) : "left-0 w-[min(20rem,88vw)] border-r sm:w-[20rem]",
           className,
         )}
       >
@@ -57,6 +63,7 @@ export function SheetContent({ title, description, children, className, side = "
           </D.Close>
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+        {footer && <div className="flex flex-col-reverse gap-2 border-t border-line px-5 py-3 sm:flex-row sm:justify-end">{footer}</div>}
       </D.Content>
     </D.Portal>
   );

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from functools import lru_cache
 from threading import Lock
 
@@ -35,6 +36,22 @@ def bump(dataset_id: str | None = None) -> None:
 
 def _key(dataset_id: str, kind: str, *extra) -> tuple:
     return (dataset_id, _versions.get(dataset_id, 0), kind, *extra)
+
+
+def records_checksum(session: Session, dataset_id: str) -> str:
+    """SHA-256 of a canonical, ordered export of the dataset's records (independent of database ids)."""
+    rows = session.execute(select(DataRecord).where(DataRecord.dataset_id == dataset_id)).scalars().all()
+    fields = ("reporting_unit_id", "area", "category_code", "period_start", "period_end", "value", "value_status", "due_at", "received_at", "fields_complete")
+
+    def cell(v) -> str:
+        if v is None:
+            return ""
+        if isinstance(v, float):
+            return repr(round(v, 6))
+        return v.isoformat() if hasattr(v, "isoformat") else str(v)
+
+    lines = sorted("|".join(cell(getattr(r, f)) for f in fields) for r in rows)
+    return hashlib.sha256("\n".join(["|".join(fields), *lines]).encode("utf-8")).hexdigest()
 
 
 def get_dataset(session: Session, dataset_id: str) -> Dataset:
@@ -115,5 +132,7 @@ def week_labels() -> list[dict]:
     for t in range(config.N_WEEKS):
         s, e = config.week_start(t), config.week_end(t)
         out.append({"week": t, "start": s.isoformat(), "end": e.isoformat(), "iso_week": s.isocalendar().week,
-                    "label": f"W{s.isocalendar().week} · {s.strftime('%b')} {s.day}–{e.strftime('%b') + ' ' if e.month != s.month else ''}{e.day}"})
+                    "label": f"W{s.isocalendar().week} · {s.strftime('%b')} {s.day}–{e.strftime('%b') + ' ' if e.month != s.month else ''}{e.day}",
+                    # e.g. "ISO W40 · 28 Sep–04 Oct" (ISO weeks run Monday to Sunday)
+                    "iso_label": f"ISO W{s.isocalendar().week} · {s.strftime('%d %b')}–{e.strftime('%d %b')}"})
     return out

@@ -32,7 +32,7 @@ from iris.models import (
     Role,
     User,
 )
-from iris.services import audit, concerns as cs, datasets, interventions as iv
+from iris.services import audit, checklist, concerns as cs, datasets, interventions as iv
 from iris.services.clock import now, today
 from iris.services.concern_builder import build_specs
 from iris.services.context import ROLE_LABELS, Actor
@@ -90,7 +90,8 @@ def build(session: Session, scenario_ids: list[str] | None = None, seed: int = c
     for u in world.units:
         org = f"ORG-PESU-{PROVINCE_HUB[u.province][-3:]}" if u.id not in ("HOSP-REG", "LAB-REG", "HUB-REG") else "ORG-RESU"
         session.add(ReportingUnit(id=u.id, name=u.name, unit_type=u.unit_type, province=u.province, municipality=u.municipality,
-                                  organization_id=org, active=True, is_sentinel=u.is_sentinel, x=u.x, y=u.y, simulated=True))
+                                  organization_id=org, active=True, is_sentinel=u.is_sentinel, x=u.x, y=u.y,
+                                  geo_x=u.geo_x, geo_y=u.geo_y, simulated=True))
     session.flush()
     for uid, name, role, org, unit, prov in USERS:
         session.add(User(id=uid, display_name=name, role_id=role, organization_id=org, reporting_unit_id=unit, province=prov))
@@ -159,16 +160,20 @@ def build(session: Session, scenario_ids: list[str] | None = None, seed: int = c
         n_agg += 1
     session.get(Dataset, config.DEMO_AGGREGATE_DATASET_ID).row_count = n_agg
     session.flush()
+    for ds_id in (config.DEMO_DATASET_ID, config.DEMO_AGGREGATE_DATASET_ID):
+        ds = session.get(Dataset, ds_id)
+        ds.records_checksum = ds.checksum = datasets.records_checksum(session, ds_id)
+        ds.checksum_basis = "canonical_records"
     datasets.bump()
 
-    # Detection -> concerns, each created on the review date of its first flagged week
+    # Detection -> concerns, each created on the review date of the week its flag was raised
     results = datasets.detection(session, config.DEMO_DATASET_ID, "network")
     sl = datasets.slots(session, config.DEMO_DATASET_ID)
     units = {u.id: {"name": u.name, "province": u.province} for u in world.units}
     specs = build_specs(results, sl, datasets.peer_groups(session, config.DEMO_DATASET_ID), units, datasets.case_categories(session), "network", DetectionParams())
     created: list[ReportingConcern] = []
     for spec in specs:
-        at = min(config.weekly_due(spec.w0) + timedelta(hours=16), config.AS_OF - timedelta(hours=1))
+        at = min(config.weekly_due(spec.detection_week) + timedelta(hours=16), config.AS_OF - timedelta(hours=1))
         c = cs.create_from_spec(session, spec, config.DEMO_DATASET_ID, at)
         match = next((s for s in scenarios if s.start_week <= spec.w1 and spec.w0 <= s.end_week + (3 if s.kind == "outbreak" else 0)
                       and set(s.units) & set(spec.unit_ids)), None)
@@ -253,7 +258,8 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
         cs.respond_clarification(session, c, p, "Phone call with the RHU (simulated): the only encoder was on leave; paper forms were kept and will be encoded on return.", at=_h(t, 40))
         cs.confirm(session, c, p, "The RHU confirmed reports were not transmitted because the encoder was on leave.", at=_h(t, 42))
         cs.assign(session, c, p, p.user_id, None, at=_h(t, 42))
-        cs.resolve(session, c, p, "Backlog was encoded after the encoder returned; a back-up encoder was named (simulated outcome).", at=_h(t, 24 * 12))
+        cs.attach_evidence(session, c, p, "Backlog received", "The missing weekly reports for these weeks were received after the encoder returned (simulated).", at=_h(t, 24 * 12 - 2))
+        _resolve(session, c, p, "Backlog was encoded after the encoder returned; a back-up encoder was named (simulated outcome).", at=_h(t, 24 * 12))
 
     if c := story("S03-OUTBREAK-HABAGAT"):
         p, t = _prov_actor(c), c.created_at
@@ -271,7 +277,8 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
         iv.update_assignment(session, resu2, asg, "completed", None, "Template fields were hidden after a software update; template restored (simulated).", None, at=_h(t, 24 * 4))
         iv.record_outcome(session, resu2, asg, "verified", "Simulated outcome: subsequent reports from the unit had complete fields (reviewer check of later forms).", at=_h(t, 24 * 14), source="simulated")
         iv.update_assignment(session, resu2, asg, "closed", "Closed after reviewing later forms.", None, None, at=_h(t, 24 * 14))
-        cs.resolve(session, c, resu2, "Form template corrected; later reports complete. Recorded as a simulated outcome.", at=_h(t, 24 * 15))
+        cs.attach_evidence(session, c, resu2, "Later forms reviewed", "Forms submitted after the template fix had every required field completed (simulated reviewer check).", at=_h(t, 24 * 15 - 2))
+        _resolve(session, c, resu2, "Form template corrected; later reports complete. Recorded as a simulated outcome.", at=_h(t, 24 * 15))
 
     if c := story("S05-HUB-THM"):
         t = c.created_at
@@ -289,7 +296,8 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
             iv.update_assignment(session, resu, asg, "in_progress", "Work started (simulated).", None, None, at=_h(t, 24 * 10))
             iv.update_assignment(session, resu, asg, "completed", None, ev, None, at=_h(t, done_h))
             iv.record_outcome(session, resu, asg, outcome[0], outcome[1], at=_h(t, done_h + 24 * 14), source="simulated")
-        cs.resolve(session, c, resu, "Hub connection restored and backlog received. Simulated outcome; see Recovery Analytics for before/after reporting.", at=_h(t, 24 * 26))
+        cs.attach_evidence(session, c, resu, "Hub upload log", "The hub's upload service log shows the queued reports re-sent after the repair (simulated).", at=_h(t, 24 * 26 - 2))
+        _resolve(session, c, resu, "Hub connection restored and backlog received. Simulated outcome; see Recovery Analytics for before/after reporting.", at=_h(t, 24 * 26))
 
     if c := story("S06-SHARED-KALINAW"):
         p, t = _actor("U-PROV-MLY"), c.created_at
@@ -327,6 +335,16 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
 
     story("S10-ISO-SILANGAN")  # left new
 
+    if c := story("S11-ZERO-TALA2"):
+        # Mirrors a verification in progress: receipt and identity checked, the zero count not yet verified.
+        p, t = _actor("U-PROV-MSG"), c.created_at
+        cs.mark_for_review(session, c, resu, at=_h(t, 0.25))
+        cs.assign(session, c, resu, resu2.user_id, None, note="Zero-case run during the dengue season; verify before drawing any conclusion.", at=_h(t, 0.5))
+        steps = checklist.items(session, c.id)
+        checklist.update(session, c, resu, steps[0].id, True, "All three weekly reports were received on time.", at=_h(t, 0.75))
+        checklist.update(session, c, resu2, steps[1].id, True, "Unit ID matches the registry.", at=_h(t, 1))
+        cs.add_note(session, c, p, "The RHU nurse will check the dengue register this afternoon.", at=_h(t, 1.5))
+
     # Background flags (no injected disruption)
     for c in created:
         if c.id in handled:
@@ -335,11 +353,21 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
         if c.week_end_index <= 18:
             cs.mark_for_review(session, c, p, at=_h(t, 6))
             if c.concern_type in ("missing_submission", "late_report"):
-                cs.resolve(session, c, p, "Reports were received after the review date; the unit explained a one-off delay. No recurring problem.", at=_h(t, 30))
+                cs.confirm(session, c, p, "The unit confirmed the reports were delayed by a one-off problem.", at=_h(t, 20))
+                cs.attach_evidence(session, c, p, "Late reports received", "The delayed reports arrived after the review date (see the records for these weeks).", at=_h(t, 28))
+                _resolve(session, c, p, "Reports were received after the review date; the unit explained a one-off delay. No recurring problem.", at=_h(t, 30))
             else:
                 cs.dismiss(session, c, p, "Checked with the unit: values are correct and the pattern is explained. No reporting problem.", at=_h(t, 30))
         elif c.week_end_index <= 22:
             cs.mark_for_review(session, c, p, at=_h(t, 6))
+
+
+def _resolve(session: Session, c: ReportingConcern, actor: Actor, summary: str, at: datetime) -> None:
+    """Tick the remaining checks, then resolve (which records the finding step)."""
+    for i, step in enumerate(checklist.items(session, c.id)):
+        if step.kind == "check" and not step.done:
+            checklist.update(session, c, actor, step.id, True, None, at=at - timedelta(minutes=30 - i))
+    cs.resolve(session, c, actor, summary, at=at)
 
 
 def _plan_reject(session: Session, c: ReportingConcern, p: Actor, approver: Actor, t: datetime) -> None:

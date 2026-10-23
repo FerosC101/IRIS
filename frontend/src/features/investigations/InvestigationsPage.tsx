@@ -1,8 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Play } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { mergeSearch } from "@/lib/url";
+import { DataTable, type SortState } from "@/components/data-display/DataTable";
+import { ConcernStatusBadge, SeverityBadge, VerificationBadge } from "@/components/data-display/badges";
+import { fmtDate } from "@/lib/format";
+import type { ConcernStatus, QueueRow } from "@/types/api";
 import { useState } from "react";
 import { ChipFilter, FilterBar, FilterField } from "@/components/data-display/FilterBar";
-import { PageHeader } from "@/components/data-display/PageHeader";
+import { MetricCard } from "@/components/data-display/MetricCard";
+import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Field, Input, Select } from "@/components/ui/form";
@@ -13,11 +20,11 @@ import { useSession } from "@/hooks/useSession";
 import { useToast } from "@/hooks/useToast";
 import { SEVERITY } from "@/lib/labels";
 import { api } from "@/services/api";
-import { QueueTable } from "../overview/QueueTable";
+
 
 const DEFAULTS = { status: "active", concern_type: "", severity: "", province: "", search: "" };
 
-function RunDetection() {
+export function RunDetection() {
   const [open, setOpen] = useState(false);
   const [method, setMethod] = useState("network");
   const qc = useQueryClient();
@@ -33,12 +40,12 @@ function RunDetection() {
   });
   return (
     <>
-      <Button variant="secondary" onClick={() => setOpen(true)}><Play aria-hidden /> Check for new concerns</Button>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Button variant="secondary" onClick={() => { m.reset(); setOpen(true); }}><Play aria-hidden /> Check for new concerns</Button>
+      <Dialog open={open} onOpenChange={(value) => { if (!m.isPending) setOpen(value); }}>
         <DialogContent title="Check for new concerns"
-          description="Scans the demo data for unusual reporting and adds any new concerns. Existing ones are not changed."
+          description="Scans the full demo dataset using the selected method and adds new concerns. Chart and queue filters do not restrict this run. Existing concerns are not changed."
           footer={<>
-            <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="secondary" disabled={m.isPending} onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={() => m.mutate()} disabled={m.isPending}>{m.isPending ? "Checking…" : "Check now"}</Button>
           </>}>
           <div className="flex flex-col gap-3">
@@ -59,21 +66,40 @@ function RunDetection() {
 
 export function InvestigationsPage() {
   const { meta, role, can } = useSession();
-  const [f, setF] = useState(DEFAULTS);
-  const [page, setPage] = useState(1);
-  const params = { ...f, page, page_size: 20, sort: "updated_at", order: "desc" };
+  const overview = useQuery({ queryKey: ["overview", "all", "active"], queryFn: () => api.overview({ period: "all", status: "active" }) });
+  const counts = overview.data?.counts;
+  const navigate = useNavigate();
+  const [url, setUrl] = useSearchParams();
+  const f = Object.fromEntries(Object.entries(DEFAULTS).map(([k, v]) => [k, url.get(k) ?? v])) as typeof DEFAULTS;
+  const page = Math.max(1, Number(url.get("page")) || 1);
+  const sort: SortState = { key: ["severity", "updated_at", "period_start"].includes(url.get("sort") ?? "") ? url.get("sort")! : "updated_at", order: url.get("order") === "asc" ? "asc" : "desc" };
+  const setPage = (n: number) => setUrl((p) => { p.set("page", String(n)); return p; }, { replace: true });
+  // Page filters merge into the URL; changing one returns to page 1.
+  const keepEmpty = Object.keys(DEFAULTS).filter((k) => DEFAULTS[k as keyof typeof DEFAULTS] !== "");
+  const setF = (v: typeof DEFAULTS) => setUrl((p) => mergeSearch(p, { ...v, page: null }, keepEmpty), { replace: true });
+  const params = { ...f, page, page_size: 20, sort: sort.key, order: sort.order };
   const q = useQuery({ queryKey: ["concerns", params], queryFn: () => api.concerns(params), placeholderData: (p) => p });
-  const set = (patch: Partial<typeof DEFAULTS>) => { setF({ ...f, ...patch }); setPage(1); };
+  const set = (patch: Partial<typeof DEFAULTS>) => setUrl((p) => mergeSearch(p, { ...patch, page: null }, keepEmpty), { replace: true });
   const hidden = (["concern_type", "severity", "province"] as const).filter((k) => f[k]).length;
   return (
     <>
-      <PageHeader title="Concerns" description="Possible reporting problems found in the data. Open one to review it."
-        actions={can("detection.run") ? <RunDetection /> : undefined} />
-      <Panel bodyClassName="p-0">
+      <ScreenHeader screen="investigations">
+        {can("detection.run") && <div className="flex justify-end"><RunDetection /></div>}
+      </ScreenHeader>
+      <div className="mt-[25px]" />
+      <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <MetricCard label="New concerns" value={counts?.new ?? "Unavailable"} detail="Awaiting initial review across your scope." motif="records" />
+        <MetricCard label="Under review" value={counts?.under_review ?? "Unavailable"} detail="Evidence is being verified." motif="verify" />
+        <MetricCard label="Waiting for reply" value={counts?.clarification_requested ?? "Unavailable"} detail="Clarification requested from reporting units." motif="network" />
+        <MetricCard label="Being investigated" value={counts?.in_investigation ?? "Unavailable"} detail="Active corrective investigation." motif="trends" />
+      </div>
+      {overview.error && <ErrorState error={overview.error} onRetry={() => overview.refetch()} title="Investigation indicators unavailable" />}
+      <Panel title="Investigation queue" description="Filter reporting concerns and open a record to review evidence, assign an owner, or record a decision." motif="records" bodyClassName="p-0">
         <div className="flex flex-col gap-3 border-b border-line px-4 py-3">
           <ChipFilter label="Status" value={f.status} onChange={(v) => set({ status: v })} options={[
             { value: "active", label: "Open" },
             { value: "open", label: "New" },
+            { value: "under_review", label: "Under review" },
             { value: "clarification_requested", label: "Waiting for reply" },
             { value: "in_investigation", label: "Being fixed" },
             { value: "closed", label: "Closed" },
@@ -81,7 +107,7 @@ export function InvestigationsPage() {
           ]} />
           <FilterBar activeCount={hidden} onReset={() => set({ concern_type: "", severity: "", province: "" })} label="Filters"
             primary={<div className="w-full md:w-72"><label htmlFor="cs" className="sr-only">Search concerns</label>
-              <Input id="cs" type="search" placeholder="Search by unit, ID or keyword" value={f.search} onChange={(e) => set({ search: e.target.value })} /></div>}>
+              <Input id="cs" type="search" placeholder="Search by concern ID or keyword" value={f.search} onChange={(e) => set({ search: e.target.value })} /></div>}>
             <FilterField label="Type">
               {(id) => (
                 <Select id={id} value={f.concern_type} onChange={(e) => set({ concern_type: e.target.value })}>
@@ -112,8 +138,20 @@ export function InvestigationsPage() {
         </div>
         {q.error ? <div className="p-4"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div> : !q.data ? <div className="px-4"><Loading /></div> : (
           <>
-            <QueueTable rows={q.data.rows} caption="Reporting concerns"
-              emptyState={<div className="p-4"><EmptyState title="No concerns match" action={<Button size="sm" variant="secondary" onClick={() => { setF(DEFAULTS); setPage(1); }}>Show all open concerns</Button>} /></div>} />
+            <DataTable<QueueRow> rows={q.data.rows} caption="Reporting concerns" rowKey={(r) => r.id}
+              onRowClick={(r) => navigate(r.link)} mobileTitle={(r) => <Link to={r.link}>{r.title}</Link>} minWidth={1080}
+              sort={sort} onSort={(v) => setUrl((p) => mergeSearch(p, { sort: v.key, order: v.order, page: null }), { replace: true })}
+              columns={[
+                { key: "id", header: "Concern", cell: (r) => <Link to={r.link} className="font-semibold text-info-ink hover:underline">{r.id}</Link> },
+                { key: "severity", header: "Priority", sortKey: "severity", cell: (r) => <SeverityBadge severity={r.severity} /> },
+                { key: "unit", header: "Affected entities", cell: (r) => r.units_label },
+                { key: "title", header: "Suspected disruption", cell: (r) => <Link to={r.link} className="hover:underline">{r.title}</Link> },
+                { key: "status", header: "Status", cell: (r) => <ConcernStatusBadge status={r.status as ConcernStatus} /> },
+                { key: "verification", header: "Verification", cell: (r) => <VerificationBadge verification={r.verification ?? "unverified"} /> },
+                { key: "assigned", header: "Reviewer", cell: (r) => r.assigned ?? "Unassigned" },
+                { key: "updated", header: "Updated", sortKey: "updated_at", cell: (r) => fmtDate(r.updated_at) },
+              ]}
+              emptyState={<div className="p-4"><EmptyState title="No concerns match" action={<Button size="sm" variant="secondary" onClick={() => { setF(DEFAULTS); }}>Show all open concerns</Button>} /></div>} />
             {q.data.pages > 1 && <div className="border-t border-line px-4 py-3"><Pagination page={q.data.page} pages={q.data.pages} total={q.data.total} pageSize={q.data.page_size} onPage={setPage} /></div>}
           </>
         )}

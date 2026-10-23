@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from iris import config
 from iris.models import AuditEvent, InterventionAction, InterventionAssignment, ReportingConcern, ReportingUnit, User
-from iris.services import datasets, reports
+from iris.services import datasets, ids, reports
 from iris.services.clock import today
 from iris.services.concerns import CLOSED_STATUSES, OPEN_STATUSES, STATUS_LABELS, TYPE_LABELS, scope_filter
 from iris.services.context import Actor
@@ -28,10 +28,11 @@ def _units_label(units: list[ReportingUnit]) -> str:
     return f"{units[0].name} + {len(units) - 1} more"
 
 
-def concern_row(c: ReportingConcern, users: dict[str, str]) -> dict:
+def concern_row(c: ReportingConcern, users: dict[str, str], inv_ids: dict[str, str] | None = None) -> dict:
     cats = (c.detection_detail or {}).get("categories") or []
+    inv = (inv_ids or {}).get(c.id)
     return {
-        "kind": "concern", "id": c.id, "title": c.title, "units": [u.id for u in c.units], "units_label": _units_label(c.units),
+        "kind": "concern", "id": c.id, "investigation_id": inv, "display_id": inv or c.id, "title": c.title, "units": [u.id for u in c.units], "units_label": _units_label(c.units),
         "province": c.province, "category": ", ".join(cats) if cats else ("All weekly reports" if c.concern_type != "count_drop" else None),
         "period_start": c.period_start.isoformat(), "period_end": c.period_end.isoformat(),
         "concern_type": c.concern_type, "concern_type_label": TYPE_LABELS[c.concern_type],
@@ -64,7 +65,8 @@ def overview(session: Session, actor: Actor, period: str = "4w", province: str |
     else:
         shown = [c for c in in_period if c.status == status]
 
-    rows = [concern_row(c, users) for c in shown]
+    inv_ids = ids.investigation_ids(session)
+    rows = [concern_row(c, users, inv_ids) for c in shown]
 
     # Follow-up actions in progress
     concern_ids = {c.id for c in in_scope}
@@ -78,7 +80,7 @@ def overview(session: Session, actor: Actor, period: str = "4w", province: str |
         concern = next(c for c in in_scope if c.id == action.concern_id)
         unit_objs = [session.get(ReportingUnit, u) for u in asg.target_unit_ids]
         follow.append({
-            "kind": "follow_up", "id": asg.id, "title": asg.title, "units": asg.target_unit_ids, "units_label": _units_label(unit_objs),
+            "kind": "follow_up", "id": asg.id, "investigation_id": inv_ids.get(concern.id), "display_id": asg.id, "title": asg.title, "units": asg.target_unit_ids, "units_label": _units_label(unit_objs),
             "province": concern.province, "category": None, "period_start": concern.period_start.isoformat(), "period_end": concern.period_end.isoformat(),
             "concern_type": concern.concern_type, "concern_type_label": "Follow-up action", "severity": concern.severity,
             "status": asg.status, "status_label": asg.status.replace("_", " ").capitalize(), "verification": None,

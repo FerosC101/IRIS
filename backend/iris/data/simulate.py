@@ -23,7 +23,7 @@ import pandas as pd
 from iris import config
 from iris.data.world import World
 
-DISRUPTION_KINDS = ("hub_outage", "shared_resource", "isolated", "incomplete", "count_drop")
+DISRUPTION_KINDS = ("hub_outage", "shared_resource", "isolated", "incomplete", "count_drop", "zero_run")
 CONTEXT_KINDS = ("holiday", "outbreak")
 SEVERITY_INTENSITY = {"high": 1.0, "medium": 0.65, "low": 0.4}
 
@@ -33,6 +33,7 @@ SCENARIO_KIND_LABELS = {
     "isolated": "Isolated unit problem",
     "incomplete": "Incomplete records",
     "count_drop": "Unexplained drop in reported counts",
+    "zero_run": "Zero-case reports submitted while cases occurred",
     "holiday": "Holiday-week delay (not a reporting failure)",
     "outbreak": "Genuine case increase (not a reporting failure)",
 }
@@ -203,6 +204,7 @@ def simulate(
             incomplete = next((s for s in active if s.kind == "incomplete"), None)
             drop = next((s for s in active if s.kind == "count_drop"), None)
             outbreak = next((s for s in active if s.kind == "outbreak"), None)
+            zero_run = next((s for s in active if s.kind == "zero_run"), None)
             fields_complete = 1.0
             if incomplete:
                 fields_complete = round(1 - incomplete.intensity * float(rng.uniform(0.3, 0.65)), 2)
@@ -216,6 +218,10 @@ def simulate(
                 omitted = rng.random() < 0.015
                 blank_p = 0.6 * incomplete.intensity if incomplete else 0.01
                 blank = rng.random() < blank_p
+                if zero_run and c.code in (zero_run.categories or ("DENGUE",)):
+                    # The report is submitted with an explicit zero although cases occurred.
+                    # The usual draws above are still made so every other value is unchanged.
+                    value, blank = 0, False
                 if bundle_received is None or omitted:
                     continue
                 received = bundle_received + timedelta(minutes=int(rng.integers(0, 40)))
@@ -295,6 +301,8 @@ def demo_scenarios(world: World) -> list[Scenario]:
                  description="Simulated incomplete forms from Malaya District Hospital."),
         Scenario("S10-ISO-SILANGAN", "isolated", ("RHU-SILANGAN",), 25, 25, "high",
                  description="Simulated missing latest report from Silangan RHU."),
+        Scenario("S11-ZERO-TALA2", "zero_run", ("RHU-TALA-2",), 23, 25, "high", categories=("DENGUE",),
+                 description="Simulated reporting error: Tala RHU II submitted its weekly reports on time but entered zero dengue cases for three weeks during the season."),
     ]
 
 
@@ -360,4 +368,5 @@ def random_scenarios(world: World, rng: np.random.Generator, n_weeks: int = conf
     hol_units = tuple(m for m in world.hub_members(prov_hub) if free(m, hw, hw))
     if hol_units:
         out.append(Scenario(f"R-HOLIDAY-{prov_hub}-{hw}", "holiday", hol_units, hw, hw, "high", via=prov_hub))
+    place("zero_run", rhus, 3, 4, 1, categories=("DENGUE",))
     return out

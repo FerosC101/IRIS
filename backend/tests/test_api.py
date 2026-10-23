@@ -29,11 +29,15 @@ def test_investigation_can_be_assigned_updated_and_resolved(fresh):
     r = c.post(f"/api/concerns/{cid}/assign", json={"user_id": "U-RESU-2", "due": "2026-10-20"}, headers=PROV)
     assert r.status_code == 200 and r.json()["investigation"]["owner_user_id"] == "U-RESU-2"
     assert c.post(f"/api/concerns/{cid}/notes", json={"body": "Called the RHU; encoder is back tomorrow."}, headers=PROV).status_code == 200
+    # Resolution needs evidence a person attached, as well as the confirmation above.
+    assert c.post(f"/api/concerns/{cid}/resolve", json={"summary": "Backlog encoded and received."}, headers=PROV).status_code == 409
+    ev = {"title": "Backlog received", "detail": "The two missing weekly reports arrived on 9 Oct."}
+    assert c.post(f"/api/concerns/{cid}/evidence", json=ev, headers=PROV).status_code == 200
     r = c.post(f"/api/concerns/{cid}/resolve", json={"summary": "Backlog encoded and received."}, headers=PROV)
     d = r.json()
     assert d["concern"]["status"] == "resolved" and d["investigation"]["status"] == "closed"
     actions = [a["action"] for a in d["activity"]]
-    for a in ("concern.marked_for_review", "concern.confirmed", "concern.assigned", "concern.note_added", "concern.resolved"):
+    for a in ("concern.marked_for_review", "concern.confirmed", "concern.assigned", "concern.note_added", "concern.evidence_attached", "concern.resolved"):
         assert a in actions
 
 
@@ -190,3 +194,342 @@ def test_unit_metadata_management(fresh):
 def test_detection_run_does_not_duplicate(fresh):
     r = fresh.post("/api/detection/run", json={"method": "network"}, headers=RESU).json()
     assert r["created"] == [] and r["skipped_existing"] > 0
+
+
+def test_unknown_demo_user_is_rejected_not_replaced(client):
+    r = client.get("/api/meta", headers=as_user("U-DOES-NOT-EXIST"))
+    assert r.status_code == 400
+    assert r.json()["detail"]["code"] == "unknown_demo_user"
+    # A rejected identity must not be able to act as the default analyst.
+    assert client.post("/api/detection/run", json={"method": "network"}, headers=as_user("U-DOES-NOT-EXIST")).status_code == 400
+    # No header at all still means the default demo user.
+    assert client.get("/api/meta").json()["actor"]["user_id"] == "U-RESU-1"
+    assert client.get("/api/meta", headers=PROV).json()["actor"]["user_id"] == "U-PROV-MLY"
+
+
+def test_demo_reset_requires_typed_confirmation(fresh):
+    c = fresh
+    assert c.post("/api/concerns/C-0020/notes", json={"body": "Note that must survive a refused reset."}, headers=PROV).status_code == 200
+    assert c.post("/api/demo/reset", json={}, headers=RESU).status_code == 422
+    r = c.post("/api/demo/reset", json={"confirm": "reset please"}, headers=RESU)
+    assert r.status_code == 422 and "Type RESET" in r.json()["detail"]
+    notes = c.get("/api/concerns/C-0020", headers=PROV).json()["notes"]
+    assert any(n["body"] == "Note that must survive a refused reset." for n in notes)
+    assert c.post("/api/demo/reset", json={"confirm": "RESET"}, headers=RESU).status_code == 200
+    assert not any(n["body"].startswith("Note that must survive") for n in c.get("/api/concerns/C-0020", headers=PROV).json()["notes"])
+
+
+def test_zero_case_run_concern_from_demo_scenario(client):
+    d = client.get("/api/concerns/C-0021", headers=RESU).json()
+    c = d["concern"]
+    assert c["concern_type"] == "zero_case_run" and c["concern_type_label"] == "Zero-case run"
+    assert c["category_code"] == "DENGUE" and c["primary_unit_id"] == "RHU-TALA-2"
+    assert (c["week_start_index"], c["week_end_index"]) == (23, 25)
+    kinds = [e["kind"] for e in d["evidence"]]
+    assert "observed" in kinds and "possible_explanation" in kinds and "requires_verification" in kinds
+    assert any("not a missing submission" in e["detail"] for e in d["evidence"])
+    # The answer key ties it to the injected scenario.
+    assert any((e["data"].get("scenario") or {}).get("id") == "S11-ZERO-TALA2" for e in d["evidence"])
+
+
+def test_flags_carry_a_simulated_reference_band(client):
+    for cid in ("C-0021", "C-0012"):
+        ev = client.get(f"/api/concerns/{cid}", headers=RESU).json()["evidence"]
+        band = next(e["data"]["reference_band"] for e in ev if "reference_band" in e["data"])
+        assert band["label"] == "Simulated reference band" and 0 <= band["low"] <= band["high"]
+    zero = next(e for e in client.get("/api/concerns/C-0021", headers=RESU).json()["evidence"] if "reference_band" in e["data"])
+    assert zero["data"]["reference_band"]["per"] == "week" and zero["data"]["reference_band"]["low"] > 0
+    rows = client.get("/api/concerns/C-0012", headers=RESU).json()["timeline"]["units"]["RHU-TALA-1"]
+    assert any(r["count_band"] for r in rows)
+
+
+def test_display_ids_and_linked_concerns(client):
+    rows = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-TALA-2&category=DENGUE&date_from=2026-09-07&page_size=10", headers=RESU).json()["rows"]
+    by_week = {r["week"]: r for r in rows}
+    assert by_week[24]["report_id"] == f"RPT-{by_week[24]['record_id']:04d}"
+    assert by_week[24]["value_status"] == "zero" and by_week[24]["concern_id"] == "C-0021"
+    assert by_week[22]["concern_id"] is None  # before the zero run
+    # A missing submission is not a report: it has no report id, but can still belong to a concern.
+    miss = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-SILANGAN&status=not_received&date_from=2026-09-28", headers=RESU).json()["rows"]
+    assert miss and all(r["report_id"] is None for r in miss) and miss[0]["concern_id"] == "C-0020"
+    # Count-type concerns link only their own category.
+    measles = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-TALA-2&category=MEASLES&date_from=2026-09-21", headers=RESU).json()["rows"]
+    assert all(r["concern_id"] != "C-0021" for r in measles)
+
+    d = client.get(f"/api/reports/{by_week[24]['report_id']}", headers=RESU).json()
+    assert d["id"] == by_week[24]["record_id"] and d["concern_id"] == "C-0021" and d["designation"] == "synthetic"
+    assert client.get("/api/reports/RPT-99999999", headers=RESU).status_code == 404
+    assert client.get(f"/api/reports/{by_week[24]['report_id']}", headers=RHU).status_code == 404  # another unit's report
+
+
+def test_investigation_ids_resolve_to_their_concern(client):
+    d = client.get("/api/concerns/INV-0010", headers=RESU).json()
+    assert d["concern"]["id"] == "C-0010" and d["concern"]["investigation_id"] == "INV-0010" and d["concern"]["display_id"] == "INV-0010"
+    q = client.get("/api/concerns?status=active&page_size=100", headers=RESU).json()["rows"]
+    row = next(r for r in q if r["id"] == "C-0010")
+    assert row["investigation_id"] == "INV-0010"
+    new = next(r for r in q if r["id"] == "C-0020")
+    assert new["investigation_id"] is None and new["display_id"] == "C-0020"
+    assert client.get("/api/concerns/INV-9999", headers=RESU).status_code == 404
+
+
+def test_surveillance_summary_keeps_zero_blank_and_missing_apart(client):
+    s = client.get("/api/surveillance/summary?category=DENGUE", headers=RESU).json()
+    assert s["available"] and s["week"]["week"] == 25 and s["week"]["iso_label"] == "ISO W40 · 28 Sep–04 Oct"
+    u = s["units"]
+    assert u["with_cases"] + u["zero"] + u["blank"] + u["missing"] == u["expected"] == 18
+    assert u["received"] == u["expected"] - u["missing"]
+    assert abs(u["completeness"] - u["received"] / u["expected"]) < 1e-9  # zero and blank reports count as received
+    tala2 = next(r for r in s["heatmap"]["units"] if r["unit_id"] == "RHU-TALA-2")
+    assert [c["state"] for c in tala2["cells"][-3:]] == ["zero", "zero", "zero"]
+    assert tala2["cells"][-1]["concern_id"] == "C-0021" and tala2["cells"][-1]["report_id"].startswith("RPT-")
+    silangan = next(r for r in s["heatmap"]["units"] if r["unit_id"] == "RHU-SILANGAN")
+    assert silangan["cells"][-1]["state"] == "missing" and silangan["cells"][-1]["report_id"] is None
+    assert "C-0021" in s["flow"]["flag_ids"] and s["flow"]["flags"] >= s["flow"]["under_verification"]
+    t = s["trend"]
+    assert len(t) == 12 and all(r["trailing_median"] is not None for r in t)
+    early = client.get("/api/surveillance/summary?category=DENGUE&week=3", headers=RESU).json()["trend"]
+    assert early[0]["trailing_median"] is None  # not enough prior weeks
+
+
+def test_surveillance_summary_scope_and_validation(client):
+    rhu = client.get("/api/surveillance/summary?category=DENGUE", headers=RHU).json()
+    assert rhu["units"]["expected"] == 1 and [r["unit_id"] for r in rhu["heatmap"]["units"]] == ["RHU-HIRAYA"]
+    prov = client.get("/api/surveillance/summary?category=DENGUE", headers=PROV).json()
+    assert prov["scope"]["province"] == "Malaya"
+    hosp = client.get("/api/surveillance/summary?category=DENGUE&unit_type=hospital", headers=RESU).json()
+    assert all(r["unit_type"] == "hospital" for r in hosp["heatmap"]["units"])
+    assert client.get("/api/surveillance/summary?category=DENGUE&week=99", headers=RESU).status_code == 422
+    assert client.get("/api/surveillance/summary?category=MCS", headers=RESU).status_code == 422
+    assert client.get("/api/surveillance/summary?dataset_id=DS-DEMO-PROVINCIAL", headers=RESU).json()["available"] is False
+
+
+def test_attach_evidence_records_who_and_validates(fresh):
+    c = fresh
+    body = {"title": "Register photo", "detail": "Dengue register pages for W38–W40 show three cases.", "link": "https://example.org/register"}
+    assert c.post("/api/concerns/C-0021/evidence", json={**body, "link": "ftp://x"}, headers=RESU).status_code == 422
+    assert c.post("/api/concerns/C-0021/evidence", json={**body, "detail": "short"}, headers=RESU).status_code == 422
+    assert c.post("/api/concerns/C-0021/evidence", json=body, headers=ADMIN).status_code == 403
+    d = c.post("/api/concerns/C-0021/evidence", json=body, headers=RESU).json()
+    item = next(e for e in d["evidence"] if e["kind"] == "attached")
+    assert item["title"] == "Register photo" and item["data"]["link"] == "https://example.org/register"
+    assert item["created_by"] == "RESU Surveillance Analyst (demo)"
+    assert d["activity"][0]["action"] == "concern.evidence_attached"
+    # RHU staff may attach evidence to their own unit's concern, not to others.
+    assert c.post("/api/concerns/C-0014/evidence", json={"title": "Encoder log", "detail": "Encoder was on leave for two weeks."}, headers=RHU).status_code == 200
+    assert c.post("/api/concerns/C-0021/evidence", json=body, headers=RHU).status_code == 404
+    c.post("/api/concerns/C-0020/dismiss", json={"reason": "Report sent by courier and received."}, headers=PROV)
+    assert c.post("/api/concerns/C-0020/evidence", json=body, headers=PROV).status_code == 409  # closed
+
+
+def test_resolve_requires_verification_and_attached_evidence(fresh):
+    c = fresh
+    ev = {"title": "Register check", "detail": "Register pages for W38–W40 were reviewed with the nurse."}
+    d = c.get("/api/concerns/C-0021", headers=RESU).json()
+    assert d["resolution_requirements"] == {"verified": False, "evidence_attached": False, "can_resolve": False, "missing": d["resolution_requirements"]["missing"]}
+    assert len(d["resolution_requirements"]["missing"]) == 2
+    # Evidence alone is not enough: the flag still needs a human-reviewed finding.
+    c.post("/api/concerns/C-0021/evidence", json=ev, headers=RESU)
+    r = c.post("/api/concerns/C-0021/resolve", json={"summary": "Zero counts were checked."}, headers=RESU)
+    assert r.status_code == 409 and r.json()["detail"]["code"] == "resolution_requirements"
+    assert r.json()["detail"]["missing"] == ["Record a human-reviewed finding: confirm the concern with a reason."]
+    # Confirmation alone is not enough either.
+    c.post("/api/concerns/C-0020/confirm", json={"reason": "Unit confirmed the report was not sent."}, headers=PROV)
+    r = c.post("/api/concerns/C-0020/resolve", json={"summary": "Report re-sent by the unit."}, headers=PROV)
+    assert r.status_code == 409 and r.json()["detail"]["missing"] == ["Attach evidence of what was checked."]
+    # Both together allow resolution.
+    c.post("/api/concerns/C-0021/confirm", json={"reason": "Nurse confirmed three cases were not entered."}, headers=RESU)
+    assert c.get("/api/concerns/C-0021", headers=RESU).json()["resolution_requirements"]["can_resolve"] is True
+    assert c.post("/api/concerns/C-0021/resolve", json={"summary": "Counts corrected after register check."}, headers=RESU).status_code == 200
+
+
+def test_seeded_resolutions_meet_the_resolution_rule(client):
+    rows = client.get("/api/concerns?status=resolved&page_size=100", headers=RESU).json()["rows"]
+    assert rows
+    for r in rows:
+        d = client.get(f"/api/concerns/{r['id']}", headers=RESU).json()
+        assert d["concern"]["verification"] == "confirmed", r["id"]
+        assert any(e["kind"] == "attached" for e in d["evidence"]), r["id"]
+
+
+def test_checklist_tracks_who_checked_what(fresh):
+    c = fresh
+    cl = c.get("/api/concerns/INV-0021", headers=RESU).json()["checklist"]
+    assert cl["total"] == 5 and cl["done"] == 2
+    items = cl["items"]
+    assert items[0]["label"] == "Confirm submission was received" and items[0]["done_by"] == "RESU Surveillance Analyst (demo)"
+    assert items[-1]["kind"] == "resolution" and not items[-1]["done"]
+    third = items[2]["id"]
+    d = c.patch(f"/api/concerns/C-0021/checklist/{third}", json={"done": True, "note": "Register shows 3 cases in W39."}, headers=RESU).json()
+    it = next(i for i in d["checklist"]["items"] if i["id"] == third)
+    assert it["done"] and it["note"] == "Register shows 3 cases in W39." and it["done_at"]
+    assert d["checklist"]["done"] == 3 and d["activity"][0]["action"] == "concern.checklist_updated"
+    d = c.patch(f"/api/concerns/C-0021/checklist/{third}", json={"done": False}, headers=RESU).json()
+    it = next(i for i in d["checklist"]["items"] if i["id"] == third)
+    assert not it["done"] and it["done_by"] is None and it["note"] == "Register shows 3 cases in W39."
+    # The finding step is completed only by resolving, never ticked by hand.
+    assert c.patch(f"/api/concerns/C-0021/checklist/{items[-1]['id']}", json={"done": True}, headers=RESU).status_code == 409
+    assert c.patch(f"/api/concerns/C-0021/checklist/{third}", json={"done": True}, headers=RHU).status_code in (403, 404)
+    assert c.patch("/api/concerns/C-0021/checklist/999999", json={"done": True}, headers=RESU).status_code == 404
+    other = c.get("/api/concerns/C-0020", headers=RESU).json()["checklist"]["items"][0]["id"]
+    assert c.patch(f"/api/concerns/C-0021/checklist/{other}", json={"done": True}, headers=RESU).status_code == 404
+
+
+def test_resolving_completes_the_finding_step_and_reopening_clears_it(fresh):
+    c = fresh
+    c.post("/api/concerns/C-0020/confirm", json={"reason": "Unit confirmed the report was not sent."}, headers=PROV)
+    c.post("/api/concerns/C-0020/evidence", json={"title": "Report received", "detail": "The W40 report arrived on 9 Oct."}, headers=PROV)
+    d = c.post("/api/concerns/C-0020/resolve", json={"summary": "Report re-sent and received."}, headers=PROV).json()
+    assert d["checklist"]["items"][-1]["done"] and d["checklist"]["items"][-1]["done_by"] == "Malaya Provincial Coordinator (demo)"
+    first = d["checklist"]["items"][0]["id"]
+    assert c.patch(f"/api/concerns/C-0020/checklist/{first}", json={"done": True}, headers=PROV).status_code == 409  # closed
+    d = c.post("/api/concerns/C-0020/reopen", json={"reason": "The unit sent a corrected count."}, headers=PROV).json()
+    assert not d["checklist"]["items"][-1]["done"]
+
+
+def test_seeded_resolutions_have_completed_checklists(client):
+    for r in client.get("/api/concerns?status=resolved&page_size=100", headers=RESU).json()["rows"]:
+        cl = client.get(f"/api/concerns/{r['id']}", headers=RESU).json()["checklist"]
+        assert cl["total"] > 0 and cl["done"] == cl["total"], r["id"]
+
+
+def test_reviewer_can_open_an_investigation_that_starts_unverified(fresh):
+    c = fresh
+    body = {"unit_ids": ["RHU-KALINAW-2"], "category_code": "DENGUE", "week_from": 23, "week_to": 25,
+            "title": "Dengue counts look low at Kalinaw RHU II", "reason": "Neighbouring units report rising dengue; worth checking the register.",
+            "assignee_user_id": "U-RESU-2", "due": "2026-10-12"}
+    assert c.post("/api/concerns", json={**body, "reason": "short"}, headers=PROV).status_code == 422
+    assert c.post("/api/concerns", json=body, headers=RHU).status_code == 403
+    assert c.post("/api/concerns", json={**body, "unit_ids": ["RHU-HIRAYA"]}, headers=PROV).status_code == 403  # other province
+    assert c.post("/api/concerns", json={**body, "unit_ids": ["HUB-MLY"]}, headers=PROV).status_code == 422
+    assert c.post("/api/concerns", json={**body, "week_from": 25, "week_to": 23}, headers=PROV).status_code == 422
+    r = c.post("/api/concerns", json=body, headers=PROV)
+    assert r.status_code == 200
+    d = r.json()
+    con = d["concern"]
+    assert con["id"] == "C-0022" and con["concern_type"] == "reviewer_raised" and con["detection_method_label"] == "Raised by a reviewer"
+    assert con["verification"] == "unverified" and con["status"] == "in_investigation" and con["severity"] == "medium"
+    assert d["investigation"]["id"] == "INV-0022" and d["investigation"]["owner_user_id"] == "U-RESU-2"
+    assert con["follow_up_due"] == "2026-10-12" and d["checklist"]["total"] == 4
+    assert d["timeline"]["units"]["RHU-KALINAW-2"]  # observations come from the data
+    assert any(e["kind"] == "requires_verification" for e in d["evidence"])
+    assert d["resolution_requirements"]["can_resolve"] is False
+    assert any(a["action"] == "concern.created" for a in d["activity"])
+
+
+def test_add_corrective_action_from_an_investigation(fresh):
+    c = fresh
+    body = {"action_type": "verify_contact", "title": "Reconcile RHU register with submitted count", "assignee_user_id": "U-RHU-HIRAYA",
+            "due_date": "2026-10-10", "note": "Bring the W38–W40 register pages."}
+    assert c.post("/api/concerns/C-0021/actions", json={**body, "action_type": "teleport"}, headers=RESU).status_code == 422
+    assert c.post("/api/concerns/C-0021/actions", json={**body, "assignee_user_id": "U-NOBODY"}, headers=RESU).status_code == 422
+    assert c.post("/api/concerns/C-0014/actions", json=body, headers=RHU).status_code == 403
+    d = c.post("/api/concerns/C-0021/actions", json=body, headers=RESU).json()
+    a = next(x for x in d["assignments"] if x["title"] == body["title"])
+    assert a["status"] == "approved" and a["due_date"] == "2026-10-10" and a["assignee"] == "Hiraya RHU Encoder (demo)"
+    assert d["activity"][0]["action"] == "concern.action_added"
+    plan = next(p for p in c.get("/api/plans", headers=RESU).json() if p["name"].startswith("Direct action"))
+    assert plan["status"] == "approved" and plan["method"] == "manual" and plan["total_cost_hours"] <= plan["budget_hours"]
+    # The action is tracked like any other follow-up.
+    f = c.get(f"/api/assignments/{a['id']}", headers=RESU).json()
+    assert f["concern_id"] == "C-0021" and f["follow_up_notes"][0]["text"] == "Bring the W38–W40 register pages."
+    c.post("/api/concerns/C-0020/dismiss", json={"reason": "Report was sent by courier."}, headers=PROV)
+    assert c.post("/api/concerns/C-0020/actions", json=body, headers=PROV).status_code == 409
+
+
+def test_reminders_are_simulated_and_only_for_missing_reports(fresh):
+    c = fresh
+    body = {"unit_id": "RHU-SILANGAN", "category_code": "DENGUE", "period_start": "2026-09-28", "message": "Please send the W40 report."}
+    r = c.post("/api/reminders", json=body, headers=PROV)
+    assert r.status_code == 200
+    rem = r.json()
+    assert rem["simulated"] is True and rem["delivered"] is False and "No message was sent" in rem["summary"]
+    hist = c.get("/api/reminders?unit_id=RHU-SILANGAN&category_code=DENGUE&period_start=2026-09-28", headers=PROV).json()
+    assert [h["id"] for h in hist] == [rem["id"]] and hist[0]["message"] == "Please send the W40 report."
+    received = {**body, "unit_id": "RHU-HABAGAT", "period_start": "2026-09-21"}
+    assert c.post("/api/reminders", json=received, headers=PROV).status_code == 409
+    assert c.post("/api/reminders", json={**body, "unit_id": "RHU-HIRAYA"}, headers=PROV).status_code == 403  # other province
+    assert c.post("/api/reminders", json=body, headers=RHU).status_code == 403
+    assert c.post("/api/reminders", json={**body, "category_code": "LABCONF"}, headers=PROV).status_code == 404
+
+
+def test_network_has_schematic_fictional_geography(client):
+    g = client.get("/api/network", headers=RESU).json()
+    assert g["geography"]["available"] and len(g["geography"]["provinces"]) == 3
+    assert "fictional" in g["geography"]["note"]
+    for n in g["nodes"]:
+        assert 0 <= n["geo_x"] <= 1000 and 0 <= n["geo_y"] <= 1000, n["id"]
+    pos = {(n["geo_x"], n["geo_y"]) for n in g["nodes"]}
+    assert len(pos) == len(g["nodes"])  # units sharing a municipality do not overlap
+    assert all("geo_x" in u for u in client.get("/api/units", headers=RESU).json())
+
+
+def test_dataset_checksums_and_integrity(fresh):
+    import hashlib
+
+    c = fresh
+    demo = next(d for d in c.get("/api/datasets", headers=RESU).json() if d["id"] == "DS-DEMO-FACILITY")
+    assert len(demo["checksum"]) == 64 and demo["checksum_basis"] == "canonical_records" and demo["checksum_algorithm"] == "SHA-256"
+    assert c.get("/api/datasets/DS-DEMO-FACILITY", headers=RESU).json()["integrity"]["records_unchanged"] is True
+    # A report submitted in IRIS changes the records, and the integrity check says so.
+    t = next(t for t in c.get("/api/tasks", headers=RHU).json() if t["kind"] == "missing_report")
+    c.post("/api/reports", json={"unit_id": "RHU-HIRAYA", "category_code": t["category_code"], "period_start": t["period_start"], "value": 2}, headers=RHU)
+    integ = c.get("/api/datasets/DS-DEMO-FACILITY", headers=RESU).json()["integrity"]
+    assert integ["records_unchanged"] is False and integ["current_records_checksum"] != demo["checksum"]
+    # Imports record the hash of the uploaded file's bytes.
+    p = _upload(c, CSV_OK).json()
+    mapping = {"period_start": "week_start", "value": "cases", "category": "disease", "area": "province"}
+    meta = {"name": "Checksum import", "source": "Unit test", "designation": "synthetic", "geographic_level": "province"}
+    ds = c.post("/api/imports/commit", json={"token": p["token"], "mapping": mapping, "metadata": meta}, headers=ADMIN).json()
+    assert ds["checksum"] == hashlib.sha256(CSV_OK.encode()).hexdigest() and ds["checksum_basis"] == "uploaded_file"
+    assert c.get(f"/api/datasets/{ds['id']}", headers=RESU).json()["integrity"]["records_unchanged"] is True
+
+
+def test_dataset_lineage_and_run_history(fresh):
+    c = fresh
+    assert c.get("/api/datasets/DS-DEMO-FACILITY/lineage", headers=RHU).status_code == 403
+    r = c.post("/api/detection/run", json={"method": "threshold"}, headers=RESU).json()
+    lin = c.get("/api/datasets/DS-DEMO-FACILITY/lineage", headers=RESU).json()
+    kinds = [s["kind"] for s in lin["steps"]]
+    assert kinds[:2] == ["source", "ingest"] and kinds[-4:] == ["derive", "analysis", "review", "respond"]
+    assert lin["steps"][1]["checksum"] and lin["steps"][1]["checksum_basis"] == "canonical_records"
+    assert lin["edges"][0] == ["source", "ingest"]
+    run = next(x for x in lin["runs"] if x["action"] == "detection.run")
+    assert run["by"] == "RESU Surveillance Analyst (demo)" and run["elapsed_ms"] is not None
+    assert str(len(r["created"])) in run["summary"]
+    assert any(x["action"] == "demo.seeded" and x["simulated"] for x in lin["runs"])
+    prov = c.get("/api/datasets/DS-DEMO-PROVINCIAL/lineage", headers=RESU).json()
+    slots = next(s for s in prov["steps"] if s["id"] == "slots")
+    assert slots["available"] is False and "Not calculable" in slots["detail"]
+
+
+def test_detection_summary_reports_real_output_and_labels_comparisons(client):
+    s = client.get("/api/detection/summary", headers=RESU).json()
+    assert s["available"] and s["in_use"] == "network" and s["human_verification_required"] is True
+    roles = {m["method"]: m["role_label"] for m in s["methods"]}
+    assert roles == {"network": "Network-aware (in use)", "threshold": "Comparison (evaluation only)", "ewma": "Comparison (evaluation only)"}
+    net = next(m for m in s["methods"] if m["method"] == "network")
+    assert [w["week"] for w in net["weeks"]] == list(range(20, 26))
+    for w in net["weeks"]:
+        assert w["total"] == w["delay"] + w["incomplete"] + w["count"] + w["zero_run"]
+    assert net["latest"]["zero_run"] >= 1  # Tala RHU II, ISO W40
+    keys = {p["key"]: p["value"] for p in s["parameters"]}
+    assert keys["zero_run_weeks"] == 3 and keys["history_weeks"] == 8
+    ev = s["evaluation"]
+    assert ev["replications"] == 20 and "not a measure of clinical performance" in ev["note"]
+    assert set(ev["by_method"]) == {"threshold", "ewma", "network"}
+    assert client.get("/api/detection/summary?w_from=5&w_to=2", headers=RESU).status_code == 422
+    assert client.get("/api/detection/summary", headers=RHU).status_code == 403
+    assert client.get("/api/detection/summary?dataset_id=DS-DEMO-PROVINCIAL", headers=RESU).json()["available"] is False
+
+
+def test_record_detail_is_scoped_to_the_rhu_unit(client):
+    own = client.get("/api/datasets/DS-DEMO-FACILITY/records?status=on_time&page_size=5", headers=RHU).json()["rows"]
+    own_id = next(r["record_id"] for r in own if r["record_id"])
+    other = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-TALA-1&status=on_time&page_size=5", headers=RESU).json()["rows"]
+    other_id = next(r["record_id"] for r in other if r["record_id"])
+    assert client.get(f"/api/datasets/DS-DEMO-FACILITY/records/{own_id}", headers=RHU).status_code == 200
+    assert client.get(f"/api/datasets/DS-DEMO-FACILITY/records/{other_id}", headers=RHU).status_code == 404
+    # Analysts and coordinators are unaffected.
+    assert client.get(f"/api/datasets/DS-DEMO-FACILITY/records/{other_id}", headers=RESU).status_code == 200
+    assert client.get(f"/api/datasets/DS-DEMO-FACILITY/records/{other_id}", headers=PROV).status_code == 200

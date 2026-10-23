@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ApiError, qs, request, setDemoUser } from "@/services/client";
+import { ApiError, clearDemoUser, qs, request, setDemoUser } from "@/services/client";
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -27,5 +27,21 @@ describe("api client", () => {
   });
   it("omits empty query parameters", () => {
     expect(qs({ a: 1, b: "", c: null, d: "x y" })).toBe("?a=1&d=x+y");
+  });
+});
+
+describe("demo identity errors", () => {
+  it("exposes the server's error code", async () => {
+    mockFetch(400, { detail: { code: "unknown_demo_user", message: "The demo user 'X' does not exist. Choose a demo role again." } });
+    const err = (await request("/meta").catch((e: unknown) => e)) as ApiError;
+    expect(err.status).toBe(400);
+    expect(err.code).toBe("unknown_demo_user");
+  });
+  it("stops sending a cleared demo user", async () => {
+    setDemoUser("U-GONE");
+    clearDemoUser();
+    const f = mockFetch(200, {});
+    await request("/meta");
+    expect((f.mock.calls[0][1]!.headers as Headers).get("X-IRIS-User")).toBeNull();
   });
 });

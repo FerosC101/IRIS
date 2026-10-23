@@ -14,6 +14,7 @@ real-world effectiveness or health impact.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from itertools import combinations
 
@@ -37,6 +38,17 @@ DEFAULT_ASSUMPTIONS: dict = {
 }
 
 RESOLUTION = 0.5  # hours
+_EPS = 1e-9
+
+
+def _units_up(hours: float) -> int:
+    """Hours as whole resolution units, rounded up so a cost is never understated."""
+    return math.ceil(hours / RESOLUTION - _EPS)
+
+
+def _units_down(hours: float) -> int:
+    """Hours as whole resolution units, rounded down so a budget is never overstated."""
+    return math.floor(max(hours, 0) / RESOLUTION + _EPS)
 
 
 @dataclass
@@ -82,7 +94,7 @@ def cost_actions(cands: list[Candidate], assumptions: dict) -> list[Costed]:
     for c in cands:
         a = assumptions["action_types"][c.action_type]
         cost = a["base_hours"] + a["hours_per_unit"] * c.n_units
-        cost = round(round(cost / RESOLUTION) * RESOLUTION, 2)
+        cost = round(_units_up(cost) * RESOLUTION, 2)
         benefit = round(c.expected_reports_per_week * h * a["success_probability"], 2)
         out.append(Costed(c.id, c.concern_id, c.priority, cost, benefit, a["success_probability"], int(a["time_days"]), list(c.depends_on), c.order))
     return out
@@ -106,13 +118,13 @@ def optimize(actions: list[Costed], budget_hours: float, satisfied: set[str] | N
     groups: dict[str, list[Costed]] = {}
     for a in actions:
         groups.setdefault(a.concern_id, []).append(a)
-    cap = int(round(max(budget_hours, 0) / RESOLUTION))
+    cap = _units_down(budget_hours)
     # dp[c] = (benefit, chosen ids) using capacity c
     dp: list[tuple[float, tuple[str, ...]]] = [(0.0, ())] * (cap + 1)
     for gid in sorted(groups):
         options = []
         for subset in _feasible_subsets(groups[gid], satisfied):
-            w = int(round(sum(by_id[i].cost_hours for i in subset) / RESOLUTION))
+            w = _units_up(sum(by_id[i].cost_hours for i in subset))
             v = sum(by_id[i].expected_benefit for i in subset)
             options.append((w, v, subset))
         new = list(dp)

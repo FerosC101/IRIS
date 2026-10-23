@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 from collections.abc import Iterator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from iris.config import DB_PATH
@@ -39,6 +39,31 @@ def create_all() -> None:
     from iris import models  # noqa: F401  (register models)
 
     Base.metadata.create_all(engine)
+    add_missing_columns(engine)
+
+
+def add_missing_columns(bind) -> list[str]:
+    """Add nullable columns that the models define but an existing database lacks.
+
+    create_all creates missing tables but never alters existing ones. This adds
+    only *nullable* columns, so it never rewrites or deletes data; existing rows
+    get NULL until the demo is reset. Returns the columns added.
+    """
+    added = []
+    insp = inspect(bind)
+    existing_tables = set(insp.get_table_names())
+    with bind.begin() as conn:
+        for table in Base.metadata.sorted_tables:
+            if table.name not in existing_tables:
+                continue
+            have = {c["name"] for c in insp.get_columns(table.name)}
+            for col in table.columns:
+                if col.name in have or not col.nullable or col.primary_key:
+                    continue
+                ddl = col.type.compile(dialect=bind.dialect)
+                conn.execute(text(f'ALTER TABLE "{table.name}" ADD COLUMN "{col.name}" {ddl}'))
+                added.append(f"{table.name}.{col.name}")
+    return added
 
 
 def drop_all() -> None:

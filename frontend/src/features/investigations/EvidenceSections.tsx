@@ -67,7 +67,7 @@ export function ObservationTimeline({ detail }: { detail: ConcernDetail }) {
   const { unitName } = useSession();
   const weeks = new Map(detail.timeline.weeks.map((w) => [w.week, w]));
   const units = Object.entries(detail.timeline.units);
-  const isCount = detail.concern.concern_type === "count_drop";
+  const isCount = detail.concern.concern_type === "count_drop" || detail.concern.concern_type === "zero_case_run";
   if (!units.length) return <p className="text-sm text-ink-2">No week-level observations were stored for this concern.</p>;
   return (
     <div className="flex flex-col gap-5">

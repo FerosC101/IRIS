@@ -35,6 +35,45 @@ class SummaryIn(BaseModel):
     summary: str = Field(max_length=4000)
 
 
+class NewConcernIn(BaseModel):
+    unit_ids: list[str] = Field(min_length=1, max_length=20)
+    category_code: str | None = None
+    week_from: int
+    week_to: int
+    title: str = Field(max_length=200)
+    reason: str = Field(max_length=4000)
+    severity: Literal["high", "medium", "low"] = "medium"
+    assignee_user_id: str | None = None
+    due: date | None = None
+    dataset_id: str | None = None
+
+
+class ReminderIn(BaseModel):
+    unit_id: str
+    category_code: str
+    period_start: date
+    message: str | None = Field(default=None, max_length=2000)
+
+
+class ActionIn(BaseModel):
+    action_type: str = Field(max_length=40)
+    title: str = Field(max_length=255)
+    assignee_user_id: str | None = None
+    due_date: date | None = None
+    note: str | None = Field(default=None, max_length=2000)
+
+
+class ChecklistPatch(BaseModel):
+    done: bool | None = None
+    note: str | None = Field(default=None, max_length=2000)
+
+
+class EvidenceIn(BaseModel):
+    title: str = Field(max_length=200)
+    detail: str = Field(max_length=4000)
+    link: str | None = Field(default=None, max_length=500)
+
+
 class DetectionRunIn(BaseModel):
     method: Literal["threshold", "ewma", "network"] = "network"
     dataset_id: str | None = None
@@ -132,5 +171,10 @@ class ExperimentIn(BaseModel):
     base_seed: int = Field(default=7100, ge=0, le=10_000_000)
 
 
+RESET_CONFIRMATION = "RESET"
+
+
 class ResetIn(BaseModel):
     scenario_ids: list[str] | None = None
+    #: The caller must type RESET: resetting deletes every change made in the demo.
+    confirm: str | None = Field(default=None, max_length=20)

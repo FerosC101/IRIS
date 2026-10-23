@@ -33,6 +33,11 @@ class Dataset(Base):
     data_dictionary: Mapped[list] = mapped_column(JSON, default=list)
     column_mapping: Mapped[dict] = mapped_column(JSON, default=dict)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False)
+    #: SHA-256 recorded at ingestion, on the stated basis (uploaded_file | canonical_records).
+    checksum: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    checksum_basis: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    #: SHA-256 of the canonical record export at ingestion, to detect later changes.
+    records_checksum: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
 
 class ReportingExpectation(Base):
