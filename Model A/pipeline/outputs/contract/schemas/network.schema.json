@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IRIS network",
+  "type": "object",
+  "required": [
+    "schema",
+    "generated_at",
+    "run_id",
+    "disclaimer",
+    "simulated",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "schema": {
+      "const": "iris.network/1.0"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "disclaimer": {
+      "type": "string"
+    },
+    "simulated": {
+      "const": true
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "region_id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "facility",
+              "hub",
+              "lab",
+              "resu"
+            ]
+          },
+          "region_id": {
+            "type": "string"
+          },
+          "location_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "n_facilities": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target",
+          "relationship"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "relationship": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

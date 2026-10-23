@@ -1,0 +1,164 @@
+{
+  "run_id": "20261023T074504Z-7bb65f89",
+  "model_version": "model_a_v2",
+  "package_version": "0.2.0",
+  "chosen_variant": "recent1+uncertainty",
+  "variant_options": {
+    "recent_lag": 1,
+    "recent_window": 4,
+    "recent_exclude_p": 0.01,
+    "covid_flag": false,
+    "param_uncertainty": true,
+    "year_variance": true,
+    "min_year_weeks": 26
+  },
+  "selection": {
+    "chosen": "recent1+uncertainty",
+    "reason": "coverage 0.859 is inside [0.85, 0.95] and it has the best 2019 injected-failure recall (0.398) among those that are",
+    "rule": {
+      "coverage_years": [
+        2017,
+        2018,
+        2019
+      ],
+      "coverage_band": [
+        0.85,
+        0.95
+      ],
+      "recall_year": 2019
+    },
+    "candidates": {
+      "v1": {},
+      "v1+uncertainty": {
+        "param_uncertainty": true,
+        "year_variance": true
+      },
+      "recent1": {
+        "recent_lag": 1
+      },
+      "recent1+uncertainty": {
+        "recent_lag": 1,
+        "param_uncertainty": true,
+        "year_variance": true
+      },
+      "recent2+uncertainty": {
+        "recent_lag": 2,
+        "param_uncertainty": true,
+        "year_variance": true
+      },
+      "recent1x+uncertainty": {
+        "recent_lag": 1,
+        "recent_exclude_p": 0.1,
+        "param_uncertainty": true,
+        "year_variance": true
+      },
+      "recent2x+uncertainty": {
+        "recent_lag": 2,
+        "recent_exclude_p": 0.1,
+        "param_uncertainty": true,
+        "year_variance": true
+      },
+      "covid+uncertainty": {
+        "covid_flag": true,
+        "param_uncertainty": true,
+        "year_variance": true
+      }
+    },
+    "note": "Computed on 2016-2019 only, before any 2020 metric. covid+uncertainty is not selectable (covid_period is 0 before 2020) and is reported on 2020 as a sensitivity analysis."
+  },
+  "split": {
+    "train": [
+      2016,
+      2018
+    ],
+    "tune": 2019,
+    "test": 2020
+  },
+  "alert_budget": 0.01,
+  "TAU_model_a_v2": 0.0008100409637332912,
+  "TAU_model_a_v2_budget_only": 0.000149262140126253,
+  "TAU_model_a_v1": 0.0009031962435337457,
+  "BASELINE_THRESHOLDS": {
+    "rolling_median": 4.788884392283826,
+    "ewma": 2.7273297990809353,
+    "cusum": 28.31690955479072
+  },
+  "region_week_thresholds": {
+    "v1 / Fisher": 5.633811119070712e-10,
+    "v1 / Stouffer, correlation-adjusted": 0.00022103565840405162,
+    "v2 / Fisher": 1.221062227238827e-08,
+    "v2 / Stouffer, correlation-adjusted": 0.001455755401839547
+  },
+  "stouffer_rho_by_hub": {
+    "RESU-BARMM": 0.1682,
+    "RESU-CAR": 0.2701,
+    "RESU-CARAGA": 0.189,
+    "RESU-NCR": 0.5417,
+    "RESU-R01": 0.4011,
+    "RESU-R02": 0.2521,
+    "RESU-R03": 0.6129,
+    "RESU-R05": 0.1944,
+    "RESU-R06": 0.5459,
+    "RESU-R07": 0.4021,
+    "RESU-R08": 0.2198,
+    "RESU-R09": 0.1761,
+    "RESU-R10": 0.4792,
+    "RESU-R11": 0.2338,
+    "RESU-R12": 0.3731,
+    "RESU-R4A": 0.6813,
+    "RESU-R4B": 0.3265
+  },
+  "p_fail": {
+    "method": "isotonic on -log10(p_low), prior-shifted",
+    "train_failure_share": 0.06458138811079987,
+    "real_failure_share": 0.025946275946275948
+  },
+  "count_model_settings": {
+    "SEED": 2026,
+    "ALERT_BUDGET": 0.01,
+    "MODEL_VERSION": "model_a_v1",
+    "REFIT_EVERY": 4,
+    "TRAIN_WINDOW": 156,
+    "MIN_FULL": 45,
+    "MIN_TREND": 20,
+    "MIN_ANY": 8,
+    "ROBUST_DROP_P": 0.01,
+    "MAX_PRED_FACTOR": 10,
+    "PI_LEVEL": 0.9,
+    "PERIODS_PER_YEAR": {
+      "week": 52.1775,
+      "month": 12
+    },
+    "ALPHA_BOUNDS": [
+      0.0001,
+      50.0
+    ],
+    "BASELINE_WINDOW": 8,
+    "BASELINE_MIN_OBS": 4,
+    "EWMA_LAMBDA": 0.3,
+    "CUSUM_K": 0.5,
+    "TB_COUNT_MODEL_START": "2021-01-01",
+    "TB_EXCLUDED_BASE_YEARS": [
+      2020
+    ]
+  },
+  "inputs_sha256": {
+    "dengue/clean/dengue_province_weekly.csv": "003a1dd85cc8fe6996769b121e5ee0f7d399bbf687ff6d1fd69df7ef36c1e52b",
+    "shared/edcs_national_weekly.csv": "d090ede763583ae44b9dd1387518f1a1de2d241df282e94abf2f98c95756a415",
+    "measles/clean/measles_national_weekly.csv": "1fd8f90a9ba99376489a4fe37c2f001b23764456022048a7fd4abf8c3d2babaf",
+    "tb/clean/tb_national_monthly.csv": "3fa99af940b19441ff8ab372786db431e55ba863ab901488739a3a109c63efeb",
+    "tb/clean/tb_national_annual.csv": "770135ffd6987621effe027fc59f270f13d50392bf6dd1d9fb8f33a6ccf06222",
+    "shared/calendar_weeks.csv": "28c20a1f0614fa621f2e3f2b7eb94f9bbc0038b01b4ced83fa3e2616d663b267",
+    "shared/locations.csv": "da1aba98fda636a2c97d17f1f696e44d04d99931dd23b82b048eea8831c196f3"
+  },
+  "scores_sha256": "572a198ffcc0dee189b6d1b318fb586a329737de701c17ca69347f1d72ab59ce",
+  "versions": {
+    "python": "3.13.14",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "statsmodels": "0.15.0",
+    "scikit-learn": "1.7.2"
+  },
+  "runtime_seconds": 37.5
+}

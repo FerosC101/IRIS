@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IRIS alerts",
+  "type": "object",
+  "required": [
+    "schema",
+    "generated_at",
+    "run_id",
+    "disclaimer",
+    "threshold",
+    "count",
+    "items"
+  ],
+  "properties": {
+    "schema": {
+      "const": "iris.alerts/1.0"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "disclaimer": {
+      "type": "string"
+    },
+    "threshold": {
+      "type": "object"
+    },
+    "count": {
+      "type": "integer"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "alert_id",
+          "disease",
+          "location_id",
+          "period_start",
+          "resolution",
+          "cases",
+          "expected",
+          "p_low",
+          "p_fail",
+          "shortfall",
+          "priority",
+          "status",
+          "model_version"
+        ],
+        "properties": {
+          "alert_id": {
+            "type": "string"
+          },
+          "disease": {
+            "type": "string"
+          },
+          "location_id": {
+            "type": "string"
+          },
+          "location_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "region_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hub_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "period_start": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "resolution": {
+            "enum": [
+              "week",
+              "month"
+            ]
+          },
+          "cases": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "expected": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "pi_low": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "pi_high": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "p_low": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "p_fail": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "shortfall": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "hub_p": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "priority": {
+            "type": "number",
+            "minimum": 0
+          },
+          "status": {
+            "const": "lead_to_verify"
+          },
+          "model_version": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

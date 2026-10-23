@@ -1,0 +1,54 @@
+{
+  "chosen": "recent1+uncertainty",
+  "reason": "coverage 0.859 is inside [0.85, 0.95] and it has the best 2019 injected-failure recall (0.398) among those that are",
+  "rule": {
+    "coverage_years": [
+      2017,
+      2018,
+      2019
+    ],
+    "coverage_band": [
+      0.85,
+      0.95
+    ],
+    "recall_year": 2019
+  },
+  "candidates": {
+    "v1": {},
+    "v1+uncertainty": {
+      "param_uncertainty": true,
+      "year_variance": true
+    },
+    "recent1": {
+      "recent_lag": 1
+    },
+    "recent1+uncertainty": {
+      "recent_lag": 1,
+      "param_uncertainty": true,
+      "year_variance": true
+    },
+    "recent2+uncertainty": {
+      "recent_lag": 2,
+      "param_uncertainty": true,
+      "year_variance": true
+    },
+    "recent1x+uncertainty": {
+      "recent_lag": 1,
+      "recent_exclude_p": 0.1,
+      "param_uncertainty": true,
+      "year_variance": true
+    },
+    "recent2x+uncertainty": {
+      "recent_lag": 2,
+      "recent_exclude_p": 0.1,
+      "param_uncertainty": true,
+      "year_variance": true
+    },
+    "covid+uncertainty": {
+      "covid_flag": true,
+      "param_uncertainty": true,
+      "year_variance": true
+    }
+  },
+  "note": "Computed on 2016-2019 only, before any 2020 metric. covid+uncertainty is not selectable (covid_period is 0 before 2020) and is reported on 2020 as a sensitivity analysis."
+}

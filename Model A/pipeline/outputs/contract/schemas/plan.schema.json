@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IRIS plan",
+  "type": "object",
+  "required": [
+    "schema",
+    "generated_at",
+    "run_id",
+    "disclaimer",
+    "hours_per_week",
+    "weeks"
+  ],
+  "properties": {
+    "schema": {
+      "const": "iris.plan/1.0"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "disclaimer": {
+      "type": "string"
+    },
+    "hours_per_week": {
+      "type": "number"
+    },
+    "cost_php_per_week": {
+      "type": "number"
+    },
+    "weeks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "week_start",
+          "hours_used",
+          "actions"
+        ],
+        "properties": {
+          "week_start": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "hours_used": {
+            "type": "number"
+          },
+          "expected_cases_recovered": {
+            "type": "number"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "action",
+                "target",
+                "region_id",
+                "hours",
+                "expected_cases_recovered",
+                "locations",
+                "status"
+              ],
+              "properties": {
+                "action": {
+                  "enum": [
+                    "call_location",
+                    "call_resu"
+                  ]
+                },
+                "target": {
+                  "type": "string"
+                },
+                "region_id": {
+                  "type": "string"
+                },
+                "hours": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "expected_cases_recovered": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "locations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "missing_reports": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "reported_cases": {
+                  "type": "integer"
+                },
+                "expected_cases": {
+                  "type": "number"
+                },
+                "shortfall": {
+                  "type": "number"
+                },
+                "p_fail_max": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "hub_p": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "P_region": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "status": {
+                  "const": "lead_to_verify"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
