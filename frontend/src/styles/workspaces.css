@@ -1,55 +1,25 @@
-/* Phase 2 compositions extend the shared Phase 1 surface system. */
+/* Page compositions on the light foundation. */
 @layer components {
   .iris-workspace-stack { display: flex; flex-direction: column; gap: var(--iris-space-6); min-width: 0; }
   .iris-toolbar { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: var(--iris-space-4); }
-  .iris-eyebrow { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--iris-text-accent); }
-  .iris-overview-hero { min-height: 216px; display: flex; align-items: center; }
-  .iris-overview-hero > div { width: 100%; padding: clamp(1.25rem, 2.5vw, 2rem); }
-  .iris-overview-hero h2 { font-size: clamp(1.25rem, 1rem + 0.7vw, 1.75rem); letter-spacing: -0.025em; max-width: 34rem; }
-  .iris-overview-hero p { max-width: 35rem; }
-  .iris-metric { min-height: 140px; }
-  .iris-metric:nth-child(2) { --iris-gradient-metric: linear-gradient(140deg, rgb(255 255 255 / 0.35), rgb(152 224 216 / 0.50)); }
-  .iris-metric:nth-child(3) { --iris-gradient-metric: linear-gradient(105deg, rgb(255 255 255 / 0.30) 10%, rgb(152 224 216 / 0.18) 78%); }
-  .iris-metric:nth-child(4) { --iris-gradient-metric: linear-gradient(165deg, rgb(255 255 255 / 0.25), rgb(152 224 216 / 0.44)); }
-  .iris-surface[data-motif]::after { content: ""; position: absolute; z-index: -1; right: 1rem; bottom: 0.75rem; width: min(45%, 210px); height: 150px; background: var(--iris-motif) right bottom / contain no-repeat; opacity: 0.055; pointer-events: none; }
-  .iris-surface[data-motif="records"] { --iris-motif: url('/brand/motif_records.svg'); }
-  .iris-surface[data-motif="trends"] { --iris-motif: url('/brand/motif_trends.svg'); }
-  .iris-surface[data-motif="verify"] { --iris-motif: url('/brand/motif_verify.svg'); }
-  .iris-surface[data-motif="network"] { --iris-motif: url('/brand/motif_network.svg'); }
-  .iris-metric[data-motif]::after { width: 100px; height: 85px; opacity: 0.16; right: 0.5rem; bottom: 0.25rem; }
-  .iris-priority { border-color: rgb(48 200 192 / 0.45); }
-  .iris-records-table th { background: rgb(152 224 216 / 0.06); }
-  .iris-records-table tbody tr:nth-child(even) { background: rgb(152 224 216 / 0.025); }
+  .iris-eyebrow { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--iris-text-accent); }
+  .iris-metric { min-height: 132px; }
+  .iris-priority { border-color: #1A9EA0; }
+  .iris-records-table th { background: var(--color-porcelain); }
+  .iris-records-table tbody tr:nth-child(even) { background: rgb(231 241 242 / 0.45); }
   .iris-records-table td { overflow-wrap: anywhere; }
-  .iris-upload-target { min-height: 220px; padding: var(--iris-space-6); border: 1px dashed var(--color-line-strong); border-radius: var(--iris-radius-card); background: var(--iris-gradient-secondary); }
-  .iris-validation-metrics .iris-metric:nth-child(1)::after { background-image: url('/brand/photo_reporting.webp'); background-size: cover; height: 100%; width: 55%; opacity: 0.09; mask-image: linear-gradient(90deg, transparent, #FFFFFF); }
-  .iris-validation-metrics .iris-metric:nth-child(2)::after { background-image: url('/brand/photo_review.webp'); background-size: cover; background-position: 70% center; width: 50%; height: 100%; opacity: 0.07; mask-image: linear-gradient(115deg, transparent, #FFFFFF); }
-  @media (max-width: 639px) {
-    .iris-overview-hero { min-height: 230px; }
-    .iris-overview-hero { background-position: center, 65% center; }
-    .iris-metric { min-height: 132px; }
-  }
-  @media (prefers-reduced-transparency: reduce) {
-    .iris-surface[data-motif]::after { display: none; }
-  }
+  .iris-upload-target { min-height: 220px; padding: var(--iris-space-6); border: 1px dashed var(--color-line-strong); border-radius: var(--iris-radius-card); background: var(--color-tint); }
 }
 
 @layer components {
-  .iris-network-canvas { background: radial-gradient(circle, rgb(152 224 216 / .11) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(145deg, #0A3A4A, #04121C); }
+  .iris-network-canvas { background: radial-gradient(circle, rgb(10 58 74 / 0.10) 1px, transparent 1px) 0 0 / 24px 24px, #E7F1F2; }
   .iris-finding { transition: background .18s; }
-  .iris-finding:hover, .iris-finding-selected { background: rgb(48 200 192 / .10); }
-  .iris-finding-selected { box-shadow: inset 3px 0 #30C8C0; }
+  .iris-finding:hover, .iris-finding-selected { background: var(--color-tint); }
+  .iris-finding-selected { box-shadow: inset 3px 0 #0E6680; }
 }
 
-/* Phase 4 compositions reuse the existing surface, typography and chart tokens. */
+/* Secondary-page heroes (planner, recovery, evaluation): dark teal, light text. */
 @layer components {
-  .iris-decision-hero { background-size: cover; background-position: center; }
-  .iris-planner-hero { background-image: linear-gradient(90deg, rgb(4 18 28 / .97), rgb(10 58 74 / .88) 48%, rgb(10 58 74 / .28)), url('/brand/photo_reporting.webp'); }
-  .iris-recovery-hero { background-image: linear-gradient(115deg, rgb(10 58 74 / .97), rgb(4 18 28 / .90) 55%, rgb(14 102 128 / .30)), url('/brand/photo_review.webp'); }
-  .iris-evaluation-hero { background-image: linear-gradient(90deg, rgb(4 18 28 / .97), rgb(10 58 74 / .88) 57%, rgb(10 58 74 / .35)), url('/brand/healthcare_analysts.webp'); }
-}
-
-@layer components {
-  .iris-phase4-metrics .iris-metric { background-color: rgb(230 255 252 / .48); background-image: var(--iris-gradient-metric); backdrop-filter: blur(var(--iris-glass-blur)); }
-  @media (prefers-reduced-transparency: reduce) { .iris-phase4-metrics .iris-metric { background-color: #98E0D8; backdrop-filter: none; } }
+  /* Text tokens come from the dark scope in foundation.css. */
+  .iris-decision-hero { background-image: linear-gradient(100deg, #0E647E 0%, #0B4A5D 45%, #0A3A4A 100%); --iris-text-accent: #8EE6E8; }
 }

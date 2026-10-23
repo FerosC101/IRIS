@@ -1,18 +1,19 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-export type PanelVariant = "dark" | "secondary" | "metric" | "hero";
+export type PanelVariant = "card" | "dark" | "secondary" | "metric" | "hero";
 export type PanelMotif = "records" | "trends" | "verify" | "network";
 
 const SURFACES: Record<PanelVariant, string> = {
+  card: "",
   dark: "iris-surface-dark",
   secondary: "iris-surface-secondary",
   metric: "iris-surface-metric iris-surface-light",
   hero: "iris-surface-hero iris-surface-light",
 };
 
-/** Shared glass surface; existing panels default to readable dark content. */
-export function Panel({ title, description, actions, children, className, bodyClassName, id, as: As = "section", variant = "dark", motif }: {
+/** Shared card: white with a 1px border by default; "secondary" is the pale tinted card, "dark" the dark teal card. */
+export function Panel({ title, description, actions, children, className, bodyClassName, id, as: As = "section", variant = "card", motif }: {
   title?: ReactNode; description?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string; bodyClassName?: string; id?: string; as?: "section" | "div";
   variant?: PanelVariant;
   motif?: PanelMotif;

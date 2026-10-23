@@ -37,7 +37,7 @@ function Stepper({ step }: { step: number }) {
     <ol className="iris-import-steps mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Import steps">
       {STEPS.map((s, i) => (
         <li key={s} aria-current={i === step ? "step" : undefined}
-          className={cn("border-b-2 px-3 py-3 text-[13px]", i === step ? "border-brand-bright bg-info-bg font-semibold text-brand-soft" : "border-line text-ink-2")}>
+          className={cn("border-b-2 px-3 py-3 text-[13px]", i === step ? "border-brand-bright bg-info-bg font-semibold text-teal-800" : "border-line text-ink-2")}>
           <span className="mr-1 tabular">{i + 1}.</span>{s}{i < step && <CheckCircle2 className="ml-1 inline size-3.5 text-positive-ink" aria-label="done" />}
         </li>
       ))}
@@ -48,7 +48,7 @@ function Stepper({ step }: { step: number }) {
 function SourceFile({ preview, file }: { preview: ImportPreview; file: File | null }) {
   return <Panel title="Source file" variant="secondary" motif="records">
     <div className="flex flex-wrap items-center gap-3">
-      <FileUp className="size-8 shrink-0 text-brand-soft" aria-hidden />
+      <FileUp className="size-8 shrink-0 text-teal-800" aria-hidden />
       <div className="min-w-0"><p className="break-words text-sm font-semibold">{preview.filename}</p><p className="mt-1 text-xs text-ink-2">{fmtNum(preview.row_count)} rows · {preview.columns.length} columns{file ? ` · ${fmtNum(file.size / 1024, 1)} KB` : ""}</p></div>
     </div>
     <p className="mt-4 text-xs text-ink-2">Staged on the local server. Provenance is declared before confirmation; this upload is not a saved draft.</p>
@@ -115,7 +115,7 @@ export function ImportWizard() {
         <Panel title="1. Choose a CSV file" description="UTF-8 CSV with a header row, up to 5 MB and 50,000 rows." motif="records">
           <form className="flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); if (file) up.mutate(file); }}>
             <div className="iris-upload-target">
-              <FileUp className="mb-4 size-9 text-brand-soft" aria-hidden />
+              <FileUp className="mb-4 size-9 text-teal-800" aria-hidden />
               <label htmlFor="csv" className="mb-1 block text-[13px] font-medium">CSV file</label>
               <input ref={fileRef} id="csv" type="file" accept=".csv,text/csv" disabled={up.isPending} onChange={(e) => { setFile(e.target.files?.[0] ?? null); up.reset(); }}
                 className="block w-full text-sm file:mr-3 file:min-h-11 file:rounded-md file:border file:border-line-strong file:bg-brand-light file:px-3 file:text-sm file:font-semibold file:text-brand-surface hover:file:bg-brand-soft" />
