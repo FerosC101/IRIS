@@ -43,6 +43,7 @@ TYPE_LABELS = {
     "incomplete_record": "Incomplete record",
     "count_drop": "Unexpected drop in counts",
     "shared_problem": "Possible shared problem",
+    "zero_case_run": "Zero-case run",
 }
 
 MIN_REASON = 10
@@ -326,6 +327,7 @@ def next_step(session: Session, c: ReportingConcern) -> dict:
             "late_report": f"Ask {unit} why the reports were late.",
             "incomplete_record": f"Ask {unit} whether the blank fields mean zero cases.",
             "count_drop": f"Ask {unit} to check the counts against its case register.",
+            "zero_case_run": f"Ask {unit} to check the zero-case reports against its case register.",
         }
         return {"text": by_type.get(c.concern_type, "Verify the concern."), "action": "clarify"}
     # in_investigation

@@ -62,6 +62,12 @@ TEMPLATES: dict[str, list[tuple[str, list[str], str, str, str]]] = {
         ("support_visit", ["restore_connection"], "Schedule a simulated support visit for the affected units",
          "Helps units clear their reporting backlog after the connection is restored.", "provincial_coordinator"),
     ],
+    "zero_case_run": [
+        ("verify_contact", [], "Ask {unit} to reconcile its zero-case reports with the register",
+         "Confirms whether the zeros are correct before any other action.", "provincial_coordinator"),
+        ("validation_review", ["verify_contact"], "Review how zero cases are entered at {unit}",
+         "If the zeros were not correct, a validation review finds whether a form default or entry step caused them.", "resu_analyst"),
+    ],
 }
 
 

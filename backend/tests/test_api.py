@@ -213,3 +213,16 @@ def test_demo_reset_requires_typed_confirmation(fresh):
     assert any(n["body"] == "Note that must survive a refused reset." for n in notes)
     assert c.post("/api/demo/reset", json={"confirm": "RESET"}, headers=RESU).status_code == 200
     assert not any(n["body"].startswith("Note that must survive") for n in c.get("/api/concerns/C-0020", headers=PROV).json()["notes"])
+
+
+def test_zero_case_run_concern_from_demo_scenario(client):
+    d = client.get("/api/concerns/C-0021", headers=RESU).json()
+    c = d["concern"]
+    assert c["concern_type"] == "zero_case_run" and c["concern_type_label"] == "Zero-case run"
+    assert c["category_code"] == "DENGUE" and c["primary_unit_id"] == "RHU-TALA-2"
+    assert (c["week_start_index"], c["week_end_index"]) == (23, 25)
+    kinds = [e["kind"] for e in d["evidence"]]
+    assert "observed" in kinds and "possible_explanation" in kinds and "requires_verification" in kinds
+    assert any("not a missing submission" in e["detail"] for e in d["evidence"])
+    # The answer key ties it to the injected scenario.
+    assert any((e["data"].get("scenario") or {}).get("id") == "S11-ZERO-TALA2" for e in d["evidence"])

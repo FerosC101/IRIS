@@ -161,14 +161,14 @@ def build(session: Session, scenario_ids: list[str] | None = None, seed: int = c
     session.flush()
     datasets.bump()
 
-    # Detection -> concerns, each created on the review date of its first flagged week
+    # Detection -> concerns, each created on the review date of the week its flag was raised
     results = datasets.detection(session, config.DEMO_DATASET_ID, "network")
     sl = datasets.slots(session, config.DEMO_DATASET_ID)
     units = {u.id: {"name": u.name, "province": u.province} for u in world.units}
     specs = build_specs(results, sl, datasets.peer_groups(session, config.DEMO_DATASET_ID), units, datasets.case_categories(session), "network", DetectionParams())
     created: list[ReportingConcern] = []
     for spec in specs:
-        at = min(config.weekly_due(spec.w0) + timedelta(hours=16), config.AS_OF - timedelta(hours=1))
+        at = min(config.weekly_due(spec.detection_week) + timedelta(hours=16), config.AS_OF - timedelta(hours=1))
         c = cs.create_from_spec(session, spec, config.DEMO_DATASET_ID, at)
         match = next((s for s in scenarios if s.start_week <= spec.w1 and spec.w0 <= s.end_week + (3 if s.kind == "outbreak" else 0)
                       and set(s.units) & set(spec.unit_ids)), None)

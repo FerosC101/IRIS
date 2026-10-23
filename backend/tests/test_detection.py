@@ -80,3 +80,45 @@ def test_count_drop_flagged_when_reported_on_time():
     rows.append({"unit_id": "A", "week": 10, "total_cases": 0.0})
     ev = own_evidence(_features(rows), DetectionParams())
     assert bool(ev[ev.week == 10]["count_flag"].iloc[0])
+
+
+def _slots(unit, code, values, start_week=0):
+    """Weekly slots for one unit and category. ``values``: number, "zero", "blank" or None (not received)."""
+    from datetime import datetime, timedelta
+    rows = []
+    for i, v in enumerate(values):
+        t = start_week + i
+        due = datetime(2026, 4, 14, 17) + timedelta(weeks=t)
+        received = None if v is None else due - timedelta(hours=2)
+        value = None if v in (None, "blank") else (0.0 if v == "zero" else float(v))
+        status = None if v is None else ("blank" if v == "blank" else ("zero" if value == 0 else "reported"))
+        rows.append({"unit_id": unit, "category_code": code, "frequency": "weekly", "week": t, "due_at": due, "received_at": received,
+                     "value": value, "value_status": status, "fields_complete": 1.0,
+                     "status": "not_received" if v is None else "on_time"})
+    return pd.DataFrame(rows)
+
+
+def _zero_flags(slots, cats=("DENGUE", "MEASLES")):
+    from iris.detection.features import unit_week_features
+    ev = own_evidence(unit_week_features(slots, set(cats), as_of=None), DetectionParams())
+    return ev.set_index("week")["zero_run_flag"].to_dict()
+
+
+def test_zero_case_run_is_flagged_on_its_third_week():
+    flags = _zero_flags(_slots("A", "DENGUE", [4, 3, 5, 4, 3, 4, "zero", "zero", "zero"]))
+    assert [w for w, f in flags.items() if f] == [8]
+
+
+def test_blank_or_missing_reports_break_a_zero_run():
+    # Blank is not zero, and a report not received is not a report.
+    assert not any(_zero_flags(_slots("A", "DENGUE", [4, 3, 5, 4, 3, 4, "zero", "blank", "zero"])).values())
+    assert not any(_zero_flags(_slots("A", "DENGUE", [4, 3, 5, 4, 3, 4, "zero", None, "zero"])).values())
+
+
+def test_zero_run_ignores_categories_where_zeros_are_usual():
+    # A unit that rarely reports measles cases can submit zeros for weeks without being flagged.
+    assert not any(_zero_flags(_slots("A", "MEASLES", [1, 0, 0, 1, 0, 0] + ["zero"] * 10)).values())
+
+
+def test_zero_run_needs_enough_history():
+    assert not any(_zero_flags(_slots("A", "DENGUE", [5, 6, "zero", "zero", "zero", "zero"])).values())

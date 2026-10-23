@@ -4,7 +4,7 @@ export type Role = "rhu_staff" | "provincial_coordinator" | "resu_analyst" | "ad
 export type Severity = "high" | "medium" | "low";
 export type ConcernStatus = "open" | "under_review" | "clarification_requested" | "in_investigation" | "resolved" | "dismissed";
 export type Verification = "unverified" | "confirmed" | "dismissed";
-export type ConcernType = "missing_submission" | "late_report" | "incomplete_record" | "count_drop" | "shared_problem";
+export type ConcernType = "missing_submission" | "late_report" | "incomplete_record" | "count_drop" | "shared_problem" | "zero_case_run";
 export type EvidenceKind = "observed" | "possible_explanation" | "requires_verification" | "confirmed_by_reviewer" | "simulated_example";
 export type SlotStatus = "on_time" | "late" | "not_received" | "received";
 export type ValueStatus = "reported" | "zero" | "blank";
@@ -266,7 +266,7 @@ export interface MethodResult {
   by_kind: { kind: string; label: string; unit_weeks: number; recall: number | null; events: number; event_detection_rate: number | null; median_delay_weeks: number | null }[];
   by_severity: { severity: Severity; unit_weeks: number; recall: number | null }[];
   false_alarm_context: Record<"background" | "holiday" | "outbreak" | "after_disruption", number>;
-  false_alarm_channel: Record<"reporting_delay" | "count_drop_only" | "incomplete_only", number>;
+  false_alarm_channel: Record<"reporting_delay" | "count_drop_only" | "incomplete_only" | "zero_run_only", number>;
   shared_identification: null | { shared_detections: number; shared_labelled_shared: number | null; isolated_detections: number; isolated_labelled_shared: number | null };
 }
 export interface ExperimentSummary {

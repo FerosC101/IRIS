@@ -33,7 +33,7 @@ export function WeekStrip({ detail }: { detail: ConcernDetail }) {
   const { unitName } = useSession();
   const weeks = detail.timeline.weeks;
   const units = Object.entries(detail.timeline.units);
-  const isCount = detail.concern.concern_type === "count_drop";
+  const isCount = detail.concern.concern_type === "count_drop" || detail.concern.concern_type === "zero_case_run";
   const inConcern = new Set(Object.values(detail.timeline.units).flat().filter((r) => r.in_concern).map((r) => r.week));
   if (!units.length) return <p className="text-sm text-ink-2">No weekly data was stored for this concern.</p>;
   return (

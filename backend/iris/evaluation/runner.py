@@ -97,7 +97,7 @@ def run_evaluation(cfg: EvaluationConfig | None = None, params: DetectionParams 
             d = detect(feats, m, params, peer_groups=peer_groups, evidence=ev)
             d = d.merge(labels, on=["unit_id", "week"], how="left")
             d["replication"] = r
-            frames[m].append(d[["replication", "unit_id", "week", "flagged", "delay_flag", "count_flag", "incomplete_flag",
+            frames[m].append(d[["replication", "unit_id", "week", "flagged", "delay_flag", "count_flag", "incomplete_flag", "zero_run_flag",
                                 "score", "peer_support", "is_disruption", "scenario_id", "kind", "severity", "context_kind"]])
 
     methods_out: dict[str, dict] = {}
@@ -144,6 +144,7 @@ def run_evaluation(cfg: EvaluationConfig | None = None, params: DetectionParams 
             "reporting_delay": int((fps["delay_flag"]).sum()),
             "count_drop_only": int((fps["count_flag"] & ~fps["delay_flag"]).sum()),
             "incomplete_only": int((fps["incomplete_flag"] & ~fps["delay_flag"] & ~fps["count_flag"]).sum()),
+            "zero_run_only": int((fps["zero_run_flag"] & ~fps["delay_flag"] & ~fps["count_flag"] & ~fps["incomplete_flag"]).sum()),
         }
 
         shared_id = None
@@ -196,5 +197,5 @@ def run_evaluation(cfg: EvaluationConfig | None = None, params: DetectionParams 
         "methods": methods_out,
         "network_effect": network_effect,
         "elapsed_seconds": round(time.perf_counter() - started, 2),
-        "scenario_mix": "Each replication injects one shared-hub disruption, one shared-resource disruption, two isolated-unit problems, one incomplete-record episode, one count drop, one holiday-week delay and one genuine case increase, with random timing, units and severity.",
+        "scenario_mix": "Each replication injects one shared-hub disruption, one shared-resource disruption, two isolated-unit problems, one incomplete-record episode, one count drop, one holiday-week delay, one genuine case increase and one run of zero-case dengue reports submitted while cases occurred, with random timing, units and severity.",
     }
