@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createContext, useCallback, useContext, useEffect, useMemo, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useToast } from "@/hooks/useToast";
 import { api } from "@/services/api";
 import { ApiError, activeUser, clearDemoUser, setDemoUser } from "@/services/client";
@@ -24,13 +24,17 @@ export const SessionContext = Ctx;
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
-  const q = useQuery({ queryKey: ["meta", activeUser()], queryFn: api.meta, staleTime: 60_000 });
+  // The demo user is state here so that switching re-renders the provider; the route
+  // element is reused on navigation, so reading activeUser() alone would not refresh.
+  const [user, setUser] = useState(activeUser());
+  const q = useQuery({ queryKey: ["meta", user], queryFn: api.meta, staleTime: 60_000 });
   const meta = q.data;
   const toast = useToast();
   // A stored demo user the server no longer knows is reported, not silently replaced.
   useEffect(() => {
     if (q.error instanceof ApiError && q.error.code === "unknown_demo_user") {
       clearDemoUser();
+      setUser(null);
       qc.clear();
       toast("Your saved demo role was not found, so IRIS switched to the default demo user.", "error");
     }
@@ -38,6 +42,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const switchUser = useCallback(
     (id: string) => {
       setDemoUser(id);
+      setUser(id);
       qc.clear();
     },
     [qc],

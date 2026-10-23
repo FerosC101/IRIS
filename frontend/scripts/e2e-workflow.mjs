@@ -24,6 +24,79 @@ async function as(user, width = 1440) {
 let page = await as("U-RESU-1");
 await page.request.post(`${BASE}/api/demo/reset`, { data: { confirm: "RESET" }, headers: { "X-IRIS-User": "U-ADMIN" } });
 
+// --- Shell: navigation, account menu, global filter bar, provenance (own browser context) ---
+const shell = await as("U-RESU-1");
+const mainNav = () => shell.getByRole("navigation", { name: "Main" });
+const search = () => new URL(shell.url()).searchParams;
+
+await step("shell: nav tabs open the five sections and mark the current one", async () => {
+  await shell.goto(`${BASE}/`);
+  for (const [label, path, title] of [
+    ["Reports & Analysis", "/reports", "From report to understanding."],
+    ["Reporting Network", "/network", "See the connections behind the signal."],
+    ["Investigations & Actions", "/investigations", "Evidence first. Action with confidence."],
+    ["Data & Models", "/data", "Trust starts with traceable data."],
+    ["Dashboard", "/", "A clearer signal. A faster response."],
+  ]) {
+    await mainNav().getByRole("link", { name: label, exact: true }).click();
+    await expect(shell.getByRole("heading", { level: 1, name: title })).toBeVisible();
+    if (new URL(shell.url()).pathname !== path) throw new Error(`${label} opened ${shell.url()}`);
+    await expect(mainNav().getByRole("link", { name: label, exact: true })).toHaveAttribute("aria-current", "page");
+  }
+  await expect(mainNav().locator('[aria-current="page"]')).toHaveCount(1);
+});
+
+await step("shell: account menu switches the demo role and the tabs follow it", async () => {
+  await shell.goto(`${BASE}/network`);
+  await shell.getByRole("button", { name: /^Account menu: RESU Surveillance Analyst/ }).click();
+  await shell.getByRole("menuitemradio", { name: "Hiraya RHU Encoder" }).click();
+  await expect(shell.getByText("Now viewing as Hiraya RHU Encoder (demo role).")).toBeVisible();
+  await expect(shell.getByRole("heading", { level: 1, name: "A clearer signal. A faster response." })).toBeVisible(); // RHU staff cannot open the network
+  await expect(mainNav().getByRole("link")).toHaveCount(3);
+  await expect(mainNav().getByRole("link", { name: "Reporting Network" })).toHaveCount(0);
+  await shell.getByRole("button", { name: /^Account menu: Hiraya RHU Encoder/ }).click();
+  await shell.getByRole("menuitemradio", { name: "RESU Surveillance Analyst" }).click();
+  await expect(mainNav().getByRole("link")).toHaveCount(5);
+});
+
+await step("shell: filter bar writes to the URL, survives reloads and page filters", async () => {
+  await shell.goto(`${BASE}/reports`);
+  await shell.getByRole("button", { name: "Disease: Dengue" }).click();
+  await shell.getByRole("menuitemradio", { name: "Leptospirosis" }).click();
+  await shell.getByRole("button", { name: /^Region:/ }).click();
+  await shell.getByRole("menuitemradio", { name: "Simulated region · Malaya" }).click();
+  await shell.getByRole("button", { name: /^ISO week range:/ }).click();
+  await shell.getByRole("button", { name: "Last 4 weeks" }).click();
+  await shell.keyboard.press("Escape");
+  await shell.getByRole("button", { name: /^Unit group:/ }).click();
+  await shell.getByRole("menuitemradio", { name: "Hospitals" }).click();
+  const p = search();
+  expect([p.get("disease"), p.get("region"), p.get("from"), p.get("to"), p.get("group")]).toEqual(["LEPTO", "Malaya", "22", null, "hospital"]);
+  await shell.reload();
+  await expect(shell.getByRole("button", { name: "Disease: Leptospirosis" })).toBeVisible();
+  await expect(shell.getByRole("button", { name: /^ISO week range: ISO W37–W40/ })).toBeVisible();
+  // A page's own filter merges into the URL instead of replacing it.
+  await shell.goto(`${BASE}/investigations?${p.toString()}`);
+  await shell.getByPlaceholder("Search by concern ID or keyword").fill("zero");
+  await expect.poll(() => search().get("search")).toBe("zero");
+  expect([search().get("disease"), search().get("region"), search().get("group")]).toEqual(["LEPTO", "Malaya", "hospital"]);
+});
+
+await step("shell: footer opens the provenance drawer and Escape returns focus", async () => {
+  await shell.goto(`${BASE}/`);
+  await expect(shell.getByText("Synthetic demo records · Not verified public-health statistics · PHT (UTC+8)")).toBeVisible();
+  const open = shell.getByRole("button", { name: /Data provenance/ });
+  await open.click();
+  const drawer = shell.getByRole("dialog", { name: "Data provenance" });
+  await expect(drawer.getByRole("heading", { name: "IRIS demo — simulated facility reporting" })).toBeVisible();
+  await expect(drawer.getByText(/SHA-256, canonical records/).first()).toBeVisible();
+  await shell.keyboard.press("Escape");
+  await expect(drawer).toHaveCount(0);
+  await expect(open).toBeFocused();
+});
+
+await shell.context().close();
+
 await step("concern: start review, confirm with reason, assign, note, resolve", async () => {
   await page.goto(`${BASE}/investigations/C-0019`);
   await page.getByRole("button", { name: "Start review" }).click();
@@ -128,7 +201,7 @@ await step("network: list view and node details", async () => {
   await expect(page.getByText("Units reporting through it")).toBeVisible();
   await expect(page.getByText(/aggregates the units that report through the hub/)).toBeVisible();
   await page.getByRole("button", { name: /^Filters/ }).click();
-  await page.getByLabel("Province").selectOption("Malaya");
+  await page.getByLabel("Province", { exact: true }).selectOption("Malaya");
   await expect(page.getByRole("button", { name: "Masagana Provincial Hospital" })).toHaveCount(0);
 });
 
@@ -191,8 +264,9 @@ await step("RHU (mobile): submit a missing report and respond to clarification",
 });
 await step("mobile navigation drawer", async () => {
   await page.getByRole("button", { name: "Open navigation menu" }).click();
-  await page.getByRole("dialog").getByRole("link", { name: "Data", exact: true }).click();
-  await expect(page.getByRole("heading", { level: 1, name: "Data" })).toBeVisible();
+  await page.getByRole("dialog").getByRole("link", { name: "Reports & Analysis", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "From report to understanding." })).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
 await browser.close();

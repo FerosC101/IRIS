@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DesignationBadge } from "@/components/data-display/badges";
-import { Dialog, SheetContent } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, SheetContent } from "@/components/ui/dialog";
 import { ErrorState, Loading } from "@/components/ui/states";
 import { useSession } from "@/hooks/useSession";
 import { fmtDate } from "@/lib/format";
@@ -15,6 +15,10 @@ function ProvenanceDrawer({ open, onOpenChange }: { open: boolean; onOpenChange:
   const q = useQuery({ queryKey: ["datasets"], queryFn: api.datasets, enabled: open });
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      {/* A real dialog trigger, so focus returns to it when the drawer closes. */}
+      <DialogTrigger className="inline-flex min-h-11 items-center gap-1 hover:underline">
+        Data provenance <ArrowUpRight className="size-3.5" aria-hidden />
+      </DialogTrigger>
       <SheetContent title="Data provenance" description="Where the data on these screens comes from. Every demo dataset is synthetic.">
         <div className="flex flex-col gap-4 px-5 py-4 text-sm">
           {q.isLoading && <Loading label="Loading datasets" />}
@@ -57,11 +61,8 @@ export function Footer() {
       <div className="iris-container iris-footer__inner">
         <p className="text-white">IRIS <span aria-hidden>/</span> Integrated Reporting Intervention System</p>
         <p className="text-white">Synthetic demo records · Not verified public-health statistics · PHT (UTC+8)</p>
-        <button type="button" onClick={() => setOpen(true)} className="inline-flex min-h-11 items-center gap-1 hover:underline">
-          Data provenance <ArrowUpRight className="size-3.5" aria-hidden />
-        </button>
+        <ProvenanceDrawer open={open} onOpenChange={setOpen} />
       </div>
-      <ProvenanceDrawer open={open} onOpenChange={setOpen} />
     </footer>
   );
 }

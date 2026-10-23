@@ -9,18 +9,20 @@ Verified on 23 Oct 2026 by running the pre-B0 commit's own `e2e-workflow.mjs` ag
 
 | Workflow | Failure |
 |---|---|
-| dismissal requires a reason | `More actions` → `Close as not a problem` click times out |
 | planner: budget changes selection | sentence text `of 4 hours` not found |
 | follow-up: progress … close | `Start` button click times out (depends on the planner step) |
 | evaluation: run an experiment | `Number of runs` field not found |
 | CSV import: row-level errors | expected error text not visible |
 | CSV import: valid file | `setInputFiles` times out |
 
+Status after phase (b) step 1 (isolated run, 15 workflows): 10 pass. "Dismissal requires a reason" now passes; the 5 above it still fail.
+
 ## Phase (a) shell
 
 | Script | Line | Change | Fix |
 |---|---|---|---|
-| `e2e-workflow.mjs` | 194–195 | Sidebar link `Data` and `<h1>Data</h1>` no longer exist; the explorer is `/reports` (hero h1 "From report to understanding.") and `/data` is Data & Models | Open the mobile menu, click `Reports & Analysis`, expect the hero heading |
+| `e2e-workflow.mjs` | mobile drawer | Sidebar link `Data` and `<h1>Data</h1>` no longer exist | Done in phase (b): opens `Reports & Analysis`, expects the hero heading |
+| `e2e-workflow.mjs` | network step | `getByLabel("Province")` also matched the Region chip ("…All provinces") | Done in phase (b): `exact: true` |
 | `e2e-workflow.mjs` | 104 | Plan sheet links are now `/investigations/follow-up?assignment=` | Match `a[href^="/investigations/follow-up?assignment="]` |
 | `e2e-workflow.mjs` | 88, 108, 136 | `/planner`, `/follow-up`, `/evaluation` redirect | Use `/investigations/plan`, `/investigations/follow-up`, `/data/evaluation` |
 | `check-responsive.mjs` | 11 | `/data` and `/data?tab=trends` were the explorer | Use `/reports` and `/reports?tab=trends`; keep `/data` for Data & Models |
