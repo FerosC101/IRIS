@@ -1,0 +1,4 @@
+# Data licenses are not yet confirmed (plan/FINAL_CLEANING_PLAN.md 1.3).
+# The public repository gets the scripts, the docs and the download links; anyone can rebuild the data.
+data/**/raw/
+data/**/clean/
