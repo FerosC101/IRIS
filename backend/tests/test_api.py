@@ -29,11 +29,15 @@ def test_investigation_can_be_assigned_updated_and_resolved(fresh):
     r = c.post(f"/api/concerns/{cid}/assign", json={"user_id": "U-RESU-2", "due": "2026-10-20"}, headers=PROV)
     assert r.status_code == 200 and r.json()["investigation"]["owner_user_id"] == "U-RESU-2"
     assert c.post(f"/api/concerns/{cid}/notes", json={"body": "Called the RHU; encoder is back tomorrow."}, headers=PROV).status_code == 200
+    # Resolution needs evidence a person attached, as well as the confirmation above.
+    assert c.post(f"/api/concerns/{cid}/resolve", json={"summary": "Backlog encoded and received."}, headers=PROV).status_code == 409
+    ev = {"title": "Backlog received", "detail": "The two missing weekly reports arrived on 9 Oct."}
+    assert c.post(f"/api/concerns/{cid}/evidence", json=ev, headers=PROV).status_code == 200
     r = c.post(f"/api/concerns/{cid}/resolve", json={"summary": "Backlog encoded and received."}, headers=PROV)
     d = r.json()
     assert d["concern"]["status"] == "resolved" and d["investigation"]["status"] == "closed"
     actions = [a["action"] for a in d["activity"]]
-    for a in ("concern.marked_for_review", "concern.confirmed", "concern.assigned", "concern.note_added", "concern.resolved"):
+    for a in ("concern.marked_for_review", "concern.confirmed", "concern.assigned", "concern.note_added", "concern.evidence_attached", "concern.resolved"):
         assert a in actions
 
 
@@ -316,3 +320,33 @@ def test_attach_evidence_records_who_and_validates(fresh):
     assert c.post("/api/concerns/C-0021/evidence", json=body, headers=RHU).status_code == 404
     c.post("/api/concerns/C-0020/dismiss", json={"reason": "Report sent by courier and received."}, headers=PROV)
     assert c.post("/api/concerns/C-0020/evidence", json=body, headers=PROV).status_code == 409  # closed
+
+
+def test_resolve_requires_verification_and_attached_evidence(fresh):
+    c = fresh
+    ev = {"title": "Register check", "detail": "Register pages for W38–W40 were reviewed with the nurse."}
+    d = c.get("/api/concerns/C-0021", headers=RESU).json()
+    assert d["resolution_requirements"] == {"verified": False, "evidence_attached": False, "can_resolve": False, "missing": d["resolution_requirements"]["missing"]}
+    assert len(d["resolution_requirements"]["missing"]) == 2
+    # Evidence alone is not enough: the flag still needs a human-reviewed finding.
+    c.post("/api/concerns/C-0021/evidence", json=ev, headers=RESU)
+    r = c.post("/api/concerns/C-0021/resolve", json={"summary": "Zero counts were checked."}, headers=RESU)
+    assert r.status_code == 409 and r.json()["detail"]["code"] == "resolution_requirements"
+    assert r.json()["detail"]["missing"] == ["Record a human-reviewed finding: confirm the concern with a reason."]
+    # Confirmation alone is not enough either.
+    c.post("/api/concerns/C-0020/confirm", json={"reason": "Unit confirmed the report was not sent."}, headers=PROV)
+    r = c.post("/api/concerns/C-0020/resolve", json={"summary": "Report re-sent by the unit."}, headers=PROV)
+    assert r.status_code == 409 and r.json()["detail"]["missing"] == ["Attach evidence of what was checked."]
+    # Both together allow resolution.
+    c.post("/api/concerns/C-0021/confirm", json={"reason": "Nurse confirmed three cases were not entered."}, headers=RESU)
+    assert c.get("/api/concerns/C-0021", headers=RESU).json()["resolution_requirements"]["can_resolve"] is True
+    assert c.post("/api/concerns/C-0021/resolve", json={"summary": "Counts corrected after register check."}, headers=RESU).status_code == 200
+
+
+def test_seeded_resolutions_meet_the_resolution_rule(client):
+    rows = client.get("/api/concerns?status=resolved&page_size=100", headers=RESU).json()["rows"]
+    assert rows
+    for r in rows:
+        d = client.get(f"/api/concerns/{r['id']}", headers=RESU).json()
+        assert d["concern"]["verification"] == "confirmed", r["id"]
+        assert any(e["kind"] == "attached" for e in d["evidence"]), r["id"]

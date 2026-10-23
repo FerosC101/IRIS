@@ -253,6 +253,7 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
         cs.respond_clarification(session, c, p, "Phone call with the RHU (simulated): the only encoder was on leave; paper forms were kept and will be encoded on return.", at=_h(t, 40))
         cs.confirm(session, c, p, "The RHU confirmed reports were not transmitted because the encoder was on leave.", at=_h(t, 42))
         cs.assign(session, c, p, p.user_id, None, at=_h(t, 42))
+        cs.attach_evidence(session, c, p, "Backlog received", "The missing weekly reports for these weeks were received after the encoder returned (simulated).", at=_h(t, 24 * 12 - 2))
         cs.resolve(session, c, p, "Backlog was encoded after the encoder returned; a back-up encoder was named (simulated outcome).", at=_h(t, 24 * 12))
 
     if c := story("S03-OUTBREAK-HABAGAT"):
@@ -271,6 +272,7 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
         iv.update_assignment(session, resu2, asg, "completed", None, "Template fields were hidden after a software update; template restored (simulated).", None, at=_h(t, 24 * 4))
         iv.record_outcome(session, resu2, asg, "verified", "Simulated outcome: subsequent reports from the unit had complete fields (reviewer check of later forms).", at=_h(t, 24 * 14), source="simulated")
         iv.update_assignment(session, resu2, asg, "closed", "Closed after reviewing later forms.", None, None, at=_h(t, 24 * 14))
+        cs.attach_evidence(session, c, resu2, "Later forms reviewed", "Forms submitted after the template fix had every required field completed (simulated reviewer check).", at=_h(t, 24 * 15 - 2))
         cs.resolve(session, c, resu2, "Form template corrected; later reports complete. Recorded as a simulated outcome.", at=_h(t, 24 * 15))
 
     if c := story("S05-HUB-THM"):
@@ -289,6 +291,7 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
             iv.update_assignment(session, resu, asg, "in_progress", "Work started (simulated).", None, None, at=_h(t, 24 * 10))
             iv.update_assignment(session, resu, asg, "completed", None, ev, None, at=_h(t, done_h))
             iv.record_outcome(session, resu, asg, outcome[0], outcome[1], at=_h(t, done_h + 24 * 14), source="simulated")
+        cs.attach_evidence(session, c, resu, "Hub upload log", "The hub's upload service log shows the queued reports re-sent after the repair (simulated).", at=_h(t, 24 * 26 - 2))
         cs.resolve(session, c, resu, "Hub connection restored and backlog received. Simulated outcome; see Recovery Analytics for before/after reporting.", at=_h(t, 24 * 26))
 
     if c := story("S06-SHARED-KALINAW"):
@@ -335,6 +338,8 @@ def _storyline(session: Session, created: list[ReportingConcern], scenarios) -> 
         if c.week_end_index <= 18:
             cs.mark_for_review(session, c, p, at=_h(t, 6))
             if c.concern_type in ("missing_submission", "late_report"):
+                cs.confirm(session, c, p, "The unit confirmed the reports were delayed by a one-off problem.", at=_h(t, 20))
+                cs.attach_evidence(session, c, p, "Late reports received", "The delayed reports arrived after the review date (see the records for these weeks).", at=_h(t, 28))
                 cs.resolve(session, c, p, "Reports were received after the review date; the unit explained a one-off delay. No recurring problem.", at=_h(t, 30))
             else:
                 cs.dismiss(session, c, p, "Checked with the unit: values are correct and the pattern is explained. No reporting problem.", at=_h(t, 30))

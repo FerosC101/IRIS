@@ -288,9 +288,32 @@ def attach_evidence(session: Session, c: ReportingConcern, actor: Actor, title: 
     return item
 
 
+def resolution_requirements(c: ReportingConcern) -> dict:
+    """What must be true before a concern can be resolved.
+
+    A detector flag is never a finding: resolving needs a human-reviewed finding
+    (the concern confirmed with a reason) and at least one piece of evidence a
+    person attached.
+    """
+    verified = c.verification == "confirmed"
+    evidence = any(e.kind == "attached" for e in c.evidence)
+    missing = []
+    if not verified:
+        missing.append("Record a human-reviewed finding: confirm the concern with a reason.")
+    if not evidence:
+        missing.append("Attach evidence of what was checked.")
+    return {"verified": verified, "evidence_attached": evidence, "can_resolve": c.status in OPEN_STATUSES and not missing, "missing": missing}
+
+
 def resolve(session: Session, c: ReportingConcern, actor: Actor, summary: str, at: datetime | None = None) -> None:
     actor.require("concern.resolve")
     _require_open(c, "resolve it")
+    req = resolution_requirements(c)
+    if req["missing"]:
+        raise HTTPException(status_code=409, detail={
+            "code": "resolution_requirements", "missing": req["missing"],
+            "message": f"{c.id} cannot be resolved yet. " + " ".join(req["missing"]),
+        })
     summary = _reason(summary, "the resolution")
     c.status = "resolved"
     c.resolution_summary = summary
@@ -364,6 +387,8 @@ def next_step(session: Session, c: ReportingConcern) -> dict:
         return {"text": "Plan an action to fix it.", "action": "plan"}
     if approved.status in ("approved", "in_progress"):
         return {"text": "An action is under way. Track it until it is done.", "action": "follow_up"}
+    if not resolution_requirements(c)["evidence_attached"]:
+        return {"text": "The action is done. Attach evidence of what was checked, then mark this as resolved.", "action": "evidence"}
     return {"text": "The action is done. If reporting is back to normal, mark this as resolved.", "action": "resolve"}
 
 

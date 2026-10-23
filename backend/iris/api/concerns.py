@@ -112,6 +112,7 @@ def concern_detail(concern_id: str, session: Session = Depends(get_session), act
         "investigation": None if inv is None else {"id": inv.id, "owner": users.get(inv.owner_user_id), "owner_user_id": inv.owner_user_id,
                                                    "status": inv.status, "opened_at": inv.opened_at, "closed_at": inv.closed_at},
         "next_step": cs.next_step(session, c),
+        "resolution_requirements": cs.resolution_requirements(c),
         "activity": cs.activity(session, c),
         "related": [ov.concern_row(o, users, ids.investigation_ids(session)) for o in cs.related(session, c) if actor.role not in ("rhu_staff",) or actor.reporting_unit_id in {u.id for u in o.units}],
         "actions": [{"id": a.id, "title": a.title, "action_type": a.action_type, "status": a.status} for a in actions],

@@ -126,6 +126,8 @@ export interface ConcernDetail {
   notes: { id: number; note_type: string; body: string; created_at: string; author: string }[];
   investigation: { id: string; owner: string; owner_user_id: string; status: "open" | "closed"; opened_at: string; closed_at: string | null } | null;
   next_step: { text: string; action: string | null };
+  /** Backend rule: resolving needs a confirmed (human-reviewed) finding and evidence a person attached. */
+  resolution_requirements: { verified: boolean; evidence_attached: boolean; can_resolve: boolean; missing: string[] };
   activity: { id: number; at: string; action: string; summary: string; actor: string; detail: Record<string, unknown> }[];
   related: QueueRow[];
   actions: { id: string; title: string; action_type: string; status: string }[];

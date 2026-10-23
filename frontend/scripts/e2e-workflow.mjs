@@ -43,6 +43,14 @@ await step("concern: start review, confirm with reason, assign, note, resolve", 
   await page.getByLabel("Add a note").fill("Encoder returns tomorrow; will re-send.");
   await page.getByRole("button", { name: "Add note" }).click();
   await expect(page.getByText("Encoder returns tomorrow; will re-send.")).toBeVisible();
+  // Resolving needs evidence a person attached; until then the action is not offered.
+  await page.getByRole("button", { name: "More actions" }).click();
+  await expect(page.getByRole("button", { name: "Mark as resolved" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Attach evidence" }).click();
+  await page.getByRole("dialog").getByLabel("Title").fill("Backlog received");
+  await page.getByRole("dialog").getByLabel("What it shows").fill("The two missing weekly reports arrived after the call.");
+  await page.getByRole("dialog").getByRole("button", { name: "Attach evidence" }).click();
+  await expect(page.getByText("Backlog received").first()).toBeVisible();
   await page.getByRole("button", { name: "More actions" }).click();
   await page.getByRole("button", { name: "Mark as resolved" }).click();
   await page.getByRole("dialog").getByRole("textbox").fill("Backlog received after the encoder returned.");

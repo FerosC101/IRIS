@@ -130,8 +130,13 @@ export function InvestigationPage() {
   } else if (d.next_step.action === "follow_up") {
     const a = d.assignments.find((x) => x.status === "approved" || x.status === "in_progress");
     primary = { label: "Track the action", icon: <ArrowRight aria-hidden />, to: `/follow-up${a ? `?assignment=${a.id}` : ""}` };
-  } else if (can("concern.resolve")) {
+  } else if (d.next_step.action === "evidence" && can("concern.evidence")) {
+    primary = { label: "Attach evidence", icon: <Paperclip aria-hidden />, run: () => open("evidence") };
+  } else if (can("concern.resolve") && d.resolution_requirements.can_resolve) {
     primary = { label: "Mark as resolved", icon: <ClipboardList aria-hidden />, run: () => open("resolve") };
+  } else if (can("concern.resolve") && d.resolution_requirements.missing.length) {
+    hint = `Before this can be resolved: ${d.resolution_requirements.missing.join(" ")}`;
+    if (!d.resolution_requirements.evidence_attached && can("concern.evidence")) primary = { label: "Attach evidence", icon: <Paperclip aria-hidden />, run: () => open("evidence") };
   }
 
   const more: MenuItem[] = [];
@@ -140,9 +145,9 @@ export function InvestigationPage() {
     if (c.verification !== "confirmed" && can("concern.confirm") && !primary?.label.startsWith("Confirm")) more.push({ label: "Confirm it's a real problem", icon: <CheckCircle2 aria-hidden />, onSelect: () => open("confirm") });
     if (can("concern.clarify") && c.status !== "clarification_requested") more.push({ label: "Ask the unit a question", icon: <MessageSquare aria-hidden />, onSelect: () => open("clarify") });
     if (c.status === "clarification_requested" && can("concern.respond") && primary?.label !== "Reply to the question") more.push({ label: "Add the unit's reply", icon: <MessageSquare aria-hidden />, onSelect: () => open("respond") });
-    if (can("concern.evidence")) more.push({ label: "Attach evidence", icon: <Paperclip aria-hidden />, onSelect: () => open("evidence") });
+    if (can("concern.evidence") && primary?.label !== "Attach evidence") more.push({ label: "Attach evidence", icon: <Paperclip aria-hidden />, onSelect: () => open("evidence") });
     if (can("concern.assign")) more.push({ label: d.investigation ? "Change owner" : "Assign an owner", icon: <UserPlus aria-hidden />, onSelect: () => open("assign") });
-    if (can("concern.resolve") && primary?.label !== "Mark as resolved") more.push({ label: "Mark as resolved", icon: <ClipboardList aria-hidden />, onSelect: () => open("resolve") });
+    if (can("concern.resolve") && d.resolution_requirements.can_resolve && primary?.label !== "Mark as resolved") more.push({ label: "Mark as resolved", icon: <ClipboardList aria-hidden />, onSelect: () => open("resolve") });
     if (can("concern.dismiss")) more.push({ label: "Close as not a problem", icon: <XCircle aria-hidden />, danger: true, onSelect: () => open("dismiss") });
   } else if (can("concern.reopen")) {
     more.push({ label: "Reopen", icon: <RotateCcw aria-hidden />, onSelect: () => open("reopen") });
