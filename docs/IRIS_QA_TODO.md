@@ -26,4 +26,15 @@ Verified on 23 Oct 2026 by running the pre-B0 commit's own `e2e-workflow.mjs` ag
 | `check-responsive.mjs` | 11 | `/data` and `/data?tab=trends` were the explorer | Use `/reports` and `/reports?tab=trends`; keep `/data` for Data & Models |
 | `check-responsive.mjs` | 13 | RHU `/data` is now role-gated (no h1 on the access notice) | Use `/reports` for RHU staff |
 | `check-responsive.mjs` | 12, 14, 15 | `/planner`, `/follow-up`, `/recovery`, `/evaluation`, `/data-management…` redirect | Use the new routes |
-| `check-foundation.mjs`, `check-phase3.mjs`, `render-phase4-references.mjs` | — | Validate the retired dark design and load `public/brand/*` | Retire with `public/brand/*` (needs approval) |
+| `check-foundation.mjs`, `check-phase3.mjs`, `render-phase4-references.mjs` | — | Loaded `public/brand/*` and `design-reference/` | Done: foundation checks the nav mark and favicons, phase 3 no longer renders the HTML references, and the phase-4 renderer became `compare-heroes.mjs` |
+| `check-foundation.mjs`, `check-phase2.mjs`, `check-phase3.mjs`, `check-phase4.mjs` | — | Other assertions still target Phase 1–4 page copy and the sidebar | Review in phase (j); keep only checks that still apply |
+
+## Running QA next to a normal dev server
+
+`qa:e2e` resets the demo database. Run it against an isolated pair:
+
+```bash
+IRIS_DB_PATH=/tmp/iris-qa.db uv run uvicorn iris.main:app --port 8011          # backend/
+IRIS_API_URL=http://127.0.0.1:8011 IRIS_VITE_CACHE=/tmp/iris-vite npx vite --port 5190   # frontend/
+node scripts/e2e-workflow.mjs http://localhost:5190
+```

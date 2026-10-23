@@ -121,12 +121,7 @@ try {
   page.setDefaultTimeout(15000);
   const writes = [];
   page.on("request", (r) => { if (r.url().includes("/api/") && r.method() !== "GET") writes.push(r.url()); });
-  // Render the actual supplied references for visual inspection.
-  for (const [number, name] of [["05", "ReportingNetwork"], ["07", "AnomalyAnalysis"], ["08", "Investigations"], ["09", "InvestigationDetail"]]) {
-    await page.setViewportSize({ width: 1600, height: 1000 });
-    await page.goto(new URL(`../../design-reference/IRIS_Editable_Latest/IRIS_${number}_${name}.html`, import.meta.url).href);
-    await page.screenshot({ path: join(shots, `reference-${number}.png`) });
-  }
+  // The design references are the mockups in docs/design/*.png (the earlier HTML references were retired).
   for (const width of [1600, 1440, 1024, 768, 375, 320]) {
     for (const [path, name] of [["/network", "network"], ["/anomalies", "analysis"], ["/investigations", "queue"], ["/investigations/C-0012", "detail"]]) {
       await renderCheck(page, path, width, name);

@@ -86,13 +86,17 @@ try {
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(trigger).toBeFocused();
   console.log("PASS mobile navigation opens, closes with Escape, and restores focus");
-  for (const asset of ["iris_logo_updated.png", "iris_logo_glossy_original.png", "iris_logo_flat_transparent.png", "iris_logo_vector.svg", "iris_micrograin.png", "iris_mesh_wave.svg", "healthcare_analysts.webp"]) {
+  // The supplied mark (bundled from src/assets/brand) and the resized favicons must decode.
+  const mark = page.locator('header img[alt="IRIS"]').first();
+  await expect(mark).toBeVisible();
+  expect(await mark.evaluate((img) => img.complete && img.naturalWidth > 0), "nav mark").toBe(true);
+  for (const asset of ["favicon-32.png", "favicon-192.png", "apple-touch-icon.png"]) {
     const result = await page.evaluate((name) => new Promise((resolve) => {
-      const img = new Image(); img.onload = () => resolve(img.naturalWidth > 0); img.onerror = () => resolve(false); img.src = `/brand/${name}`;
+      const img = new Image(); img.onload = () => resolve(img.naturalWidth > 0); img.onerror = () => resolve(false); img.src = `/${name}`;
     }), asset);
     expect(result, asset).toBe(true);
   }
-  console.log("PASS all seven supplied brand/texture/hero assets decode");
+  console.log("PASS the nav mark and the favicons decode");
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(base + "/investigations", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Check for new concerns", exact: true }).click();
