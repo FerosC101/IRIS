@@ -1,7 +1,7 @@
 import type {
   Assignment, AuditRow, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
   FilterOptions, ImportPreview, ImportRecord, ImportValidation, Meta, NetworkGraphData, Overview, Paged, Plan, Quality,
-  QueueRow, RecordDetail, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
+  QueueRow, RecordDetail, Severity, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
 } from "@/types/api";
 import { qs, request } from "./client";
 
@@ -19,6 +19,9 @@ export const api = {
   concern: (id: string) => request<ConcernDetail>(`/concerns/${id}`),
   concernAction: (id: string, action: "review" | "confirm" | "dismiss" | "clarify" | "respond" | "assign" | "notes" | "evidence" | "resolve" | "reopen", body: object) =>
     request<ConcernDetail>(`/concerns/${id}/${action}`, { method: "POST", json: body }),
+  /** Open an investigation by hand. It starts unverified, with an owner and a checklist. */
+  createConcern: (body: { unit_ids: string[]; category_code?: string | null; week_from: number; week_to: number; title: string; reason: string;
+    severity?: Severity; assignee_user_id?: string | null; due?: string | null }) => request<ConcernDetail>("/concerns", { method: "POST", json: body }),
   updateChecklist: (id: string, itemId: number, body: { done?: boolean; note?: string }) =>
     request<ConcernDetail>(`/concerns/${id}/checklist/${itemId}`, { method: "PATCH", json: body }),
   runDetection: (method: string) => request<{ created: string[]; skipped_existing: number; method: string; method_label: string }>("/detection/run", { method: "POST", json: { method } }),

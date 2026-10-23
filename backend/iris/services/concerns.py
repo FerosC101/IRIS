@@ -17,13 +17,14 @@ from iris.models import (
     InterventionAssignment,
     Investigation,
     InvestigationNote,
+    ReportingCategory,
     ReportingConcern,
     ReportingUnit,
     User,
 )
 from iris.services import audit, checklist, datasets
 from iris.services.clock import now, today
-from iris.services.concern_builder import ConcernSpec, build_specs, via_name
+from iris.services.concern_builder import ConcernSpec, build_specs, via_name, week_rows
 from iris.services.context import Actor
 from iris.services.ids import resolve_concern_id
 
@@ -45,7 +46,12 @@ TYPE_LABELS = {
     "count_drop": "Unexpected drop in counts",
     "shared_problem": "Possible shared problem",
     "zero_case_run": "Zero-case run",
+    "reviewer_raised": "Raised by a reviewer",
 }
+
+#: Concerns opened by a person rather than a detector.
+HUMAN_METHOD = "human"
+METHOD_DISPLAY = {**METHOD_LABELS, HUMAN_METHOD: "Raised by a reviewer"}
 
 MIN_REASON = 10
 
@@ -112,6 +118,56 @@ def create_from_spec(session: Session, spec: ConcernSpec, dataset_id: str, creat
     checklist.create_items(session, c, created_at)
     audit.record(session, actor, "concern", c.id, "concern.created",
                  f"Concern flagged by {METHOD_LABELS[spec.detection_method]} detection: {c.title}", {"severity": c.severity}, at=created_at)
+    return c
+
+
+def create_manual(session: Session, actor: Actor, dataset_id: str, unit_ids: list[str], category_code: str | None, w0: int, w1: int,
+                  title: str, reason: str, severity: str = "medium", assignee_id: str | None = None, due: date | None = None,
+                  at: datetime | None = None) -> ReportingConcern:
+    """A concern raised by a person. Like every concern it starts unverified: raising it is not a finding."""
+    actor.require("concern.assign")
+    ds = datasets.get_dataset(session, dataset_id)
+    title = (title or "").strip()
+    if len(title) < 5:
+        raise HTTPException(status_code=422, detail="Give the investigation a title (at least 5 characters).")
+    reason = _reason(reason, "opening this investigation")
+    if severity not in ("high", "medium", "low"):
+        raise HTTPException(status_code=422, detail="Priority must be high, medium or low.")
+    if not unit_ids:
+        raise HTTPException(status_code=422, detail="Choose at least one reporting unit.")
+    units = [session.get(ReportingUnit, u) for u in dict.fromkeys(unit_ids)]
+    if any(u is None or u.unit_type == "hub" for u in units):
+        raise HTTPException(status_code=422, detail="Choose reporting units that submit reports (not hubs).")
+    if actor.role == "provincial_coordinator" and actor.province and any(u.province != actor.province for u in units):
+        raise HTTPException(status_code=403, detail=f"Coordinators can open investigations only for units in {actor.province}.")
+    if not (0 <= w0 <= w1 <= config.N_WEEKS - 1):
+        raise HTTPException(status_code=422, detail=f"Choose a week range between 0 and {config.N_WEEKS - 1}, start before end.")
+    if category_code and session.get(ReportingCategory, category_code) is None:
+        raise HTTPException(status_code=422, detail=f"Unknown reporting category {category_code}.")
+    at = at or now()
+    results = datasets.detection(session, dataset_id, "network")
+    last = int(results["week"].max()) if results is not None and not results.empty else 0
+    timeline = {u.id: week_rows(results, u.id, w0, w1, last) for u in units} if results is not None else {}
+    provinces = {u.province for u in units}
+    c = ReportingConcern(
+        id=next_concern_id(session), dataset_id=dataset_id, concern_type="reviewer_raised", title=title, summary=reason,
+        severity=severity, status="under_review", verification="unverified", category_code=category_code,
+        period_start=config.week_start(w0), period_end=config.week_end(w1), week_start_index=w0, week_end_index=w1,
+        primary_unit_id=units[0].id if len(units) == 1 else None, province=provinces.pop() if len(provinces) == 1 else None,
+        detection_method=HUMAN_METHOD, score=0.0, created_at=at, updated_at=at, simulated=ds.designation == "synthetic",
+        uncertainty_note="Raised by a reviewer, not by a detector. Nothing about it has been verified yet.",
+        detection_detail={"weeks": list(range(w0, w1 + 1)), "units": timeline, "method": HUMAN_METHOD, "params": {},
+                          "categories": [category_code] if category_code else []},
+    )
+    c.units = units
+    c.evidence.append(EvidenceItem(kind="requires_verification", title=f"Raised by {actor.display_name}", detail=reason, data={},
+                                   created_at=at, created_by=actor.user_id))
+    session.add(c)
+    session.flush()
+    checklist.create_items(session, c, at)
+    audit.record(session, actor, "concern", c.id, "concern.created", f"{actor.display_name} opened {c.id} for investigation: {title}",
+                 {"severity": severity, "human": True}, at=at)
+    assign(session, c, actor, assignee_id or actor.user_id, due, at=at)
     return c
 
 
@@ -377,6 +433,7 @@ def next_step(session: Session, c: ReportingConcern) -> dict:
             "incomplete_record": f"Ask {unit} whether the blank fields mean zero cases.",
             "count_drop": f"Ask {unit} to check the counts against its case register.",
             "zero_case_run": f"Ask {unit} to check the zero-case reports against its case register.",
+            "reviewer_raised": "Work through the checklist, then confirm it or close it as not a problem.",
         }
         return {"text": by_type.get(c.concern_type, "Verify the concern."), "action": "clarify"}
     # in_investigation

@@ -284,7 +284,7 @@ export function InvestigationPage() {
               <KeyValue items={[
                 { label: "ID", value: <span className="font-mono text-xs">{c.id}</span> },
                 { label: "Type", value: c.concern_type_label },
-                { label: "Found by", value: `${c.detection_method_label} check · ${fmtDate(c.created_at)}` },
+                { label: "Found by", value: `${c.detection_method_label}${c.detection_method === "human" ? "" : " check"} · ${fmtDate(c.created_at)}` },
                 { label: "Owner", value: d.investigation ? `${d.investigation.owner} (since ${fmtDate(d.investigation.opened_at)})` : "Not assigned" },
                 ...(c.confirmation_reason ? [{ label: "Why it was confirmed", value: c.confirmation_reason }] : []),
                 ...(c.dismissal_reason ? [{ label: "Why it was closed", value: c.dismissal_reason }] : []),

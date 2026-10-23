@@ -35,6 +35,19 @@ class SummaryIn(BaseModel):
     summary: str = Field(max_length=4000)
 
 
+class NewConcernIn(BaseModel):
+    unit_ids: list[str] = Field(min_length=1, max_length=20)
+    category_code: str | None = None
+    week_from: int
+    week_to: int
+    title: str = Field(max_length=200)
+    reason: str = Field(max_length=4000)
+    severity: Literal["high", "medium", "low"] = "medium"
+    assignee_user_id: str | None = None
+    due: date | None = None
+    dataset_id: str | None = None
+
+
 class ChecklistPatch(BaseModel):
     done: bool | None = None
     note: str | None = Field(default=None, max_length=2000)

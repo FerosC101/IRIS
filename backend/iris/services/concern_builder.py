@@ -218,7 +218,7 @@ def via_name(via: str | None, unit_names: dict[str, str]) -> str:
     return unit_names.get(via, via)
 
 
-def _week_rows(results: pd.DataFrame, unit_id: str, w0: int, w1: int, last_week: int) -> list[dict]:
+def week_rows(results: pd.DataFrame, unit_id: str, w0: int, w1: int, last_week: int) -> list[dict]:
     g = results[(results["unit_id"] == unit_id) & (results["week"] >= max(0, w0 - 3)) & (results["week"] <= min(last_week, w1 + 2))]
     rows = []
     for r in g.sort_values("week").itertuples(index=False):
@@ -283,7 +283,7 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
         period = period_text(w0, w1)
         detail = {
             "weeks": [w for w in range(w0, w1 + 1)],
-            "units": {u: _week_rows(results, u, w0, w1, last_week) for u in unit_ids},
+            "units": {u: week_rows(results, u, w0, w1, last_week) for u in unit_ids},
             "method": method,
             "params": {k: v for k, v in params.as_dict().items()},
         }

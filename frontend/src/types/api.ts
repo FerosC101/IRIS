@@ -4,11 +4,13 @@ export type Role = "rhu_staff" | "provincial_coordinator" | "resu_analyst" | "ad
 export type Severity = "high" | "medium" | "low";
 export type ConcernStatus = "open" | "under_review" | "clarification_requested" | "in_investigation" | "resolved" | "dismissed";
 export type Verification = "unverified" | "confirmed" | "dismissed";
-export type ConcernType = "missing_submission" | "late_report" | "incomplete_record" | "count_drop" | "shared_problem" | "zero_case_run";
+export type ConcernType = "missing_submission" | "late_report" | "incomplete_record" | "count_drop" | "shared_problem" | "zero_case_run" | "reviewer_raised";
 export type EvidenceKind = "observed" | "possible_explanation" | "requires_verification" | "confirmed_by_reviewer" | "attached" | "simulated_example";
 export type SlotStatus = "on_time" | "late" | "not_received" | "received";
 export type ValueStatus = "reported" | "zero" | "blank";
 export type Method = "threshold" | "ewma" | "network";
+/** How a concern was raised: a detection method, or "human" for a reviewer. */
+export type ConcernMethod = Method | "human";
 export type Designation = "synthetic" | "real" | "unknown";
 export type AssignmentStatus = "approved" | "in_progress" | "completed" | "closed" | "cancelled";
 export type OutcomeStatus = "not_yet_verified" | "observed_unverified" | "verified";
@@ -101,7 +103,7 @@ export interface Concern {
   id: string; investigation_id: string | null; display_id: string; dataset_id: string; concern_type: ConcernType; concern_type_label: string; title: string; summary: string;
   severity: Severity; status: ConcernStatus; status_label: string; verification: Verification; category_code: string | null; categories: string[];
   period_start: string; period_end: string; week_start_index: number; week_end_index: number; primary_unit_id: string | null;
-  province: string | null; shared_via: string | null; detection_method: Method; detection_method_label: string; score: number;
+  province: string | null; shared_via: string | null; detection_method: ConcernMethod; detection_method_label: string; score: number;
   uncertainty_note: string; created_at: string; updated_at: string; assigned_user_id: string | null; assigned_user: string | null;
   assigned_role: string | null; follow_up_due: string | null; confirmation_reason: string | null; dismissal_reason: string | null;
   resolution_summary: string | null; resolved_at: string | null; simulated: boolean; units: ConcernUnit[];

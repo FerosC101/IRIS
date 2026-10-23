@@ -391,3 +391,27 @@ def test_seeded_resolutions_have_completed_checklists(client):
     for r in client.get("/api/concerns?status=resolved&page_size=100", headers=RESU).json()["rows"]:
         cl = client.get(f"/api/concerns/{r['id']}", headers=RESU).json()["checklist"]
         assert cl["total"] > 0 and cl["done"] == cl["total"], r["id"]
+
+
+def test_reviewer_can_open_an_investigation_that_starts_unverified(fresh):
+    c = fresh
+    body = {"unit_ids": ["RHU-KALINAW-2"], "category_code": "DENGUE", "week_from": 23, "week_to": 25,
+            "title": "Dengue counts look low at Kalinaw RHU II", "reason": "Neighbouring units report rising dengue; worth checking the register.",
+            "assignee_user_id": "U-RESU-2", "due": "2026-10-12"}
+    assert c.post("/api/concerns", json={**body, "reason": "short"}, headers=PROV).status_code == 422
+    assert c.post("/api/concerns", json=body, headers=RHU).status_code == 403
+    assert c.post("/api/concerns", json={**body, "unit_ids": ["RHU-HIRAYA"]}, headers=PROV).status_code == 403  # other province
+    assert c.post("/api/concerns", json={**body, "unit_ids": ["HUB-MLY"]}, headers=PROV).status_code == 422
+    assert c.post("/api/concerns", json={**body, "week_from": 25, "week_to": 23}, headers=PROV).status_code == 422
+    r = c.post("/api/concerns", json=body, headers=PROV)
+    assert r.status_code == 200
+    d = r.json()
+    con = d["concern"]
+    assert con["id"] == "C-0022" and con["concern_type"] == "reviewer_raised" and con["detection_method_label"] == "Raised by a reviewer"
+    assert con["verification"] == "unverified" and con["status"] == "in_investigation" and con["severity"] == "medium"
+    assert d["investigation"]["id"] == "INV-0022" and d["investigation"]["owner_user_id"] == "U-RESU-2"
+    assert con["follow_up_due"] == "2026-10-12" and d["checklist"]["total"] == 4
+    assert d["timeline"]["units"]["RHU-KALINAW-2"]  # observations come from the data
+    assert any(e["kind"] == "requires_verification" for e in d["evidence"])
+    assert d["resolution_requirements"]["can_resolve"] is False
+    assert any(a["action"] == "concern.created" for a in d["activity"])

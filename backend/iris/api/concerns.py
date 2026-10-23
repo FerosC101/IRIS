@@ -8,7 +8,7 @@ from iris import config
 from iris.db import get_session
 from iris.detection.methods import METHOD_LABELS
 from iris.models import InterventionAction, InterventionAssignment, Investigation, InvestigationNote, ReportingConcern, User
-from iris.schemas import AssignIn, BodyIn, ChecklistPatch, DetectionRunIn, EvidenceIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
+from iris.schemas import AssignIn, BodyIn, ChecklistPatch, NewConcernIn, DetectionRunIn, EvidenceIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
 from iris.services import concerns as cs
 from iris.services import checklist, datasets, ids, interventions as iv, overview as ov, reports
 from iris.services.context import Actor, get_actor
@@ -24,7 +24,7 @@ def _concern_dict(session: Session, c: ReportingConcern, users: dict[str, str]) 
         "verification": c.verification, "category_code": c.category_code, "categories": (c.detection_detail or {}).get("categories", []),
         "period_start": c.period_start, "period_end": c.period_end, "week_start_index": c.week_start_index, "week_end_index": c.week_end_index,
         "primary_unit_id": c.primary_unit_id, "province": c.province, "shared_via": c.shared_via,
-        "detection_method": c.detection_method, "detection_method_label": METHOD_LABELS.get(c.detection_method, c.detection_method),
+        "detection_method": c.detection_method, "detection_method_label": cs.METHOD_DISPLAY.get(c.detection_method, c.detection_method),
         "score": c.score, "uncertainty_note": c.uncertainty_note, "created_at": c.created_at, "updated_at": c.updated_at,
         "assigned_user_id": c.assigned_user_id, "assigned_user": users.get(c.assigned_user_id or ""), "assigned_role": c.assigned_role,
         "follow_up_due": c.follow_up_due, "confirmation_reason": c.confirmation_reason, "dismissal_reason": c.dismissal_reason,
@@ -87,6 +87,14 @@ def list_concerns(
     inv_ids = ids.investigation_ids(session)
     return {"rows": [ov.concern_row(c, users, inv_ids) for c in rows[(page - 1) * page_size: page * page_size]],
             "total": total, "page": page, "page_size": page_size, "pages": pages}
+
+
+@router.post("/concerns")
+def create_concern(body: NewConcernIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    """Open an investigation by hand. It starts unverified, with an owner and a checklist."""
+    c = cs.create_manual(session, actor, body.dataset_id or config.DEMO_DATASET_ID, body.unit_ids, body.category_code or None,
+                         body.week_from, body.week_to, body.title, body.reason, body.severity, body.assignee_user_id, body.due)
+    return _done(session, c, actor)
 
 
 @router.get("/concerns/{concern_id}")
