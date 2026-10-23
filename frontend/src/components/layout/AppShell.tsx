@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { ErrorState, Loading } from "@/components/ui/states";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useSession } from "@/hooks/useSession";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
 
@@ -24,7 +25,7 @@ export function AppShell() {
         <main id="main" ref={main} tabIndex={-1} className="iris-container min-w-0 flex-1 pt-6 focus:outline-none xl:pt-[37px]">
           {isLoading ? <Loading label="Starting IRIS" /> : error ? (
             <div className="mx-auto max-w-xl py-10"><ErrorState error={error} onRetry={refetch} title="IRIS could not connect to its server" /></div>
-          ) : <Suspense fallback={<Loading label="Loading page" />}><Outlet /></Suspense>}
+          ) : <ErrorBoundary resetKey={loc.pathname}><Suspense fallback={<Loading label="Loading page" />}><Outlet /></Suspense></ErrorBoundary>}
         </main>
         <Footer />
       </div>

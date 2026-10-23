@@ -38,6 +38,11 @@
   --color-series-2: #7893A8;      /* comparison series (dashed) */
   --color-missing: #B65F59;       /* fills only; text uses critical-ink */
   --color-missing-pale: #FCD3D0;
+  /* Chart marks for report states (validated: lightness, chroma, CVD and normal-vision separation pass on white;
+     zero-case is below 3:1 against white, so every chart that uses it shows labels and a table view). */
+  --color-chart-reported: #00739D;
+  --color-chart-zero: #33B1A8;
+  --color-chart-missing: #BF544D;
 
   /* Compatibility names used across existing pages */
   --color-teal-900: #0A3A4A;

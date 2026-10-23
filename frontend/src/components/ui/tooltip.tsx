@@ -17,3 +17,16 @@ export function Tooltip({ content, children, side = "top" }: { content: ReactNod
     </T.Root>
   );
 }
+
+/**
+ * A disabled action that says why. Disabled buttons get no focus or pointer
+ * events, so the wrapper takes focus and carries the reason as its description
+ * (announced by screen readers, shown as a tooltip on hover or focus).
+ */
+export function DisabledReason({ reason, children }: { reason: string; children: ReactNode }) {
+  return (
+    <Tooltip content={reason}>
+      <span tabIndex={0} className="inline-flex rounded-md">{children}<span className="sr-only"> ({reason})</span></span>
+    </Tooltip>
+  );
+}
