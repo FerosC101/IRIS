@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { mergeSearch } from "@/lib/url";
 import { SimulatedTag } from "@/components/data-display/badges";
 import { DataTable } from "@/components/data-display/DataTable";
 import { ScreenHeader } from "@/components/shell/ScreenHeader";
@@ -159,7 +160,7 @@ export function DataManagementPage() {
     <>
       <ScreenHeader screen="data" />
       <div className="mt-[25px]" />
-      <Tabs value={tab} onValueChange={(v) => setParams((prev) => { const next = new URLSearchParams(prev); next.set("tab", v); return next; })}>
+      <Tabs value={tab} onValueChange={(v) => setParams((prev) => mergeSearch(prev, { tab: v }))}>
         <TabsList label="Data management sections" tabs={tabs} />
         <TabsContent value="datasets"><DatasetRegistry /></TabsContent>
         <TabsContent value="imports"><ImportsTab /></TabsContent>

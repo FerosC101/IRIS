@@ -163,3 +163,29 @@ describe("Design preview (development only)", () => {
     expect(new Set(variants)).toEqual(new Set(["deep", "light", "teal"]));
   });
 });
+
+describe("page filters and the global filter bar share the URL", () => {
+  it("mergeSearch keeps other keys, removes empty ones and keeps deliberate empties", async () => {
+    const { mergeSearch } = await import("@/lib/url");
+    const p = new URLSearchParams("region=Malaya&disease=LEPTO&page=3&status=active");
+    expect(mergeSearch(p, { search: "tala", page: null }).toString()).toBe("region=Malaya&disease=LEPTO&status=active&search=tala");
+    expect(mergeSearch(p, { status: "" }).has("status")).toBe(false);
+    expect(mergeSearch(p, { status: "" }, ["status"]).get("status")).toBe("");
+  });
+  it("changing an Investigations filter keeps the global filters", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      const body = url.includes("/overview")
+        ? { counts: { new: 1, under_review: 0, clarification_requested: 0, in_investigation: 0, overdue_follow_ups: 0, follow_ups_active: 0, tasks: 0 } }
+        : { rows: [], total: 0, page: 1, page_size: 20, pages: 1 };
+      return new Response(JSON.stringify(body), { status: 200 });
+    });
+    const { InvestigationsPage } = await import("@/features/investigations/InvestigationsPage");
+    setup(<InvestigationsPage />, { path: "/investigations?region=Malaya&disease=LEPTO&from=23&to=25&page=2" });
+    await userEvent.type(screen.getByPlaceholderText("Search by concern ID or keyword"), "zero");
+    const loc = new URLSearchParams(screen.getByTestId("location").textContent!.split("?")[1]);
+    expect(loc.get("search")).toBe("zero");
+    expect([loc.get("region"), loc.get("disease"), loc.get("from"), loc.get("to")]).toEqual(["Malaya", "LEPTO", "23", "25"]);
+    expect(loc.has("page")).toBe(false); // a new filter starts again at page 1
+  });
+});

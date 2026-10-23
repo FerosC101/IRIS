@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Play } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { mergeSearch } from "@/lib/url";
 import { DataTable, type SortState } from "@/components/data-display/DataTable";
 import { ConcernStatusBadge, SeverityBadge, VerificationBadge } from "@/components/data-display/badges";
 import { fmtDate } from "@/lib/format";
@@ -73,10 +74,12 @@ export function InvestigationsPage() {
   const page = Math.max(1, Number(url.get("page")) || 1);
   const sort: SortState = { key: ["severity", "updated_at", "period_start"].includes(url.get("sort") ?? "") ? url.get("sort")! : "updated_at", order: url.get("order") === "asc" ? "asc" : "desc" };
   const setPage = (n: number) => setUrl((p) => { p.set("page", String(n)); return p; }, { replace: true });
-  const setF = (v: typeof DEFAULTS) => setUrl(v, { replace: true });
+  // Page filters merge into the URL; changing one returns to page 1.
+  const keepEmpty = Object.keys(DEFAULTS).filter((k) => DEFAULTS[k as keyof typeof DEFAULTS] !== "");
+  const setF = (v: typeof DEFAULTS) => setUrl((p) => mergeSearch(p, { ...v, page: null }, keepEmpty), { replace: true });
   const params = { ...f, page, page_size: 20, sort: sort.key, order: sort.order };
   const q = useQuery({ queryKey: ["concerns", params], queryFn: () => api.concerns(params), placeholderData: (p) => p });
-  const set = (patch: Partial<typeof DEFAULTS>) => setUrl({ ...f, ...patch, sort: sort.key, order: sort.order }, { replace: true });
+  const set = (patch: Partial<typeof DEFAULTS>) => setUrl((p) => mergeSearch(p, { ...patch, page: null }, keepEmpty), { replace: true });
   const hidden = (["concern_type", "severity", "province"] as const).filter((k) => f[k]).length;
   return (
     <>
@@ -137,7 +140,7 @@ export function InvestigationsPage() {
           <>
             <DataTable<QueueRow> rows={q.data.rows} caption="Reporting concerns" rowKey={(r) => r.id}
               onRowClick={(r) => navigate(r.link)} mobileTitle={(r) => <Link to={r.link}>{r.title}</Link>} minWidth={1080}
-              sort={sort} onSort={(v) => setUrl({ ...f, sort: v.key, order: v.order }, { replace: true })}
+              sort={sort} onSort={(v) => setUrl((p) => mergeSearch(p, { sort: v.key, order: v.order, page: null }), { replace: true })}
               columns={[
                 { key: "id", header: "Concern", cell: (r) => <Link to={r.link} className="font-semibold text-info-ink hover:underline">{r.id}</Link> },
                 { key: "severity", header: "Priority", sortKey: "severity", cell: (r) => <SeverityBadge severity={r.severity} /> },

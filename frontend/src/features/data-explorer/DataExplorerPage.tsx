@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { mergeSearch } from "@/lib/url";
 import { DesignationBadge, SlotStatusBadge } from "@/components/data-display/badges";
 import { SimpleTable, TrendChart } from "@/components/data-display/charts";
 import { DataTable, type SortState } from "@/components/data-display/DataTable";
@@ -240,7 +241,7 @@ export function DataExplorerPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <div className="sm:w-96">
               <label htmlFor="ds" className="mb-1 block text-xs font-medium text-ink-2">Dataset</label>
-              <Select id="ds" value={datasetId} onChange={(e) => setParams({ dataset: e.target.value })}>
+              <Select id="ds" value={datasetId} onChange={(e) => setParams((p) => mergeSearch(p, { dataset: e.target.value }))}>
                 {ds.data.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
               </Select>
             </div>
