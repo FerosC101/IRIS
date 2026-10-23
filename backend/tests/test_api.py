@@ -521,3 +521,15 @@ def test_detection_summary_reports_real_output_and_labels_comparisons(client):
     assert client.get("/api/detection/summary?w_from=5&w_to=2", headers=RESU).status_code == 422
     assert client.get("/api/detection/summary", headers=RHU).status_code == 403
     assert client.get("/api/detection/summary?dataset_id=DS-DEMO-PROVINCIAL", headers=RESU).json()["available"] is False
+
+
+def test_record_detail_is_scoped_to_the_rhu_unit(client):
+    own = client.get("/api/datasets/DS-DEMO-FACILITY/records?status=on_time&page_size=5", headers=RHU).json()["rows"]
+    own_id = next(r["record_id"] for r in own if r["record_id"])
+    other = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-TALA-1&status=on_time&page_size=5", headers=RESU).json()["rows"]
+    other_id = next(r["record_id"] for r in other if r["record_id"])
+    assert client.get(f"/api/datasets/DS-DEMO-FACILITY/records/{own_id}", headers=RHU).status_code == 200
+    assert client.get(f"/api/datasets/DS-DEMO-FACILITY/records/{other_id}", headers=RHU).status_code == 404
+    # Analysts and coordinators are unaffected.
+    assert client.get(f"/api/datasets/DS-DEMO-FACILITY/records/{other_id}", headers=RESU).status_code == 200
+    assert client.get(f"/api/datasets/DS-DEMO-FACILITY/records/{other_id}", headers=PROV).status_code == 200

@@ -94,18 +94,25 @@ def records(dataset_id: str, page: int = Query(1, ge=1), page_size: int = Query(
     return explorer.rows(session, dataset_id, page, page_size, sort, order, **_filters(search, province, unit_id, category, status, date_from, date_to))
 
 
+def _visible_record(session: Session, actor: Actor, record_id: int | None, label: str) -> DataRecord:
+    """A record the actor may read. RHU staff see only their own unit's records; to them
+    another unit's record does not exist (404), as with concerns."""
+    r = session.get(DataRecord, record_id) if record_id is not None else None
+    if r is None or (actor.role == "rhu_staff" and r.reporting_unit_id != actor.reporting_unit_id):
+        raise HTTPException(status_code=404, detail=f"{label} was not found.")
+    return r
+
+
 @router.get("/datasets/{dataset_id}/records/{record_id}")
 def record(dataset_id: str, record_id: int, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
+    _visible_record(session, actor, record_id, f"Record {record_id}")
     return explorer.record_detail(session, dataset_id, record_id)
 
 
 @router.get("/reports/{report_id}")
 def report_by_id(report_id: str, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
     """Resolve a display report id (``RPT-0042``) to its record, in whichever dataset holds it."""
-    rid = ids.parse_report_id(report_id)
-    r = session.get(DataRecord, rid) if rid is not None else None
-    if r is None or (actor.role == "rhu_staff" and r.reporting_unit_id != actor.reporting_unit_id):
-        raise HTTPException(status_code=404, detail=f"Report {report_id} was not found.")
+    r = _visible_record(session, actor, ids.parse_report_id(report_id), f"Report {report_id}")
     return explorer.record_detail(session, r.dataset_id, r.id)
 
 
