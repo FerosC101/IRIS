@@ -1,0 +1,1761 @@
+series,refit_period,n_train,level,reason,run
+BARMM-BASILAN,0,0,no_score,insufficient history (0 < 8),dengue
+BARMM-BASILAN,4,4,no_score,insufficient history (4 < 8),dengue
+BARMM-BASILAN,8,8,nb_intercept,short history (8 points),dengue
+BARMM-BASILAN,12,12,nb_intercept,short history (12 points),dengue
+BARMM-BASILAN,16,16,nb_intercept,short history (16 points),dengue
+BARMM-BASILAN,20,20,nb_trend,short history (20 points),dengue
+BARMM-BASILAN,24,24,nb_trend,short history (24 points),dengue
+BARMM-BASILAN,28,28,nb_trend,short history (28 points),dengue
+BARMM-BASILAN,32,32,nb_trend,short history (32 points),dengue
+BARMM-BASILAN,36,36,nb_trend,short history (36 points),dengue
+BARMM-BASILAN,40,40,nb_trend,short history (40 points),dengue
+BARMM-BASILAN,44,44,nb_trend,short history (44 points),dengue
+BARMM-LANAO_DEL_SUR,0,0,no_score,insufficient history (0 < 8),dengue
+BARMM-LANAO_DEL_SUR,4,4,no_score,insufficient history (4 < 8),dengue
+BARMM-LANAO_DEL_SUR,8,8,nb_intercept,short history (8 points),dengue
+BARMM-LANAO_DEL_SUR,12,12,nb_intercept,short history (12 points),dengue
+BARMM-LANAO_DEL_SUR,16,16,nb_intercept,short history (16 points),dengue
+BARMM-LANAO_DEL_SUR,20,20,nb_trend,short history (20 points),dengue
+BARMM-LANAO_DEL_SUR,24,24,nb_trend,short history (24 points),dengue
+BARMM-LANAO_DEL_SUR,28,28,nb_trend,short history (28 points),dengue
+BARMM-LANAO_DEL_SUR,32,32,nb_trend,short history (32 points),dengue
+BARMM-LANAO_DEL_SUR,36,36,nb_trend,short history (36 points),dengue
+BARMM-LANAO_DEL_SUR,40,40,nb_trend,short history (40 points),dengue
+BARMM-LANAO_DEL_SUR,44,44,nb_trend,short history (44 points),dengue
+BARMM-MAGUINDANAO,0,0,no_score,insufficient history (0 < 8),dengue
+BARMM-MAGUINDANAO,4,4,no_score,insufficient history (4 < 8),dengue
+BARMM-MAGUINDANAO,8,8,nb_intercept,short history (8 points),dengue
+BARMM-MAGUINDANAO,12,12,nb_intercept,short history (12 points),dengue
+BARMM-MAGUINDANAO,16,16,nb_intercept,short history (16 points),dengue
+BARMM-MAGUINDANAO,20,20,nb_trend,short history (20 points),dengue
+BARMM-MAGUINDANAO,24,24,nb_trend,short history (24 points),dengue
+BARMM-MAGUINDANAO,28,28,nb_trend,short history (28 points),dengue
+BARMM-MAGUINDANAO,32,32,nb_trend,short history (32 points),dengue
+BARMM-MAGUINDANAO,36,36,nb_trend,short history (36 points),dengue
+BARMM-MAGUINDANAO,40,40,nb_trend,short history (40 points),dengue
+BARMM-MAGUINDANAO,44,44,nb_trend,short history (44 points),dengue
+BARMM-MAGUINDANAO,204,155,nb_trend,nb_full forecast implausible (> 10 x training max),dengue
+BARMM-SULU,0,0,no_score,insufficient history (0 < 8),dengue
+BARMM-SULU,4,4,no_score,insufficient history (4 < 8),dengue
+BARMM-SULU,8,8,nb_intercept,short history (8 points),dengue
+BARMM-SULU,12,12,nb_intercept,short history (12 points),dengue
+BARMM-SULU,16,16,nb_intercept,short history (16 points),dengue
+BARMM-SULU,20,20,nb_trend,short history (20 points),dengue
+BARMM-SULU,24,24,nb_trend,short history (24 points),dengue
+BARMM-SULU,28,28,nb_trend,short history (28 points),dengue
+BARMM-SULU,32,32,nb_trend,short history (32 points),dengue
+BARMM-SULU,36,36,nb_trend,short history (36 points),dengue
+BARMM-SULU,40,40,nb_trend,short history (40 points),dengue
+BARMM-SULU,44,44,nb_trend,short history (44 points),dengue
+BARMM-TAWI_TAWI,0,0,no_score,insufficient history (0 < 8),dengue
+BARMM-TAWI_TAWI,4,4,no_score,insufficient history (4 < 8),dengue
+BARMM-TAWI_TAWI,8,8,nb_intercept,short history (8 points),dengue
+BARMM-TAWI_TAWI,12,12,nb_intercept,short history (12 points),dengue
+BARMM-TAWI_TAWI,16,16,nb_intercept,short history (16 points),dengue
+BARMM-TAWI_TAWI,20,20,nb_trend,short history (20 points),dengue
+BARMM-TAWI_TAWI,24,24,nb_trend,short history (24 points),dengue
+BARMM-TAWI_TAWI,28,28,nb_trend,short history (28 points),dengue
+BARMM-TAWI_TAWI,32,32,nb_trend,short history (32 points),dengue
+BARMM-TAWI_TAWI,36,36,nb_trend,short history (36 points),dengue
+BARMM-TAWI_TAWI,40,40,nb_trend,short history (40 points),dengue
+BARMM-TAWI_TAWI,44,44,nb_trend,short history (44 points),dengue
+CAR-ABRA,0,0,no_score,insufficient history (0 < 8),dengue
+CAR-ABRA,4,4,no_score,insufficient history (4 < 8),dengue
+CAR-ABRA,8,8,nb_intercept,short history (8 points),dengue
+CAR-ABRA,12,12,nb_intercept,short history (12 points),dengue
+CAR-ABRA,16,16,nb_intercept,short history (16 points),dengue
+CAR-ABRA,20,20,nb_trend,short history (20 points),dengue
+CAR-ABRA,24,24,nb_trend,short history (24 points),dengue
+CAR-ABRA,28,28,nb_trend,short history (28 points),dengue
+CAR-ABRA,32,32,nb_trend,short history (32 points),dengue
+CAR-ABRA,36,36,nb_trend,short history (36 points),dengue
+CAR-ABRA,40,40,nb_trend,short history (40 points),dengue
+CAR-ABRA,44,44,nb_trend,short history (44 points),dengue
+CAR-APAYAO,0,0,no_score,insufficient history (0 < 8),dengue
+CAR-APAYAO,4,4,no_score,insufficient history (4 < 8),dengue
+CAR-APAYAO,8,8,nb_intercept,short history (8 points),dengue
+CAR-APAYAO,12,12,nb_intercept,short history (12 points),dengue
+CAR-APAYAO,16,16,nb_intercept,short history (16 points),dengue
+CAR-APAYAO,20,20,nb_trend,short history (20 points),dengue
+CAR-APAYAO,24,24,nb_trend,short history (24 points),dengue
+CAR-APAYAO,28,28,nb_trend,short history (28 points),dengue
+CAR-APAYAO,32,32,nb_trend,short history (32 points),dengue
+CAR-APAYAO,36,36,nb_trend,short history (36 points),dengue
+CAR-APAYAO,40,40,nb_trend,short history (40 points),dengue
+CAR-APAYAO,44,44,nb_trend,short history (44 points),dengue
+CAR-BAGUIO_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+CAR-BAGUIO_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+CAR-BAGUIO_CITY,8,8,nb_intercept,short history (8 points),dengue
+CAR-BAGUIO_CITY,12,12,nb_intercept,short history (12 points),dengue
+CAR-BAGUIO_CITY,16,16,nb_intercept,short history (16 points),dengue
+CAR-BAGUIO_CITY,20,20,nb_trend,short history (20 points),dengue
+CAR-BAGUIO_CITY,24,24,nb_trend,short history (24 points),dengue
+CAR-BAGUIO_CITY,28,28,nb_trend,short history (28 points),dengue
+CAR-BAGUIO_CITY,32,32,nb_trend,short history (32 points),dengue
+CAR-BAGUIO_CITY,36,36,nb_trend,short history (36 points),dengue
+CAR-BAGUIO_CITY,40,40,nb_trend,short history (40 points),dengue
+CAR-BAGUIO_CITY,44,44,nb_trend,short history (44 points),dengue
+CAR-BENGUET,0,0,no_score,insufficient history (0 < 8),dengue
+CAR-BENGUET,4,4,no_score,insufficient history (4 < 8),dengue
+CAR-BENGUET,8,8,nb_intercept,short history (8 points),dengue
+CAR-BENGUET,12,12,nb_intercept,short history (12 points),dengue
+CAR-BENGUET,16,16,nb_intercept,short history (16 points),dengue
+CAR-BENGUET,20,20,nb_trend,short history (20 points),dengue
+CAR-BENGUET,24,24,nb_trend,short history (24 points),dengue
+CAR-BENGUET,28,28,nb_trend,short history (28 points),dengue
+CAR-BENGUET,32,32,nb_trend,short history (32 points),dengue
+CAR-BENGUET,36,36,nb_trend,short history (36 points),dengue
+CAR-BENGUET,40,40,nb_trend,short history (40 points),dengue
+CAR-BENGUET,44,44,nb_trend,short history (44 points),dengue
+CAR-IFUGAO,0,0,no_score,insufficient history (0 < 8),dengue
+CAR-IFUGAO,4,4,no_score,insufficient history (4 < 8),dengue
+CAR-IFUGAO,8,8,nb_intercept,short history (8 points),dengue
+CAR-IFUGAO,12,12,nb_intercept,short history (12 points),dengue
+CAR-IFUGAO,16,16,nb_intercept,short history (16 points),dengue
+CAR-IFUGAO,20,20,nb_trend,short history (20 points),dengue
+CAR-IFUGAO,24,24,nb_trend,short history (24 points),dengue
+CAR-IFUGAO,28,28,nb_trend,short history (28 points),dengue
+CAR-IFUGAO,32,32,nb_trend,short history (32 points),dengue
+CAR-IFUGAO,36,36,nb_trend,short history (36 points),dengue
+CAR-IFUGAO,40,40,nb_trend,short history (40 points),dengue
+CAR-IFUGAO,44,44,nb_trend,short history (44 points),dengue
+CAR-KALINGA,0,0,no_score,insufficient history (0 < 8),dengue
+CAR-KALINGA,4,4,no_score,insufficient history (4 < 8),dengue
+CAR-KALINGA,8,8,nb_intercept,short history (8 points),dengue
+CAR-KALINGA,12,12,nb_intercept,short history (12 points),dengue
+CAR-KALINGA,16,16,nb_intercept,short history (16 points),dengue
+CAR-KALINGA,20,20,nb_trend,short history (20 points),dengue
+CAR-KALINGA,24,24,nb_trend,short history (24 points),dengue
+CAR-KALINGA,28,28,nb_trend,short history (28 points),dengue
+CAR-KALINGA,32,32,nb_trend,short history (32 points),dengue
+CAR-KALINGA,36,36,nb_trend,short history (36 points),dengue
+CAR-KALINGA,40,40,nb_trend,short history (40 points),dengue
+CAR-KALINGA,44,44,nb_trend,short history (44 points),dengue
+CAR-MOUNTAIN_PROVINCE,0,0,no_score,insufficient history (0 < 8),dengue
+CAR-MOUNTAIN_PROVINCE,4,4,no_score,insufficient history (4 < 8),dengue
+CAR-MOUNTAIN_PROVINCE,8,8,nb_intercept,short history (8 points),dengue
+CAR-MOUNTAIN_PROVINCE,12,12,nb_intercept,short history (12 points),dengue
+CAR-MOUNTAIN_PROVINCE,16,16,nb_intercept,short history (16 points),dengue
+CAR-MOUNTAIN_PROVINCE,20,20,nb_trend,short history (20 points),dengue
+CAR-MOUNTAIN_PROVINCE,24,24,nb_trend,short history (24 points),dengue
+CAR-MOUNTAIN_PROVINCE,28,28,nb_trend,short history (28 points),dengue
+CAR-MOUNTAIN_PROVINCE,32,32,nb_trend,short history (32 points),dengue
+CAR-MOUNTAIN_PROVINCE,36,36,nb_trend,short history (36 points),dengue
+CAR-MOUNTAIN_PROVINCE,40,40,nb_trend,short history (40 points),dengue
+CAR-MOUNTAIN_PROVINCE,44,44,nb_trend,short history (44 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-AGUSAN_DEL_NORTE,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-AGUSAN_DEL_NORTE,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,20,20,nb_trend,short history (20 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,24,24,nb_trend,short history (24 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,28,28,nb_trend,short history (28 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,32,32,nb_trend,short history (32 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,36,36,nb_trend,short history (36 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,40,40,nb_trend,short history (40 points),dengue
+CARAGA-AGUSAN_DEL_NORTE,44,44,nb_trend,short history (44 points),dengue
+CARAGA-AGUSAN_DEL_SUR,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-AGUSAN_DEL_SUR,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-AGUSAN_DEL_SUR,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-AGUSAN_DEL_SUR,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-AGUSAN_DEL_SUR,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-AGUSAN_DEL_SUR,20,20,nb_trend,short history (20 points),dengue
+CARAGA-AGUSAN_DEL_SUR,24,24,nb_trend,short history (24 points),dengue
+CARAGA-AGUSAN_DEL_SUR,28,28,nb_trend,short history (28 points),dengue
+CARAGA-AGUSAN_DEL_SUR,32,32,nb_trend,short history (32 points),dengue
+CARAGA-AGUSAN_DEL_SUR,36,36,nb_trend,short history (36 points),dengue
+CARAGA-AGUSAN_DEL_SUR,40,40,nb_trend,short history (40 points),dengue
+CARAGA-AGUSAN_DEL_SUR,44,44,nb_trend,short history (44 points),dengue
+CARAGA-BAYUGAN_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-BAYUGAN_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-BAYUGAN_CITY,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-BAYUGAN_CITY,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-BAYUGAN_CITY,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-BAYUGAN_CITY,20,20,nb_trend,short history (20 points),dengue
+CARAGA-BAYUGAN_CITY,24,24,nb_trend,short history (24 points),dengue
+CARAGA-BAYUGAN_CITY,28,28,nb_trend,short history (28 points),dengue
+CARAGA-BAYUGAN_CITY,32,32,nb_trend,short history (32 points),dengue
+CARAGA-BAYUGAN_CITY,36,36,nb_trend,short history (36 points),dengue
+CARAGA-BAYUGAN_CITY,40,40,nb_trend,short history (40 points),dengue
+CARAGA-BAYUGAN_CITY,44,44,nb_trend,short history (44 points),dengue
+CARAGA-BISLIG_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-BISLIG_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-BISLIG_CITY,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-BISLIG_CITY,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-BISLIG_CITY,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-BISLIG_CITY,20,20,nb_trend,short history (20 points),dengue
+CARAGA-BISLIG_CITY,24,24,nb_trend,short history (24 points),dengue
+CARAGA-BISLIG_CITY,28,28,nb_trend,short history (28 points),dengue
+CARAGA-BISLIG_CITY,32,32,nb_trend,short history (32 points),dengue
+CARAGA-BISLIG_CITY,36,36,nb_trend,short history (36 points),dengue
+CARAGA-BISLIG_CITY,40,40,nb_trend,short history (40 points),dengue
+CARAGA-BISLIG_CITY,44,44,nb_trend,short history (44 points),dengue
+CARAGA-BUTUAN_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-BUTUAN_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-BUTUAN_CITY,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-BUTUAN_CITY,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-BUTUAN_CITY,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-BUTUAN_CITY,20,20,nb_trend,short history (20 points),dengue
+CARAGA-BUTUAN_CITY,24,24,nb_trend,short history (24 points),dengue
+CARAGA-BUTUAN_CITY,28,28,nb_trend,short history (28 points),dengue
+CARAGA-BUTUAN_CITY,32,32,nb_trend,short history (32 points),dengue
+CARAGA-BUTUAN_CITY,36,36,nb_trend,short history (36 points),dengue
+CARAGA-BUTUAN_CITY,40,40,nb_trend,short history (40 points),dengue
+CARAGA-BUTUAN_CITY,44,44,nb_trend,short history (44 points),dengue
+CARAGA-CABADBARAN_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-CABADBARAN_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-CABADBARAN_CITY,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-CABADBARAN_CITY,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-CABADBARAN_CITY,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-CABADBARAN_CITY,20,20,nb_trend,short history (20 points),dengue
+CARAGA-CABADBARAN_CITY,24,24,nb_trend,short history (24 points),dengue
+CARAGA-CABADBARAN_CITY,28,28,nb_trend,short history (28 points),dengue
+CARAGA-CABADBARAN_CITY,32,32,nb_trend,short history (32 points),dengue
+CARAGA-CABADBARAN_CITY,36,36,nb_trend,short history (36 points),dengue
+CARAGA-CABADBARAN_CITY,40,40,nb_trend,short history (40 points),dengue
+CARAGA-CABADBARAN_CITY,44,44,nb_trend,short history (44 points),dengue
+CARAGA-DINAGAT_ISLANDS,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-DINAGAT_ISLANDS,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-DINAGAT_ISLANDS,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-DINAGAT_ISLANDS,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-DINAGAT_ISLANDS,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-DINAGAT_ISLANDS,20,20,nb_trend,short history (20 points),dengue
+CARAGA-DINAGAT_ISLANDS,24,24,nb_trend,short history (24 points),dengue
+CARAGA-DINAGAT_ISLANDS,28,28,nb_trend,short history (28 points),dengue
+CARAGA-DINAGAT_ISLANDS,32,32,nb_trend,short history (32 points),dengue
+CARAGA-DINAGAT_ISLANDS,36,36,nb_trend,short history (36 points),dengue
+CARAGA-DINAGAT_ISLANDS,40,40,nb_trend,short history (40 points),dengue
+CARAGA-DINAGAT_ISLANDS,44,44,nb_trend,short history (44 points),dengue
+CARAGA-SURIGAO_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-SURIGAO_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-SURIGAO_CITY,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-SURIGAO_CITY,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-SURIGAO_CITY,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-SURIGAO_CITY,20,20,nb_trend,short history (20 points),dengue
+CARAGA-SURIGAO_CITY,24,24,nb_trend,short history (24 points),dengue
+CARAGA-SURIGAO_CITY,28,28,nb_trend,short history (28 points),dengue
+CARAGA-SURIGAO_CITY,32,32,nb_trend,short history (32 points),dengue
+CARAGA-SURIGAO_CITY,36,36,nb_trend,short history (36 points),dengue
+CARAGA-SURIGAO_CITY,40,40,nb_trend,short history (40 points),dengue
+CARAGA-SURIGAO_CITY,44,44,nb_trend,short history (44 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-SURIGAO_DEL_NORTE,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-SURIGAO_DEL_NORTE,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,20,20,nb_trend,short history (20 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,24,24,nb_trend,short history (24 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,28,28,nb_trend,short history (28 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,32,32,nb_trend,short history (32 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,36,36,nb_trend,short history (36 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,40,40,nb_trend,short history (40 points),dengue
+CARAGA-SURIGAO_DEL_NORTE,44,44,nb_trend,short history (44 points),dengue
+CARAGA-SURIGAO_DEL_SUR,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-SURIGAO_DEL_SUR,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-SURIGAO_DEL_SUR,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-SURIGAO_DEL_SUR,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-SURIGAO_DEL_SUR,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-SURIGAO_DEL_SUR,20,20,nb_trend,short history (20 points),dengue
+CARAGA-SURIGAO_DEL_SUR,24,24,nb_trend,short history (24 points),dengue
+CARAGA-SURIGAO_DEL_SUR,28,28,nb_trend,short history (28 points),dengue
+CARAGA-SURIGAO_DEL_SUR,32,32,nb_trend,short history (32 points),dengue
+CARAGA-SURIGAO_DEL_SUR,36,36,nb_trend,short history (36 points),dengue
+CARAGA-SURIGAO_DEL_SUR,40,40,nb_trend,short history (40 points),dengue
+CARAGA-SURIGAO_DEL_SUR,44,44,nb_trend,short history (44 points),dengue
+CARAGA-TANDAG_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+CARAGA-TANDAG_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+CARAGA-TANDAG_CITY,8,8,nb_intercept,short history (8 points),dengue
+CARAGA-TANDAG_CITY,12,12,nb_intercept,short history (12 points),dengue
+CARAGA-TANDAG_CITY,16,16,nb_intercept,short history (16 points),dengue
+CARAGA-TANDAG_CITY,20,20,nb_trend,short history (20 points),dengue
+CARAGA-TANDAG_CITY,24,24,nb_trend,short history (24 points),dengue
+CARAGA-TANDAG_CITY,28,28,nb_trend,short history (28 points),dengue
+CARAGA-TANDAG_CITY,32,32,nb_trend,short history (32 points),dengue
+CARAGA-TANDAG_CITY,36,36,nb_trend,short history (36 points),dengue
+CARAGA-TANDAG_CITY,40,40,nb_trend,short history (40 points),dengue
+CARAGA-TANDAG_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-CALOOCAN_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-CALOOCAN_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-CALOOCAN_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-CALOOCAN_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-CALOOCAN_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-CALOOCAN_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-CALOOCAN_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-CALOOCAN_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-CALOOCAN_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-CALOOCAN_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-CALOOCAN_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-CALOOCAN_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-LAS_PINAS_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-LAS_PINAS_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-LAS_PINAS_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-LAS_PINAS_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-LAS_PINAS_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-LAS_PINAS_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-LAS_PINAS_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-LAS_PINAS_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-LAS_PINAS_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-LAS_PINAS_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-LAS_PINAS_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-LAS_PINAS_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-MAKATI_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-MAKATI_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-MAKATI_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-MAKATI_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-MAKATI_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-MAKATI_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-MAKATI_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-MAKATI_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-MAKATI_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-MAKATI_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-MAKATI_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-MAKATI_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-MALABON_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-MALABON_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-MALABON_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-MALABON_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-MALABON_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-MALABON_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-MALABON_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-MALABON_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-MALABON_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-MALABON_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-MALABON_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-MALABON_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-MANDALUYONG_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-MANDALUYONG_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-MANDALUYONG_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-MANDALUYONG_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-MANDALUYONG_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-MANDALUYONG_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-MANDALUYONG_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-MANDALUYONG_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-MANDALUYONG_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-MANDALUYONG_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-MANDALUYONG_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-MANDALUYONG_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-MANILA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-MANILA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-MANILA_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-MANILA_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-MANILA_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-MANILA_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-MANILA_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-MANILA_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-MANILA_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-MANILA_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-MANILA_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-MANILA_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-MARIKINA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-MARIKINA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-MARIKINA_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-MARIKINA_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-MARIKINA_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-MARIKINA_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-MARIKINA_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-MARIKINA_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-MARIKINA_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-MARIKINA_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-MARIKINA_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-MARIKINA_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-MUNTINLUPA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-MUNTINLUPA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-MUNTINLUPA_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-MUNTINLUPA_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-MUNTINLUPA_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-MUNTINLUPA_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-MUNTINLUPA_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-MUNTINLUPA_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-MUNTINLUPA_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-MUNTINLUPA_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-MUNTINLUPA_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-MUNTINLUPA_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-NAVOTAS_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-NAVOTAS_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-NAVOTAS_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-NAVOTAS_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-NAVOTAS_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-NAVOTAS_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-NAVOTAS_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-NAVOTAS_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-NAVOTAS_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-NAVOTAS_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-NAVOTAS_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-NAVOTAS_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-PARANAQUE_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-PARANAQUE_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-PARANAQUE_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-PARANAQUE_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-PARANAQUE_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-PARANAQUE_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-PARANAQUE_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-PARANAQUE_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-PARANAQUE_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-PARANAQUE_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-PARANAQUE_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-PARANAQUE_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-PASAY_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-PASAY_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-PASAY_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-PASAY_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-PASAY_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-PASAY_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-PASAY_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-PASAY_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-PASAY_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-PASAY_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-PASAY_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-PASAY_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-PASIG_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-PASIG_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-PASIG_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-PASIG_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-PASIG_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-PASIG_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-PASIG_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-PASIG_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-PASIG_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-PASIG_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-PASIG_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-PASIG_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-PATEROS,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-PATEROS,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-PATEROS,8,8,nb_intercept,short history (8 points),dengue
+NCR-PATEROS,12,12,nb_intercept,short history (12 points),dengue
+NCR-PATEROS,16,16,nb_intercept,short history (16 points),dengue
+NCR-PATEROS,20,20,nb_trend,short history (20 points),dengue
+NCR-PATEROS,24,24,nb_trend,short history (24 points),dengue
+NCR-PATEROS,28,28,nb_trend,short history (28 points),dengue
+NCR-PATEROS,32,32,nb_trend,short history (32 points),dengue
+NCR-PATEROS,36,36,nb_trend,short history (36 points),dengue
+NCR-PATEROS,40,40,nb_trend,short history (40 points),dengue
+NCR-PATEROS,44,44,nb_trend,short history (44 points),dengue
+NCR-QUEZON_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-QUEZON_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-QUEZON_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-QUEZON_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-QUEZON_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-QUEZON_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-QUEZON_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-QUEZON_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-QUEZON_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-QUEZON_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-QUEZON_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-QUEZON_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-SAN_JUAN_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-SAN_JUAN_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-SAN_JUAN_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-SAN_JUAN_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-SAN_JUAN_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-SAN_JUAN_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-SAN_JUAN_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-SAN_JUAN_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-SAN_JUAN_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-SAN_JUAN_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-SAN_JUAN_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-SAN_JUAN_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-TAGUIG_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-TAGUIG_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-TAGUIG_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-TAGUIG_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-TAGUIG_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-TAGUIG_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-TAGUIG_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-TAGUIG_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-TAGUIG_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-TAGUIG_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-TAGUIG_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-TAGUIG_CITY,44,44,nb_trend,short history (44 points),dengue
+NCR-VALENZUELA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+NCR-VALENZUELA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+NCR-VALENZUELA_CITY,8,8,nb_intercept,short history (8 points),dengue
+NCR-VALENZUELA_CITY,12,12,nb_intercept,short history (12 points),dengue
+NCR-VALENZUELA_CITY,16,16,nb_intercept,short history (16 points),dengue
+NCR-VALENZUELA_CITY,20,20,nb_trend,short history (20 points),dengue
+NCR-VALENZUELA_CITY,24,24,nb_trend,short history (24 points),dengue
+NCR-VALENZUELA_CITY,28,28,nb_trend,short history (28 points),dengue
+NCR-VALENZUELA_CITY,32,32,nb_trend,short history (32 points),dengue
+NCR-VALENZUELA_CITY,36,36,nb_trend,short history (36 points),dengue
+NCR-VALENZUELA_CITY,40,40,nb_trend,short history (40 points),dengue
+NCR-VALENZUELA_CITY,44,44,nb_trend,short history (44 points),dengue
+R01-DAGUPAN_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R01-DAGUPAN_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R01-DAGUPAN_CITY,8,8,nb_intercept,short history (8 points),dengue
+R01-DAGUPAN_CITY,12,12,nb_intercept,short history (12 points),dengue
+R01-DAGUPAN_CITY,16,16,nb_intercept,short history (16 points),dengue
+R01-DAGUPAN_CITY,20,20,nb_trend,short history (20 points),dengue
+R01-DAGUPAN_CITY,24,24,nb_trend,short history (24 points),dengue
+R01-DAGUPAN_CITY,28,28,nb_trend,short history (28 points),dengue
+R01-DAGUPAN_CITY,32,32,nb_trend,short history (32 points),dengue
+R01-DAGUPAN_CITY,36,36,nb_trend,short history (36 points),dengue
+R01-DAGUPAN_CITY,40,40,nb_trend,short history (40 points),dengue
+R01-DAGUPAN_CITY,44,44,nb_trend,short history (44 points),dengue
+R01-ILOCOS_NORTE,0,0,no_score,insufficient history (0 < 8),dengue
+R01-ILOCOS_NORTE,4,4,no_score,insufficient history (4 < 8),dengue
+R01-ILOCOS_NORTE,8,8,nb_intercept,short history (8 points),dengue
+R01-ILOCOS_NORTE,12,12,nb_intercept,short history (12 points),dengue
+R01-ILOCOS_NORTE,16,16,nb_intercept,short history (16 points),dengue
+R01-ILOCOS_NORTE,20,20,nb_trend,short history (20 points),dengue
+R01-ILOCOS_NORTE,24,24,nb_trend,short history (24 points),dengue
+R01-ILOCOS_NORTE,28,28,nb_trend,short history (28 points),dengue
+R01-ILOCOS_NORTE,32,32,nb_trend,short history (32 points),dengue
+R01-ILOCOS_NORTE,36,36,nb_trend,short history (36 points),dengue
+R01-ILOCOS_NORTE,40,40,nb_trend,short history (40 points),dengue
+R01-ILOCOS_NORTE,44,44,nb_trend,short history (44 points),dengue
+R01-ILOCOS_SUR,0,0,no_score,insufficient history (0 < 8),dengue
+R01-ILOCOS_SUR,4,4,no_score,insufficient history (4 < 8),dengue
+R01-ILOCOS_SUR,8,8,nb_intercept,short history (8 points),dengue
+R01-ILOCOS_SUR,12,12,nb_intercept,short history (12 points),dengue
+R01-ILOCOS_SUR,16,16,nb_intercept,short history (16 points),dengue
+R01-ILOCOS_SUR,20,20,nb_trend,short history (20 points),dengue
+R01-ILOCOS_SUR,24,24,nb_trend,short history (24 points),dengue
+R01-ILOCOS_SUR,28,28,nb_trend,short history (28 points),dengue
+R01-ILOCOS_SUR,32,32,nb_trend,short history (32 points),dengue
+R01-ILOCOS_SUR,36,36,nb_trend,short history (36 points),dengue
+R01-ILOCOS_SUR,40,40,nb_trend,short history (40 points),dengue
+R01-ILOCOS_SUR,44,44,nb_trend,short history (44 points),dengue
+R01-LA_UNION,0,0,no_score,insufficient history (0 < 8),dengue
+R01-LA_UNION,4,4,no_score,insufficient history (4 < 8),dengue
+R01-LA_UNION,8,8,nb_intercept,short history (8 points),dengue
+R01-LA_UNION,12,12,nb_intercept,short history (12 points),dengue
+R01-LA_UNION,16,16,nb_intercept,short history (16 points),dengue
+R01-LA_UNION,20,20,nb_trend,short history (20 points),dengue
+R01-LA_UNION,24,24,nb_trend,short history (24 points),dengue
+R01-LA_UNION,28,28,nb_trend,short history (28 points),dengue
+R01-LA_UNION,32,32,nb_trend,short history (32 points),dengue
+R01-LA_UNION,36,36,nb_trend,short history (36 points),dengue
+R01-LA_UNION,40,40,nb_trend,short history (40 points),dengue
+R01-LA_UNION,44,44,nb_trend,short history (44 points),dengue
+R01-PANGASINAN,0,0,no_score,insufficient history (0 < 8),dengue
+R01-PANGASINAN,4,4,no_score,insufficient history (4 < 8),dengue
+R01-PANGASINAN,8,8,nb_intercept,short history (8 points),dengue
+R01-PANGASINAN,12,12,nb_intercept,short history (12 points),dengue
+R01-PANGASINAN,16,16,nb_intercept,short history (16 points),dengue
+R01-PANGASINAN,20,20,nb_trend,short history (20 points),dengue
+R01-PANGASINAN,24,24,nb_trend,short history (24 points),dengue
+R01-PANGASINAN,28,28,nb_trend,short history (28 points),dengue
+R01-PANGASINAN,32,32,nb_trend,short history (32 points),dengue
+R01-PANGASINAN,36,36,nb_trend,short history (36 points),dengue
+R01-PANGASINAN,40,40,nb_trend,short history (40 points),dengue
+R01-PANGASINAN,44,44,nb_trend,short history (44 points),dengue
+R02-BATANES,0,0,no_score,insufficient history (0 < 8),dengue
+R02-BATANES,4,4,no_score,insufficient history (4 < 8),dengue
+R02-BATANES,8,8,zero_history,all-zero history,dengue
+R02-BATANES,12,12,nb_intercept,short history (12 points),dengue
+R02-BATANES,16,16,nb_intercept,short history (16 points),dengue
+R02-BATANES,20,20,nb_trend,short history (20 points),dengue
+R02-BATANES,24,24,nb_trend,short history (24 points),dengue
+R02-BATANES,28,28,nb_trend,short history (28 points),dengue
+R02-BATANES,32,32,nb_trend,short history (32 points),dengue
+R02-BATANES,36,36,nb_trend,short history (36 points),dengue
+R02-BATANES,40,40,nb_trend,short history (40 points),dengue
+R02-BATANES,44,44,nb_trend,short history (44 points),dengue
+R02-CAGAYAN,0,0,no_score,insufficient history (0 < 8),dengue
+R02-CAGAYAN,4,4,no_score,insufficient history (4 < 8),dengue
+R02-CAGAYAN,8,8,nb_intercept,short history (8 points),dengue
+R02-CAGAYAN,12,12,nb_intercept,short history (12 points),dengue
+R02-CAGAYAN,16,16,nb_intercept,short history (16 points),dengue
+R02-CAGAYAN,20,20,nb_trend,short history (20 points),dengue
+R02-CAGAYAN,24,24,nb_trend,short history (24 points),dengue
+R02-CAGAYAN,28,28,nb_trend,short history (28 points),dengue
+R02-CAGAYAN,32,32,nb_trend,short history (32 points),dengue
+R02-CAGAYAN,36,36,nb_trend,short history (36 points),dengue
+R02-CAGAYAN,40,40,nb_trend,short history (40 points),dengue
+R02-CAGAYAN,44,44,nb_trend,short history (44 points),dengue
+R02-ISABELA,0,0,no_score,insufficient history (0 < 8),dengue
+R02-ISABELA,4,4,no_score,insufficient history (4 < 8),dengue
+R02-ISABELA,8,8,nb_intercept,short history (8 points),dengue
+R02-ISABELA,12,12,nb_intercept,short history (12 points),dengue
+R02-ISABELA,16,16,nb_intercept,short history (16 points),dengue
+R02-ISABELA,20,20,nb_trend,short history (20 points),dengue
+R02-ISABELA,24,24,nb_trend,short history (24 points),dengue
+R02-ISABELA,28,28,nb_trend,short history (28 points),dengue
+R02-ISABELA,32,32,nb_trend,short history (32 points),dengue
+R02-ISABELA,36,36,nb_trend,short history (36 points),dengue
+R02-ISABELA,40,40,nb_trend,short history (40 points),dengue
+R02-ISABELA,44,44,nb_trend,short history (44 points),dengue
+R02-NUEVA_VIZCAYA,0,0,no_score,insufficient history (0 < 8),dengue
+R02-NUEVA_VIZCAYA,4,4,no_score,insufficient history (4 < 8),dengue
+R02-NUEVA_VIZCAYA,8,8,nb_intercept,short history (8 points),dengue
+R02-NUEVA_VIZCAYA,12,12,nb_intercept,short history (12 points),dengue
+R02-NUEVA_VIZCAYA,16,16,nb_intercept,short history (16 points),dengue
+R02-NUEVA_VIZCAYA,20,20,nb_trend,short history (20 points),dengue
+R02-NUEVA_VIZCAYA,24,24,nb_trend,short history (24 points),dengue
+R02-NUEVA_VIZCAYA,28,28,nb_trend,short history (28 points),dengue
+R02-NUEVA_VIZCAYA,32,32,nb_trend,short history (32 points),dengue
+R02-NUEVA_VIZCAYA,36,36,nb_trend,short history (36 points),dengue
+R02-NUEVA_VIZCAYA,40,40,nb_trend,short history (40 points),dengue
+R02-NUEVA_VIZCAYA,44,44,nb_trend,short history (44 points),dengue
+R02-QUIRINO,0,0,no_score,insufficient history (0 < 8),dengue
+R02-QUIRINO,4,4,no_score,insufficient history (4 < 8),dengue
+R02-QUIRINO,8,8,nb_intercept,short history (8 points),dengue
+R02-QUIRINO,12,12,nb_intercept,short history (12 points),dengue
+R02-QUIRINO,16,16,nb_intercept,short history (16 points),dengue
+R02-QUIRINO,20,20,nb_trend,short history (20 points),dengue
+R02-QUIRINO,24,24,nb_trend,short history (24 points),dengue
+R02-QUIRINO,28,28,nb_trend,short history (28 points),dengue
+R02-QUIRINO,32,32,nb_trend,short history (32 points),dengue
+R02-QUIRINO,36,36,nb_trend,short history (36 points),dengue
+R02-QUIRINO,40,40,nb_trend,short history (40 points),dengue
+R02-QUIRINO,44,44,nb_trend,short history (44 points),dengue
+R02-SANTIAGO_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R02-SANTIAGO_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R02-SANTIAGO_CITY,8,8,nb_intercept,short history (8 points),dengue
+R02-SANTIAGO_CITY,12,12,nb_intercept,short history (12 points),dengue
+R02-SANTIAGO_CITY,16,16,nb_intercept,short history (16 points),dengue
+R02-SANTIAGO_CITY,20,20,nb_trend,short history (20 points),dengue
+R02-SANTIAGO_CITY,24,24,nb_trend,short history (24 points),dengue
+R02-SANTIAGO_CITY,28,28,nb_trend,short history (28 points),dengue
+R02-SANTIAGO_CITY,32,32,nb_trend,short history (32 points),dengue
+R02-SANTIAGO_CITY,36,36,nb_trend,short history (36 points),dengue
+R02-SANTIAGO_CITY,40,40,nb_trend,short history (40 points),dengue
+R02-SANTIAGO_CITY,44,44,nb_trend,short history (44 points),dengue
+R03-ANGELES_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R03-ANGELES_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R03-ANGELES_CITY,8,8,nb_intercept,short history (8 points),dengue
+R03-ANGELES_CITY,12,12,nb_intercept,short history (12 points),dengue
+R03-ANGELES_CITY,16,16,nb_intercept,short history (16 points),dengue
+R03-ANGELES_CITY,20,20,nb_trend,short history (20 points),dengue
+R03-ANGELES_CITY,24,24,nb_trend,short history (24 points),dengue
+R03-ANGELES_CITY,28,28,nb_trend,short history (28 points),dengue
+R03-ANGELES_CITY,32,32,nb_trend,short history (32 points),dengue
+R03-ANGELES_CITY,36,36,nb_trend,short history (36 points),dengue
+R03-ANGELES_CITY,40,40,nb_trend,short history (40 points),dengue
+R03-ANGELES_CITY,44,44,nb_trend,short history (44 points),dengue
+R03-AURORA,0,0,no_score,insufficient history (0 < 8),dengue
+R03-AURORA,4,4,no_score,insufficient history (4 < 8),dengue
+R03-AURORA,8,8,nb_intercept,short history (8 points),dengue
+R03-AURORA,12,12,nb_intercept,short history (12 points),dengue
+R03-AURORA,16,16,nb_intercept,short history (16 points),dengue
+R03-AURORA,20,20,nb_trend,short history (20 points),dengue
+R03-AURORA,24,24,nb_trend,short history (24 points),dengue
+R03-AURORA,28,28,nb_trend,short history (28 points),dengue
+R03-AURORA,32,32,nb_trend,short history (32 points),dengue
+R03-AURORA,36,36,nb_trend,short history (36 points),dengue
+R03-AURORA,40,40,nb_trend,short history (40 points),dengue
+R03-AURORA,44,44,nb_trend,short history (44 points),dengue
+R03-BATAAN,0,0,no_score,insufficient history (0 < 8),dengue
+R03-BATAAN,4,4,no_score,insufficient history (4 < 8),dengue
+R03-BATAAN,8,8,nb_intercept,short history (8 points),dengue
+R03-BATAAN,12,12,nb_intercept,short history (12 points),dengue
+R03-BATAAN,16,16,nb_intercept,short history (16 points),dengue
+R03-BATAAN,20,20,nb_trend,short history (20 points),dengue
+R03-BATAAN,24,24,nb_trend,short history (24 points),dengue
+R03-BATAAN,28,28,nb_trend,short history (28 points),dengue
+R03-BATAAN,32,32,nb_trend,short history (32 points),dengue
+R03-BATAAN,36,36,nb_trend,short history (36 points),dengue
+R03-BATAAN,40,40,nb_trend,short history (40 points),dengue
+R03-BATAAN,44,44,nb_trend,short history (44 points),dengue
+R03-BULACAN,0,0,no_score,insufficient history (0 < 8),dengue
+R03-BULACAN,4,4,no_score,insufficient history (4 < 8),dengue
+R03-BULACAN,8,8,nb_intercept,short history (8 points),dengue
+R03-BULACAN,12,12,nb_intercept,short history (12 points),dengue
+R03-BULACAN,16,16,nb_intercept,short history (16 points),dengue
+R03-BULACAN,20,20,nb_trend,short history (20 points),dengue
+R03-BULACAN,24,24,nb_trend,short history (24 points),dengue
+R03-BULACAN,28,28,nb_trend,short history (28 points),dengue
+R03-BULACAN,32,32,nb_trend,short history (32 points),dengue
+R03-BULACAN,36,36,nb_trend,short history (36 points),dengue
+R03-BULACAN,40,40,nb_trend,short history (40 points),dengue
+R03-BULACAN,44,44,nb_trend,short history (44 points),dengue
+R03-NUEVA_ECIJA,0,0,no_score,insufficient history (0 < 8),dengue
+R03-NUEVA_ECIJA,4,4,no_score,insufficient history (4 < 8),dengue
+R03-NUEVA_ECIJA,8,8,nb_intercept,short history (8 points),dengue
+R03-NUEVA_ECIJA,12,12,nb_intercept,short history (12 points),dengue
+R03-NUEVA_ECIJA,16,16,nb_intercept,short history (16 points),dengue
+R03-NUEVA_ECIJA,20,20,nb_trend,short history (20 points),dengue
+R03-NUEVA_ECIJA,24,24,nb_trend,short history (24 points),dengue
+R03-NUEVA_ECIJA,28,28,nb_trend,short history (28 points),dengue
+R03-NUEVA_ECIJA,32,32,nb_trend,short history (32 points),dengue
+R03-NUEVA_ECIJA,36,36,nb_trend,short history (36 points),dengue
+R03-NUEVA_ECIJA,40,40,nb_trend,short history (40 points),dengue
+R03-NUEVA_ECIJA,44,44,nb_trend,short history (44 points),dengue
+R03-OLONGAPO_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R03-OLONGAPO_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R03-OLONGAPO_CITY,8,8,nb_intercept,short history (8 points),dengue
+R03-OLONGAPO_CITY,12,12,nb_intercept,short history (12 points),dengue
+R03-OLONGAPO_CITY,16,16,nb_intercept,short history (16 points),dengue
+R03-OLONGAPO_CITY,20,20,nb_trend,short history (20 points),dengue
+R03-OLONGAPO_CITY,24,24,nb_trend,short history (24 points),dengue
+R03-OLONGAPO_CITY,28,28,nb_trend,short history (28 points),dengue
+R03-OLONGAPO_CITY,32,32,nb_trend,short history (32 points),dengue
+R03-OLONGAPO_CITY,36,36,nb_trend,short history (36 points),dengue
+R03-OLONGAPO_CITY,40,40,nb_trend,short history (40 points),dengue
+R03-OLONGAPO_CITY,44,44,nb_trend,short history (44 points),dengue
+R03-PAMPANGA,0,0,no_score,insufficient history (0 < 8),dengue
+R03-PAMPANGA,4,4,no_score,insufficient history (4 < 8),dengue
+R03-PAMPANGA,8,8,nb_intercept,short history (8 points),dengue
+R03-PAMPANGA,12,12,nb_intercept,short history (12 points),dengue
+R03-PAMPANGA,16,16,nb_intercept,short history (16 points),dengue
+R03-PAMPANGA,20,20,nb_trend,short history (20 points),dengue
+R03-PAMPANGA,24,24,nb_trend,short history (24 points),dengue
+R03-PAMPANGA,28,28,nb_trend,short history (28 points),dengue
+R03-PAMPANGA,32,32,nb_trend,short history (32 points),dengue
+R03-PAMPANGA,36,36,nb_trend,short history (36 points),dengue
+R03-PAMPANGA,40,40,nb_trend,short history (40 points),dengue
+R03-PAMPANGA,44,44,nb_trend,short history (44 points),dengue
+R03-TARLAC,0,0,no_score,insufficient history (0 < 8),dengue
+R03-TARLAC,4,4,no_score,insufficient history (4 < 8),dengue
+R03-TARLAC,8,8,nb_intercept,short history (8 points),dengue
+R03-TARLAC,12,12,nb_intercept,short history (12 points),dengue
+R03-TARLAC,16,16,nb_intercept,short history (16 points),dengue
+R03-TARLAC,20,20,nb_trend,short history (20 points),dengue
+R03-TARLAC,24,24,nb_trend,short history (24 points),dengue
+R03-TARLAC,28,28,nb_trend,short history (28 points),dengue
+R03-TARLAC,32,32,nb_trend,short history (32 points),dengue
+R03-TARLAC,36,36,nb_trend,short history (36 points),dengue
+R03-TARLAC,40,40,nb_trend,short history (40 points),dengue
+R03-TARLAC,44,44,nb_trend,short history (44 points),dengue
+R03-ZAMBALES,0,0,no_score,insufficient history (0 < 8),dengue
+R03-ZAMBALES,4,4,no_score,insufficient history (4 < 8),dengue
+R03-ZAMBALES,8,8,nb_intercept,short history (8 points),dengue
+R03-ZAMBALES,12,12,nb_intercept,short history (12 points),dengue
+R03-ZAMBALES,16,16,nb_intercept,short history (16 points),dengue
+R03-ZAMBALES,20,20,nb_trend,short history (20 points),dengue
+R03-ZAMBALES,24,24,nb_trend,short history (24 points),dengue
+R03-ZAMBALES,28,28,nb_trend,short history (28 points),dengue
+R03-ZAMBALES,32,32,nb_trend,short history (32 points),dengue
+R03-ZAMBALES,36,36,nb_trend,short history (36 points),dengue
+R03-ZAMBALES,40,40,nb_trend,short history (40 points),dengue
+R03-ZAMBALES,44,44,nb_trend,short history (44 points),dengue
+R05-ALBAY,0,0,no_score,insufficient history (0 < 8),dengue
+R05-ALBAY,4,4,no_score,insufficient history (4 < 8),dengue
+R05-ALBAY,8,8,nb_intercept,short history (8 points),dengue
+R05-ALBAY,12,12,nb_intercept,short history (12 points),dengue
+R05-ALBAY,16,16,nb_intercept,short history (16 points),dengue
+R05-ALBAY,20,20,nb_trend,short history (20 points),dengue
+R05-ALBAY,24,24,nb_trend,short history (24 points),dengue
+R05-ALBAY,28,28,nb_trend,short history (28 points),dengue
+R05-ALBAY,32,32,nb_trend,short history (32 points),dengue
+R05-ALBAY,36,36,nb_trend,short history (36 points),dengue
+R05-ALBAY,40,40,nb_trend,short history (40 points),dengue
+R05-ALBAY,44,44,nb_trend,short history (44 points),dengue
+R05-CAMARINES_NORTE,0,0,no_score,insufficient history (0 < 8),dengue
+R05-CAMARINES_NORTE,4,4,no_score,insufficient history (4 < 8),dengue
+R05-CAMARINES_NORTE,8,8,nb_intercept,short history (8 points),dengue
+R05-CAMARINES_NORTE,12,12,nb_intercept,short history (12 points),dengue
+R05-CAMARINES_NORTE,16,16,nb_intercept,short history (16 points),dengue
+R05-CAMARINES_NORTE,20,20,nb_trend,short history (20 points),dengue
+R05-CAMARINES_NORTE,24,24,nb_trend,short history (24 points),dengue
+R05-CAMARINES_NORTE,28,28,nb_trend,short history (28 points),dengue
+R05-CAMARINES_NORTE,32,32,nb_trend,short history (32 points),dengue
+R05-CAMARINES_NORTE,36,36,nb_trend,short history (36 points),dengue
+R05-CAMARINES_NORTE,40,40,nb_trend,short history (40 points),dengue
+R05-CAMARINES_NORTE,44,44,nb_trend,short history (44 points),dengue
+R05-CAMARINES_SUR,0,0,no_score,insufficient history (0 < 8),dengue
+R05-CAMARINES_SUR,4,4,no_score,insufficient history (4 < 8),dengue
+R05-CAMARINES_SUR,8,8,nb_intercept,short history (8 points),dengue
+R05-CAMARINES_SUR,12,12,nb_intercept,short history (12 points),dengue
+R05-CAMARINES_SUR,16,16,nb_intercept,short history (16 points),dengue
+R05-CAMARINES_SUR,20,20,nb_trend,short history (20 points),dengue
+R05-CAMARINES_SUR,24,24,nb_trend,short history (24 points),dengue
+R05-CAMARINES_SUR,28,28,nb_trend,short history (28 points),dengue
+R05-CAMARINES_SUR,32,32,nb_trend,short history (32 points),dengue
+R05-CAMARINES_SUR,36,36,nb_trend,short history (36 points),dengue
+R05-CAMARINES_SUR,40,40,nb_trend,short history (40 points),dengue
+R05-CAMARINES_SUR,44,44,nb_trend,short history (44 points),dengue
+R05-CATANDUANES,0,0,no_score,insufficient history (0 < 8),dengue
+R05-CATANDUANES,4,4,no_score,insufficient history (4 < 8),dengue
+R05-CATANDUANES,8,8,nb_intercept,short history (8 points),dengue
+R05-CATANDUANES,12,12,nb_intercept,short history (12 points),dengue
+R05-CATANDUANES,16,16,nb_intercept,short history (16 points),dengue
+R05-CATANDUANES,20,20,nb_trend,short history (20 points),dengue
+R05-CATANDUANES,24,24,nb_trend,short history (24 points),dengue
+R05-CATANDUANES,28,28,nb_trend,short history (28 points),dengue
+R05-CATANDUANES,32,32,nb_trend,short history (32 points),dengue
+R05-CATANDUANES,36,36,nb_trend,short history (36 points),dengue
+R05-CATANDUANES,40,40,nb_trend,short history (40 points),dengue
+R05-CATANDUANES,44,44,nb_trend,short history (44 points),dengue
+R05-MASBATE,0,0,no_score,insufficient history (0 < 8),dengue
+R05-MASBATE,4,4,no_score,insufficient history (4 < 8),dengue
+R05-MASBATE,8,8,nb_intercept,short history (8 points),dengue
+R05-MASBATE,12,12,nb_intercept,short history (12 points),dengue
+R05-MASBATE,16,16,nb_intercept,short history (16 points),dengue
+R05-MASBATE,20,20,nb_trend,short history (20 points),dengue
+R05-MASBATE,24,24,nb_trend,short history (24 points),dengue
+R05-MASBATE,28,28,nb_trend,short history (28 points),dengue
+R05-MASBATE,32,32,nb_trend,short history (32 points),dengue
+R05-MASBATE,36,36,nb_trend,short history (36 points),dengue
+R05-MASBATE,40,40,nb_trend,short history (40 points),dengue
+R05-MASBATE,44,44,nb_trend,short history (44 points),dengue
+R05-NAGA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R05-NAGA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R05-NAGA_CITY,8,8,nb_intercept,short history (8 points),dengue
+R05-NAGA_CITY,12,12,nb_intercept,short history (12 points),dengue
+R05-NAGA_CITY,16,16,nb_intercept,short history (16 points),dengue
+R05-NAGA_CITY,20,20,nb_trend,short history (20 points),dengue
+R05-NAGA_CITY,24,24,nb_trend,short history (24 points),dengue
+R05-NAGA_CITY,28,28,nb_trend,short history (28 points),dengue
+R05-NAGA_CITY,32,32,nb_trend,short history (32 points),dengue
+R05-NAGA_CITY,36,36,nb_trend,short history (36 points),dengue
+R05-NAGA_CITY,40,40,nb_trend,short history (40 points),dengue
+R05-NAGA_CITY,44,44,nb_trend,short history (44 points),dengue
+R05-SORSOGON,0,0,no_score,insufficient history (0 < 8),dengue
+R05-SORSOGON,4,4,no_score,insufficient history (4 < 8),dengue
+R05-SORSOGON,8,8,nb_intercept,short history (8 points),dengue
+R05-SORSOGON,12,12,nb_intercept,short history (12 points),dengue
+R05-SORSOGON,16,16,nb_intercept,short history (16 points),dengue
+R05-SORSOGON,20,20,nb_trend,short history (20 points),dengue
+R05-SORSOGON,24,24,nb_trend,short history (24 points),dengue
+R05-SORSOGON,28,28,nb_trend,short history (28 points),dengue
+R05-SORSOGON,32,32,nb_trend,short history (32 points),dengue
+R05-SORSOGON,36,36,nb_trend,short history (36 points),dengue
+R05-SORSOGON,40,40,nb_trend,short history (40 points),dengue
+R05-SORSOGON,44,44,nb_trend,short history (44 points),dengue
+R06-AKLAN,0,0,no_score,insufficient history (0 < 8),dengue
+R06-AKLAN,4,4,no_score,insufficient history (4 < 8),dengue
+R06-AKLAN,8,8,nb_intercept,short history (8 points),dengue
+R06-AKLAN,12,12,nb_intercept,short history (12 points),dengue
+R06-AKLAN,16,16,nb_intercept,short history (16 points),dengue
+R06-AKLAN,20,20,nb_trend,short history (20 points),dengue
+R06-AKLAN,24,24,nb_trend,short history (24 points),dengue
+R06-AKLAN,28,28,nb_trend,short history (28 points),dengue
+R06-AKLAN,32,32,nb_trend,short history (32 points),dengue
+R06-AKLAN,36,36,nb_trend,short history (36 points),dengue
+R06-AKLAN,40,40,nb_trend,short history (40 points),dengue
+R06-AKLAN,44,44,nb_trend,short history (44 points),dengue
+R06-ANTIQUE,0,0,no_score,insufficient history (0 < 8),dengue
+R06-ANTIQUE,4,4,no_score,insufficient history (4 < 8),dengue
+R06-ANTIQUE,8,8,nb_intercept,short history (8 points),dengue
+R06-ANTIQUE,12,12,nb_intercept,short history (12 points),dengue
+R06-ANTIQUE,16,16,nb_intercept,short history (16 points),dengue
+R06-ANTIQUE,20,20,nb_trend,short history (20 points),dengue
+R06-ANTIQUE,24,24,nb_trend,short history (24 points),dengue
+R06-ANTIQUE,28,28,nb_trend,short history (28 points),dengue
+R06-ANTIQUE,32,32,nb_trend,short history (32 points),dengue
+R06-ANTIQUE,36,36,nb_trend,short history (36 points),dengue
+R06-ANTIQUE,40,40,nb_trend,short history (40 points),dengue
+R06-ANTIQUE,44,44,nb_trend,short history (44 points),dengue
+R06-BACOLOD_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R06-BACOLOD_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R06-BACOLOD_CITY,8,8,nb_intercept,short history (8 points),dengue
+R06-BACOLOD_CITY,12,12,nb_intercept,short history (12 points),dengue
+R06-BACOLOD_CITY,16,16,nb_intercept,short history (16 points),dengue
+R06-BACOLOD_CITY,20,20,nb_trend,short history (20 points),dengue
+R06-BACOLOD_CITY,24,24,nb_trend,short history (24 points),dengue
+R06-BACOLOD_CITY,28,28,nb_trend,short history (28 points),dengue
+R06-BACOLOD_CITY,32,32,nb_trend,short history (32 points),dengue
+R06-BACOLOD_CITY,36,36,nb_trend,short history (36 points),dengue
+R06-BACOLOD_CITY,40,40,nb_trend,short history (40 points),dengue
+R06-BACOLOD_CITY,44,44,nb_trend,short history (44 points),dengue
+R06-CAPIZ,0,0,no_score,insufficient history (0 < 8),dengue
+R06-CAPIZ,4,4,no_score,insufficient history (4 < 8),dengue
+R06-CAPIZ,8,8,nb_intercept,short history (8 points),dengue
+R06-CAPIZ,12,12,nb_intercept,short history (12 points),dengue
+R06-CAPIZ,16,16,nb_intercept,short history (16 points),dengue
+R06-CAPIZ,20,20,nb_trend,short history (20 points),dengue
+R06-CAPIZ,24,24,nb_trend,short history (24 points),dengue
+R06-CAPIZ,28,28,nb_trend,short history (28 points),dengue
+R06-CAPIZ,32,32,nb_trend,short history (32 points),dengue
+R06-CAPIZ,36,36,nb_trend,short history (36 points),dengue
+R06-CAPIZ,40,40,nb_trend,short history (40 points),dengue
+R06-CAPIZ,44,44,nb_trend,short history (44 points),dengue
+R06-GUIMARAS,0,0,no_score,insufficient history (0 < 8),dengue
+R06-GUIMARAS,4,4,no_score,insufficient history (4 < 8),dengue
+R06-GUIMARAS,8,8,nb_intercept,short history (8 points),dengue
+R06-GUIMARAS,12,12,nb_intercept,short history (12 points),dengue
+R06-GUIMARAS,16,16,nb_intercept,short history (16 points),dengue
+R06-GUIMARAS,20,20,nb_trend,short history (20 points),dengue
+R06-GUIMARAS,24,24,nb_trend,short history (24 points),dengue
+R06-GUIMARAS,28,28,nb_trend,short history (28 points),dengue
+R06-GUIMARAS,32,32,nb_trend,short history (32 points),dengue
+R06-GUIMARAS,36,36,nb_trend,short history (36 points),dengue
+R06-GUIMARAS,40,40,nb_trend,short history (40 points),dengue
+R06-GUIMARAS,44,44,nb_trend,short history (44 points),dengue
+R06-ILOILO,0,0,no_score,insufficient history (0 < 8),dengue
+R06-ILOILO,4,4,no_score,insufficient history (4 < 8),dengue
+R06-ILOILO,8,8,nb_intercept,short history (8 points),dengue
+R06-ILOILO,12,12,nb_intercept,short history (12 points),dengue
+R06-ILOILO,16,16,nb_intercept,short history (16 points),dengue
+R06-ILOILO,20,20,nb_trend,short history (20 points),dengue
+R06-ILOILO,24,24,nb_trend,short history (24 points),dengue
+R06-ILOILO,28,28,nb_trend,short history (28 points),dengue
+R06-ILOILO,32,32,nb_trend,short history (32 points),dengue
+R06-ILOILO,36,36,nb_trend,short history (36 points),dengue
+R06-ILOILO,40,40,nb_trend,short history (40 points),dengue
+R06-ILOILO,44,44,nb_trend,short history (44 points),dengue
+R06-ILOILO_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R06-ILOILO_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R06-ILOILO_CITY,8,8,nb_intercept,short history (8 points),dengue
+R06-ILOILO_CITY,12,12,nb_intercept,short history (12 points),dengue
+R06-ILOILO_CITY,16,16,nb_intercept,short history (16 points),dengue
+R06-ILOILO_CITY,20,20,nb_trend,short history (20 points),dengue
+R06-ILOILO_CITY,24,24,nb_trend,short history (24 points),dengue
+R06-ILOILO_CITY,28,28,nb_trend,short history (28 points),dengue
+R06-ILOILO_CITY,32,32,nb_trend,short history (32 points),dengue
+R06-ILOILO_CITY,36,36,nb_trend,short history (36 points),dengue
+R06-ILOILO_CITY,40,40,nb_trend,short history (40 points),dengue
+R06-ILOILO_CITY,44,44,nb_trend,short history (44 points),dengue
+R06-NEGROS_OCCIDENTAL,0,0,no_score,insufficient history (0 < 8),dengue
+R06-NEGROS_OCCIDENTAL,4,4,no_score,insufficient history (4 < 8),dengue
+R06-NEGROS_OCCIDENTAL,8,8,nb_intercept,short history (8 points),dengue
+R06-NEGROS_OCCIDENTAL,12,12,nb_intercept,short history (12 points),dengue
+R06-NEGROS_OCCIDENTAL,16,16,nb_intercept,short history (16 points),dengue
+R06-NEGROS_OCCIDENTAL,20,20,nb_trend,short history (20 points),dengue
+R06-NEGROS_OCCIDENTAL,24,24,nb_trend,short history (24 points),dengue
+R06-NEGROS_OCCIDENTAL,28,28,nb_trend,short history (28 points),dengue
+R06-NEGROS_OCCIDENTAL,32,32,nb_trend,short history (32 points),dengue
+R06-NEGROS_OCCIDENTAL,36,36,nb_trend,short history (36 points),dengue
+R06-NEGROS_OCCIDENTAL,40,40,nb_trend,short history (40 points),dengue
+R06-NEGROS_OCCIDENTAL,44,44,nb_trend,short history (44 points),dengue
+R07-BOHOL,0,0,no_score,insufficient history (0 < 8),dengue
+R07-BOHOL,4,4,no_score,insufficient history (4 < 8),dengue
+R07-BOHOL,8,8,nb_intercept,short history (8 points),dengue
+R07-BOHOL,12,12,nb_intercept,short history (12 points),dengue
+R07-BOHOL,16,16,nb_intercept,short history (16 points),dengue
+R07-BOHOL,20,20,nb_trend,short history (20 points),dengue
+R07-BOHOL,24,24,nb_trend,short history (24 points),dengue
+R07-BOHOL,28,28,nb_trend,short history (28 points),dengue
+R07-BOHOL,32,32,nb_trend,short history (32 points),dengue
+R07-BOHOL,36,36,nb_trend,short history (36 points),dengue
+R07-BOHOL,40,40,nb_trend,short history (40 points),dengue
+R07-BOHOL,44,44,nb_trend,short history (44 points),dengue
+R07-CEBU,0,0,no_score,insufficient history (0 < 8),dengue
+R07-CEBU,4,4,no_score,insufficient history (4 < 8),dengue
+R07-CEBU,8,8,nb_intercept,short history (8 points),dengue
+R07-CEBU,12,12,nb_intercept,short history (12 points),dengue
+R07-CEBU,16,16,nb_intercept,short history (16 points),dengue
+R07-CEBU,20,20,nb_trend,short history (20 points),dengue
+R07-CEBU,24,24,nb_trend,short history (24 points),dengue
+R07-CEBU,28,28,nb_trend,short history (28 points),dengue
+R07-CEBU,32,32,nb_trend,short history (32 points),dengue
+R07-CEBU,36,36,nb_trend,short history (36 points),dengue
+R07-CEBU,40,40,nb_trend,short history (40 points),dengue
+R07-CEBU,44,44,nb_trend,short history (44 points),dengue
+R07-CEBU_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R07-CEBU_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R07-CEBU_CITY,8,8,nb_intercept,short history (8 points),dengue
+R07-CEBU_CITY,12,12,nb_intercept,short history (12 points),dengue
+R07-CEBU_CITY,16,16,nb_intercept,short history (16 points),dengue
+R07-CEBU_CITY,20,20,nb_trend,short history (20 points),dengue
+R07-CEBU_CITY,24,24,nb_trend,short history (24 points),dengue
+R07-CEBU_CITY,28,28,nb_trend,short history (28 points),dengue
+R07-CEBU_CITY,32,32,nb_trend,short history (32 points),dengue
+R07-CEBU_CITY,36,36,nb_trend,short history (36 points),dengue
+R07-CEBU_CITY,40,40,nb_trend,short history (40 points),dengue
+R07-CEBU_CITY,44,44,nb_trend,short history (44 points),dengue
+R07-LAPU_LAPU_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R07-LAPU_LAPU_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R07-LAPU_LAPU_CITY,8,8,nb_intercept,short history (8 points),dengue
+R07-LAPU_LAPU_CITY,12,12,nb_intercept,short history (12 points),dengue
+R07-LAPU_LAPU_CITY,16,16,nb_intercept,short history (16 points),dengue
+R07-LAPU_LAPU_CITY,20,20,nb_trend,short history (20 points),dengue
+R07-LAPU_LAPU_CITY,24,24,nb_trend,short history (24 points),dengue
+R07-LAPU_LAPU_CITY,28,28,nb_trend,short history (28 points),dengue
+R07-LAPU_LAPU_CITY,32,32,nb_trend,short history (32 points),dengue
+R07-LAPU_LAPU_CITY,36,36,nb_trend,short history (36 points),dengue
+R07-LAPU_LAPU_CITY,40,40,nb_trend,short history (40 points),dengue
+R07-LAPU_LAPU_CITY,44,44,nb_trend,short history (44 points),dengue
+R07-MANDAUE_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R07-MANDAUE_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R07-MANDAUE_CITY,8,8,nb_intercept,short history (8 points),dengue
+R07-MANDAUE_CITY,12,12,nb_intercept,short history (12 points),dengue
+R07-MANDAUE_CITY,16,16,nb_intercept,short history (16 points),dengue
+R07-MANDAUE_CITY,20,20,nb_trend,short history (20 points),dengue
+R07-MANDAUE_CITY,24,24,nb_trend,short history (24 points),dengue
+R07-MANDAUE_CITY,28,28,nb_trend,short history (28 points),dengue
+R07-MANDAUE_CITY,32,32,nb_trend,short history (32 points),dengue
+R07-MANDAUE_CITY,36,36,nb_trend,short history (36 points),dengue
+R07-MANDAUE_CITY,40,40,nb_trend,short history (40 points),dengue
+R07-MANDAUE_CITY,44,44,nb_trend,short history (44 points),dengue
+R07-NEGROS_ORIENTAL,0,0,no_score,insufficient history (0 < 8),dengue
+R07-NEGROS_ORIENTAL,4,4,no_score,insufficient history (4 < 8),dengue
+R07-NEGROS_ORIENTAL,8,8,nb_intercept,short history (8 points),dengue
+R07-NEGROS_ORIENTAL,12,12,nb_intercept,short history (12 points),dengue
+R07-NEGROS_ORIENTAL,16,16,nb_intercept,short history (16 points),dengue
+R07-NEGROS_ORIENTAL,20,20,nb_trend,short history (20 points),dengue
+R07-NEGROS_ORIENTAL,24,24,nb_trend,short history (24 points),dengue
+R07-NEGROS_ORIENTAL,28,28,nb_trend,short history (28 points),dengue
+R07-NEGROS_ORIENTAL,32,32,nb_trend,short history (32 points),dengue
+R07-NEGROS_ORIENTAL,36,36,nb_trend,short history (36 points),dengue
+R07-NEGROS_ORIENTAL,40,40,nb_trend,short history (40 points),dengue
+R07-NEGROS_ORIENTAL,44,44,nb_trend,short history (44 points),dengue
+R07-SIQUIJOR,0,0,no_score,insufficient history (0 < 8),dengue
+R07-SIQUIJOR,4,4,no_score,insufficient history (4 < 8),dengue
+R07-SIQUIJOR,8,8,nb_intercept,short history (8 points),dengue
+R07-SIQUIJOR,12,12,nb_intercept,short history (12 points),dengue
+R07-SIQUIJOR,16,16,nb_intercept,short history (16 points),dengue
+R07-SIQUIJOR,20,20,nb_trend,short history (20 points),dengue
+R07-SIQUIJOR,24,24,nb_trend,short history (24 points),dengue
+R07-SIQUIJOR,28,28,nb_trend,short history (28 points),dengue
+R07-SIQUIJOR,32,32,nb_trend,short history (32 points),dengue
+R07-SIQUIJOR,36,36,nb_trend,short history (36 points),dengue
+R07-SIQUIJOR,40,40,nb_trend,short history (40 points),dengue
+R07-SIQUIJOR,44,44,nb_trend,short history (44 points),dengue
+R08-BILIRAN,0,0,no_score,insufficient history (0 < 8),dengue
+R08-BILIRAN,4,4,no_score,insufficient history (4 < 8),dengue
+R08-BILIRAN,8,8,nb_intercept,short history (8 points),dengue
+R08-BILIRAN,12,12,nb_intercept,short history (12 points),dengue
+R08-BILIRAN,16,16,nb_intercept,short history (16 points),dengue
+R08-BILIRAN,20,20,nb_trend,short history (20 points),dengue
+R08-BILIRAN,24,24,nb_trend,short history (24 points),dengue
+R08-BILIRAN,28,28,nb_trend,short history (28 points),dengue
+R08-BILIRAN,32,32,nb_trend,short history (32 points),dengue
+R08-BILIRAN,36,36,nb_trend,short history (36 points),dengue
+R08-BILIRAN,40,40,nb_trend,short history (40 points),dengue
+R08-BILIRAN,44,44,nb_trend,short history (44 points),dengue
+R08-EASTERN_SAMAR,0,0,no_score,insufficient history (0 < 8),dengue
+R08-EASTERN_SAMAR,4,4,no_score,insufficient history (4 < 8),dengue
+R08-EASTERN_SAMAR,8,8,nb_intercept,short history (8 points),dengue
+R08-EASTERN_SAMAR,12,12,nb_intercept,short history (12 points),dengue
+R08-EASTERN_SAMAR,16,16,nb_intercept,short history (16 points),dengue
+R08-EASTERN_SAMAR,20,20,nb_trend,short history (20 points),dengue
+R08-EASTERN_SAMAR,24,24,nb_trend,short history (24 points),dengue
+R08-EASTERN_SAMAR,28,28,nb_trend,short history (28 points),dengue
+R08-EASTERN_SAMAR,32,32,nb_trend,short history (32 points),dengue
+R08-EASTERN_SAMAR,36,36,nb_trend,short history (36 points),dengue
+R08-EASTERN_SAMAR,40,40,nb_trend,short history (40 points),dengue
+R08-EASTERN_SAMAR,44,44,nb_trend,short history (44 points),dengue
+R08-LEYTE,0,0,no_score,insufficient history (0 < 8),dengue
+R08-LEYTE,4,4,no_score,insufficient history (4 < 8),dengue
+R08-LEYTE,8,8,nb_intercept,short history (8 points),dengue
+R08-LEYTE,12,12,nb_intercept,short history (12 points),dengue
+R08-LEYTE,16,16,nb_intercept,short history (16 points),dengue
+R08-LEYTE,20,20,nb_trend,short history (20 points),dengue
+R08-LEYTE,24,24,nb_trend,short history (24 points),dengue
+R08-LEYTE,28,28,nb_trend,short history (28 points),dengue
+R08-LEYTE,32,32,nb_trend,short history (32 points),dengue
+R08-LEYTE,36,36,nb_trend,short history (36 points),dengue
+R08-LEYTE,40,40,nb_trend,short history (40 points),dengue
+R08-LEYTE,44,44,nb_trend,short history (44 points),dengue
+R08-NORTHERN_SAMAR,0,0,no_score,insufficient history (0 < 8),dengue
+R08-NORTHERN_SAMAR,4,4,no_score,insufficient history (4 < 8),dengue
+R08-NORTHERN_SAMAR,8,8,nb_intercept,short history (8 points),dengue
+R08-NORTHERN_SAMAR,12,12,nb_intercept,short history (12 points),dengue
+R08-NORTHERN_SAMAR,16,16,nb_intercept,short history (16 points),dengue
+R08-NORTHERN_SAMAR,20,20,nb_trend,short history (20 points),dengue
+R08-NORTHERN_SAMAR,24,24,nb_trend,short history (24 points),dengue
+R08-NORTHERN_SAMAR,28,28,nb_trend,short history (28 points),dengue
+R08-NORTHERN_SAMAR,32,32,nb_trend,short history (32 points),dengue
+R08-NORTHERN_SAMAR,36,36,nb_trend,short history (36 points),dengue
+R08-NORTHERN_SAMAR,40,40,nb_trend,short history (40 points),dengue
+R08-NORTHERN_SAMAR,44,44,nb_trend,short history (44 points),dengue
+R08-ORMOC_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R08-ORMOC_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R08-ORMOC_CITY,8,8,nb_intercept,short history (8 points),dengue
+R08-ORMOC_CITY,12,12,nb_intercept,short history (12 points),dengue
+R08-ORMOC_CITY,16,16,nb_intercept,short history (16 points),dengue
+R08-ORMOC_CITY,20,20,nb_trend,short history (20 points),dengue
+R08-ORMOC_CITY,24,24,nb_trend,short history (24 points),dengue
+R08-ORMOC_CITY,28,28,nb_trend,short history (28 points),dengue
+R08-ORMOC_CITY,32,32,nb_trend,short history (32 points),dengue
+R08-ORMOC_CITY,36,36,nb_trend,short history (36 points),dengue
+R08-ORMOC_CITY,40,40,nb_trend,short history (40 points),dengue
+R08-ORMOC_CITY,44,44,nb_trend,short history (44 points),dengue
+R08-SAMAR,0,0,no_score,insufficient history (0 < 8),dengue
+R08-SAMAR,4,4,no_score,insufficient history (4 < 8),dengue
+R08-SAMAR,8,8,nb_intercept,short history (8 points),dengue
+R08-SAMAR,12,12,nb_intercept,short history (12 points),dengue
+R08-SAMAR,16,16,nb_intercept,short history (16 points),dengue
+R08-SAMAR,20,20,nb_trend,short history (20 points),dengue
+R08-SAMAR,24,24,nb_trend,short history (24 points),dengue
+R08-SAMAR,28,28,nb_trend,short history (28 points),dengue
+R08-SAMAR,32,32,nb_trend,short history (32 points),dengue
+R08-SAMAR,36,36,nb_trend,short history (36 points),dengue
+R08-SAMAR,40,40,nb_trend,short history (40 points),dengue
+R08-SAMAR,44,44,nb_trend,short history (44 points),dengue
+R08-SOUTHERN_LEYTE,0,0,no_score,insufficient history (0 < 8),dengue
+R08-SOUTHERN_LEYTE,4,4,no_score,insufficient history (4 < 8),dengue
+R08-SOUTHERN_LEYTE,8,8,nb_intercept,short history (8 points),dengue
+R08-SOUTHERN_LEYTE,12,12,nb_intercept,short history (12 points),dengue
+R08-SOUTHERN_LEYTE,16,16,nb_intercept,short history (16 points),dengue
+R08-SOUTHERN_LEYTE,20,20,nb_trend,short history (20 points),dengue
+R08-SOUTHERN_LEYTE,24,24,nb_trend,short history (24 points),dengue
+R08-SOUTHERN_LEYTE,28,28,nb_trend,short history (28 points),dengue
+R08-SOUTHERN_LEYTE,32,32,nb_trend,short history (32 points),dengue
+R08-SOUTHERN_LEYTE,36,36,nb_trend,short history (36 points),dengue
+R08-SOUTHERN_LEYTE,40,40,nb_trend,short history (40 points),dengue
+R08-SOUTHERN_LEYTE,44,44,nb_trend,short history (44 points),dengue
+R08-TACLOBAN_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R08-TACLOBAN_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R08-TACLOBAN_CITY,8,8,zero_history,all-zero history,dengue
+R08-TACLOBAN_CITY,12,12,zero_history,all-zero history,dengue
+R08-TACLOBAN_CITY,16,16,zero_history,all-zero history,dengue
+R08-TACLOBAN_CITY,20,20,zero_history,all-zero history,dengue
+R08-TACLOBAN_CITY,24,24,zero_history,all-zero history,dengue
+R08-TACLOBAN_CITY,28,28,zero_history,all-zero history,dengue
+R08-TACLOBAN_CITY,32,32,zero_history,all-zero history,dengue
+R08-TACLOBAN_CITY,36,36,zero_history,all-zero history,dengue
+R08-TACLOBAN_CITY,40,40,nb_trend,short history (40 points),dengue
+R08-TACLOBAN_CITY,44,44,nb_trend,short history (44 points),dengue
+R08-TACLOBAN_CITY,48,48,nb_trend,nb_full forecast implausible (> 10 x training max),dengue
+R08-TACLOBAN_CITY,52,52,nb_trend,nb_full forecast implausible (> 10 x training max),dengue
+R08-TACLOBAN_CITY,64,64,nb_trend,nb_full forecast implausible (> 10 x training max),dengue
+R08-TACLOBAN_CITY,92,92,nb_trend,nb_full forecast implausible (> 10 x training max),dengue
+R08-TACLOBAN_CITY,96,96,nb_trend,nb_full forecast implausible (> 10 x training max),dengue
+R08-TACLOBAN_CITY,104,103,nb_trend,nb_full forecast implausible (> 10 x training max),dengue
+R09-ISABELA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R09-ISABELA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R09-ISABELA_CITY,8,8,nb_intercept,short history (8 points),dengue
+R09-ISABELA_CITY,12,12,nb_intercept,short history (12 points),dengue
+R09-ISABELA_CITY,16,16,nb_intercept,short history (16 points),dengue
+R09-ISABELA_CITY,20,20,nb_trend,short history (20 points),dengue
+R09-ISABELA_CITY,24,24,nb_trend,short history (24 points),dengue
+R09-ISABELA_CITY,28,28,nb_trend,short history (28 points),dengue
+R09-ISABELA_CITY,32,32,nb_trend,short history (32 points),dengue
+R09-ISABELA_CITY,36,36,nb_trend,short history (36 points),dengue
+R09-ISABELA_CITY,40,40,nb_trend,short history (40 points),dengue
+R09-ISABELA_CITY,44,44,nb_trend,short history (44 points),dengue
+R09-ZAMBOANGA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R09-ZAMBOANGA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R09-ZAMBOANGA_CITY,8,8,nb_intercept,short history (8 points),dengue
+R09-ZAMBOANGA_CITY,12,12,nb_intercept,short history (12 points),dengue
+R09-ZAMBOANGA_CITY,16,16,nb_intercept,short history (16 points),dengue
+R09-ZAMBOANGA_CITY,20,20,nb_trend,short history (20 points),dengue
+R09-ZAMBOANGA_CITY,24,24,nb_trend,short history (24 points),dengue
+R09-ZAMBOANGA_CITY,28,28,nb_trend,short history (28 points),dengue
+R09-ZAMBOANGA_CITY,32,32,nb_trend,short history (32 points),dengue
+R09-ZAMBOANGA_CITY,36,36,nb_trend,short history (36 points),dengue
+R09-ZAMBOANGA_CITY,40,40,nb_trend,short history (40 points),dengue
+R09-ZAMBOANGA_CITY,44,44,nb_trend,short history (44 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,0,0,no_score,insufficient history (0 < 8),dengue
+R09-ZAMBOANGA_DEL_NORTE,4,4,no_score,insufficient history (4 < 8),dengue
+R09-ZAMBOANGA_DEL_NORTE,8,8,nb_intercept,short history (8 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,12,12,nb_intercept,short history (12 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,16,16,nb_intercept,short history (16 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,20,20,nb_trend,short history (20 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,24,24,nb_trend,short history (24 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,28,28,nb_trend,short history (28 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,32,32,nb_trend,short history (32 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,36,36,nb_trend,short history (36 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,40,40,nb_trend,short history (40 points),dengue
+R09-ZAMBOANGA_DEL_NORTE,44,44,nb_trend,short history (44 points),dengue
+R09-ZAMBOANGA_DEL_SUR,0,0,no_score,insufficient history (0 < 8),dengue
+R09-ZAMBOANGA_DEL_SUR,4,4,no_score,insufficient history (4 < 8),dengue
+R09-ZAMBOANGA_DEL_SUR,8,8,nb_intercept,short history (8 points),dengue
+R09-ZAMBOANGA_DEL_SUR,12,12,nb_intercept,short history (12 points),dengue
+R09-ZAMBOANGA_DEL_SUR,16,16,nb_intercept,short history (16 points),dengue
+R09-ZAMBOANGA_DEL_SUR,20,20,nb_trend,short history (20 points),dengue
+R09-ZAMBOANGA_DEL_SUR,24,24,nb_trend,short history (24 points),dengue
+R09-ZAMBOANGA_DEL_SUR,28,28,nb_trend,short history (28 points),dengue
+R09-ZAMBOANGA_DEL_SUR,32,32,nb_trend,short history (32 points),dengue
+R09-ZAMBOANGA_DEL_SUR,36,36,nb_trend,short history (36 points),dengue
+R09-ZAMBOANGA_DEL_SUR,40,40,nb_trend,short history (40 points),dengue
+R09-ZAMBOANGA_DEL_SUR,44,44,nb_trend,short history (44 points),dengue
+R09-ZAMBOANGA_SIBUGAY,0,0,no_score,insufficient history (0 < 8),dengue
+R09-ZAMBOANGA_SIBUGAY,4,4,no_score,insufficient history (4 < 8),dengue
+R09-ZAMBOANGA_SIBUGAY,8,8,nb_intercept,short history (8 points),dengue
+R09-ZAMBOANGA_SIBUGAY,12,12,nb_intercept,short history (12 points),dengue
+R09-ZAMBOANGA_SIBUGAY,16,16,nb_intercept,short history (16 points),dengue
+R09-ZAMBOANGA_SIBUGAY,20,20,nb_trend,short history (20 points),dengue
+R09-ZAMBOANGA_SIBUGAY,24,24,nb_trend,short history (24 points),dengue
+R09-ZAMBOANGA_SIBUGAY,28,28,nb_trend,short history (28 points),dengue
+R09-ZAMBOANGA_SIBUGAY,32,32,nb_trend,short history (32 points),dengue
+R09-ZAMBOANGA_SIBUGAY,36,36,nb_trend,short history (36 points),dengue
+R09-ZAMBOANGA_SIBUGAY,40,40,nb_trend,short history (40 points),dengue
+R09-ZAMBOANGA_SIBUGAY,44,44,nb_trend,short history (44 points),dengue
+R10-BUKIDNON,0,0,no_score,insufficient history (0 < 8),dengue
+R10-BUKIDNON,4,4,no_score,insufficient history (4 < 8),dengue
+R10-BUKIDNON,8,8,nb_intercept,short history (8 points),dengue
+R10-BUKIDNON,12,12,nb_intercept,short history (12 points),dengue
+R10-BUKIDNON,16,16,nb_intercept,short history (16 points),dengue
+R10-BUKIDNON,20,20,nb_trend,short history (20 points),dengue
+R10-BUKIDNON,24,24,nb_trend,short history (24 points),dengue
+R10-BUKIDNON,28,28,nb_trend,short history (28 points),dengue
+R10-BUKIDNON,32,32,nb_trend,short history (32 points),dengue
+R10-BUKIDNON,36,36,nb_trend,short history (36 points),dengue
+R10-BUKIDNON,40,40,nb_trend,short history (40 points),dengue
+R10-BUKIDNON,44,44,nb_trend,short history (44 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R10-CAGAYAN_DE_ORO_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R10-CAGAYAN_DE_ORO_CITY,8,8,nb_intercept,short history (8 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,12,12,nb_intercept,short history (12 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,16,16,nb_intercept,short history (16 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,20,20,nb_trend,short history (20 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,24,24,nb_trend,short history (24 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,28,28,nb_trend,short history (28 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,32,32,nb_trend,short history (32 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,36,36,nb_trend,short history (36 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,40,40,nb_trend,short history (40 points),dengue
+R10-CAGAYAN_DE_ORO_CITY,44,44,nb_trend,short history (44 points),dengue
+R10-CAMIGUIN,0,0,no_score,insufficient history (0 < 8),dengue
+R10-CAMIGUIN,4,4,no_score,insufficient history (4 < 8),dengue
+R10-CAMIGUIN,8,8,nb_intercept,short history (8 points),dengue
+R10-CAMIGUIN,12,12,nb_intercept,short history (12 points),dengue
+R10-CAMIGUIN,16,16,nb_intercept,short history (16 points),dengue
+R10-CAMIGUIN,20,20,nb_trend,short history (20 points),dengue
+R10-CAMIGUIN,24,24,nb_trend,short history (24 points),dengue
+R10-CAMIGUIN,28,28,nb_trend,short history (28 points),dengue
+R10-CAMIGUIN,32,32,nb_trend,short history (32 points),dengue
+R10-CAMIGUIN,36,36,nb_trend,short history (36 points),dengue
+R10-CAMIGUIN,40,40,nb_trend,short history (40 points),dengue
+R10-CAMIGUIN,44,44,nb_trend,short history (44 points),dengue
+R10-ILIGAN_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R10-ILIGAN_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R10-ILIGAN_CITY,8,8,nb_intercept,short history (8 points),dengue
+R10-ILIGAN_CITY,12,12,nb_intercept,short history (12 points),dengue
+R10-ILIGAN_CITY,16,16,nb_intercept,short history (16 points),dengue
+R10-ILIGAN_CITY,20,20,nb_trend,short history (20 points),dengue
+R10-ILIGAN_CITY,24,24,nb_trend,short history (24 points),dengue
+R10-ILIGAN_CITY,28,28,nb_trend,short history (28 points),dengue
+R10-ILIGAN_CITY,32,32,nb_trend,short history (32 points),dengue
+R10-ILIGAN_CITY,36,36,nb_trend,short history (36 points),dengue
+R10-ILIGAN_CITY,40,40,nb_trend,short history (40 points),dengue
+R10-ILIGAN_CITY,44,44,nb_trend,short history (44 points),dengue
+R10-LANAO_DEL_NORTE,0,0,no_score,insufficient history (0 < 8),dengue
+R10-LANAO_DEL_NORTE,4,4,no_score,insufficient history (4 < 8),dengue
+R10-LANAO_DEL_NORTE,8,8,nb_intercept,short history (8 points),dengue
+R10-LANAO_DEL_NORTE,12,12,nb_intercept,short history (12 points),dengue
+R10-LANAO_DEL_NORTE,16,16,nb_intercept,short history (16 points),dengue
+R10-LANAO_DEL_NORTE,20,20,nb_trend,short history (20 points),dengue
+R10-LANAO_DEL_NORTE,24,24,nb_trend,short history (24 points),dengue
+R10-LANAO_DEL_NORTE,28,28,nb_trend,short history (28 points),dengue
+R10-LANAO_DEL_NORTE,32,32,nb_trend,short history (32 points),dengue
+R10-LANAO_DEL_NORTE,36,36,nb_trend,short history (36 points),dengue
+R10-LANAO_DEL_NORTE,40,40,nb_trend,short history (40 points),dengue
+R10-LANAO_DEL_NORTE,44,44,nb_trend,short history (44 points),dengue
+R10-MISAMIS_OCCIDENTAL,0,0,no_score,insufficient history (0 < 8),dengue
+R10-MISAMIS_OCCIDENTAL,4,4,no_score,insufficient history (4 < 8),dengue
+R10-MISAMIS_OCCIDENTAL,8,8,nb_intercept,short history (8 points),dengue
+R10-MISAMIS_OCCIDENTAL,12,12,nb_intercept,short history (12 points),dengue
+R10-MISAMIS_OCCIDENTAL,16,16,nb_intercept,short history (16 points),dengue
+R10-MISAMIS_OCCIDENTAL,20,20,nb_trend,short history (20 points),dengue
+R10-MISAMIS_OCCIDENTAL,24,24,nb_trend,short history (24 points),dengue
+R10-MISAMIS_OCCIDENTAL,28,28,nb_trend,short history (28 points),dengue
+R10-MISAMIS_OCCIDENTAL,32,32,nb_trend,short history (32 points),dengue
+R10-MISAMIS_OCCIDENTAL,36,36,nb_trend,short history (36 points),dengue
+R10-MISAMIS_OCCIDENTAL,40,40,nb_trend,short history (40 points),dengue
+R10-MISAMIS_OCCIDENTAL,44,44,nb_trend,short history (44 points),dengue
+R10-MISAMIS_ORIENTAL,0,0,no_score,insufficient history (0 < 8),dengue
+R10-MISAMIS_ORIENTAL,4,4,no_score,insufficient history (4 < 8),dengue
+R10-MISAMIS_ORIENTAL,8,8,nb_intercept,short history (8 points),dengue
+R10-MISAMIS_ORIENTAL,12,12,nb_intercept,short history (12 points),dengue
+R10-MISAMIS_ORIENTAL,16,16,nb_intercept,short history (16 points),dengue
+R10-MISAMIS_ORIENTAL,20,20,nb_trend,short history (20 points),dengue
+R10-MISAMIS_ORIENTAL,24,24,nb_trend,short history (24 points),dengue
+R10-MISAMIS_ORIENTAL,28,28,nb_trend,short history (28 points),dengue
+R10-MISAMIS_ORIENTAL,32,32,nb_trend,short history (32 points),dengue
+R10-MISAMIS_ORIENTAL,36,36,nb_trend,short history (36 points),dengue
+R10-MISAMIS_ORIENTAL,40,40,nb_trend,short history (40 points),dengue
+R10-MISAMIS_ORIENTAL,44,44,nb_trend,short history (44 points),dengue
+R11-DAVAO_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R11-DAVAO_CITY,8,8,nb_intercept,short history (8 points),dengue
+R11-DAVAO_CITY,12,12,nb_intercept,short history (12 points),dengue
+R11-DAVAO_CITY,16,16,nb_intercept,short history (16 points),dengue
+R11-DAVAO_CITY,20,20,nb_trend,short history (20 points),dengue
+R11-DAVAO_CITY,24,24,nb_trend,short history (24 points),dengue
+R11-DAVAO_CITY,28,28,nb_trend,short history (28 points),dengue
+R11-DAVAO_CITY,32,32,nb_trend,short history (32 points),dengue
+R11-DAVAO_CITY,36,36,nb_trend,short history (36 points),dengue
+R11-DAVAO_CITY,40,40,nb_trend,short history (40 points),dengue
+R11-DAVAO_CITY,44,44,nb_trend,short history (44 points),dengue
+R11-DAVAO_DEL_NORTE,0,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_DEL_NORTE,4,4,no_score,insufficient history (4 < 8),dengue
+R11-DAVAO_DEL_NORTE,8,8,nb_intercept,short history (8 points),dengue
+R11-DAVAO_DEL_NORTE,12,12,nb_intercept,short history (12 points),dengue
+R11-DAVAO_DEL_NORTE,16,16,nb_intercept,short history (16 points),dengue
+R11-DAVAO_DEL_NORTE,20,20,nb_trend,short history (20 points),dengue
+R11-DAVAO_DEL_NORTE,24,24,nb_trend,short history (24 points),dengue
+R11-DAVAO_DEL_NORTE,28,28,nb_trend,short history (28 points),dengue
+R11-DAVAO_DEL_NORTE,32,32,nb_trend,short history (32 points),dengue
+R11-DAVAO_DEL_NORTE,36,36,nb_trend,short history (36 points),dengue
+R11-DAVAO_DEL_NORTE,40,40,nb_trend,short history (40 points),dengue
+R11-DAVAO_DEL_NORTE,44,44,nb_trend,short history (44 points),dengue
+R11-DAVAO_DEL_SUR,0,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_DEL_SUR,4,4,no_score,insufficient history (4 < 8),dengue
+R11-DAVAO_DEL_SUR,8,8,nb_intercept,short history (8 points),dengue
+R11-DAVAO_DEL_SUR,12,12,nb_intercept,short history (12 points),dengue
+R11-DAVAO_DEL_SUR,16,16,nb_intercept,short history (16 points),dengue
+R11-DAVAO_DEL_SUR,20,20,nb_trend,short history (20 points),dengue
+R11-DAVAO_DEL_SUR,24,24,nb_trend,short history (24 points),dengue
+R11-DAVAO_DEL_SUR,28,28,nb_trend,short history (28 points),dengue
+R11-DAVAO_DEL_SUR,32,32,nb_trend,short history (32 points),dengue
+R11-DAVAO_DEL_SUR,36,36,nb_trend,short history (36 points),dengue
+R11-DAVAO_DEL_SUR,40,40,nb_trend,short history (40 points),dengue
+R11-DAVAO_DEL_SUR,44,44,nb_trend,short history (44 points),dengue
+R11-DAVAO_DE_ORO,0,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_DE_ORO,4,4,no_score,insufficient history (4 < 8),dengue
+R11-DAVAO_DE_ORO,8,8,nb_intercept,short history (8 points),dengue
+R11-DAVAO_DE_ORO,12,12,nb_intercept,short history (12 points),dengue
+R11-DAVAO_DE_ORO,16,16,nb_intercept,short history (16 points),dengue
+R11-DAVAO_DE_ORO,20,20,nb_trend,short history (20 points),dengue
+R11-DAVAO_DE_ORO,24,24,nb_trend,short history (24 points),dengue
+R11-DAVAO_DE_ORO,28,28,nb_trend,short history (28 points),dengue
+R11-DAVAO_DE_ORO,32,32,nb_trend,short history (32 points),dengue
+R11-DAVAO_DE_ORO,36,36,nb_trend,short history (36 points),dengue
+R11-DAVAO_DE_ORO,40,40,nb_trend,short history (40 points),dengue
+R11-DAVAO_DE_ORO,44,44,nb_trend,short history (44 points),dengue
+R11-DAVAO_OCCIDENTAL,0,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,4,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,8,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,12,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,16,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,20,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,24,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,28,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,32,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,36,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,40,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,44,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,48,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,52,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_OCCIDENTAL,56,4,no_score,insufficient history (4 < 8),dengue
+R11-DAVAO_OCCIDENTAL,60,8,nb_intercept,short history (8 points),dengue
+R11-DAVAO_OCCIDENTAL,64,12,nb_intercept,short history (12 points),dengue
+R11-DAVAO_OCCIDENTAL,68,16,nb_intercept,short history (16 points),dengue
+R11-DAVAO_OCCIDENTAL,72,20,nb_trend,short history (20 points),dengue
+R11-DAVAO_OCCIDENTAL,76,24,nb_trend,short history (24 points),dengue
+R11-DAVAO_OCCIDENTAL,80,28,nb_trend,short history (28 points),dengue
+R11-DAVAO_OCCIDENTAL,84,32,nb_trend,short history (32 points),dengue
+R11-DAVAO_OCCIDENTAL,88,36,nb_trend,short history (36 points),dengue
+R11-DAVAO_OCCIDENTAL,92,40,nb_trend,short history (40 points),dengue
+R11-DAVAO_OCCIDENTAL,96,44,nb_trend,short history (44 points),dengue
+R11-DAVAO_ORIENTAL,0,0,no_score,insufficient history (0 < 8),dengue
+R11-DAVAO_ORIENTAL,4,4,no_score,insufficient history (4 < 8),dengue
+R11-DAVAO_ORIENTAL,8,8,nb_intercept,short history (8 points),dengue
+R11-DAVAO_ORIENTAL,12,12,nb_intercept,short history (12 points),dengue
+R11-DAVAO_ORIENTAL,16,16,nb_intercept,short history (16 points),dengue
+R11-DAVAO_ORIENTAL,20,20,nb_trend,short history (20 points),dengue
+R11-DAVAO_ORIENTAL,24,24,nb_trend,short history (24 points),dengue
+R11-DAVAO_ORIENTAL,28,28,nb_trend,short history (28 points),dengue
+R11-DAVAO_ORIENTAL,32,32,nb_trend,short history (32 points),dengue
+R11-DAVAO_ORIENTAL,36,36,nb_trend,short history (36 points),dengue
+R11-DAVAO_ORIENTAL,40,40,nb_trend,short history (40 points),dengue
+R11-DAVAO_ORIENTAL,44,44,nb_trend,short history (44 points),dengue
+R12-COTABATO_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R12-COTABATO_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R12-COTABATO_CITY,8,8,nb_intercept,short history (8 points),dengue
+R12-COTABATO_CITY,12,12,nb_intercept,short history (12 points),dengue
+R12-COTABATO_CITY,16,16,nb_intercept,short history (16 points),dengue
+R12-COTABATO_CITY,20,20,nb_trend,short history (20 points),dengue
+R12-COTABATO_CITY,24,24,nb_trend,short history (24 points),dengue
+R12-COTABATO_CITY,28,28,nb_trend,short history (28 points),dengue
+R12-COTABATO_CITY,32,32,nb_trend,short history (32 points),dengue
+R12-COTABATO_CITY,36,36,nb_trend,short history (36 points),dengue
+R12-COTABATO_CITY,40,40,nb_trend,short history (40 points),dengue
+R12-COTABATO_CITY,44,44,nb_trend,short history (44 points),dengue
+R12-GENERAL_SANTOS_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R12-GENERAL_SANTOS_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R12-GENERAL_SANTOS_CITY,8,8,nb_intercept,short history (8 points),dengue
+R12-GENERAL_SANTOS_CITY,12,12,nb_intercept,short history (12 points),dengue
+R12-GENERAL_SANTOS_CITY,16,16,nb_intercept,short history (16 points),dengue
+R12-GENERAL_SANTOS_CITY,20,20,nb_trend,short history (20 points),dengue
+R12-GENERAL_SANTOS_CITY,24,24,nb_trend,short history (24 points),dengue
+R12-GENERAL_SANTOS_CITY,28,28,nb_trend,short history (28 points),dengue
+R12-GENERAL_SANTOS_CITY,32,32,nb_trend,short history (32 points),dengue
+R12-GENERAL_SANTOS_CITY,36,36,nb_trend,short history (36 points),dengue
+R12-GENERAL_SANTOS_CITY,40,40,nb_trend,short history (40 points),dengue
+R12-GENERAL_SANTOS_CITY,44,44,nb_trend,short history (44 points),dengue
+R12-NORTH_COTABATO,0,0,no_score,insufficient history (0 < 8),dengue
+R12-NORTH_COTABATO,4,4,no_score,insufficient history (4 < 8),dengue
+R12-NORTH_COTABATO,8,8,nb_intercept,short history (8 points),dengue
+R12-NORTH_COTABATO,12,12,nb_intercept,short history (12 points),dengue
+R12-NORTH_COTABATO,16,16,nb_intercept,short history (16 points),dengue
+R12-NORTH_COTABATO,20,20,nb_trend,short history (20 points),dengue
+R12-NORTH_COTABATO,24,24,nb_trend,short history (24 points),dengue
+R12-NORTH_COTABATO,28,28,nb_trend,short history (28 points),dengue
+R12-NORTH_COTABATO,32,32,nb_trend,short history (32 points),dengue
+R12-NORTH_COTABATO,36,36,nb_trend,short history (36 points),dengue
+R12-NORTH_COTABATO,40,40,nb_trend,short history (40 points),dengue
+R12-NORTH_COTABATO,44,44,nb_trend,short history (44 points),dengue
+R12-SARANGANI,0,0,no_score,insufficient history (0 < 8),dengue
+R12-SARANGANI,4,4,no_score,insufficient history (4 < 8),dengue
+R12-SARANGANI,8,8,nb_intercept,short history (8 points),dengue
+R12-SARANGANI,12,12,nb_intercept,short history (12 points),dengue
+R12-SARANGANI,16,16,nb_intercept,short history (16 points),dengue
+R12-SARANGANI,20,20,nb_trend,short history (20 points),dengue
+R12-SARANGANI,24,24,nb_trend,short history (24 points),dengue
+R12-SARANGANI,28,28,nb_trend,short history (28 points),dengue
+R12-SARANGANI,32,32,nb_trend,short history (32 points),dengue
+R12-SARANGANI,36,36,nb_trend,short history (36 points),dengue
+R12-SARANGANI,40,40,nb_trend,short history (40 points),dengue
+R12-SARANGANI,44,44,nb_trend,short history (44 points),dengue
+R12-SOUTH_COTABATO,0,0,no_score,insufficient history (0 < 8),dengue
+R12-SOUTH_COTABATO,4,4,no_score,insufficient history (4 < 8),dengue
+R12-SOUTH_COTABATO,8,8,nb_intercept,short history (8 points),dengue
+R12-SOUTH_COTABATO,12,12,nb_intercept,short history (12 points),dengue
+R12-SOUTH_COTABATO,16,16,nb_intercept,short history (16 points),dengue
+R12-SOUTH_COTABATO,20,20,nb_trend,short history (20 points),dengue
+R12-SOUTH_COTABATO,24,24,nb_trend,short history (24 points),dengue
+R12-SOUTH_COTABATO,28,28,nb_trend,short history (28 points),dengue
+R12-SOUTH_COTABATO,32,32,nb_trend,short history (32 points),dengue
+R12-SOUTH_COTABATO,36,36,nb_trend,short history (36 points),dengue
+R12-SOUTH_COTABATO,40,40,nb_trend,short history (40 points),dengue
+R12-SOUTH_COTABATO,44,44,nb_trend,short history (44 points),dengue
+R12-SULTAN_KUDARAT,0,0,no_score,insufficient history (0 < 8),dengue
+R12-SULTAN_KUDARAT,4,4,no_score,insufficient history (4 < 8),dengue
+R12-SULTAN_KUDARAT,8,8,nb_intercept,short history (8 points),dengue
+R12-SULTAN_KUDARAT,12,12,nb_intercept,short history (12 points),dengue
+R12-SULTAN_KUDARAT,16,16,nb_intercept,short history (16 points),dengue
+R12-SULTAN_KUDARAT,20,20,nb_trend,short history (20 points),dengue
+R12-SULTAN_KUDARAT,24,24,nb_trend,short history (24 points),dengue
+R12-SULTAN_KUDARAT,28,28,nb_trend,short history (28 points),dengue
+R12-SULTAN_KUDARAT,32,32,nb_trend,short history (32 points),dengue
+R12-SULTAN_KUDARAT,36,36,nb_trend,short history (36 points),dengue
+R12-SULTAN_KUDARAT,40,40,nb_trend,short history (40 points),dengue
+R12-SULTAN_KUDARAT,44,44,nb_trend,short history (44 points),dengue
+R4A-BATANGAS,0,0,no_score,insufficient history (0 < 8),dengue
+R4A-BATANGAS,4,4,no_score,insufficient history (4 < 8),dengue
+R4A-BATANGAS,8,8,nb_intercept,short history (8 points),dengue
+R4A-BATANGAS,12,12,nb_intercept,short history (12 points),dengue
+R4A-BATANGAS,16,16,nb_intercept,short history (16 points),dengue
+R4A-BATANGAS,20,20,nb_trend,short history (20 points),dengue
+R4A-BATANGAS,24,24,nb_trend,short history (24 points),dengue
+R4A-BATANGAS,28,28,nb_trend,short history (28 points),dengue
+R4A-BATANGAS,32,32,nb_trend,short history (32 points),dengue
+R4A-BATANGAS,36,36,nb_trend,short history (36 points),dengue
+R4A-BATANGAS,40,40,nb_trend,short history (40 points),dengue
+R4A-BATANGAS,44,44,nb_trend,short history (44 points),dengue
+R4A-CAVITE,0,0,no_score,insufficient history (0 < 8),dengue
+R4A-CAVITE,4,4,no_score,insufficient history (4 < 8),dengue
+R4A-CAVITE,8,8,nb_intercept,short history (8 points),dengue
+R4A-CAVITE,12,12,nb_intercept,short history (12 points),dengue
+R4A-CAVITE,16,16,nb_intercept,short history (16 points),dengue
+R4A-CAVITE,20,20,nb_trend,short history (20 points),dengue
+R4A-CAVITE,24,24,nb_trend,short history (24 points),dengue
+R4A-CAVITE,28,28,nb_trend,short history (28 points),dengue
+R4A-CAVITE,32,32,nb_trend,short history (32 points),dengue
+R4A-CAVITE,36,36,nb_trend,short history (36 points),dengue
+R4A-CAVITE,40,40,nb_trend,short history (40 points),dengue
+R4A-CAVITE,44,44,nb_trend,short history (44 points),dengue
+R4A-LAGUNA,0,0,no_score,insufficient history (0 < 8),dengue
+R4A-LAGUNA,4,4,no_score,insufficient history (4 < 8),dengue
+R4A-LAGUNA,8,8,nb_intercept,short history (8 points),dengue
+R4A-LAGUNA,12,12,nb_intercept,short history (12 points),dengue
+R4A-LAGUNA,16,16,nb_intercept,short history (16 points),dengue
+R4A-LAGUNA,20,20,nb_trend,short history (20 points),dengue
+R4A-LAGUNA,24,24,nb_trend,short history (24 points),dengue
+R4A-LAGUNA,28,28,nb_trend,short history (28 points),dengue
+R4A-LAGUNA,32,32,nb_trend,short history (32 points),dengue
+R4A-LAGUNA,36,36,nb_trend,short history (36 points),dengue
+R4A-LAGUNA,40,40,nb_trend,short history (40 points),dengue
+R4A-LAGUNA,44,44,nb_trend,short history (44 points),dengue
+R4A-LUCENA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R4A-LUCENA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R4A-LUCENA_CITY,8,8,nb_intercept,short history (8 points),dengue
+R4A-LUCENA_CITY,12,12,nb_intercept,short history (12 points),dengue
+R4A-LUCENA_CITY,16,16,nb_intercept,short history (16 points),dengue
+R4A-LUCENA_CITY,20,20,nb_trend,short history (20 points),dengue
+R4A-LUCENA_CITY,24,24,nb_trend,short history (24 points),dengue
+R4A-LUCENA_CITY,28,28,nb_trend,short history (28 points),dengue
+R4A-LUCENA_CITY,32,32,nb_trend,short history (32 points),dengue
+R4A-LUCENA_CITY,36,36,nb_trend,short history (36 points),dengue
+R4A-LUCENA_CITY,40,40,nb_trend,short history (40 points),dengue
+R4A-LUCENA_CITY,44,44,nb_trend,short history (44 points),dengue
+R4A-QUEZON,0,0,no_score,insufficient history (0 < 8),dengue
+R4A-QUEZON,4,4,no_score,insufficient history (4 < 8),dengue
+R4A-QUEZON,8,8,nb_intercept,short history (8 points),dengue
+R4A-QUEZON,12,12,nb_intercept,short history (12 points),dengue
+R4A-QUEZON,16,16,nb_intercept,short history (16 points),dengue
+R4A-QUEZON,20,20,nb_trend,short history (20 points),dengue
+R4A-QUEZON,24,24,nb_trend,short history (24 points),dengue
+R4A-QUEZON,28,28,nb_trend,short history (28 points),dengue
+R4A-QUEZON,32,32,nb_trend,short history (32 points),dengue
+R4A-QUEZON,36,36,nb_trend,short history (36 points),dengue
+R4A-QUEZON,40,40,nb_trend,short history (40 points),dengue
+R4A-QUEZON,44,44,nb_trend,short history (44 points),dengue
+R4A-RIZAL,0,0,no_score,insufficient history (0 < 8),dengue
+R4A-RIZAL,4,4,no_score,insufficient history (4 < 8),dengue
+R4A-RIZAL,8,8,nb_intercept,short history (8 points),dengue
+R4A-RIZAL,12,12,nb_intercept,short history (12 points),dengue
+R4A-RIZAL,16,16,nb_intercept,short history (16 points),dengue
+R4A-RIZAL,20,20,nb_trend,short history (20 points),dengue
+R4A-RIZAL,24,24,nb_trend,short history (24 points),dengue
+R4A-RIZAL,28,28,nb_trend,short history (28 points),dengue
+R4A-RIZAL,32,32,nb_trend,short history (32 points),dengue
+R4A-RIZAL,36,36,nb_trend,short history (36 points),dengue
+R4A-RIZAL,40,40,nb_trend,short history (40 points),dengue
+R4A-RIZAL,44,44,nb_trend,short history (44 points),dengue
+R4B-MARINDUQUE,0,0,no_score,insufficient history (0 < 8),dengue
+R4B-MARINDUQUE,4,4,no_score,insufficient history (4 < 8),dengue
+R4B-MARINDUQUE,8,8,nb_intercept,short history (8 points),dengue
+R4B-MARINDUQUE,12,12,nb_intercept,short history (12 points),dengue
+R4B-MARINDUQUE,16,16,nb_intercept,short history (16 points),dengue
+R4B-MARINDUQUE,20,20,nb_trend,short history (20 points),dengue
+R4B-MARINDUQUE,24,24,nb_trend,short history (24 points),dengue
+R4B-MARINDUQUE,28,28,nb_trend,short history (28 points),dengue
+R4B-MARINDUQUE,32,32,nb_trend,short history (32 points),dengue
+R4B-MARINDUQUE,36,36,nb_trend,short history (36 points),dengue
+R4B-MARINDUQUE,40,40,nb_trend,short history (40 points),dengue
+R4B-MARINDUQUE,44,44,nb_trend,short history (44 points),dengue
+R4B-OCCIDENTAL_MINDORO,0,0,no_score,insufficient history (0 < 8),dengue
+R4B-OCCIDENTAL_MINDORO,4,4,no_score,insufficient history (4 < 8),dengue
+R4B-OCCIDENTAL_MINDORO,8,8,nb_intercept,short history (8 points),dengue
+R4B-OCCIDENTAL_MINDORO,12,12,nb_intercept,short history (12 points),dengue
+R4B-OCCIDENTAL_MINDORO,16,16,nb_intercept,short history (16 points),dengue
+R4B-OCCIDENTAL_MINDORO,20,20,nb_trend,short history (20 points),dengue
+R4B-OCCIDENTAL_MINDORO,24,24,nb_trend,short history (24 points),dengue
+R4B-OCCIDENTAL_MINDORO,28,28,nb_trend,short history (28 points),dengue
+R4B-OCCIDENTAL_MINDORO,32,32,nb_trend,short history (32 points),dengue
+R4B-OCCIDENTAL_MINDORO,36,36,nb_trend,short history (36 points),dengue
+R4B-OCCIDENTAL_MINDORO,40,40,nb_trend,short history (40 points),dengue
+R4B-OCCIDENTAL_MINDORO,44,44,nb_trend,short history (44 points),dengue
+R4B-ORIENTAL_MINDORO,0,0,no_score,insufficient history (0 < 8),dengue
+R4B-ORIENTAL_MINDORO,4,4,no_score,insufficient history (4 < 8),dengue
+R4B-ORIENTAL_MINDORO,8,8,nb_intercept,short history (8 points),dengue
+R4B-ORIENTAL_MINDORO,12,12,nb_intercept,short history (12 points),dengue
+R4B-ORIENTAL_MINDORO,16,16,nb_intercept,short history (16 points),dengue
+R4B-ORIENTAL_MINDORO,20,20,nb_trend,short history (20 points),dengue
+R4B-ORIENTAL_MINDORO,24,24,nb_trend,short history (24 points),dengue
+R4B-ORIENTAL_MINDORO,28,28,nb_trend,short history (28 points),dengue
+R4B-ORIENTAL_MINDORO,32,32,nb_trend,short history (32 points),dengue
+R4B-ORIENTAL_MINDORO,36,36,nb_trend,short history (36 points),dengue
+R4B-ORIENTAL_MINDORO,40,40,nb_trend,short history (40 points),dengue
+R4B-ORIENTAL_MINDORO,44,44,nb_trend,short history (44 points),dengue
+R4B-PALAWAN,0,0,no_score,insufficient history (0 < 8),dengue
+R4B-PALAWAN,4,4,no_score,insufficient history (4 < 8),dengue
+R4B-PALAWAN,8,8,nb_intercept,short history (8 points),dengue
+R4B-PALAWAN,12,12,nb_intercept,short history (12 points),dengue
+R4B-PALAWAN,16,16,nb_intercept,short history (16 points),dengue
+R4B-PALAWAN,20,20,nb_trend,short history (20 points),dengue
+R4B-PALAWAN,24,24,nb_trend,short history (24 points),dengue
+R4B-PALAWAN,28,28,nb_trend,short history (28 points),dengue
+R4B-PALAWAN,32,32,nb_trend,short history (32 points),dengue
+R4B-PALAWAN,36,36,nb_trend,short history (36 points),dengue
+R4B-PALAWAN,40,40,nb_trend,short history (40 points),dengue
+R4B-PALAWAN,44,44,nb_trend,short history (44 points),dengue
+R4B-PUERTO_PRINCESA_CITY,0,0,no_score,insufficient history (0 < 8),dengue
+R4B-PUERTO_PRINCESA_CITY,4,4,no_score,insufficient history (4 < 8),dengue
+R4B-PUERTO_PRINCESA_CITY,8,8,nb_intercept,short history (8 points),dengue
+R4B-PUERTO_PRINCESA_CITY,12,12,nb_intercept,short history (12 points),dengue
+R4B-PUERTO_PRINCESA_CITY,16,16,nb_intercept,short history (16 points),dengue
+R4B-PUERTO_PRINCESA_CITY,20,20,nb_trend,short history (20 points),dengue
+R4B-PUERTO_PRINCESA_CITY,24,24,nb_trend,short history (24 points),dengue
+R4B-PUERTO_PRINCESA_CITY,28,28,nb_trend,short history (28 points),dengue
+R4B-PUERTO_PRINCESA_CITY,32,32,nb_trend,short history (32 points),dengue
+R4B-PUERTO_PRINCESA_CITY,36,36,nb_trend,short history (36 points),dengue
+R4B-PUERTO_PRINCESA_CITY,40,40,nb_trend,short history (40 points),dengue
+R4B-PUERTO_PRINCESA_CITY,44,44,nb_trend,short history (44 points),dengue
+R4B-ROMBLON,0,0,no_score,insufficient history (0 < 8),dengue
+R4B-ROMBLON,4,4,no_score,insufficient history (4 < 8),dengue
+R4B-ROMBLON,8,8,nb_intercept,short history (8 points),dengue
+R4B-ROMBLON,12,12,nb_intercept,short history (12 points),dengue
+R4B-ROMBLON,16,16,nb_intercept,short history (16 points),dengue
+R4B-ROMBLON,20,20,nb_trend,short history (20 points),dengue
+R4B-ROMBLON,24,24,nb_trend,short history (24 points),dengue
+R4B-ROMBLON,28,28,nb_trend,short history (28 points),dengue
+R4B-ROMBLON,32,32,nb_trend,short history (32 points),dengue
+R4B-ROMBLON,36,36,nb_trend,short history (36 points),dengue
+R4B-ROMBLON,40,40,nb_trend,short history (40 points),dengue
+R4B-ROMBLON,44,44,nb_trend,short history (44 points),dengue
+acute_bloody_diarrhea,0,0,no_score,insufficient history (0 < 8),edcs
+acute_bloody_diarrhea,4,4,no_score,insufficient history (4 < 8),edcs
+acute_bloody_diarrhea,8,8,nb_intercept,short history (8 points),edcs
+acute_bloody_diarrhea,12,12,nb_intercept,short history (12 points),edcs
+acute_bloody_diarrhea,16,16,nb_intercept,short history (16 points),edcs
+acute_bloody_diarrhea,20,20,nb_trend,short history (20 points),edcs
+acute_bloody_diarrhea,24,24,nb_trend,short history (24 points),edcs
+acute_bloody_diarrhea,28,28,nb_trend,short history (28 points),edcs
+acute_bloody_diarrhea,32,32,nb_trend,short history (32 points),edcs
+acute_bloody_diarrhea,36,36,nb_trend,short history (36 points),edcs
+acute_bloody_diarrhea,40,40,nb_trend,short history (40 points),edcs
+acute_bloody_diarrhea,44,44,nb_trend,short history (44 points),edcs
+afp,0,0,no_score,insufficient history (0 < 8),edcs
+afp,4,4,no_score,insufficient history (4 < 8),edcs
+afp,8,8,nb_intercept,short history (8 points),edcs
+afp,12,12,nb_intercept,short history (12 points),edcs
+afp,16,16,nb_intercept,short history (16 points),edcs
+afp,20,20,nb_trend,short history (20 points),edcs
+afp,24,24,nb_trend,short history (24 points),edcs
+afp,28,28,nb_trend,short history (28 points),edcs
+afp,32,32,nb_trend,short history (32 points),edcs
+afp,36,36,nb_trend,short history (36 points),edcs
+afp,40,40,nb_trend,short history (40 points),edcs
+afp,44,44,nb_trend,short history (44 points),edcs
+chikungunya,0,0,no_score,insufficient history (0 < 8),edcs
+chikungunya,4,4,no_score,insufficient history (4 < 8),edcs
+chikungunya,8,8,nb_intercept,short history (8 points),edcs
+chikungunya,12,12,nb_intercept,short history (12 points),edcs
+chikungunya,16,16,nb_intercept,short history (16 points),edcs
+chikungunya,20,20,nb_trend,short history (20 points),edcs
+chikungunya,24,24,nb_trend,short history (24 points),edcs
+chikungunya,28,28,nb_trend,short history (28 points),edcs
+chikungunya,32,32,nb_trend,short history (32 points),edcs
+chikungunya,36,36,nb_trend,short history (36 points),edcs
+chikungunya,40,40,nb_trend,short history (40 points),edcs
+chikungunya,44,44,nb_trend,short history (44 points),edcs
+cholera,0,0,no_score,insufficient history (0 < 8),edcs
+cholera,4,4,no_score,insufficient history (4 < 8),edcs
+cholera,8,8,nb_intercept,short history (8 points),edcs
+cholera,12,12,nb_intercept,short history (12 points),edcs
+cholera,16,16,nb_intercept,short history (16 points),edcs
+cholera,20,20,nb_trend,short history (20 points),edcs
+cholera,24,24,nb_trend,short history (24 points),edcs
+cholera,28,28,nb_trend,short history (28 points),edcs
+cholera,32,32,nb_trend,short history (32 points),edcs
+cholera,36,36,nb_trend,short history (36 points),edcs
+cholera,40,40,nb_trend,short history (40 points),edcs
+cholera,44,44,nb_trend,short history (44 points),edcs
+dengue,0,0,no_score,insufficient history (0 < 8),edcs
+dengue,4,4,no_score,insufficient history (4 < 8),edcs
+dengue,8,8,nb_intercept,short history (8 points),edcs
+dengue,12,12,nb_intercept,short history (12 points),edcs
+dengue,16,16,nb_intercept,short history (16 points),edcs
+dengue,20,20,nb_trend,short history (20 points),edcs
+dengue,24,24,nb_trend,short history (24 points),edcs
+dengue,28,28,nb_trend,short history (28 points),edcs
+dengue,32,32,nb_trend,short history (32 points),edcs
+dengue,36,36,nb_trend,short history (36 points),edcs
+dengue,40,40,nb_trend,short history (40 points),edcs
+dengue,44,44,nb_trend,short history (44 points),edcs
+diphtheria,0,0,no_score,insufficient history (0 < 8),edcs
+diphtheria,4,4,no_score,insufficient history (4 < 8),edcs
+diphtheria,8,8,nb_intercept,short history (8 points),edcs
+diphtheria,12,12,nb_intercept,short history (12 points),edcs
+diphtheria,16,16,nb_intercept,short history (16 points),edcs
+diphtheria,20,20,nb_trend,short history (20 points),edcs
+diphtheria,24,24,nb_trend,short history (24 points),edcs
+diphtheria,28,28,nb_trend,short history (28 points),edcs
+diphtheria,32,32,nb_trend,short history (32 points),edcs
+diphtheria,36,36,nb_trend,short history (36 points),edcs
+diphtheria,40,40,nb_trend,short history (40 points),edcs
+diphtheria,44,44,nb_trend,short history (44 points),edcs
+hepatitis_a,0,0,no_score,insufficient history (0 < 8),edcs
+hepatitis_a,4,4,no_score,insufficient history (4 < 8),edcs
+hepatitis_a,8,8,nb_intercept,short history (8 points),edcs
+hepatitis_a,12,12,nb_intercept,short history (12 points),edcs
+hepatitis_a,16,16,nb_intercept,short history (16 points),edcs
+hepatitis_a,20,20,nb_trend,short history (20 points),edcs
+hepatitis_a,24,24,nb_trend,short history (24 points),edcs
+hepatitis_a,28,28,nb_trend,short history (28 points),edcs
+hepatitis_a,32,32,nb_trend,short history (32 points),edcs
+hepatitis_a,36,36,nb_trend,short history (36 points),edcs
+hepatitis_a,40,40,nb_trend,short history (40 points),edcs
+hepatitis_a,44,44,nb_trend,short history (44 points),edcs
+ili,0,0,no_score,insufficient history (0 < 8),edcs
+ili,4,4,no_score,insufficient history (4 < 8),edcs
+ili,8,8,nb_intercept,short history (8 points),edcs
+ili,12,12,nb_intercept,short history (12 points),edcs
+ili,16,16,nb_intercept,short history (16 points),edcs
+ili,20,20,nb_trend,short history (20 points),edcs
+ili,24,24,nb_trend,short history (24 points),edcs
+ili,28,28,nb_trend,short history (28 points),edcs
+ili,32,32,nb_trend,short history (32 points),edcs
+ili,36,36,nb_trend,short history (36 points),edcs
+ili,40,40,nb_trend,short history (40 points),edcs
+ili,44,44,nb_trend,short history (44 points),edcs
+leptospirosis,0,0,no_score,insufficient history (0 < 8),edcs
+leptospirosis,4,4,no_score,insufficient history (4 < 8),edcs
+leptospirosis,8,8,nb_intercept,short history (8 points),edcs
+leptospirosis,12,12,nb_intercept,short history (12 points),edcs
+leptospirosis,16,16,nb_intercept,short history (16 points),edcs
+leptospirosis,20,20,nb_trend,short history (20 points),edcs
+leptospirosis,24,24,nb_trend,short history (24 points),edcs
+leptospirosis,28,28,nb_trend,short history (28 points),edcs
+leptospirosis,32,32,nb_trend,short history (32 points),edcs
+leptospirosis,36,36,nb_trend,short history (36 points),edcs
+leptospirosis,40,40,nb_trend,short history (40 points),edcs
+leptospirosis,44,44,nb_trend,short history (44 points),edcs
+measles,0,0,no_score,insufficient history (0 < 8),edcs
+measles,4,4,no_score,insufficient history (4 < 8),edcs
+measles,8,8,nb_intercept,short history (8 points),edcs
+measles,12,12,nb_intercept,short history (12 points),edcs
+measles,16,16,nb_intercept,short history (16 points),edcs
+measles,20,20,nb_trend,short history (20 points),edcs
+measles,24,24,nb_trend,short history (24 points),edcs
+measles,28,28,nb_trend,short history (28 points),edcs
+measles,32,32,nb_trend,short history (32 points),edcs
+measles,36,36,nb_trend,short history (36 points),edcs
+measles,40,40,nb_trend,short history (40 points),edcs
+measles,44,44,nb_trend,short history (44 points),edcs
+meningococcal_disease,0,0,no_score,insufficient history (0 < 8),edcs
+meningococcal_disease,4,4,no_score,insufficient history (4 < 8),edcs
+meningococcal_disease,8,8,nb_intercept,short history (8 points),edcs
+meningococcal_disease,12,12,nb_intercept,short history (12 points),edcs
+meningococcal_disease,16,16,nb_intercept,short history (16 points),edcs
+meningococcal_disease,20,20,nb_trend,short history (20 points),edcs
+meningococcal_disease,24,24,nb_trend,short history (24 points),edcs
+meningococcal_disease,28,28,nb_trend,short history (28 points),edcs
+meningococcal_disease,32,32,nb_trend,short history (32 points),edcs
+meningococcal_disease,36,36,nb_trend,short history (36 points),edcs
+meningococcal_disease,40,40,nb_trend,short history (40 points),edcs
+meningococcal_disease,44,44,nb_trend,short history (44 points),edcs
+neonatal_tetanus,0,0,no_score,insufficient history (0 < 8),edcs
+neonatal_tetanus,4,4,no_score,insufficient history (4 < 8),edcs
+neonatal_tetanus,8,8,nb_intercept,short history (8 points),edcs
+neonatal_tetanus,12,12,nb_intercept,short history (12 points),edcs
+neonatal_tetanus,16,16,nb_intercept,short history (16 points),edcs
+neonatal_tetanus,20,20,nb_trend,short history (20 points),edcs
+neonatal_tetanus,24,24,nb_trend,short history (24 points),edcs
+neonatal_tetanus,28,28,nb_trend,short history (28 points),edcs
+neonatal_tetanus,32,32,nb_trend,short history (32 points),edcs
+neonatal_tetanus,36,36,nb_trend,short history (36 points),edcs
+neonatal_tetanus,40,40,nb_trend,short history (40 points),edcs
+neonatal_tetanus,44,44,nb_trend,short history (44 points),edcs
+non_neonatal_tetanus,0,0,no_score,insufficient history (0 < 8),edcs
+non_neonatal_tetanus,4,4,no_score,insufficient history (4 < 8),edcs
+non_neonatal_tetanus,8,8,nb_intercept,short history (8 points),edcs
+non_neonatal_tetanus,12,12,nb_intercept,short history (12 points),edcs
+non_neonatal_tetanus,16,16,nb_intercept,short history (16 points),edcs
+non_neonatal_tetanus,20,20,nb_trend,short history (20 points),edcs
+non_neonatal_tetanus,24,24,nb_trend,short history (24 points),edcs
+non_neonatal_tetanus,28,28,nb_trend,short history (28 points),edcs
+non_neonatal_tetanus,32,32,nb_trend,short history (32 points),edcs
+non_neonatal_tetanus,36,36,nb_trend,short history (36 points),edcs
+non_neonatal_tetanus,40,40,nb_trend,short history (40 points),edcs
+non_neonatal_tetanus,44,44,nb_trend,short history (44 points),edcs
+pertussis,0,0,no_score,insufficient history (0 < 8),edcs
+pertussis,4,4,no_score,insufficient history (4 < 8),edcs
+pertussis,8,8,nb_intercept,short history (8 points),edcs
+pertussis,12,12,nb_intercept,short history (12 points),edcs
+pertussis,16,16,nb_intercept,short history (16 points),edcs
+pertussis,20,20,nb_trend,short history (20 points),edcs
+pertussis,24,24,nb_trend,short history (24 points),edcs
+pertussis,28,28,nb_trend,short history (28 points),edcs
+pertussis,32,32,nb_trend,short history (32 points),edcs
+pertussis,36,36,nb_trend,short history (36 points),edcs
+pertussis,40,40,nb_trend,short history (40 points),edcs
+pertussis,44,44,nb_trend,short history (44 points),edcs
+rabies,0,0,no_score,insufficient history (0 < 8),edcs
+rabies,4,4,no_score,insufficient history (4 < 8),edcs
+rabies,8,8,nb_intercept,short history (8 points),edcs
+rabies,12,12,nb_intercept,short history (12 points),edcs
+rabies,16,16,nb_intercept,short history (16 points),edcs
+rabies,20,20,nb_trend,short history (20 points),edcs
+rabies,24,24,nb_trend,short history (24 points),edcs
+rabies,28,28,nb_trend,short history (28 points),edcs
+rabies,32,32,nb_trend,short history (32 points),edcs
+rabies,36,36,nb_trend,short history (36 points),edcs
+rabies,40,40,nb_trend,short history (40 points),edcs
+rabies,44,44,nb_trend,short history (44 points),edcs
+rotavirus,0,0,no_score,insufficient history (0 < 8),edcs
+rotavirus,4,4,no_score,insufficient history (4 < 8),edcs
+rotavirus,8,8,nb_intercept,short history (8 points),edcs
+rotavirus,12,12,nb_intercept,short history (12 points),edcs
+rotavirus,16,16,nb_intercept,short history (16 points),edcs
+rotavirus,20,20,nb_trend,short history (20 points),edcs
+rotavirus,24,24,nb_trend,short history (24 points),edcs
+rotavirus,28,28,nb_trend,short history (28 points),edcs
+rotavirus,32,32,nb_trend,short history (32 points),edcs
+rotavirus,36,36,nb_trend,short history (36 points),edcs
+rotavirus,40,40,nb_trend,short history (40 points),edcs
+rotavirus,44,44,nb_trend,short history (44 points),edcs
+rubella,0,0,no_score,insufficient history (0 < 8),edcs
+rubella,4,4,no_score,insufficient history (4 < 8),edcs
+rubella,8,8,nb_intercept,short history (8 points),edcs
+rubella,12,12,nb_intercept,short history (12 points),edcs
+rubella,16,16,nb_intercept,short history (16 points),edcs
+rubella,20,20,nb_trend,short history (20 points),edcs
+rubella,24,24,nb_trend,short history (24 points),edcs
+rubella,28,28,nb_trend,short history (28 points),edcs
+rubella,32,32,nb_trend,short history (32 points),edcs
+rubella,36,36,nb_trend,short history (36 points),edcs
+rubella,40,40,nb_trend,short history (40 points),edcs
+rubella,44,44,nb_trend,short history (44 points),edcs
+typhoid_fever,0,0,no_score,insufficient history (0 < 8),edcs
+typhoid_fever,4,4,no_score,insufficient history (4 < 8),edcs
+typhoid_fever,8,8,nb_intercept,short history (8 points),edcs
+typhoid_fever,12,12,nb_intercept,short history (12 points),edcs
+typhoid_fever,16,16,nb_intercept,short history (16 points),edcs
+typhoid_fever,20,20,nb_trend,short history (20 points),edcs
+typhoid_fever,24,24,nb_trend,short history (24 points),edcs
+typhoid_fever,28,28,nb_trend,short history (28 points),edcs
+typhoid_fever,32,32,nb_trend,short history (32 points),edcs
+typhoid_fever,36,36,nb_trend,short history (36 points),edcs
+typhoid_fever,40,40,nb_trend,short history (40 points),edcs
+typhoid_fever,44,44,nb_trend,short history (44 points),edcs
+tb,0,0,no_score,insufficient history (0 < 8),tb
+tb,4,4,no_score,insufficient history (4 < 8),tb
+tb,8,8,nb_intercept,short history (8 points),tb
+tb,12,12,nb_intercept,short history (12 points),tb
+tb,16,16,nb_intercept,short history (16 points),tb
+tb,20,20,nb_trend,short history (20 points),tb
+tb,24,24,nb_trend,short history (24 points),tb
+tb,28,28,nb_trend,short history (28 points),tb
+tb,32,32,nb_trend,short history (32 points),tb
+tb,36,36,nb_trend,short history (36 points),tb
+tb,40,40,nb_trend,short history (40 points),tb
+tb,44,44,nb_trend,short history (44 points),tb

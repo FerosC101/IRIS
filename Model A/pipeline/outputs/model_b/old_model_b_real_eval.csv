@@ -1,0 +1,4 @@
+method,"AUC, 2020 swapped zeros vs normal zeros","AUC, 2020 all swaps vs all normal weeks",recall at 1% budget (2020 swaps),false-alert rate (2020 normal weeks),recall 95% CI,false-alert rate 95% CI,precision,f1,weeks to detect,real swaps in 2020 top 100,can see partial reports (1-3 cases)
+"Old Model B, as published (within-date ranks)",0.5171,0.904769,0.28481,0.0466289,"(0.16019115254661498, 0.43679445091602226)","(0.036649660914872664, 0.058545709628530694)",0.131965,0.180361,0.307692,10,no (zeros only)
+"Old Model B, fixed (absolute)",0.390412,0.880773,0.329114,0.0951481,"(0.19726819861802988, 0.4664433322570227)","(0.0791989938339108, 0.11119471639606995)",0.0792683,0.127764,0,0,no (zeros only)
+Model A v2,0.655851,0.790187,0.0886076,0.0546629,"(0.010176056338028197, 0.17535332314744076)","(0.03629354847443498, 0.07700389294524784)",0.0387812,0.0539499,0,1,yes

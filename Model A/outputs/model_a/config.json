@@ -1,0 +1,94 @@
+{
+  "SEED": 2026,
+  "ALERT_BUDGET": 0.01,
+  "MODEL_VERSION": "model_a_v1",
+  "REFIT_EVERY": 4,
+  "TRAIN_WINDOW": 156,
+  "MIN_FULL": 45,
+  "MIN_TREND": 20,
+  "MIN_ANY": 8,
+  "ROBUST_DROP_P": 0.01,
+  "MAX_PRED_FACTOR": 10,
+  "PI_LEVEL": 0.9,
+  "PERIODS_PER_YEAR": {
+    "week": 52.1775,
+    "month": 12
+  },
+  "ALPHA_BOUNDS": [
+    0.0001,
+    50.0
+  ],
+  "BASELINE_WINDOW": 8,
+  "BASELINE_MIN_OBS": 4,
+  "EWMA_LAMBDA": 0.3,
+  "CUSUM_K": 0.5,
+  "INJECT_DENGUE": {
+    "years": [
+      2019,
+      2020
+    ],
+    "zero_fill": 150,
+    "partial": 150,
+    "outage": 30,
+    "region_outage": 3
+  },
+  "INJECT_MEASLES": {
+    "years": [
+      2017,
+      2021
+    ],
+    "zero_fill": 6,
+    "partial": 6,
+    "outage": 2,
+    "region_outage": 0
+  },
+  "PARTIAL_RANGE": [
+    0.1,
+    0.5
+  ],
+  "OUTAGE_WEEKS": [
+    2,
+    4
+  ],
+  "INJECT_SPACING": 6,
+  "TB_COUNT_MODEL_START": "2021-01-01",
+  "TB_EXCLUDED_BASE_YEARS": [
+    2020
+  ],
+  "COLAB_DATA": "drive",
+  "COLAB_DRIVE_DATA_DIR": "/content/drive/MyDrive/PJDS/data",
+  "TAU_model_a": 0.0009031962435337457,
+  "BASELINE_THRESHOLDS": {
+    "rolling_median": 4.788884392283826,
+    "ewma": 2.7273297990809353,
+    "cusum": 28.31690955479072
+  },
+  "tuning_rows_dengue_2019": 6426,
+  "false_alert_rate_at_tuning": {
+    "model_a": 0.009959539371304078,
+    "rolling_median": 0.009959539371304078,
+    "ewma": 0.009959539371304078,
+    "cusum": 0.009959539371304078
+  },
+  "TB_alpha_method1": 0.054059966678708125,
+  "inputs_sha256": {
+    "dengue/clean/dengue_province_weekly.csv": "003a1dd85cc8fe6996769b121e5ee0f7d399bbf687ff6d1fd69df7ef36c1e52b",
+    "shared/edcs_national_weekly.csv": "d090ede763583ae44b9dd1387518f1a1de2d241df282e94abf2f98c95756a415",
+    "measles/clean/measles_national_weekly.csv": "1fd8f90a9ba99376489a4fe37c2f001b23764456022048a7fd4abf8c3d2babaf",
+    "tb/clean/tb_national_monthly.csv": "3fa99af940b19441ff8ab372786db431e55ba863ab901488739a3a109c63efeb",
+    "tb/clean/tb_national_annual.csv": "770135ffd6987621effe027fc59f270f13d50392bf6dd1d9fb8f33a6ccf06222",
+    "shared/calendar_weeks.csv": "28c20a1f0614fa621f2e3f2b7eb94f9bbc0038b01b4ced83fa3e2616d663b267",
+    "shared/locations.csv": "da1aba98fda636a2c97d17f1f696e44d04d99931dd23b82b048eea8831c196f3"
+  },
+  "scores_sha256": "13550589a2153a543a40b00e73a16e6ff463607145f0f4e99950ff6f69e4d431",
+  "versions": {
+    "python": "3.13.14",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "statsmodels": "0.15.0",
+    "matplotlib": "3.10.8"
+  },
+  "runtime_seconds": 557.5,
+  "colab": false
+}

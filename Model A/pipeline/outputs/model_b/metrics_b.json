@@ -1,0 +1,1515 @@
+{
+  "ablation": [
+    {
+      "method": "facility only (no graph)",
+      "facility-week recall": [
+        0.13873041015094387,
+        0.11606693832516876,
+        0.16139388197671897
+      ],
+      "facility-week false-alert rate": [
+        0.0036113842142433358,
+        0.0034560714254672355,
+        0.003766697003019436
+      ],
+      "facility-week precision": [
+        0.43110314980558445,
+        0.3804143096411965,
+        0.4817919899699724
+      ],
+      "source false-alert rate": [
+        NaN,
+        NaN,
+        NaN
+      ],
+      "isolated events detected": [
+        0.20625,
+        0.1805386153022051,
+        0.23196138469779487
+      ],
+      "isolated source identified": [
+        0.20625,
+        0.1805386153022051,
+        0.23196138469779487
+      ],
+      "isolated weeks to detect": [
+        0.11742604617604617,
+        0.02242331035513978,
+        0.21242878199695256
+      ],
+      "hub events detected": [
+        0.5083333333333334,
+        0.4346590326626492,
+        0.5820076340040176
+      ],
+      "hub source identified": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hub weeks to detect": [
+        0.05833333333333333,
+        0.0,
+        0.14331092995180952
+      ],
+      "lab events detected": [
+        0.29999999999999993,
+        0.1670462137250434,
+        0.43295378627495645
+      ],
+      "lab source identified": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lab weeks to detect": [
+        1.1153846153846154,
+        0.0,
+        2.7710188427336204
+      ]
+    },
+    {
+      "method": "region pooling (no graph)",
+      "facility-week recall": [
+        0.23859149775849842,
+        0.19488221847016235,
+        0.2823007770468345
+      ],
+      "facility-week false-alert rate": [
+        0.02946345721400346,
+        0.027429157949170342,
+        0.031497756478836576
+      ],
+      "facility-week precision": [
+        0.14162492415881617,
+        0.11954138047618247,
+        0.16370846784144988
+      ],
+      "source false-alert rate": [
+        0.012675730228693843,
+        0.010789995519636584,
+        0.014561464937751102
+      ],
+      "isolated events detected": [
+        0.2475,
+        0.21356789381249597,
+        0.281432106187504
+      ],
+      "isolated source identified": [
+        0.19999999999999998,
+        0.17342731325831218,
+        0.2265726867416878
+      ],
+      "isolated weeks to detect": [
+        0.26952818423406655,
+        0.08047034324308264,
+        0.45858602522505043
+      ],
+      "hub events detected": [
+        0.6,
+        0.5266524162414722,
+        0.6733475837585278
+      ],
+      "hub source identified": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hub weeks to detect": [
+        0.025,
+        0.0,
+        0.07732560136020658
+      ],
+      "lab events detected": [
+        0.3333333333333333,
+        0.19941957945651587,
+        0.46724708721015074
+      ],
+      "lab source identified": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lab weeks to detect": [
+        1.0714285714285714,
+        0.0,
+        2.627551434186273
+      ]
+    },
+    {
+      "method": "graph: hub + lab, Stouffer",
+      "facility-week recall": [
+        0.36451707940970907,
+        0.3019559592941265,
+        0.42707819952529164
+      ],
+      "facility-week false-alert rate": [
+        0.027568584368655585,
+        0.025564106476302716,
+        0.029573062261008455
+      ],
+      "facility-week precision": [
+        0.213968867040841,
+        0.17839365326585083,
+        0.24954408081583118
+      ],
+      "source false-alert rate": [
+        0.010353325524875947,
+        0.009814465029562507,
+        0.010892186020189387
+      ],
+      "isolated events detected": [
+        0.25375000000000003,
+        0.2240347705736505,
+        0.28346522942634955
+      ],
+      "isolated source identified": [
+        0.19249999999999998,
+        0.16906850948777574,
+        0.2159314905122242
+      ],
+      "isolated weeks to detect": [
+        0.363949383949384,
+        0.1590120102751796,
+        0.5688867576235883
+      ],
+      "hub events detected": [
+        0.6333333333333333,
+        0.5591177006170298,
+        0.7075489660496368
+      ],
+      "hub source identified": [
+        0.55,
+        0.4779741025823785,
+        0.6220258974176216
+      ],
+      "hub weeks to detect": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lab events detected": [
+        0.4666666666666666,
+        0.3490488687071884,
+        0.5842844646261448
+      ],
+      "lab source identified": [
+        0.39999999999999997,
+        0.28022389728370406,
+        0.5197761027162959
+      ],
+      "lab weeks to detect": [
+        0.2777777777777778,
+        0.0,
+        0.8638376605092168
+      ]
+    },
+    {
+      "method": "graph: hub + lab, NB sum",
+      "facility-week recall": [
+        0.39752864134378985,
+        0.33455205354368334,
+        0.46050522914389636
+      ],
+      "facility-week false-alert rate": [
+        0.021439147295112954,
+        0.019845505416039903,
+        0.023032789174186004
+      ],
+      "facility-week precision": [
+        0.27691612765243295,
+        0.23416341585439274,
+        0.3196688394504732
+      ],
+      "source false-alert rate": [
+        0.010124501547873536,
+        0.009390136386731512,
+        0.01085886670901556
+      ],
+      "isolated events detected": [
+        0.2475,
+        0.2204170281126878,
+        0.2745829718873122
+      ],
+      "isolated source identified": [
+        0.19999999999999998,
+        0.17629337492658456,
+        0.2237066250734154
+      ],
+      "isolated weeks to detect": [
+        0.338199161949162,
+        0.1786442015170342,
+        0.4977541223812898
+      ],
+      "hub events detected": [
+        0.7583333333333333,
+        0.6689479625803152,
+        0.8477187040863514
+      ],
+      "hub source identified": [
+        0.7166666666666666,
+        0.6362387432725878,
+        0.7970945900607453
+      ],
+      "hub weeks to detect": [
+        0.03833333333333333,
+        0.0,
+        0.1026109388043858
+      ],
+      "lab events detected": [
+        0.4833333333333333,
+        0.33598473199196494,
+        0.6306819346747017
+      ],
+      "lab source identified": [
+        0.35,
+        0.2315682283285555,
+        0.46843177167144445
+      ],
+      "lab weeks to detect": [
+        0.4901960784313725,
+        0.0,
+        1.1267667761220372
+      ]
+    }
+  ],
+  "stress": {
+    "2019": [
+      {
+        "method": "facility only (no graph)",
+        "facility-week recall": [
+          0.31443165365085723,
+          0.2537570440533431,
+          0.3751062632483714
+        ],
+        "facility-week false-alert rate": [
+          0.050317430102011826,
+          0.048418893218171874,
+          0.05221596698585178
+        ],
+        "facility-week precision": [
+          0.130560311708033,
+          0.10282650395122803,
+          0.15829411946483798
+        ],
+        "source false-alert rate": [
+          NaN,
+          NaN,
+          NaN
+        ],
+        "isolated events detected": [
+          0.3875,
+          0.34863702948252073,
+          0.4263629705174793
+        ],
+        "isolated source identified": [
+          0.3875,
+          0.34863702948252073,
+          0.4263629705174793
+        ],
+        "isolated weeks to detect": [
+          0.09432338086749852,
+          0.014410973160403906,
+          0.17423578857459313
+        ],
+        "hub events detected": [
+          0.8,
+          0.6904387281412478,
+          0.9095612718587522
+        ],
+        "hub source identified": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hub weeks to detect": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab events detected": [
+          0.7,
+          0.4912123481040565,
+          0.9087876518959435
+        ],
+        "lab source identified": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab weeks to detect": [
+          0.65,
+          0.0,
+          1.49576835051215
+        ]
+      },
+      {
+        "method": "region pooling (no graph)",
+        "facility-week recall": [
+          0.5873635963946057,
+          0.48862069646469264,
+          0.6861064963245187
+        ],
+        "facility-week false-alert rate": [
+          0.3472012678303449,
+          0.3386797116608248,
+          0.355722823999865
+        ],
+        "facility-week precision": [
+          0.03958190654149531,
+          0.03069113671174091,
+          0.048472676371249704
+        ],
+        "source false-alert rate": [
+          0.3379195692296363,
+          0.32309599187295207,
+          0.3527431465863205
+        ],
+        "isolated events detected": [
+          0.6625000000000001,
+          0.6306753264026312,
+          0.6943246735973689
+        ],
+        "isolated source identified": [
+          0.2525,
+          0.2227531350585854,
+          0.2822468649414146
+        ],
+        "isolated weeks to detect": [
+          0.39325539275539273,
+          0.17052564611288779,
+          0.6159851393978977
+        ],
+        "hub events detected": [
+          0.9000000000000001,
+          0.8384318803669489,
+          0.9615681196330513
+        ],
+        "hub source identified": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hub weeks to detect": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab events detected": [
+          0.7666666666666666,
+          0.5404509503812567,
+          0.9928823829520765
+        ],
+        "lab source identified": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab weeks to detect": [
+          0.65,
+          0.0,
+          1.49576835051215
+        ]
+      },
+      {
+        "method": "graph: hub + lab, Stouffer",
+        "facility-week recall": [
+          0.7140818518341783,
+          0.6308719436321891,
+          0.7972917600361674
+        ],
+        "facility-week false-alert rate": [
+          0.3180846733407577,
+          0.3125128751067204,
+          0.323656471574795
+        ],
+        "facility-week precision": [
+          0.05171358635585288,
+          0.042311837026802857,
+          0.061115335684902905
+        ],
+        "source false-alert rate": [
+          0.17020277183934737,
+          0.16639195113992356,
+          0.1740135925387712
+        ],
+        "isolated events detected": [
+          0.6675,
+          0.6358994466109017,
+          0.6991005533890983
+        ],
+        "isolated source identified": [
+          0.23500000000000001,
+          0.21400806994256713,
+          0.25599193005743287
+        ],
+        "isolated weeks to detect": [
+          0.43792314007831246,
+          0.19760221842735148,
+          0.6782440617292734
+        ],
+        "hub events detected": [
+          0.9666666666666668,
+          0.9163965074921312,
+          1.0
+        ],
+        "hub source identified": [
+          0.8833333333333332,
+          0.7851777097331601,
+          0.9814889569335062
+        ],
+        "hub weeks to detect": [
+          0.11666666666666667,
+          0.0,
+          0.3805850023329782
+        ],
+        "lab events detected": [
+          0.8666666666666666,
+          0.7435304274005641,
+          0.9898029059327691
+        ],
+        "lab source identified": [
+          0.8,
+          0.6768637607338975,
+          0.9231362392661026
+        ],
+        "lab weeks to detect": [
+          0.6833333333333333,
+          0.0,
+          1.5620731145287041
+        ]
+      },
+      {
+        "method": "graph: hub + lab, NB sum",
+        "facility-week recall": [
+          0.6738848594955058,
+          0.5819337541849701,
+          0.7658359648060415
+        ],
+        "facility-week false-alert rate": [
+          0.2672635063242116,
+          0.26226696675915995,
+          0.2722600458892632
+        ],
+        "facility-week precision": [
+          0.05770314558289885,
+          0.04650747142280114,
+          0.06889881974299655
+        ],
+        "source false-alert rate": [
+          0.14543748179206237,
+          0.1423487179164149,
+          0.14852624566770983
+        ],
+        "isolated events detected": [
+          0.6124999999999999,
+          0.5795776029884195,
+          0.6454223970115803
+        ],
+        "isolated source identified": [
+          0.265,
+          0.2355533129199481,
+          0.29444668708005195
+        ],
+        "isolated weeks to detect": [
+          0.42631275326927504,
+          0.20268144653274703,
+          0.6499440600058031
+        ],
+        "hub events detected": [
+          0.9500000000000002,
+          0.8924082975963032,
+          1.0
+        ],
+        "hub source identified": [
+          0.9166666666666666,
+          0.8323610468011695,
+          1.0
+        ],
+        "hub weeks to detect": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab events detected": [
+          0.8333333333333333,
+          0.664722093602339,
+          1.0
+        ],
+        "lab source identified": [
+          0.7,
+          0.5240544428891256,
+          0.8759455571108743
+        ],
+        "lab weeks to detect": [
+          0.3666666666666667,
+          0.0,
+          0.8872723570823634
+        ]
+      }
+    ],
+    "2020": [
+      {
+        "method": "facility only (no graph)",
+        "facility-week recall": [
+          0.2224136251885538,
+          0.1660320930537244,
+          0.27879515732338317
+        ],
+        "facility-week false-alert rate": [
+          0.08038835373685548,
+          0.07748245579915766,
+          0.08329425167455329
+        ],
+        "facility-week precision": [
+          0.05807514360740037,
+          0.04094332263932629,
+          0.07520696457547445
+        ],
+        "source false-alert rate": [
+          NaN,
+          NaN,
+          NaN
+        ],
+        "isolated events detected": [
+          0.25,
+          0.17459476123819673,
+          0.3254052387618033
+        ],
+        "isolated source identified": [
+          0.25,
+          0.17459476123819673,
+          0.3254052387618033
+        ],
+        "isolated weeks to detect": [
+          0.022527472527472527,
+          0.0,
+          0.05923349244966529
+        ],
+        "hub events detected": [
+          0.6500000000000001,
+          0.5314380667104875,
+          0.7685619332895127
+        ],
+        "hub source identified": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hub weeks to detect": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab events detected": [
+          0.8,
+          0.6332727438666235,
+          0.9667272561333766
+        ],
+        "lab source identified": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab weeks to detect": [
+          0.03333333333333333,
+          0.0,
+          0.10873857209513663
+        ]
+      },
+      {
+        "method": "region pooling (no graph)",
+        "facility-week recall": [
+          0.8934252519649701,
+          0.8681434801297074,
+          0.9187070238002328
+        ],
+        "facility-week false-alert rate": [
+          0.7792033998272064,
+          0.7764000414802479,
+          0.782006758174165
+        ],
+        "facility-week precision": [
+          0.024686237853812472,
+          0.021774738165485228,
+          0.027597737542139716
+        ],
+        "source false-alert rate": [
+          0.7636922602631102,
+          0.7555449372520733,
+          0.7718395832741471
+        ],
+        "isolated events detected": [
+          0.9099999999999999,
+          0.859981823159987,
+          0.9600181768400129
+        ],
+        "isolated source identified": [
+          0.05249999999999999,
+          0.026583733918336353,
+          0.07841626608166363
+        ],
+        "isolated weeks to detect": [
+          0.1972136161609846,
+          0.1309483485793199,
+          0.2634788837426493
+        ],
+        "hub events detected": [
+          0.9666666666666668,
+          0.9163965074921312,
+          1.0
+        ],
+        "hub source identified": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hub weeks to detect": [
+          0.016666666666666666,
+          0.0,
+          0.05436928604756831
+        ],
+        "lab events detected": [
+          0.9666666666666666,
+          0.8912614279048633,
+          1.0
+        ],
+        "lab source identified": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab weeks to detect": [
+          0.16666666666666666,
+          0.0,
+          0.4242245896958756
+        ]
+      },
+      {
+        "method": "graph: hub + lab, Stouffer",
+        "facility-week recall": [
+          0.9083915932356476,
+          0.8761712911233874,
+          0.9406118953479077
+        ],
+        "facility-week false-alert rate": [
+          0.7270925478370512,
+          0.7212433210644978,
+          0.7329417746096046
+        ],
+        "facility-week precision": [
+          0.026866945490264804,
+          0.023537442792464974,
+          0.030196448188064634
+        ],
+        "source false-alert rate": [
+          0.3566962869538005,
+          0.35260800044231005,
+          0.36078457346529097
+        ],
+        "isolated events detected": [
+          0.9025000000000001,
+          0.8567491491248882,
+          0.948250850875112
+        ],
+        "isolated source identified": [
+          0.05500000000000001,
+          0.026040068545887873,
+          0.08395993145411214
+        ],
+        "isolated weeks to detect": [
+          0.20527563986348815,
+          0.13258652624941963,
+          0.27796475347755667
+        ],
+        "hub events detected": [
+          0.9833333333333334,
+          0.9456307139524317,
+          1.0
+        ],
+        "hub source identified": [
+          0.7666666666666666,
+          0.6385024053754805,
+          0.8948309279578527
+        ],
+        "hub weeks to detect": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab events detected": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "lab source identified": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "lab weeks to detect": [
+          0.06666666666666667,
+          0.0,
+          0.21747714419027325
+        ]
+      },
+      {
+        "method": "graph: hub + lab, NB sum",
+        "facility-week recall": [
+          0.8794304572443202,
+          0.8412939189611355,
+          0.917566995527505
+        ],
+        "facility-week false-alert rate": [
+          0.6503565879276642,
+          0.6448871311629352,
+          0.6558260446923931
+        ],
+        "facility-week precision": [
+          0.02905810307208302,
+          0.025136949917688216,
+          0.03297925622647782
+        ],
+        "source false-alert rate": [
+          0.3240294056758291,
+          0.3195845479792436,
+          0.3284742633724146
+        ],
+        "isolated events detected": [
+          0.845,
+          0.7952668293365968,
+          0.8947331706634032
+        ],
+        "isolated source identified": [
+          0.0825,
+          0.052044777145977175,
+          0.11295522285402283
+        ],
+        "isolated weeks to detect": [
+          0.29968829159498533,
+          0.1541648876936414,
+          0.4452116954963293
+        ],
+        "hub events detected": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "hub source identified": [
+          0.8833333333333332,
+          0.8028618146758142,
+          0.9638048519908522
+        ],
+        "hub weeks to detect": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "lab events detected": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "lab source identified": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "lab weeks to detect": [
+          0.1,
+          0.0,
+          0.26094303731503793
+        ]
+      }
+    ]
+  },
+  "recovery": [
+    {
+      "policy": "Network-aware (Model B v2)",
+      "staff hours / week": 12.0,
+      "failed facility-weeks": [
+        410.25,
+        370.0523860131847,
+        450.4476139868153
+      ],
+      "recovered submissions": [
+        132.0,
+        103.36141468728268,
+        160.6385853127173
+      ],
+      "recovered per staff-hour": [
+        0.21960899183414365,
+        0.17201818992323384,
+        0.2671997937450534
+      ],
+      "mean weeks to recover (all failures)": [
+        3.131632653061225,
+        2.941829961244645,
+        3.3214353448778047
+      ],
+      "mean weeks to recover (shared failures)": [
+        3.144444444444445,
+        2.757831920218373,
+        3.5310569686705167
+      ],
+      "shared source acted on first": [
+        0.873174603174603,
+        0.8235781048155775,
+        0.9227711015336286
+      ],
+      "cases missing from reports": [
+        2678.85,
+        2118.836015011094,
+        3238.863984988906
+      ],
+      "staff hours used": [
+        600.925,
+        599.770399428206,
+        602.0796005717939
+      ]
+    },
+    {
+      "policy": "Facility-first (proposal baseline)",
+      "staff hours / week": 12.0,
+      "failed facility-weeks": [
+        518.35,
+        463.4519059270578,
+        573.2480940729422
+      ],
+      "recovered submissions": [
+        23.9,
+        17.993876411755032,
+        29.806123588244965
+      ],
+      "recovered per staff-hour": [
+        0.03830128205128206,
+        0.02883634040345359,
+        0.04776622369911053
+      ],
+      "mean weeks to recover (all failures)": [
+        3.39795918367347,
+        3.190324296122628,
+        3.6055940712243117
+      ],
+      "mean weeks to recover (shared failures)": [
+        4.683333333333334,
+        4.243611808598592,
+        5.123054858068075
+      ],
+      "shared source acted on first": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cases missing from reports": [
+        3926.25,
+        3079.6661156621403,
+        4772.83388433786
+      ],
+      "staff hours used": [
+        624.0,
+        624.0,
+        624.0
+      ]
+    },
+    {
+      "policy": "No action",
+      "staff hours / week": 12.0,
+      "failed facility-weeks": [
+        542.25,
+        489.15608856197764,
+        595.3439114380224
+      ],
+      "recovered submissions": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "recovered per staff-hour": [
+        NaN,
+        NaN,
+        NaN
+      ],
+      "mean weeks to recover (all failures)": [
+        3.885714285714286,
+        3.651112291901229,
+        4.120316279527343
+      ],
+      "mean weeks to recover (shared failures)": [
+        4.683333333333334,
+        4.243611808598592,
+        5.123054858068075
+      ],
+      "shared source acted on first": [
+        NaN,
+        NaN,
+        NaN
+      ],
+      "cases missing from reports": [
+        4331.25,
+        3465.3400565497946,
+        5197.159943450205
+      ],
+      "staff hours used": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "policy": "Network-aware (Model B v2)",
+      "staff hours / week": 24.0,
+      "failed facility-weeks": [
+        366.15,
+        327.91629236216863,
+        404.3837076378313
+      ],
+      "recovered submissions": [
+        176.1,
+        131.622195584008,
+        220.57780441599198
+      ],
+      "recovered per staff-hour": [
+        0.1434323551775724,
+        0.10722806916037031,
+        0.17963664119477452
+      ],
+      "mean weeks to recover (all failures)": [
+        2.9591836734693877,
+        2.77473016715803,
+        3.1436371797807454
+      ],
+      "mean weeks to recover (shared failures)": [
+        2.705555555555556,
+        2.3404609669610927,
+        3.0706501441500196
+      ],
+      "shared source acted on first": [
+        0.8389087301587301,
+        0.782667645634054,
+        0.8951498146834063
+      ],
+      "cases missing from reports": [
+        2427.95,
+        1857.6332869001126,
+        2998.266713099887
+      ],
+      "staff hours used": [
+        1227.35,
+        1225.939607781864,
+        1228.7603922181358
+      ]
+    },
+    {
+      "policy": "Facility-first (proposal baseline)",
+      "staff hours / week": 24.0,
+      "failed facility-weeks": [
+        513.1,
+        458.5690222999841,
+        567.6309777000159
+      ],
+      "recovered submissions": [
+        29.15,
+        24.01580011640187,
+        34.28419988359813
+      ],
+      "recovered per staff-hour": [
+        0.02335737179487179,
+        0.019243429580450215,
+        0.02747131400929337
+      ],
+      "mean weeks to recover (all failures)": [
+        3.2908163265306123,
+        3.094096955715795,
+        3.4875356973454297
+      ],
+      "mean weeks to recover (shared failures)": [
+        4.683333333333334,
+        4.243611808598592,
+        5.123054858068075
+      ],
+      "shared source acted on first": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cases missing from reports": [
+        3881.4,
+        3048.2239141541213,
+        4714.576085845879
+      ],
+      "staff hours used": [
+        1248.0,
+        1248.0,
+        1248.0
+      ]
+    },
+    {
+      "policy": "Old Model B rule, fixed",
+      "staff hours / week": 24.0,
+      "failed facility-weeks": [
+        506.75,
+        450.6877353919786,
+        562.8122646080213
+      ],
+      "recovered submissions": [
+        35.5,
+        28.530876659036615,
+        42.469123340963385
+      ],
+      "recovered per staff-hour": [
+        0.02844551282051282,
+        0.022861279374228057,
+        0.034029746266797584
+      ],
+      "mean weeks to recover (all failures)": [
+        3.1612244897959183,
+        2.9613807363243296,
+        3.361068243267507
+      ],
+      "mean weeks to recover (shared failures)": [
+        4.683333333333334,
+        4.243611808598592,
+        5.123054858068075
+      ],
+      "shared source acted on first": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cases missing from reports": [
+        3923.65,
+        3073.1214685990894,
+        4774.17853140091
+      ],
+      "staff hours used": [
+        1248.0,
+        1248.0,
+        1248.0
+      ]
+    },
+    {
+      "policy": "Random",
+      "staff hours / week": 24.0,
+      "failed facility-weeks": [
+        531.75,
+        478.9480628992493,
+        584.5519371007507
+      ],
+      "recovered submissions": [
+        10.5,
+        7.903069336994562,
+        13.096930663005438
+      ],
+      "recovered per staff-hour": [
+        0.008413461538461538,
+        0.006332587609771284,
+        0.010494335467151793
+      ],
+      "mean weeks to recover (all failures)": [
+        3.671428571428571,
+        3.4469828438381334,
+        3.8958742990190083
+      ],
+      "mean weeks to recover (shared failures)": [
+        4.683333333333334,
+        4.243611808598592,
+        5.123054858068075
+      ],
+      "shared source acted on first": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cases missing from reports": [
+        4227.15,
+        3350.4936603365777,
+        5103.806339663422
+      ],
+      "staff hours used": [
+        1248.0,
+        1248.0,
+        1248.0
+      ]
+    },
+    {
+      "policy": "Oracle (knows the truth)",
+      "staff hours / week": 24.0,
+      "failed facility-weeks": [
+        209.25,
+        178.0694962497367,
+        240.4305037502633
+      ],
+      "recovered submissions": [
+        333.0,
+        289.8888918973581,
+        376.1111081026419
+      ],
+      "recovered per staff-hour": [
+        0.7197020532815613,
+        0.6310418630604653,
+        0.8083622435026574
+      ],
+      "mean weeks to recover (all failures)": [
+        1.4673469387755103,
+        1.3882866357063932,
+        1.5464072418446273
+      ],
+      "mean weeks to recover (shared failures)": [
+        1.6,
+        1.3863233375129207,
+        1.8136766624870795
+      ],
+      "shared source acted on first": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "cases missing from reports": [
+        1561.95,
+        1241.475907411564,
+        1882.424092588436
+      ],
+      "staff hours used": [
+        462.1,
+        447.09132068310396,
+        477.1086793168961
+      ]
+    },
+    {
+      "policy": "Network-aware (Model B v2)",
+      "staff hours / week": 48.0,
+      "failed facility-weeks": [
+        341.55,
+        307.6128065013393,
+        375.4871934986607
+      ],
+      "recovered submissions": [
+        200.7,
+        154.5254385582473,
+        246.8745614417527
+      ],
+      "recovered per staff-hour": [
+        0.081054657513413,
+        0.06241391644476116,
+        0.09969539858206483
+      ],
+      "mean weeks to recover (all failures)": [
+        2.7795918367346935,
+        2.61232251214596,
+        2.946861161323427
+      ],
+      "mean weeks to recover (shared failures)": [
+        2.5722222222222224,
+        2.258268614060983,
+        2.8861758303834617
+      ],
+      "shared source acted on first": [
+        0.732638888888889,
+        0.6709241138047826,
+        0.7943536639729953
+      ],
+      "cases missing from reports": [
+        2159.85,
+        1676.5912520254471,
+        2643.108747974553
+      ],
+      "staff hours used": [
+        2475.7,
+        2474.62522815252,
+        2476.7747718474798
+      ]
+    },
+    {
+      "policy": "Facility-first (proposal baseline)",
+      "staff hours / week": 48.0,
+      "failed facility-weeks": [
+        505.1,
+        450.3851957165854,
+        559.8148042834147
+      ],
+      "recovered submissions": [
+        37.15,
+        30.922038565905858,
+        43.37796143409414
+      ],
+      "recovered per staff-hour": [
+        0.014883814102564102,
+        0.012388637245955873,
+        0.017378990959172332
+      ],
+      "mean weeks to recover (all failures)": [
+        3.1275510204081636,
+        2.934552388168476,
+        3.320549652647851
+      ],
+      "mean weeks to recover (shared failures)": [
+        4.683333333333334,
+        4.243611808598592,
+        5.123054858068075
+      ],
+      "shared source acted on first": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cases missing from reports": [
+        3828.1,
+        2990.433770478484,
+        4665.766229521516
+      ],
+      "staff hours used": [
+        2496.0,
+        2496.0,
+        2496.0
+      ]
+    }
+  ],
+  "old_model_b_real": [
+    {
+      "method": "Old Model B, as published (within-date ranks)",
+      "AUC, 2020 swapped zeros vs normal zeros": 0.5171000684318576,
+      "AUC, 2020 all swaps vs all normal weeks": 0.904768670287861,
+      "recall at 1% budget (2020 swaps)": 0.2848101265822785,
+      "false-alert rate (2020 normal weeks)": 0.04662885948330183,
+      "recall 95% CI": [
+        0.16019115254661498,
+        0.43679445091602226
+      ],
+      "false-alert rate 95% CI": [
+        0.036649660914872664,
+        0.058545709628530694
+      ],
+      "precision": 0.13196480938416422,
+      "f1": 0.18036072144288579,
+      "weeks to detect": 0.3076923076923077,
+      "real swaps in 2020 top 100": 10,
+      "can see partial reports (1-3 cases)": "no (zeros only)"
+    },
+    {
+      "method": "Old Model B, fixed (absolute)",
+      "AUC, 2020 swapped zeros vs normal zeros": 0.3904116439437806,
+      "AUC, 2020 all swaps vs all normal weeks": 0.8807732725546968,
+      "recall at 1% budget (2020 swaps)": 0.3291139240506329,
+      "false-alert rate (2020 normal weeks)": 0.09514807813484562,
+      "recall 95% CI": [
+        0.19726819861802988,
+        0.4664433322570227
+      ],
+      "false-alert rate 95% CI": [
+        0.0791989938339108,
+        0.11119471639606995
+      ],
+      "precision": 0.07926829268292683,
+      "f1": 0.12776412776412777,
+      "weeks to detect": 0.0,
+      "real swaps in 2020 top 100": 0,
+      "can see partial reports (1-3 cases)": "no (zeros only)"
+    },
+    {
+      "method": "Model A v2",
+      "AUC, 2020 swapped zeros vs normal zeros": 0.6558509238300785,
+      "AUC, 2020 all swaps vs all normal weeks": 0.7901870817480637,
+      "recall at 1% budget (2020 swaps)": 0.08860759493670886,
+      "false-alert rate (2020 normal weeks)": 0.05466288594833018,
+      "recall 95% CI": [
+        0.010176056338028197,
+        0.17535332314744076
+      ],
+      "false-alert rate 95% CI": [
+        0.03629354847443498,
+        0.07700389294524784
+      ],
+      "precision": 0.038781163434903045,
+      "f1": 0.05394990366088632,
+      "weeks to detect": 0.0,
+      "real swaps in 2020 top 100": 1,
+      "can see partial reports (1-3 cases)": "yes"
+    }
+  ],
+  "old_model_b_info": {
+    "thresholds": {
+      "s_fixed": 61.26452494873546,
+      "s_published": 67.5,
+      "s_model_a_v2": -0.00012051755366497229
+    },
+    "swaps_2020": 158,
+    "swaps_2020_nonzero": 1
+  },
+  "tuned": {
+    "tau_fac": 0.010549916730740032,
+    "tau_src": {
+      "region pooling (no graph) / region": 0.22087809118953916,
+      "graph: hub + lab, Stouffer / hub": 0.04782687236376584,
+      "graph: hub + lab, Stouffer / lab": 0.1631460384756691,
+      "graph: hub + lab, NB sum / hub": 0.01903675063743679,
+      "graph: hub + lab, NB sum / lab": 0.06092251262687133
+    },
+    "rho": {
+      "hub": 0.29032783052376576,
+      "lab": 0.1848391028719386,
+      "region": 0.1917483446762862
+    },
+    "facility_failure_share": 0.020104895104895104
+  },
+  "world": {
+    "facility": 506,
+    "hub": 70,
+    "lab": 36,
+    "resu": 17
+  },
+  "config": {
+    "SIM": {
+      "TUNE_YEAR": 2018,
+      "TEST_YEAR": 2018,
+      "STRESS_YEARS": [
+        2019,
+        2020
+      ],
+      "TUNE_SEEDS": [
+        101,
+        102,
+        103,
+        104,
+        105
+      ],
+      "TEST_SEEDS": [
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220
+      ],
+      "EVENTS": {
+        "isolated": 40,
+        "hub": 6,
+        "lab": 3
+      },
+      "MEAN_WEEKS": {
+        "isolated": 4.0,
+        "hub": 5.0,
+        "lab": 5.0
+      },
+      "MAX_WEEKS": 12,
+      "START_WEEKS": [
+        2,
+        44
+      ],
+      "SPACING_WEEKS": 2,
+      "ISOLATED_ZERO_SHARE": 0.5,
+      "ISOLATED_PARTIAL": [
+        0.1,
+        0.5
+      ],
+      "HUB_ZERO_SHARE": 0.7,
+      "HUB_PARTIAL": [
+        0.0,
+        0.3
+      ],
+      "LAB_PARTIAL": [
+        0.3,
+        0.7
+      ],
+      "FIT_WINDOW": 104
+    },
+    "ACTIONS": {
+      "call_facility": {
+        "iris_type": "verify_contact",
+        "base_hours": 1.5,
+        "hours_per_unit": 0.5,
+        "success": 0.55,
+        "days": 1,
+        "cost_php": 0
+      },
+      "visit_facility": {
+        "iris_type": "technical_support",
+        "base_hours": 4.0,
+        "hours_per_unit": 2.0,
+        "success": 0.7,
+        "days": 3,
+        "cost_php": 1500
+      },
+      "fix_hub": {
+        "iris_type": "restore_connection",
+        "base_hours": 10.0,
+        "hours_per_unit": 1.0,
+        "success": 0.8,
+        "days": 5,
+        "cost_php": 3000
+      },
+      "fix_lab": {
+        "iris_type": "validation_review",
+        "base_hours": 2.0,
+        "hours_per_unit": 1.0,
+        "success": 0.65,
+        "days": 2,
+        "cost_php": 2000
+      },
+      "call_resu": {
+        "iris_type": "verify_contact",
+        "base_hours": 1.5,
+        "hours_per_unit": 0.5,
+        "success": 0.55,
+        "days": 1,
+        "cost_php": 0
+      }
+    },
+    "PLAN": {
+      "STAFF_HOURS_PER_WEEK": 24.0,
+      "HOURS_SENSITIVITY": [
+        12.0,
+        24.0,
+        48.0
+      ],
+      "COST_PHP_PER_WEEK": 10000.0,
+      "MIN_PROB": 0.02,
+      "MAX_FACILITY_CANDIDATES": 80,
+      "MILP_TIME_LIMIT_S": 10.0
+    },
+    "NETWORK": {
+      "WORLD_SEED": 2026,
+      "FACILITIES_MIN": 2,
+      "FACILITIES_MAX": 6,
+      "HUB_SIZE": [
+        1,
+        3
+      ],
+      "LABS_PER_REGION": [
+        [
+          4,
+          1
+        ],
+        [
+          10,
+          2
+        ],
+        [
+          999,
+          3
+        ]
+      ],
+      "FACILITY_SHARE_CONCENTRATION": 2.0
+    }
+  },
+  "figures": [
+    "1_graph_ablation.png",
+    "2_policy_recovered.png",
+    "3_hours_sensitivity.png"
+  ],
+  "runtime_seconds": 1085.6
+}

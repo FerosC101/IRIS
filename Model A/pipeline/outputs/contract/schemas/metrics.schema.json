@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IRIS metrics",
+  "type": "object",
+  "required": [
+    "schema",
+    "generated_at",
+    "run_id",
+    "disclaimer",
+    "objectives",
+    "detection_real_swaps_2020",
+    "shared_source_identification",
+    "recovery"
+  ],
+  "properties": {
+    "schema": {
+      "const": "iris.metrics/1.0"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "disclaimer": {
+      "type": "string"
+    },
+    "objectives": {
+      "type": "array"
+    },
+    "detection_real_swaps_2020": {
+      "type": "array"
+    },
+    "shared_source_identification": {
+      "type": "array"
+    },
+    "recovery": {
+      "type": "array"
+    }
+  }
+}

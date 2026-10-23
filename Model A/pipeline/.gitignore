@@ -1,0 +1,6 @@
+# Model-run cache: rebuilt automatically, safe to delete.
+outputs/**/_cache/
+# Pickled tuning state (rebuilt by `model-b`); pickles should not be shared and loaded from a repository.
+outputs/network/tuned.pkl
+__pycache__/
+.pytest_cache/
