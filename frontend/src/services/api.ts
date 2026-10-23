@@ -22,6 +22,9 @@ export const api = {
   /** Open an investigation by hand. It starts unverified, with an owner and a checklist. */
   createConcern: (body: { unit_ids: string[]; category_code?: string | null; week_from: number; week_to: number; title: string; reason: string;
     severity?: Severity; assignee_user_id?: string | null; due?: string | null }) => request<ConcernDetail>("/concerns", { method: "POST", json: body }),
+  /** Add one corrective action; it is recorded as an approved single-action plan and tracked as follow-up. */
+  addAction: (id: string, body: { action_type: string; title: string; assignee_user_id?: string | null; due_date?: string | null; note?: string }) =>
+    request<ConcernDetail>(`/concerns/${id}/actions`, { method: "POST", json: body }),
   updateChecklist: (id: string, itemId: number, body: { done?: boolean; note?: string }) =>
     request<ConcernDetail>(`/concerns/${id}/checklist/${itemId}`, { method: "PATCH", json: body }),
   runDetection: (method: string) => request<{ created: string[]; skipped_existing: number; method: string; method_label: string }>("/detection/run", { method: "POST", json: { method } }),

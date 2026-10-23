@@ -8,7 +8,7 @@ from iris import config
 from iris.db import get_session
 from iris.detection.methods import METHOD_LABELS
 from iris.models import InterventionAction, InterventionAssignment, Investigation, InvestigationNote, ReportingConcern, User
-from iris.schemas import AssignIn, BodyIn, ChecklistPatch, NewConcernIn, DetectionRunIn, EvidenceIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
+from iris.schemas import ActionIn, AssignIn, BodyIn, ChecklistPatch, NewConcernIn, DetectionRunIn, EvidenceIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
 from iris.services import concerns as cs
 from iris.services import checklist, datasets, ids, interventions as iv, overview as ov, reports
 from iris.services.context import Actor, get_actor
@@ -125,7 +125,9 @@ def concern_detail(concern_id: str, session: Session = Depends(get_session), act
         "activity": cs.activity(session, c),
         "related": [ov.concern_row(o, users, ids.investigation_ids(session)) for o in cs.related(session, c) if actor.role not in ("rhu_staff",) or actor.reporting_unit_id in {u.id for u in o.units}],
         "actions": [{"id": a.id, "title": a.title, "action_type": a.action_type, "status": a.status} for a in actions],
-        "assignments": [{"id": a.id, "title": a.title, "status": a.status, "due_date": a.due_date} for a in assignments],
+        "assignments": [{"id": a.id, "title": a.title, "status": a.status, "due_date": a.due_date, "assignee_user_id": a.assignee_user_id,
+                         "assignee": users.get(a.assignee_user_id or ""), "responsible_role": a.responsible_role,
+                         "evidence_of_completion": a.evidence_of_completion} for a in assignments],
         "assignable_users": [{"id": u.id, "display_name": u.display_name, "role": u.role_id} for u in session.execute(select(User).where(User.role_id != "admin")).scalars()],
         "detection_params": detail.get("params", {}),
     }
@@ -189,6 +191,13 @@ def note(concern_id: str, body: BodyIn, session: Session = Depends(get_session),
 def attach_evidence(concern_id: str, body: EvidenceIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
     c = cs.get(session, concern_id, actor)
     cs.attach_evidence(session, c, actor, body.title, body.detail, body.link)
+    return _done(session, c, actor)
+
+
+@router.post("/concerns/{concern_id}/actions")
+def add_action(concern_id: str, body: ActionIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
+    c = cs.get(session, concern_id, actor)
+    iv.add_direct_action(session, actor, c, body.action_type, body.title, body.assignee_user_id, body.due_date, body.note)
     return _done(session, c, actor)
 
 

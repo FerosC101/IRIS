@@ -415,3 +415,23 @@ def test_reviewer_can_open_an_investigation_that_starts_unverified(fresh):
     assert any(e["kind"] == "requires_verification" for e in d["evidence"])
     assert d["resolution_requirements"]["can_resolve"] is False
     assert any(a["action"] == "concern.created" for a in d["activity"])
+
+
+def test_add_corrective_action_from_an_investigation(fresh):
+    c = fresh
+    body = {"action_type": "verify_contact", "title": "Reconcile RHU register with submitted count", "assignee_user_id": "U-RHU-HIRAYA",
+            "due_date": "2026-10-10", "note": "Bring the W38–W40 register pages."}
+    assert c.post("/api/concerns/C-0021/actions", json={**body, "action_type": "teleport"}, headers=RESU).status_code == 422
+    assert c.post("/api/concerns/C-0021/actions", json={**body, "assignee_user_id": "U-NOBODY"}, headers=RESU).status_code == 422
+    assert c.post("/api/concerns/C-0014/actions", json=body, headers=RHU).status_code == 403
+    d = c.post("/api/concerns/C-0021/actions", json=body, headers=RESU).json()
+    a = next(x for x in d["assignments"] if x["title"] == body["title"])
+    assert a["status"] == "approved" and a["due_date"] == "2026-10-10" and a["assignee"] == "Hiraya RHU Encoder (demo)"
+    assert d["activity"][0]["action"] == "concern.action_added"
+    plan = next(p for p in c.get("/api/plans", headers=RESU).json() if p["name"].startswith("Direct action"))
+    assert plan["status"] == "approved" and plan["method"] == "manual" and plan["total_cost_hours"] <= plan["budget_hours"]
+    # The action is tracked like any other follow-up.
+    f = c.get(f"/api/assignments/{a['id']}", headers=RESU).json()
+    assert f["concern_id"] == "C-0021" and f["follow_up_notes"][0]["text"] == "Bring the W38–W40 register pages."
+    c.post("/api/concerns/C-0020/dismiss", json={"reason": "Report was sent by courier."}, headers=PROV)
+    assert c.post("/api/concerns/C-0020/actions", json=body, headers=PROV).status_code == 409

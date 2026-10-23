@@ -48,6 +48,14 @@ class NewConcernIn(BaseModel):
     dataset_id: str | None = None
 
 
+class ActionIn(BaseModel):
+    action_type: str = Field(max_length=40)
+    title: str = Field(max_length=255)
+    assignee_user_id: str | None = None
+    due_date: date | None = None
+    note: str | None = Field(default=None, max_length=2000)
+
+
 class ChecklistPatch(BaseModel):
     done: bool | None = None
     note: str | None = Field(default=None, max_length=2000)

@@ -380,3 +380,53 @@ def stage(asg: InterventionAssignment, outcomes: list[InterventionOutcome]) -> s
             return "outcome_observed"
         return "completed_outcome_not_verified"
     return "approved"
+
+
+def add_direct_action(session: Session, actor: Actor, concern: ReportingConcern, action_type: str, title: str,
+                      assignee_id: str | None, due: date | None, note: str | None, at: datetime | None = None) -> InterventionAssignment:
+    """Add one corrective action to a concern without going through the planner.
+
+    It is recorded the same way as planner actions: an approved single-action
+    plan whose assignment is then tracked as follow-up.
+    """
+    actor.require("plan.create")
+    actor.require("plan.decide")
+    if concern.status not in OPEN_STATUSES:
+        raise HTTPException(status_code=409, detail=f"Concern {concern.id} is closed; reopen it before adding actions.")
+    if action_type not in ACTION_TYPES:
+        raise HTTPException(status_code=422, detail=f"Unknown action type. Choose one of: {', '.join(ACTION_TYPES.values())}.")
+    title = (title or "").strip()
+    if len(title) < 5:
+        raise HTTPException(status_code=422, detail="Describe the action (at least 5 characters).")
+    assignee = session.get(User, assignee_id) if assignee_id else None
+    if assignee_id and assignee is None:
+        raise HTTPException(status_code=422, detail=f"User {assignee_id} does not exist.")
+    at = at or now()
+    n = session.execute(select(func.count()).select_from(InterventionAction).where(InterventionAction.concern_id == concern.id)).scalar_one()
+    aid = f"A-{concern.id}-x{n + 1}"
+    while session.get(InterventionAction, aid) is not None:
+        n += 1
+        aid = f"A-{concern.id}-x{n + 1}"
+    unit_ids = [u.id for u in concern.units]
+    session.add(InterventionAction(
+        id=aid, concern_id=concern.id, action_type=action_type, title=title, unit_ids=unit_ids,
+        expected_reports_per_week=_weekly_expected(session, unit_ids), priority=SEVERITY_PRIORITY[concern.severity], depends_on=[],
+        rationale="Added directly from the investigation.", status="candidate", created_at=at,
+    ))
+    session.flush()
+    cost = costed(session, [session.get(InterventionAction, aid)], merge_assumptions(None))[0].cost_hours
+    plan = save_plan(session, actor, f"Direct action — {title[:150]}", "manual", cost, [aid], None,
+                     notes=f"Single action added from {concern.id}.", at=at)
+    decide_plan(session, actor, plan, "approve", "Added directly from the investigation.", at=at)
+    asg = session.execute(select(InterventionAssignment).where(InterventionAssignment.action_id == aid)).scalar_one()
+    if assignee is not None:
+        asg.assignee_user_id = assignee.id
+        asg.responsible_role = assignee.role_id
+    if due:
+        asg.due_date = due
+        asg.follow_up_date = due + timedelta(days=7)
+    if note and note.strip():
+        asg.follow_up_notes = [{"at": at.isoformat(), "by": actor.user_id, "text": note.strip()}]
+    audit.record(session, actor, "concern", concern.id, "concern.action_added", f"{actor.display_name} added action {asg.id} to {concern.id}: {title}",
+                 {"assignment": asg.id, "plan": plan.id}, at=at)
+    return asg

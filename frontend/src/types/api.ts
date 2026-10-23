@@ -140,7 +140,8 @@ export interface ConcernDetail {
   activity: { id: number; at: string; action: string; summary: string; actor: string; detail: Record<string, unknown> }[];
   related: QueueRow[];
   actions: { id: string; title: string; action_type: string; status: string }[];
-  assignments: { id: string; title: string; status: AssignmentStatus; due_date: string }[];
+  assignments: { id: string; title: string; status: AssignmentStatus; due_date: string; assignee_user_id: string | null; assignee: string | null;
+    responsible_role: Role; evidence_of_completion: string | null }[];
   assignable_users: { id: string; display_name: string; role: Role }[];
   detection_params: Record<string, number>;
 }
