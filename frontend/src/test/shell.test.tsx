@@ -150,3 +150,16 @@ describe("Footer", () => {
     expect(within(drawer).getByText("All units are fictional.")).toBeInTheDocument();
   });
 });
+
+describe("Design preview (development only)", () => {
+  it("shows the five screen heroes, both fallbacks, the filter bar and every photo surface", async () => {
+    const { DesignPreviewPage } = await import("@/features/design-preview/DesignPreviewPage");
+    setup(<DesignPreviewPage />, { path: "/design-preview" });
+    const heroes = document.querySelectorAll(".iris-hero");
+    expect(heroes).toHaveLength(7);
+    expect([...heroes].filter((h) => !h.querySelector(".iris-hero__photo"))).toHaveLength(2); // gradient-only fallbacks
+    expect(screen.getByRole("group", { name: "Screen filters" })).toBeInTheDocument();
+    const variants = [...document.querySelectorAll(".iris-photo-surface")].map((s) => s.getAttribute("data-variant"));
+    expect(new Set(variants)).toEqual(new Set(["deep", "light", "teal"]));
+  });
+});

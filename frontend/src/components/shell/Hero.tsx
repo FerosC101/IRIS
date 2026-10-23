@@ -9,13 +9,15 @@ export type HeroVariant = "bright" | "deep";
  * If the photo cannot load, the gradient alone is shown. The photo is
  * decorative; the headline carries the meaning.
  */
-export function Hero({ variant, photo, position = "50% 50%", zoom = 1, eyebrow, title, subtitle, updated, actions, className }: {
+export function Hero({ variant, photo, position = "50% 50%", zoom = 1, showPhoto = true, eyebrow, title, subtitle, updated, actions, className }: {
   variant: HeroVariant;
   photo: PhotoKey;
   /** CSS object-position for the crop, e.g. "62% 40%". */
   position?: string;
   /** Extra magnification of the crop around `position` (1 = cover). */
   zoom?: number;
+  /** false shows the gradient alone, as when the photo fails to load. */
+  showPhoto?: boolean;
   eyebrow: ReactNode;
   title: ReactNode;
   subtitle?: ReactNode;
@@ -30,7 +32,7 @@ export function Hero({ variant, photo, position = "50% 50%", zoom = 1, eyebrow, 
   const style = { "--hero-photo-position": position, "--hero-photo-scale": p.edgeCrop * zoom } as CSSProperties;
   return (
     <section className={cn("iris-hero", className)} data-variant={variant} style={style} aria-labelledby={titleId}>
-      {!failed && (
+      {showPhoto && !failed && (
         <picture className="iris-hero__photo" aria-hidden="true">
           <source type="image/avif" srcSet={p.avif} sizes="(min-width: 1440px) 1344px, 100vw" />
           <source type="image/webp" srcSet={p.webp} sizes="(min-width: 1440px) 1344px, 100vw" />

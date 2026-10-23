@@ -27,6 +27,10 @@ const NetworkPage = lazy(() => import("@/features/network/NetworkPage").then((x)
 const RecoveryPage = lazy(() => import("@/features/recovery/RecoveryPage").then((x) => ({ default: x.RecoveryPage })));
 const HelpPage = lazy(() => import("@/features/settings/HelpPage").then((x) => ({ default: x.HelpPage })));
 const SettingsPage = lazy(() => import("@/features/settings/SettingsPage").then((x) => ({ default: x.SettingsPage })));
+// Development only: removed from production builds, where import.meta.env.DEV is false.
+const DesignPreviewPage = import.meta.env.DEV
+  ? lazy(() => import("@/features/design-preview/DesignPreviewPage").then((x) => ({ default: x.DesignPreviewPage })))
+  : null;
 
 const guard = (el: ReactNode) => <RouteGuard>{el}</RouteGuard>;
 
@@ -72,6 +76,7 @@ export const routes: RouteObject[] = [
 
       { path: "/settings", element: <SettingsPage /> },
       { path: "/help", element: <HelpPage /> },
+      ...(DesignPreviewPage ? [{ path: "/design-preview", element: <DesignPreviewPage /> }] : []),
 
       // Addresses from before the redesign.
       { path: "/anomalies", element: <Moved to="/reports/analysis" /> },
