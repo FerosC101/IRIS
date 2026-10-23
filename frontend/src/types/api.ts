@@ -178,6 +178,8 @@ export interface Dataset {
   imported_at: string; imported_by: string | null; coverage_start: string | null; coverage_end: string | null; row_count: number;
   validation_status: "valid" | "valid_with_warnings" | "invalid"; known_limitations: string[]; has_expectations: boolean;
   has_timestamps: boolean; has_units: boolean; is_demo: boolean;
+  /** SHA-256 recorded at ingestion: of the uploaded file, or of a canonical record export for generated data. */
+  checksum: string | null; checksum_basis: "uploaded_file" | "canonical_records" | null; checksum_algorithm: "SHA-256" | null;
 }
 export interface ImportIssue { row: number | null; column: string | null; value?: string | null; message: string }
 export interface ImportRecord { id: string; dataset_id?: string | null; filename: string; at: string; by: string | null; status: "accepted" | "rejected" | "cancelled"; row_count: number; errors: ImportIssue[]; warnings: ImportIssue[] }
@@ -196,6 +198,7 @@ export interface DatasetDetail extends Dataset {
   imports: ImportRecord[];
   quality: Quality;
   concerns: number;
+  integrity: { recorded: boolean; records_unchanged: boolean | null; current_records_checksum: string | null; records_checksum_at_ingestion?: string; note: string };
 }
 export interface RecordRow extends LinkedConcern {
   record_id: number | null; unit_id: string | null; unit_name: string | null; province: string | null; area: string | null; unit_type: UnitType | null;

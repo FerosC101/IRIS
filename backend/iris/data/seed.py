@@ -160,6 +160,10 @@ def build(session: Session, scenario_ids: list[str] | None = None, seed: int = c
         n_agg += 1
     session.get(Dataset, config.DEMO_AGGREGATE_DATASET_ID).row_count = n_agg
     session.flush()
+    for ds_id in (config.DEMO_DATASET_ID, config.DEMO_AGGREGATE_DATASET_ID):
+        ds = session.get(Dataset, ds_id)
+        ds.records_checksum = ds.checksum = datasets.records_checksum(session, ds_id)
+        ds.checksum_basis = "canonical_records"
     datasets.bump()
 
     # Detection -> concerns, each created on the review date of the week its flag was raised

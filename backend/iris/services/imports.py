@@ -7,6 +7,7 @@ server restart discards staged uploads (documented prototype limitation).
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import secrets
 from dataclasses import dataclass
@@ -66,6 +67,8 @@ class Staged:
     uploaded_at: datetime
     by: str
     frame: pd.DataFrame
+    #: SHA-256 of the uploaded file's bytes, exactly as received.
+    sha256: str = ""
 
 
 _staging: dict[str, Staged] = {}
@@ -128,7 +131,8 @@ def preview(session: Session, actor: Actor, filename: str, content: bytes) -> di
         raise HTTPException(status_code=422, detail={"message": errors[0]["message"], "errors": errors})
     assert frame is not None
     token = secrets.token_urlsafe(16)
-    _staging[token] = Staged(token, filename, now(), actor.user_id, frame.map(lambda v: v.strip() if isinstance(v, str) else v))
+    _staging[token] = Staged(token, filename, now(), actor.user_id, frame.map(lambda v: v.strip() if isinstance(v, str) else v),
+                             hashlib.sha256(content).hexdigest())
     suggested = {}
     lower = {c.lower().replace(" ", "_"): c for c in frame.columns}
     for key, syns in SYNONYMS.items():
@@ -340,6 +344,9 @@ def commit(session: Session, actor: Actor, token: str, mapping: dict[str, str], 
             due_at=due.to_pydatetime() if due is not None else None, received_at=rec_at.to_pydatetime() if rec_at is not None else None,
             fields_complete=None, source_row=int(idx) + 2,
         ))
+    session.flush()
+    ds.checksum, ds.checksum_basis = st.sha256 or None, "uploaded_file" if st.sha256 else None
+    ds.records_checksum = datasets.records_checksum(session, ds_id)
     imp = ImportRecord(id=_next_import_id(session), dataset_id=ds_id, filename=st.filename[:255], at=now(), by_user_id=actor.user_id,
                        status="accepted", row_count=int(len(parsed)), errors=[], warnings=report["warnings"])
     session.add(imp)

@@ -25,6 +25,7 @@ def _dataset_dict(ds: Dataset) -> dict:
         "validation_status": ds.validation_status, "known_limitations": ds.known_limitations,
         "has_expectations": ds.has_expectations, "has_timestamps": ds.has_timestamps, "has_units": ds.has_units,
         "is_demo": ds.is_demo,
+        "checksum": ds.checksum, "checksum_basis": ds.checksum_basis, "checksum_algorithm": "SHA-256" if ds.checksum else None,
     }
 
 
@@ -46,7 +47,20 @@ def dataset_detail(dataset_id: str, session: Session = Depends(get_session), act
                      "row_count": i.row_count, "errors": i.errors, "warnings": i.warnings} for i in imps],
         "quality": q,
         "concerns": session.query(ReportingConcern).filter(ReportingConcern.dataset_id == dataset_id).count(),
+        "integrity": _integrity(session, ds),
     }
+
+
+def _integrity(session: Session, ds: Dataset) -> dict:
+    """Whether the records still match the canonical checksum recorded at ingestion."""
+    if not ds.records_checksum:
+        return {"recorded": False, "records_unchanged": None, "current_records_checksum": None,
+                "note": "No checksum was recorded when this dataset was ingested."}
+    current = datasets.records_checksum(session, ds.id)
+    same = current == ds.records_checksum
+    return {"recorded": True, "records_unchanged": same, "current_records_checksum": current, "records_checksum_at_ingestion": ds.records_checksum,
+            "note": "Records match the checksum recorded at ingestion." if same else
+            "Records changed after ingestion (for example, reports submitted or corrected in IRIS)."}
 
 
 @router.delete("/datasets/{dataset_id}")

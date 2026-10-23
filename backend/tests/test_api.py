@@ -462,3 +462,24 @@ def test_network_has_schematic_fictional_geography(client):
     pos = {(n["geo_x"], n["geo_y"]) for n in g["nodes"]}
     assert len(pos) == len(g["nodes"])  # units sharing a municipality do not overlap
     assert all("geo_x" in u for u in client.get("/api/units", headers=RESU).json())
+
+
+def test_dataset_checksums_and_integrity(fresh):
+    import hashlib
+
+    c = fresh
+    demo = next(d for d in c.get("/api/datasets", headers=RESU).json() if d["id"] == "DS-DEMO-FACILITY")
+    assert len(demo["checksum"]) == 64 and demo["checksum_basis"] == "canonical_records" and demo["checksum_algorithm"] == "SHA-256"
+    assert c.get("/api/datasets/DS-DEMO-FACILITY", headers=RESU).json()["integrity"]["records_unchanged"] is True
+    # A report submitted in IRIS changes the records, and the integrity check says so.
+    t = next(t for t in c.get("/api/tasks", headers=RHU).json() if t["kind"] == "missing_report")
+    c.post("/api/reports", json={"unit_id": "RHU-HIRAYA", "category_code": t["category_code"], "period_start": t["period_start"], "value": 2}, headers=RHU)
+    integ = c.get("/api/datasets/DS-DEMO-FACILITY", headers=RESU).json()["integrity"]
+    assert integ["records_unchanged"] is False and integ["current_records_checksum"] != demo["checksum"]
+    # Imports record the hash of the uploaded file's bytes.
+    p = _upload(c, CSV_OK).json()
+    mapping = {"period_start": "week_start", "value": "cases", "category": "disease", "area": "province"}
+    meta = {"name": "Checksum import", "source": "Unit test", "designation": "synthetic", "geographic_level": "province"}
+    ds = c.post("/api/imports/commit", json={"token": p["token"], "mapping": mapping, "metadata": meta}, headers=ADMIN).json()
+    assert ds["checksum"] == hashlib.sha256(CSV_OK.encode()).hexdigest() and ds["checksum_basis"] == "uploaded_file"
+    assert c.get(f"/api/datasets/{ds['id']}", headers=RESU).json()["integrity"]["records_unchanged"] is True
