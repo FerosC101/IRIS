@@ -99,7 +99,7 @@ function AssignmentSheet({ id, onClose }: { id: string | null; onClose: () => vo
                     <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                       {a.allowed_transitions.map((t) => (
                         <Button key={t} variant={t === "cancelled" ? "danger" : t === "completed" || t === "in_progress" ? "primary" : "secondary"} disabled={upd.isPending}
-                          onClick={() => upd.mutate({ status: t, note: note || undefined, evidence: evidence || undefined, follow_up_date: followUp || undefined })}>{TRANSITION_LABEL[t]}</Button>
+                          onClick={() => upd.mutate({ status: t, note: note || undefined, evidence: evidence || undefined, follow_up_date: followUp || undefined })}>{t === "in_progress" && a.status === "completed" ? "Reopen" : TRANSITION_LABEL[t]}</Button>
                       ))}
                       {(note || followUp) && <Button variant="secondary" disabled={upd.isPending} onClick={() => upd.mutate({ note: note || undefined, follow_up_date: followUp || undefined })}>Save note</Button>}
                     </div>

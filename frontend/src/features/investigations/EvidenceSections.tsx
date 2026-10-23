@@ -37,7 +37,7 @@ export function EvidenceList({ items }: { items: Evidence[] }) {
               {e.kind !== "observed" && <EvidenceKindBadge kind={e.kind} />}
               <p className="text-sm font-medium text-ink">{e.title}</p>
             </div>
-            <p className="text-sm text-ink">{e.detail}</p>
+            {e.detail && <p className="text-sm text-ink">{e.detail}</p>}
             {e.created_by && <p className="text-xs text-ink-2">Recorded by {e.created_by}</p>}
             {perUnit && (
               <div className="overflow-x-auto rounded-sm border border-line">
