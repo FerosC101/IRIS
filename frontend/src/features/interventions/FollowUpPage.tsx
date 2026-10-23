@@ -80,7 +80,7 @@ function AssignmentSheet({ id, onClose }: { id: string | null; onClose: () => vo
                   { label: "Target units", value: a.target_units.join(", ") },
                   { label: "Responsible role", value: ROLE_LABELS[a.responsible_role] },
                   { label: "Assignee", value: a.assignee ?? "Unassigned" },
-                  { label: "Plan", value: <Link to={`/planner?plan=${a.plan_id}`} className="text-teal-900 hover:underline">{a.plan_id}{a.plan_name ? ` · ${a.plan_name}` : ""}</Link> },
+                  { label: "Plan", value: <Link to={`/investigations/plan?plan=${a.plan_id}`} className="text-teal-900 hover:underline">{a.plan_id}{a.plan_name ? ` · ${a.plan_name}` : ""}</Link> },
                   { label: "Action due", value: fmtDate(a.due_date) },
                   { label: "Check again on", value: fmtDate(a.follow_up_date) },
                   { label: "Done on", value: fmtDateTime(a.completed_at) },

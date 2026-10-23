@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { Upload } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { DesignationBadge, SlotStatusBadge } from "@/components/data-display/badges";
 import { SimpleTable, TrendChart } from "@/components/data-display/charts";
 import { DataTable, type SortState } from "@/components/data-display/DataTable";
 import { FilterBar, FilterField } from "@/components/data-display/FilterBar";
-import { PageHeader } from "@/components/data-display/PageHeader";
-import { buttonVariants } from "@/components/ui/button";
+import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Input, Select } from "@/components/ui/form";
 import { Pagination } from "@/components/ui/pagination";
 import { KeyValue, Panel } from "@/components/ui/panel";
@@ -199,7 +197,7 @@ function MetadataTab({ ds }: { ds: Dataset }) {
   const q = useQuery({ queryKey: ["dataset", ds.id], queryFn: () => api.dataset(ds.id) });
   return (
     <div className="flex flex-col gap-4">
-      <Panel title="Provenance" actions={<Link to={`/data-management/${ds.id}`} className="text-[13px] font-medium text-teal-900 hover:underline">Open in Data Management</Link>}>
+      <Panel title="Provenance" actions={<Link to={`/data/datasets/${ds.id}`} className="text-[13px] font-medium text-teal-900 hover:underline">Open in Data Management</Link>}>
         <KeyValue items={[
           { label: "Designation", value: <DesignationBadge designation={ds.designation} /> },
           { label: "Source", value: ds.source },
@@ -222,7 +220,7 @@ function MetadataTab({ ds }: { ds: Dataset }) {
 }
 
 export function DataExplorerPage() {
-  const { can, role } = useSession();
+  const { role } = useSession();
   const [params, setParams] = useSearchParams();
   const ds = useQuery({ queryKey: ["datasets"], queryFn: api.datasets });
   const datasetId = params.get("dataset") ?? ds.data?.[0]?.id ?? "";
@@ -235,8 +233,8 @@ export function DataExplorerPage() {
 
   return (
     <>
-      <PageHeader title="Data" description="Browse the reports, see trends, and check what is missing."
-        actions={can("dataset.import") ? <Link to="/data/import" className={buttonVariants({ variant: "secondary" })}><Upload aria-hidden /> Import CSV</Link> : undefined} />
+      <ScreenHeader screen="reports" />
+      <div className="mt-[25px]" />
       {ds.error ? <ErrorState error={ds.error} onRetry={() => ds.refetch()} /> : !ds.data ? <Loading /> : (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">

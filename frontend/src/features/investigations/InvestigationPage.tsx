@@ -125,11 +125,11 @@ export function InvestigationPage() {
   } else if (c.verification !== "confirmed" && can("concern.confirm")) {
     primary = { label: "Confirm it's a real problem", icon: <CheckCircle2 aria-hidden />, run: () => open("confirm") };
     if (c.status === "clarification_requested") hint = "Waiting for the unit to reply. Confirm or close it once you know more.";
-  } else if (d.next_step.action === "plan" && role && canAccess("/planner", role)) {
-    primary = { label: "Plan an action", icon: <ArrowRight aria-hidden />, to: `/planner?concern=${c.id}` };
+  } else if (d.next_step.action === "plan" && role && canAccess("/investigations/plan", role)) {
+    primary = { label: "Plan an action", icon: <ArrowRight aria-hidden />, to: `/investigations/plan?concern=${c.id}` };
   } else if (d.next_step.action === "follow_up") {
     const a = d.assignments.find((x) => x.status === "approved" || x.status === "in_progress");
-    primary = { label: "Track the action", icon: <ArrowRight aria-hidden />, to: `/follow-up${a ? `?assignment=${a.id}` : ""}` };
+    primary = { label: "Track the action", icon: <ArrowRight aria-hidden />, to: `/investigations/follow-up${a ? `?assignment=${a.id}` : ""}` };
   } else if (d.next_step.action === "evidence" && can("concern.evidence")) {
     primary = { label: "Attach evidence", icon: <Paperclip aria-hidden />, run: () => open("evidence") };
   } else if (can("concern.resolve") && d.resolution_requirements.can_resolve) {
@@ -295,7 +295,7 @@ export function InvestigationPage() {
               <Block title="Actions taken">
                 <ul className="flex flex-col gap-2 text-sm">
                   {d.assignments.map((a) => (
-                    <li key={a.id}><Link to={`/follow-up?assignment=${a.id}`} className="font-medium text-teal-900 hover:underline">{a.title}</Link>
+                    <li key={a.id}><Link to={`/investigations/follow-up?assignment=${a.id}`} className="font-medium text-teal-900 hover:underline">{a.title}</Link>
                       <p className="text-xs text-ink-2">{ASSIGNMENT_STATUS[a.status].label} · due {fmtDate(a.due_date)}</p></li>
                   ))}
                 </ul>

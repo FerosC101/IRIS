@@ -1,0 +1,117 @@
+/* Shell: floating nav, hero, photo surfaces, global filter bar, footer.
+   Overlay values are sampled from docs/design/*.png at 1440 px. */
+:root {
+  --iris-gutter: 16px;
+  --iris-content-max: 1440px;
+
+  /* Hero photo treatment: the raw photo is shown in grayscale under a teal
+     gradient. "bright" (Dashboard) keeps more of the photo; "deep" darkens it. */
+  --hero-height: 330px;
+  --hero-teal: #0E647E;
+  --hero-photo-filter-bright: grayscale(1) contrast(1.08) brightness(0.6);
+  --hero-photo-filter-deep: grayscale(1) contrast(1.35) brightness(0.75);
+  --hero-overlay-bright: linear-gradient(90deg,
+      #0E647E 0%, #0E647E 13%, rgb(12 78 98 / 0.97) 19%, rgb(15 63 79 / 0.92) 31%,
+      rgb(18 54 66 / 0.74) 44%, rgb(12 42 53 / 0.40) 58%, rgb(10 40 52 / 0.12) 72%, rgb(10 40 52 / 0) 86%);
+  --hero-overlay-deep: linear-gradient(90deg,
+      #0E647E 0%, #0E647E 11%, rgb(11 68 87 / 0.98) 22%, rgb(13 58 73 / 0.95) 33%,
+      rgb(22 52 63 / 0.84) 45%, rgb(10 30 39 / 0.55) 58%, rgb(4 18 28 / 0.22) 74%, rgb(4 18 28 / 0.12) 100%);
+  --hero-vignette:
+      radial-gradient(130% 120% at 55% 40%, transparent 58%, rgb(4 18 28 / 0.42) 100%),
+      linear-gradient(0deg, rgb(4 18 28 / 0.32) 0%, transparent 34%);
+  --hero-eyebrow: #8EE6E8;   /* lightened from #5DD9DB for AA at 11 px */
+  --hero-subcopy: #CADDE2;
+
+  /* Photo surfaces (smaller cards and banners that reuse the photos). */
+  --surface-deep-overlay: linear-gradient(100deg, rgb(10 58 74 / 0.94) 0%, rgb(10 58 74 / 0.86) 55%, rgb(14 70 96 / 0.78) 100%);
+  --surface-light-overlay: linear-gradient(100deg, rgb(231 241 246 / 0.94) 0%, rgb(220 234 242 / 0.86) 60%, rgb(200 222 236 / 0.70) 100%);
+  --surface-teal-overlay: linear-gradient(90deg, rgb(26 158 160 / 0.92) 0%, rgb(219 236 236 / 0.93) 34%, rgb(219 236 236 / 0.90) 62%, rgb(26 158 160 / 0.88) 100%);
+}
+@media (min-width: 768px) { :root { --iris-gutter: 24px; } }
+@media (min-width: 1280px) { :root { --iris-gutter: 48px; } }
+
+@layer components {
+  .iris-container { width: 100%; max-width: var(--iris-content-max); margin-inline: auto; padding-inline: var(--iris-gutter); }
+
+  /* --- Top navigation -------------------------------------------------- */
+  .iris-nav-wrap { width: 100%; max-width: var(--iris-content-max); margin-inline: auto; padding: 12px 8px 0; }
+  @media (min-width: 1280px) { .iris-nav-wrap { padding: 25px 33px 0; } }
+  .iris-nav { position: relative; display: flex; align-items: center; gap: 16px; min-height: 60px; padding: 0 12px 0 20px; border-radius: 999px; background: #0A3A4A; color: #FFFFFF; }
+  @media (min-width: 1024px) { .iris-nav { min-height: 70px; padding: 0 23px 0 24px; } }
+  .iris-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 26px; line-height: 1; letter-spacing: 0.01em; }
+  .iris-nav-tab { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; font-size: 12.5px; font-weight: 400; color: #98E0D8; white-space: nowrap; transition: background-color var(--iris-transition), color var(--iris-transition); }
+  .iris-nav-tab:hover { color: #FFFFFF; background: rgb(255 255 255 / 0.08); }
+  .iris-nav-tab[aria-current="page"] { background: #FFFFFF; color: #04121C; font-weight: 500; }
+  /* Tabs are centred on the page, as in the mockups, not in the space between brand and account. */
+  @media (min-width: 1024px) { .iris-nav-tabs { position: absolute; left: 50%; transform: translateX(-50%); } }
+  .iris-nav :focus-visible, .iris-footer :focus-visible { outline-color: #98E0D8; }
+  .iris-avatar { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 999px; background: #FFFFFF; color: #0A3A4A; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+
+  /* --- Menus and popovers (light cards) -------------------------------- */
+  .iris-menu { z-index: 60; min-width: 220px; max-width: min(22rem, calc(100vw - 16px)); max-height: var(--radix-dropdown-menu-content-available-height, 70vh); overflow-y: auto; padding: 6px; border: 1px solid #A9BAC0; border-radius: 8px; background: #FFFFFF; color: #0A3A4A; box-shadow: var(--shadow-md); }
+  .iris-menu-item { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 10px; border-radius: 6px; font-size: 13px; cursor: pointer; outline: none; }
+  .iris-menu-item[data-highlighted] { background: #E7F1F2; }
+  .iris-menu-item[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+  .iris-menu-label { padding: 8px 10px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4F6670; }
+  .iris-menu-sep { height: 1px; margin: 6px 4px; background: #DCE4E6; }
+
+  /* --- Hero ---------------------------------------------------------- */
+  .iris-hero { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; min-height: var(--hero-height); border-radius: 8px; background: var(--hero-teal); color: #FFFFFF; }
+  .iris-hero__photo { position: absolute; inset: 0; z-index: -3; }
+  .iris-hero__photo img { width: 100%; height: 100%; object-fit: cover; filter: var(--hero-photo-filter); transform: scale(var(--hero-photo-scale, 1)); transform-origin: var(--hero-photo-position, 50% 50%); }
+  .iris-hero__overlay { position: absolute; inset: 0; z-index: -2; background: var(--hero-overlay); }
+  .iris-hero__vignette { position: absolute; inset: 0; z-index: -1; background: var(--hero-vignette); pointer-events: none; }
+  .iris-hero[data-variant="bright"] { --hero-overlay: var(--hero-overlay-bright); --hero-photo-filter: var(--hero-photo-filter-bright); }
+  .iris-hero[data-variant="deep"] { --hero-overlay: var(--hero-overlay-deep); --hero-photo-filter: var(--hero-photo-filter-deep); }
+  .iris-hero__content { position: relative; max-width: 705px; padding: 28px 20px; }
+  @media (min-width: 768px) { .iris-hero__content { padding: 33px 40px 36px; } }
+  .iris-hero__eyebrow { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--hero-eyebrow); }
+  .iris-hero__title { margin-top: 16px; font-family: var(--font-display); font-weight: 500; font-size: clamp(30px, 2vw + 13px, 42px); line-height: 1.32; letter-spacing: -0.005em; color: #FFFFFF; }
+  .iris-hero__subtitle { margin-top: 13px; max-width: 548px; font-size: 14px; line-height: 22px; color: var(--hero-subcopy); }
+  .iris-hero__actions { margin-top: 17px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .iris-hero__action { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 16px; border-radius: 4px; background: #FFFFFF; color: #0A3A4A; font-size: 13.5px; font-weight: 600; }
+  .iris-hero__action:hover:not(:disabled) { background: #E7F1F2; }
+  .iris-hero__action:disabled { opacity: 0.7; cursor: not-allowed; }
+  .iris-hero__action:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+  /* Local scrim so the label stays legible over any photo (fixes the mockup overlap). */
+  .iris-hero__updated { position: absolute; top: 28px; right: 24px; padding: 4px 10px; border-radius: 4px; background: rgb(4 18 28 / 0.58); color: #E6F0F2; font-size: 12px; line-height: 16px; }
+  @media (min-width: 768px) { .iris-hero__updated { top: 32px; right: 34px; } }
+  @media (max-width: 767px) { .iris-hero__updated { position: static; align-self: flex-start; margin: 16px 20px 0; } .iris-hero__content { padding-top: 12px; } }
+
+  /* --- Photo surfaces ------------------------------------------------ */
+  .iris-photo-surface { position: relative; isolation: isolate; overflow: hidden; border-radius: 8px; }
+  .iris-photo-surface__photo { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); }
+  .iris-photo-surface__overlay { position: absolute; inset: 0; z-index: -1; }
+  .iris-photo-surface[data-variant="deep"] { color: #FFFFFF; background: #0A3A4A; }
+  .iris-photo-surface[data-variant="deep"] .iris-photo-surface__overlay { background: var(--surface-deep-overlay); }
+  .iris-photo-surface[data-variant="light"] { color: #0A3A4A; background: #E7F1F6; }
+  .iris-photo-surface[data-variant="light"] .iris-photo-surface__photo { filter: grayscale(0.6) brightness(1.15); }
+  .iris-photo-surface[data-variant="light"] .iris-photo-surface__overlay { background: var(--surface-light-overlay); }
+  .iris-photo-surface[data-variant="teal"] { color: #0A3A4A; background: #DBECEC; }
+  .iris-photo-surface[data-variant="teal"] .iris-photo-surface__overlay { background: var(--surface-teal-overlay); }
+
+  /* --- Global filter bar --------------------------------------------- */
+  .iris-filterbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 13px 20px; border: 1px solid #A9BAC0; border-radius: 8px; background: #FFFFFF; }
+  .iris-filter-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px; border: 1px solid #A9BAC0; border-radius: 4px; background: #FFFFFF; color: #0A3A4A; font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .iris-filter-chip:hover { border-color: #0E6680; }
+  .iris-filter-chip[data-state="open"] { border-color: #0E6680; box-shadow: 0 0 0 3px rgb(14 102 128 / 0.15); }
+  .iris-filter-chip svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .iris-data-badge { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 11px; color: #0A3A4A; }
+  .iris-data-badge::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: #1A9EA0; }
+
+  /* --- Section tabs (sub-pages of a top-level section) --------------- */
+  .iris-section-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .iris-section-tab { display: inline-flex; align-items: center; min-height: 34px; padding: 0 12px; border: 1px solid transparent; border-radius: 999px; font-size: 13px; font-weight: 500; color: #4F6670; }
+  .iris-section-tab:hover { color: #0A3A4A; background: #E7F1F2; }
+  .iris-section-tab[aria-current="page"] { color: #0A3A4A; background: #FFFFFF; border-color: #A9BAC0; }
+
+  /* --- Footer --------------------------------------------------------- */
+  .iris-footer { margin-top: 48px; background: linear-gradient(90deg, #04131D 0%, #0A3A4A 50%, #04131D 100%); color: #FFFFFF; font-size: 11px; }
+  .iris-footer a, .iris-footer button { color: #2DBDB6; }
+  .iris-footer__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; min-height: 58px; padding-block: 14px; }
+
+  @media print {
+    .iris-nav-wrap, .iris-footer, .iris-filterbar, .iris-section-tabs, .iris-hero__actions { display: none !important; }
+    .iris-hero { min-height: 0; }
+  }
+}

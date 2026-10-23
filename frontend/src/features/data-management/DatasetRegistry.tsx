@@ -35,7 +35,7 @@ function DatasetSummary({ dataset: d }: { dataset: Dataset }) {
         ]} />
         {filters.error && <Button variant="secondary" onClick={() => filters.refetch()}>Retry categories</Button>}
         <p className="border-l-2 border-brand-medium pl-3 text-xs leading-relaxed text-ink-2">Origin is recorded as declared. Blank values and explicit zero counts remain distinct; completeness requires a defined reporting schedule.</p>
-        <Link to={`/data-management/${d.id}`} className={buttonVariants({ variant: "secondary" })}>Inspect dataset <ArrowRight aria-hidden /></Link>
+        <Link to={`/data/datasets/${d.id}`} className={buttonVariants({ variant: "secondary" })}>Inspect dataset <ArrowRight aria-hidden /></Link>
       </div>
     </Panel>
   );
@@ -65,10 +65,10 @@ export function DatasetRegistry() {
       <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <Panel title="Dataset registry" description={`${fmtNum(rows.length)} of ${fmtNum(q.data.length)} datasets · declared sources and validation metadata.`} motif="records" bodyClassName="p-0" className="iris-records-table">
           <div className="px-4 md:px-0">
-            <DataTable<Dataset> caption="Datasets" rows={rows} rowKey={(d) => d.id} onRowClick={(d) => nav(`/data-management/${d.id}`)} mobileTitle={(d) => <Link to={`/data-management/${d.id}`} className="hover:underline">{d.name}</Link>} minWidth={790}
+            <DataTable<Dataset> caption="Datasets" rows={rows} rowKey={(d) => d.id} onRowClick={(d) => nav(`/data/datasets/${d.id}`)} mobileTitle={(d) => <Link to={`/data/datasets/${d.id}`} className="hover:underline">{d.name}</Link>} minWidth={790}
               emptyState={<div className="p-5"><EmptyState title={q.data.length ? "No datasets match" : "No datasets available"}>{q.data.length ? <Button variant="secondary" onClick={reset}>Clear filters</Button> : "Imported datasets will appear here after confirmation."}</EmptyState></div>}
               columns={[
-                { key: "name", header: "Dataset", hideOnMobile: true, className: "min-w-44 max-w-60", cell: (d) => <div><Link to={`/data-management/${d.id}`} className="font-semibold text-teal-900 hover:underline">{d.name}</Link><p className="mt-1 text-xs text-ink-2">{d.id}</p></div> },
+                { key: "name", header: "Dataset", hideOnMobile: true, className: "min-w-44 max-w-60", cell: (d) => <div><Link to={`/data/datasets/${d.id}`} className="font-semibold text-teal-900 hover:underline">{d.name}</Link><p className="mt-1 text-xs text-ink-2">{d.id}</p></div> },
                 { key: "source", header: "Source / level", className: "min-w-36 max-w-52", cell: (d) => <div><p>{d.source || "Not provided"}</p><p className="mt-1 text-xs text-ink-2">{d.geographic_level}</p></div> },
                 { key: "designation", header: "Classification", cell: (d) => <DesignationBadge designation={d.designation} /> },
                 { key: "coverage", header: "Coverage / records", className: "min-w-40", cell: (d) => <div>{d.coverage_start ? fmtPeriod(d.coverage_start, d.coverage_end) : "Not provided"}<p className="mt-1 text-xs text-ink-2">{fmtNum(d.row_count)} records</p></div> },

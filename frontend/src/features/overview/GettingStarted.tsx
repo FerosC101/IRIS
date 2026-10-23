@@ -9,13 +9,13 @@ const STEPS: Record<"rhu" | "other", { title: string; text: string; to?: string 
   rhu: [
     { title: "Send missing reports", text: "Your list below shows reports that have not arrived yet." },
     { title: "Answer questions", text: "Reply when your coordinator asks about a report." },
-    { title: "Track actions", text: "See support actions planned for your unit.", to: "/follow-up" },
+    { title: "Track actions", text: "See support actions planned for your unit.", to: "/investigations/follow-up" },
   ],
   other: [
     { title: "Review", text: "Open a concern to see why it was flagged.", to: "/investigations" },
     { title: "Verify", text: "Confirm it with the unit, or close it as not a problem." },
-    { title: "Act", text: "Choose what to fix first within your staff time.", to: "/planner" },
-    { title: "Check recovery", text: "See whether reporting improved afterwards.", to: "/recovery" },
+    { title: "Act", text: "Choose what to fix first within your staff time.", to: "/investigations/plan" },
+    { title: "Check recovery", text: "See whether reporting improved afterwards.", to: "/reports/recovery" },
   ],
 };
 
@@ -24,7 +24,7 @@ export function GettingStarted({ role }: { role: Role }) {
     try { return window.localStorage.getItem(KEY) === "1"; } catch { return false; }
   });
   if (hidden) return null;
-  const steps = STEPS[role === "rhu_staff" ? "rhu" : "other"].filter((s) => role !== "admin" || !s.to?.startsWith("/planner"));
+  const steps = STEPS[role === "rhu_staff" ? "rhu" : "other"].filter((s) => role !== "admin" || !s.to?.startsWith("/investigations/plan"));
   return (
     <section aria-labelledby="gs-title" className="relative rounded-md border border-line bg-aqua-50/60 px-4 py-3">
       <button type="button" aria-label="Hide this guide" className="absolute top-1.5 right-1.5 flex size-10 items-center justify-center rounded text-ink-2 hover:bg-white hover:text-ink sm:size-8"

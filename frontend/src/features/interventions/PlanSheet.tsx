@@ -75,7 +75,7 @@ export function PlanSheet({ planId, onClose }: { planId: string | null; onClose:
                   <div>
                     <h3 className="mb-1.5 text-sm font-semibold">Follow-up actions</h3>
                     <ul className="flex flex-col gap-2 text-sm">
-                      {q.data.assignments.map((a) => <li key={a.id} className="flex flex-wrap items-center gap-2"><Link to={`/follow-up?assignment=${a.id}`} className="font-medium text-teal-900 hover:underline">{a.id}</Link><AssignmentStatusBadge status={a.status} /><span className="text-xs text-ink-2">due {fmtDate(a.due_date)}</span></li>)}
+                      {q.data.assignments.map((a) => <li key={a.id} className="flex flex-wrap items-center gap-2"><Link to={`/investigations/follow-up?assignment=${a.id}`} className="font-medium text-teal-900 hover:underline">{a.id}</Link><AssignmentStatusBadge status={a.status} /><span className="text-xs text-ink-2">due {fmtDate(a.due_date)}</span></li>)}
                     </ul>
                   </div>
                 )}

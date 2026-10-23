@@ -8,7 +8,7 @@ import type { ConcernStatus, QueueRow } from "@/types/api";
 import { useState } from "react";
 import { ChipFilter, FilterBar, FilterField } from "@/components/data-display/FilterBar";
 import { MetricCard } from "@/components/data-display/MetricCard";
-import { PageHeader } from "@/components/data-display/PageHeader";
+import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Field, Input, Select } from "@/components/ui/form";
@@ -80,8 +80,10 @@ export function InvestigationsPage() {
   const hidden = (["concern_type", "severity", "province"] as const).filter((k) => f[k]).length;
   return (
     <>
-      <PageHeader title="Investigation Queue" description="Review and prioritize suspected reporting disruptions."
-        actions={can("detection.run") ? <RunDetection /> : undefined} />
+      <ScreenHeader screen="investigations">
+        {can("detection.run") && <div className="flex justify-end"><RunDetection /></div>}
+      </ScreenHeader>
+      <div className="mt-[25px]" />
       <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="New concerns" value={counts?.new ?? "Unavailable"} detail="Awaiting initial review across your scope." motif="records" />
         <MetricCard label="Under review" value={counts?.under_review ?? "Unavailable"} detail="Evidence is being verified." motif="verify" />

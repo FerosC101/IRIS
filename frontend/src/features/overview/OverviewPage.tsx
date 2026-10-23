@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { TrendChart } from "@/components/data-display/charts";
 import { MetricCard } from "@/components/data-display/MetricCard";
 import { ChipFilter } from "@/components/data-display/FilterBar";
-import { PageHeader } from "@/components/data-display/PageHeader";
+import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/form";
 import { KeyValue, Panel } from "@/components/ui/panel";
@@ -68,8 +68,8 @@ export function OverviewPage() {
 
   return (
     <>
-      <PageHeader title="Surveillance Overview" description="Monitor reporting reliability, review concerns, and coordinate the next action." />
-      <div className="iris-workspace-stack">
+      <ScreenHeader screen="dashboard" />
+      <div className="iris-workspace-stack mt-[25px]">
         <div className="iris-toolbar">
           <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-2">
             <span className="iris-eyebrow">Simulated reporting workspace</span>
@@ -86,12 +86,7 @@ export function OverviewPage() {
         </div>
         {q.error ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : !q.data ? <Loading label="Loading overview" /> : (
           <>
-            <Panel variant="hero" className="iris-overview-hero" bodyClassName="">
-              <p className="iris-eyebrow mb-3">Public-health reporting operations</p>
-              <h2>Review reporting gaps and coordinate follow-up.</h2>
-              <p className="mt-3 text-sm leading-relaxed text-ink">Review missing or delayed submissions, verify the evidence, and follow through on corrective actions in your reporting scope.</p>
-              <p className="mt-4 text-xs text-ink-2">Synthetic demonstration data · Queue: {fmtPeriod(q.data.period.start, q.data.period.end)}. Reporting signals require human verification.</p>
-            </Panel>
+            <p className="text-xs text-ink-2">Queue: {fmtPeriod(q.data.period.start, q.data.period.end)}. Reporting signals require human verification.</p>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Reporting indicators">
               <MetricCard label="Reporting completeness" value={fmtPct(latest?.completeness)} detail={latest?.completeness == null ? "Not available for this reporting scope." : `Latest week · ${fmtDate(latest.period_start)}`} motif="trends" />
               <MetricCard label="Open reporting concerns" value={fmtNum(openConcerns)} detail="All periods in your reporting scope." motif="verify" />
@@ -106,7 +101,7 @@ export function OverviewPage() {
                   <TrendChart data={q.data.trend} xKey="period_start" series={[{ key: "completeness", label: "Completeness" }, { key: "timeliness", label: "Timeliness" }]} title="Reporting completeness and timeliness" height={235} />
                 ) : <EmptyState title="Reporting trend unavailable">This scope does not provide the reporting expectations needed for these metrics.</EmptyState>}
                 <p className="mt-3 text-xs text-ink-2">Both measures use expected submissions as the denominator. The latest week can still receive late reports.</p>
-                {role && canAccess("/recovery", role) && <Link to="/recovery" className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm text-teal-900 hover:underline">See recovery <ArrowRight className="size-4" aria-hidden /></Link>}
+                {role && canAccess("/reports/recovery", role) && <Link to="/reports/recovery" className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm text-teal-900 hover:underline">See recovery <ArrowRight className="size-4" aria-hidden /></Link>}
               </Panel>
               <Panel title="Priority concern" description={priority?.severity === "high" ? "A high-priority concern from the selected queue period." : "An open reporting concern from the selected queue period."} motif="verify" className="iris-priority">
                 {priority ? (

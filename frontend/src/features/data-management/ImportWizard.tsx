@@ -88,7 +88,7 @@ export function ImportWizard() {
   const val = useMutation({ mutationFn: (keep: boolean) => api.importValidate({ token: preview!.token, mapping, date_format: dateFormat, keep_last_duplicate: keep }), onSuccess: (v) => { setValidation(v); setStep(2); } });
   const commit = useMutation({
     mutationFn: (m: Meta) => api.importCommit({ token: preview!.token, mapping, date_format: dateFormat, keep_last_duplicate: keepLast, metadata: m }),
-    onSuccess: (ds) => { qc.invalidateQueries(); toast(`Imported '${ds.name}' (${ds.row_count} rows).`); nav(`/data-management/${ds.id}`); },
+    onSuccess: (ds) => { qc.invalidateQueries(); toast(`Imported '${ds.name}' (${ds.row_count} rows).`); nav(`/data/datasets/${ds.id}`); },
     onError: () => setConfirm(null),
   });
   const cancel = () => {
@@ -104,7 +104,7 @@ export function ImportWizard() {
 
   return (
     <>
-      <PageHeader title="Dataset Import & Validation" breadcrumbs={[{ label: "Data sources", to: "/data-management" }, { label: "Import CSV" }]}
+      <PageHeader title="Dataset Import & Validation" breadcrumbs={[{ label: "Data & Models", to: "/data" }, { label: "Import CSV" }]}
         description="Review mappings, validate source data, and confirm provenance before importing." />
       <p className="mb-4 text-xs text-ink-2">CSV ingestion · Step {step + 1} of {STEPS.length} · Preview, validate, declare provenance, then confirm.</p>
       <Stepper step={step} />
@@ -124,7 +124,7 @@ export function ImportWizard() {
             {up.error && <InlineError error={up.error} />}
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button type="submit" disabled={!file || up.isPending}><FileUp aria-hidden />{up.isPending ? "Reading file…" : "Upload and preview"}</Button>
-              <Link to="/data-management" className="inline-flex min-h-11 items-center justify-center px-3 text-sm font-medium text-teal-900 hover:underline sm:min-h-10">Back to data sources</Link>
+              <Link to="/data" className="inline-flex min-h-11 items-center justify-center px-3 text-sm font-medium text-teal-900 hover:underline sm:min-h-10">Back to data sources</Link>
             </div>
             <details className="text-[13px] text-ink-2">
               <summary className="cursor-pointer font-medium text-teal-900">Example of an accepted file</summary>

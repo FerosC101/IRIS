@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DataTable } from "@/components/data-display/DataTable";
 import { FilterBar, FilterField } from "@/components/data-display/FilterBar";
-import { PageHeader } from "@/components/data-display/PageHeader";
+import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox, Input, Select } from "@/components/ui/form";
@@ -85,7 +85,8 @@ export function NetworkPage() {
 
   return (
     <>
-      <PageHeader title="Reporting Network" description="Explore reporting dependencies and potential shared disruptions." />
+      <ScreenHeader screen="network" />
+      <div className="mt-[25px]" />
       {q.error ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : !q.data ? <Loading label="Loading network" /> : !q.data.defined ? <EmptyState title="No network defined">{q.data.message}</EmptyState> : (
         <div className="iris-workspace-stack">
           <div className="iris-toolbar">

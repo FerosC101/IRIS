@@ -33,7 +33,7 @@ function BeforeAfter({ rows }: { rows: Recovery["before_after"] }) {
     <DataTable caption="Before and after corrective actions" rows={rows} rowKey={(r) => r.assignment_id} mobileTitle={(r) => r.title} minWidth={1060}
       columns={[
         { key: "a", header: "Action", hideOnMobile: true, className: "min-w-[13rem]", cell: (r) => (
-          <div><Link to={`/follow-up?assignment=${r.assignment_id}`} className="font-medium text-teal-900 hover:underline">{r.title}</Link><p className="mt-1 text-xs"><Link to={`/investigations/${r.concern_id}`} className="text-info-ink hover:underline">{r.concern_id}</Link></p><p className="text-xs text-ink-2">{r.data_label}</p>
+          <div><Link to={`/investigations/follow-up?assignment=${r.assignment_id}`} className="font-medium text-teal-900 hover:underline">{r.title}</Link><p className="mt-1 text-xs"><Link to={`/investigations/${r.concern_id}`} className="text-info-ink hover:underline">{r.concern_id}</Link></p><p className="text-xs text-ink-2">{r.data_label}</p>
             <p className="text-xs text-ink-2">{r.target_unit_ids.map(unitName).slice(0, 3).join(", ")}{r.target_unit_ids.length > 3 ? "…" : ""} · completed {fmtDate(r.completed_at)}</p></div>
         ) },
         { key: "b", header: "Before the problem", cell: (r) => <Window w={r.before} label="Before" /> },

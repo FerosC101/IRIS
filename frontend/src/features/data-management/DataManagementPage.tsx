@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil, Upload } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { SimulatedTag } from "@/components/data-display/badges";
 import { DataTable } from "@/components/data-display/DataTable";
-import { PageHeader } from "@/components/data-display/PageHeader";
+import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Checkbox, Field, Input, Select, Textarea } from "@/components/ui/form";
 import { Pagination } from "@/components/ui/pagination";
@@ -34,7 +34,7 @@ export function ImportHistory({ rows }: { rows: ImportRecord[] }) {
             <span className="text-sm font-medium">{i.filename}</span>
             <Badge tone={i.status === "accepted" ? "positive" : i.status === "rejected" ? "critical" : "neutral"}>{i.status === "accepted" ? "Accepted" : i.status === "rejected" ? "Rejected" : "Cancelled"}</Badge>
           </div>
-          <p className="text-xs text-ink-2">{fmtDateTime(i.at)} · {i.by ?? "—"} · {fmtNum(i.row_count)} rows{i.dataset_id ? <> · <Link to={`/data-management/${i.dataset_id}`} className="text-teal-900 hover:underline">{i.dataset_id}</Link></> : null}</p>
+          <p className="text-xs text-ink-2">{fmtDateTime(i.at)} · {i.by ?? "—"} · {fmtNum(i.row_count)} rows{i.dataset_id ? <> · <Link to={`/data/datasets/${i.dataset_id}`} className="text-teal-900 hover:underline">{i.dataset_id}</Link></> : null}</p>
           {(i.errors.length > 0 || i.warnings.length > 0) && (
             <details className="mt-1.5 text-[13px]">
               <summary className="cursor-pointer font-medium text-teal-900">{i.errors.length} error(s), {i.warnings.length} warning(s)</summary>
@@ -157,9 +157,9 @@ export function DataManagementPage() {
   ];
   return (
     <>
-      <PageHeader title="Dataset Management" description="Manage reporting datasets, declared sources, and validation records."
-        actions={can("dataset.import") ? <Link to="/data/import" className={buttonVariants()}><Upload aria-hidden /> Import CSV</Link> : undefined} />
-      <Tabs value={tab} onValueChange={(v) => setParams({ tab: v })}>
+      <ScreenHeader screen="data" />
+      <div className="mt-[25px]" />
+      <Tabs value={tab} onValueChange={(v) => setParams((prev) => { const next = new URLSearchParams(prev); next.set("tab", v); return next; })}>
         <TabsList label="Data management sections" tabs={tabs} />
         <TabsContent value="datasets"><DatasetRegistry /></TabsContent>
         <TabsContent value="imports"><ImportsTab /></TabsContent>

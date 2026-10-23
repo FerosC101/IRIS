@@ -25,16 +25,16 @@ export function DatasetPage() {
   const toast = useToast();
   const [del, setDel] = useState(false);
   const q = useQuery({ queryKey: ["dataset", id], queryFn: () => api.dataset(id) });
-  const m = useMutation({ mutationFn: () => api.deleteDataset(id), onSuccess: () => { qc.invalidateQueries(); toast("Dataset deleted."); nav("/data-management"); } });
+  const m = useMutation({ mutationFn: () => api.deleteDataset(id), onSuccess: () => { qc.invalidateQueries(); toast("Dataset deleted."); nav("/data"); } });
   if (q.error) return <ErrorState error={q.error} onRetry={() => q.refetch()} />;
   if (!q.data) return <Loading />;
   const d = q.data;
   return (
     <>
-      <PageHeader title={d.name} breadcrumbs={[{ label: "Data sources", to: "/data-management" }, { label: d.id }]} description={d.description}
+      <PageHeader title={d.name} breadcrumbs={[{ label: "Data & Models", to: "/data" }, { label: d.id }]} description={d.description}
         meta={<><DesignationBadge designation={d.designation} /><ValidationBadge status={d.validation_status} /></>}
         actions={<>
-          <Link to={`/data?dataset=${d.id}`} className={buttonVariants({ variant: "secondary" })}>Explore data</Link>
+          <Link to={`/reports?dataset=${d.id}`} className={buttonVariants({ variant: "secondary" })}>Explore data</Link>
           {!d.is_demo && can("datasets.manage") && <Button variant="danger" onClick={() => setDel(true)}><Trash2 aria-hidden /> Delete</Button>}
         </>} />
       <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
