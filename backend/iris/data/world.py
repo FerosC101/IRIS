@@ -36,6 +36,9 @@ class SimUnit:
     volume: float = 1.0
     x: float = 0.0
     y: float = 0.0
+    #: Position on the schematic (fictional) map, 0-1000 on each axis.
+    geo_x: float | None = None
+    geo_y: float | None = None
 
 
 @dataclass(frozen=True)
@@ -236,7 +239,42 @@ class World:
         return groups
 
 
+#: Schematic geography. The provinces and municipalities are fictional, so these
+#: positions do not describe any real place; they only arrange units the way a
+#: map would (north to south, neighbouring municipalities close together).
+GEO_SIZE = (1000, 1000)
+MUNICIPALITY_GEO = {
+    "Hiraya": (420, 150), "Tala": (520, 215), "Amihan": (365, 255), "Liwayway": (475, 315),
+    "Habagat": (610, 420), "Kalinaw": (705, 480), "Silangan": (640, 540), "Luntian": (560, 500),
+    "Marikit": (430, 690), "Bituin": (505, 760), "Mapayapa": (380, 800), "Sampaguita": (460, 865),
+}
+PROVINCE_OUTLINES = {
+    "Masagana": [(330, 95), (560, 115), (605, 250), (525, 365), (380, 345), (305, 220)],
+    "Malaya": [(540, 380), (705, 375), (765, 470), (705, 595), (580, 585), (515, 480)],
+    "Tahimik": [(370, 640), (525, 650), (565, 780), (505, 905), (380, 885), (330, 760)],
+}
+_HUB_MUNICIPALITY = {"HUB-MSG": "Hiraya", "HUB-MLY": "Silangan", "HUB-THM": "Marikit", "HUB-REG": "Amihan"}
+
+
+def _geo(units: list[SimUnit]) -> list[SimUnit]:
+    """Place each unit at its municipality, spreading units that share one."""
+    seen: dict[str, int] = {}
+    out = []
+    for u in units:
+        muni = u.municipality or _HUB_MUNICIPALITY.get(u.id)
+        if muni not in MUNICIPALITY_GEO:
+            out.append(u)
+            continue
+        k = seen.get(muni, 0)
+        seen[muni] = k + 1
+        bx, by = MUNICIPALITY_GEO[muni]
+        angle = math.radians(40 + 95 * k)
+        r = 0 if k == 0 else 22
+        out.append(SimUnit(**{**u.__dict__, "geo_x": round(bx + r * math.cos(angle), 1), "geo_y": round(by + r * math.sin(angle), 1)}))
+    return out
+
+
 def build_world() -> World:
     units = _units()
     edges = _edges(units)
-    return World(units=_layout(units, edges), edges=edges)
+    return World(units=_geo(_layout(units, edges)), edges=edges)

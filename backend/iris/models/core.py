@@ -61,6 +61,9 @@ class ReportingUnit(Base):
     notes: Mapped[str] = mapped_column(Text, default="")
     x: Mapped[float] = mapped_column(Float, default=0.0)
     y: Mapped[float] = mapped_column(Float, default=0.0)
+    #: Position on the schematic, fictional map (0-1000). Null when not defined.
+    geo_x: Mapped[float | None] = mapped_column(Float, nullable=True)
+    geo_y: Mapped[float | None] = mapped_column(Float, nullable=True)
     simulated: Mapped[bool] = mapped_column(Boolean, default=True)
     updated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 

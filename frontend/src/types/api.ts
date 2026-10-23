@@ -148,7 +148,10 @@ export interface ConcernDetail {
 
 export interface NetworkNode {
   id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean; is_sentinel: boolean;
-  x: number; y: number; status: "normal" | "delayed" | "missing" | "no_schedule"; status_label: string;
+  x: number; y: number;
+  /** Schematic, fictional map position (0-1000); null when not defined. */
+  geo_x: number | null; geo_y: number | null;
+  status: "normal" | "delayed" | "missing" | "no_schedule"; status_label: string;
   completeness: number | null; timeliness: number | null; expected: number; open_concerns: number; downstream_units: number | null;
   degree: number; simulated: boolean;
 }
@@ -158,6 +161,7 @@ export interface NetworkGraphData {
   defined: boolean; message?: string; nodes: NetworkNode[]; edges: NetworkEdge[];
   relationship_types: { type: RelationshipType; description: string }[]; status_labels: Record<string, string>;
   window: { from: number; to: number }; note: string;
+  geography?: { available: boolean; width: number; height: number; provinces: { name: string; outline: [number, number][] }[]; note: string };
 }
 export interface SlotSummary { expected: number; received: number; on_time: number; late: number; not_received: number; completeness: number | null; timeliness: number | null }
 export interface UnitDetail {
@@ -310,7 +314,7 @@ export interface Experiment extends ExperimentSummary {
 }
 
 export interface AuditRow { id: number; at: string; actor: string; actor_role: Role | null; entity_type: string; entity_id: string; action: string; summary: string }
-export interface UnitRow { id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean; is_sentinel: boolean; notes: string; simulated: boolean; updated_at: string | null }
+export interface UnitRow { id: string; name: string; unit_type: UnitType; province: string; municipality: string | null; active: boolean; is_sentinel: boolean; notes: string; simulated: boolean; updated_at: string | null; geo_x: number | null; geo_y: number | null }
 export interface DemoScenario { id: string; kind: string; kind_label: string; units: string[]; unit_names: string[]; start_week: number; end_week: number; severity: Severity; description: string; is_disruption: boolean; period: string }
 
 /** Unit-level state of one expected weekly report. A missing submission is not a report; blank is not zero. */

@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from iris import config
-from iris.data.world import RELATIONSHIP_TYPES
+from iris.data.world import GEO_SIZE, PROVINCE_OUTLINES, RELATIONSHIP_TYPES
 from iris.models import ReportingConcern, ReportingExpectation, ReportingRelationship, ReportingUnit
 from iris.services import datasets
 from iris.services.concerns import OPEN_STATUSES
@@ -31,6 +31,16 @@ def _status(s: dict) -> str:
     if s["timeliness"] < 0.75:
         return "delayed"
     return "normal"
+
+
+def _geography(units: list[ReportingUnit]) -> dict:
+    available = any(u.geo_x is not None for u in units)
+    return {
+        "available": available, "width": GEO_SIZE[0], "height": GEO_SIZE[1],
+        "provinces": [{"name": name, "outline": [list(p) for p in pts]} for name, pts in PROVINCE_OUTLINES.items()] if available else [],
+        "note": "Schematic geography. The provinces and municipalities are fictional; positions do not describe real places."
+        if available else "No map positions are defined for these units.",
+    }
 
 
 def graph(session: Session, dataset_id: str, w_from: int, w_to: int) -> dict:
@@ -61,7 +71,7 @@ def graph(session: Session, dataset_id: str, w_from: int, w_to: int) -> dict:
         st = _status(s)
         nodes.append({
             "id": u.id, "name": u.name, "unit_type": u.unit_type, "province": u.province, "municipality": u.municipality,
-            "active": u.active, "is_sentinel": u.is_sentinel, "x": u.x, "y": u.y,
+            "active": u.active, "is_sentinel": u.is_sentinel, "x": u.x, "y": u.y, "geo_x": u.geo_x, "geo_y": u.geo_y,
             "status": st, "status_label": STATUS_LABELS[st], "completeness": s["completeness"], "timeliness": s["timeliness"],
             "expected": s["expected"], "open_concerns": open_counts.get(u.id, 0),
             "downstream_units": len(members) if u.unit_type == "hub" else None,
@@ -75,6 +85,7 @@ def graph(session: Session, dataset_id: str, w_from: int, w_to: int) -> dict:
         "status_labels": STATUS_LABELS,
         "window": {"from": w_from, "to": w_to},
         "note": "All units and relationships are simulated. Edges exist only where the simulated network defines them.",
+        "geography": _geography(units),
     }
 
 

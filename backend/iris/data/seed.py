@@ -90,7 +90,8 @@ def build(session: Session, scenario_ids: list[str] | None = None, seed: int = c
     for u in world.units:
         org = f"ORG-PESU-{PROVINCE_HUB[u.province][-3:]}" if u.id not in ("HOSP-REG", "LAB-REG", "HUB-REG") else "ORG-RESU"
         session.add(ReportingUnit(id=u.id, name=u.name, unit_type=u.unit_type, province=u.province, municipality=u.municipality,
-                                  organization_id=org, active=True, is_sentinel=u.is_sentinel, x=u.x, y=u.y, simulated=True))
+                                  organization_id=org, active=True, is_sentinel=u.is_sentinel, x=u.x, y=u.y,
+                                  geo_x=u.geo_x, geo_y=u.geo_y, simulated=True))
     session.flush()
     for uid, name, role, org, unit, prov in USERS:
         session.add(User(id=uid, display_name=name, role_id=role, organization_id=org, reporting_unit_id=unit, province=prov))

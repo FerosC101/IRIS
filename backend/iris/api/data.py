@@ -192,7 +192,8 @@ def get_unit(unit_id: str, dataset_id: str = config.DEMO_DATASET_ID, session: Se
 @router.get("/units")
 def list_units(session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> list[dict]:
     return [{"id": u.id, "name": u.name, "unit_type": u.unit_type, "province": u.province, "municipality": u.municipality,
-             "active": u.active, "is_sentinel": u.is_sentinel, "notes": u.notes, "simulated": u.simulated, "updated_at": u.updated_at}
+             "active": u.active, "is_sentinel": u.is_sentinel, "notes": u.notes, "simulated": u.simulated, "updated_at": u.updated_at,
+             "geo_x": u.geo_x, "geo_y": u.geo_y}
             for u in session.execute(select(ReportingUnit).order_by(ReportingUnit.province, ReportingUnit.unit_type, ReportingUnit.name)).scalars()]
 
 

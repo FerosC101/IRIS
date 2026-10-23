@@ -451,3 +451,14 @@ def test_reminders_are_simulated_and_only_for_missing_reports(fresh):
     assert c.post("/api/reminders", json={**body, "unit_id": "RHU-HIRAYA"}, headers=PROV).status_code == 403  # other province
     assert c.post("/api/reminders", json=body, headers=RHU).status_code == 403
     assert c.post("/api/reminders", json={**body, "category_code": "LABCONF"}, headers=PROV).status_code == 404
+
+
+def test_network_has_schematic_fictional_geography(client):
+    g = client.get("/api/network", headers=RESU).json()
+    assert g["geography"]["available"] and len(g["geography"]["provinces"]) == 3
+    assert "fictional" in g["geography"]["note"]
+    for n in g["nodes"]:
+        assert 0 <= n["geo_x"] <= 1000 and 0 <= n["geo_y"] <= 1000, n["id"]
+    pos = {(n["geo_x"], n["geo_y"]) for n in g["nodes"]}
+    assert len(pos) == len(g["nodes"])  # units sharing a municipality do not overlap
+    assert all("geo_x" in u for u in client.get("/api/units", headers=RESU).json())
