@@ -267,6 +267,27 @@ def add_note(session: Session, c: ReportingConcern, actor: Actor, body: str, at:
     return n
 
 
+def attach_evidence(session: Session, c: ReportingConcern, actor: Actor, title: str, detail: str, link: str | None = None,
+                    at: datetime | None = None) -> EvidenceItem:
+    """Evidence a person attaches (a description and optionally a link). Files are not stored."""
+    actor.require("concern.evidence")
+    _require_open(c, "attach evidence")
+    title = (title or "").strip()
+    if len(title) < 3:
+        raise HTTPException(status_code=422, detail="Give the evidence a short title (at least 3 characters).")
+    detail = _reason(detail, "what this evidence shows")
+    link = (link or "").strip() or None
+    if link and not link.lower().startswith(("http://", "https://")):
+        raise HTTPException(status_code=422, detail="Links must start with http:// or https://.")
+    item = EvidenceItem(kind="attached", title=title, detail=detail, data={"link": link} if link else {},
+                        created_at=at or now(), created_by=actor.user_id)
+    c.evidence.append(item)
+    _touch(c, at)
+    audit.record(session, actor, "concern", c.id, "concern.evidence_attached", f"{actor.display_name} attached evidence to {c.id}: {title}",
+                 {"title": title, "link": link}, at=at)
+    return item
+
+
 def resolve(session: Session, c: ReportingConcern, actor: Actor, summary: str, at: datetime | None = None) -> None:
     actor.require("concern.resolve")
     _require_open(c, "resolve it")

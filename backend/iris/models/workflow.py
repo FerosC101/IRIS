@@ -64,7 +64,8 @@ class EvidenceItem(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     concern_id: Mapped[str] = mapped_column(ForeignKey("reporting_concerns.id"))
-    #: observed | possible_explanation | requires_verification | confirmed_by_reviewer | simulated_example
+    #: observed | possible_explanation | requires_verification | confirmed_by_reviewer | attached | simulated_example
+    #: ("attached" = evidence a person attached; created_by records who)
     kind: Mapped[str] = mapped_column(String(40))
     title: Mapped[str] = mapped_column(String(255))
     detail: Mapped[str] = mapped_column(Text, default="")

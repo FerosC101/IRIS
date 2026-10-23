@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Check, CheckCircle2, ClipboardList, Eye, MessageSquare, RotateCcw, UserPlus, XCircle } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, ClipboardList, Eye, MessageSquare, Paperclip, RotateCcw, UserPlus, XCircle } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { ConcernStatusBadge, SeverityBadge, SimulatedTag, VerificationBadge } from "@/components/data-display/badges";
@@ -20,11 +20,11 @@ import { cn } from "@/lib/utils";
 import { api } from "@/services/api";
 import type { ConcernDetail } from "@/types/api";
 import { QueueTable } from "../overview/QueueTable";
-import { AssignDialog, ReasonDialog } from "./ActionDialogs";
+import { AssignDialog, EvidenceDialog, ReasonDialog } from "./ActionDialogs";
 import { EvidenceList, ObservationTimeline, TechnicalDetails } from "./EvidenceSections";
 import { WeekStrip } from "./WeekStrip";
 
-type DialogKind = null | "confirm" | "dismiss" | "clarify" | "respond" | "resolve" | "reopen" | "assign";
+type DialogKind = null | "confirm" | "dismiss" | "clarify" | "respond" | "resolve" | "reopen" | "assign" | "evidence";
 
 const NOTE_LABEL: Record<string, string> = {
   note: "Note", clarification_request: "Question to the unit", clarification_response: "Reply from the unit",
@@ -140,6 +140,7 @@ export function InvestigationPage() {
     if (c.verification !== "confirmed" && can("concern.confirm") && !primary?.label.startsWith("Confirm")) more.push({ label: "Confirm it's a real problem", icon: <CheckCircle2 aria-hidden />, onSelect: () => open("confirm") });
     if (can("concern.clarify") && c.status !== "clarification_requested") more.push({ label: "Ask the unit a question", icon: <MessageSquare aria-hidden />, onSelect: () => open("clarify") });
     if (c.status === "clarification_requested" && can("concern.respond") && primary?.label !== "Reply to the question") more.push({ label: "Add the unit's reply", icon: <MessageSquare aria-hidden />, onSelect: () => open("respond") });
+    if (can("concern.evidence")) more.push({ label: "Attach evidence", icon: <Paperclip aria-hidden />, onSelect: () => open("evidence") });
     if (can("concern.assign")) more.push({ label: d.investigation ? "Change owner" : "Assign an owner", icon: <UserPlus aria-hidden />, onSelect: () => open("assign") });
     if (can("concern.resolve") && primary?.label !== "Mark as resolved") more.push({ label: "Mark as resolved", icon: <ClipboardList aria-hidden />, onSelect: () => open("resolve") });
     if (can("concern.dismiss")) more.push({ label: "Close as not a problem", icon: <XCircle aria-hidden />, danger: true, onSelect: () => open("dismiss") });
@@ -147,7 +148,7 @@ export function InvestigationPage() {
     more.push({ label: "Reopen", icon: <RotateCcw aria-hidden />, onSelect: () => open("reopen") });
   }
 
-  const observed = d.evidence.filter((e) => (e.kind === "observed" || e.kind === "confirmed_by_reviewer") && e.detail !== c.summary);
+  const observed = d.evidence.filter((e) => (e.kind === "observed" || e.kind === "confirmed_by_reviewer" || e.kind === "attached") && e.detail !== c.summary);
   const unknown = d.evidence.filter((e) => e.kind === "possible_explanation" || e.kind === "requires_verification");
   const answerKey = d.evidence.filter((e) => e.kind === "simulated_example" && e.title.startsWith("Simulation answer key"));
 
@@ -327,6 +328,8 @@ export function InvestigationPage() {
         onSubmit={(t) => act.mutate({ action: "resolve", body: { summary: t }, msg: "Marked as resolved." })} />
       <ReasonDialog open={dialog === "reopen"} onOpenChange={(o) => !o && setDialog(null)} title="Reopen concern" label="Why reopen it?" submitLabel="Reopen"
         pending={act.isPending} error={act.error} onSubmit={(t) => act.mutate({ action: "reopen", body: { reason: t }, msg: "Concern reopened." })} />
+      <EvidenceDialog open={dialog === "evidence"} onOpenChange={(o) => !o && setDialog(null)} pending={act.isPending} error={act.error}
+        onSubmit={(v) => act.mutate({ action: "evidence", body: v, msg: "Evidence attached." })} />
       <AssignDialog open={dialog === "assign"} onOpenChange={(o) => !o && setDialog(null)} users={d.assignable_users} current={d.investigation?.owner_user_id}
         pending={act.isPending} error={act.error} onSubmit={(v) => act.mutate({ action: "assign", body: v, msg: "Owner assigned." })} />
     </>

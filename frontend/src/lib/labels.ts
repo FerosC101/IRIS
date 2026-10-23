@@ -35,6 +35,7 @@ export const EVIDENCE_KIND: Record<EvidenceKind, { label: string; tone: Tone; he
   possible_explanation: { label: "Possible explanation", tone: "info", help: "A hypothesis. It has not been verified." },
   requires_verification: { label: "Requires verification", tone: "attention", help: "Something a person needs to check." },
   confirmed_by_reviewer: { label: "Confirmed by reviewer", tone: "positive", help: "A reviewer recorded this with a reason." },
+  attached: { label: "Attached by reviewer", tone: "teal", help: "Evidence a person attached: a description and, optionally, a link." },
   simulated_example: { label: "Simulated example", tone: "neutral", help: "Comes from the simulation, not real data." },
 };
 

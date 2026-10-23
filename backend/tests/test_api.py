@@ -298,3 +298,21 @@ def test_surveillance_summary_scope_and_validation(client):
     assert client.get("/api/surveillance/summary?category=DENGUE&week=99", headers=RESU).status_code == 422
     assert client.get("/api/surveillance/summary?category=MCS", headers=RESU).status_code == 422
     assert client.get("/api/surveillance/summary?dataset_id=DS-DEMO-PROVINCIAL", headers=RESU).json()["available"] is False
+
+
+def test_attach_evidence_records_who_and_validates(fresh):
+    c = fresh
+    body = {"title": "Register photo", "detail": "Dengue register pages for W38–W40 show three cases.", "link": "https://example.org/register"}
+    assert c.post("/api/concerns/C-0021/evidence", json={**body, "link": "ftp://x"}, headers=RESU).status_code == 422
+    assert c.post("/api/concerns/C-0021/evidence", json={**body, "detail": "short"}, headers=RESU).status_code == 422
+    assert c.post("/api/concerns/C-0021/evidence", json=body, headers=ADMIN).status_code == 403
+    d = c.post("/api/concerns/C-0021/evidence", json=body, headers=RESU).json()
+    item = next(e for e in d["evidence"] if e["kind"] == "attached")
+    assert item["title"] == "Register photo" and item["data"]["link"] == "https://example.org/register"
+    assert item["created_by"] == "RESU Surveillance Analyst (demo)"
+    assert d["activity"][0]["action"] == "concern.evidence_attached"
+    # RHU staff may attach evidence to their own unit's concern, not to others.
+    assert c.post("/api/concerns/C-0014/evidence", json={"title": "Encoder log", "detail": "Encoder was on leave for two weeks."}, headers=RHU).status_code == 200
+    assert c.post("/api/concerns/C-0021/evidence", json=body, headers=RHU).status_code == 404
+    c.post("/api/concerns/C-0020/dismiss", json={"reason": "Report sent by courier and received."}, headers=PROV)
+    assert c.post("/api/concerns/C-0020/evidence", json=body, headers=PROV).status_code == 409  # closed

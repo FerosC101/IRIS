@@ -24,14 +24,14 @@ ROLE_LABELS = {
 }
 
 PERMISSIONS: dict[str, set[str]] = {
-    "rhu_staff": {"concern.note", "concern.respond", "report.submit", "assignment.update"},
+    "rhu_staff": {"concern.note", "concern.respond", "concern.evidence", "report.submit", "assignment.update"},
     "provincial_coordinator": {
-        "concern.note", "concern.respond", "concern.review", "concern.confirm", "concern.dismiss", "concern.resolve",
+        "concern.note", "concern.respond", "concern.evidence", "concern.review", "concern.confirm", "concern.dismiss", "concern.resolve",
         "concern.clarify", "concern.assign", "concern.reopen", "plan.create", "plan.decide", "assignment.update",
         "network.view", "recovery.view", "data.view",
     },
     "resu_analyst": {
-        "concern.note", "concern.respond", "concern.review", "concern.confirm", "concern.dismiss", "concern.resolve",
+        "concern.note", "concern.respond", "concern.evidence", "concern.review", "concern.confirm", "concern.dismiss", "concern.resolve",
         "concern.clarify", "concern.assign", "concern.reopen", "plan.create", "plan.decide", "assignment.update",
         "detection.run", "experiment.run", "dataset.import", "network.view", "recovery.view", "data.view",
         "evaluation.view", "audit.view",

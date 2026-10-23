@@ -8,7 +8,7 @@ from iris import config
 from iris.db import get_session
 from iris.detection.methods import METHOD_LABELS
 from iris.models import InterventionAction, InterventionAssignment, Investigation, InvestigationNote, ReportingConcern, User
-from iris.schemas import AssignIn, BodyIn, DetectionRunIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
+from iris.schemas import AssignIn, BodyIn, DetectionRunIn, EvidenceIn, MessageIn, NoteIn, ReasonIn, ReportIn, SummaryIn
 from iris.services import concerns as cs
 from iris.services import datasets, ids, interventions as iv, overview as ov, reports
 from iris.services.context import Actor, get_actor
@@ -172,6 +172,13 @@ def assign(concern_id: str, body: AssignIn, session: Session = Depends(get_sessi
 def note(concern_id: str, body: BodyIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
     c = cs.get(session, concern_id, actor)
     cs.add_note(session, c, actor, body.body)
+    return _done(session, c, actor)
+
+
+@router.post("/concerns/{concern_id}/evidence")
+def attach_evidence(concern_id: str, body: EvidenceIn, session: Session = Depends(get_session), actor: Actor = Depends(get_actor)):
+    c = cs.get(session, concern_id, actor)
+    cs.attach_evidence(session, c, actor, body.title, body.detail, body.link)
     return _done(session, c, actor)
 
 

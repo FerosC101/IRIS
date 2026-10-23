@@ -35,6 +35,12 @@ class SummaryIn(BaseModel):
     summary: str = Field(max_length=4000)
 
 
+class EvidenceIn(BaseModel):
+    title: str = Field(max_length=200)
+    detail: str = Field(max_length=4000)
+    link: str | None = Field(default=None, max_length=500)
+
+
 class DetectionRunIn(BaseModel):
     method: Literal["threshold", "ewma", "network"] = "network"
     dataset_id: str | None = None

@@ -38,6 +38,9 @@ export function EvidenceList({ items }: { items: Evidence[] }) {
               <p className="text-sm font-medium text-ink">{e.title}</p>
             </div>
             <p className="text-sm text-ink">{e.detail}</p>
+            {typeof e.data.link === "string" && (
+              <a href={e.data.link} target="_blank" rel="noreferrer noopener" className="text-sm break-all text-teal-900 underline underline-offset-2">{e.data.link}</a>
+            )}
             {e.created_by && <p className="text-xs text-ink-2">Recorded by {e.created_by}</p>}
             {perUnit && (
               <div className="overflow-x-auto rounded-sm border border-line">

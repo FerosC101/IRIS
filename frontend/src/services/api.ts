@@ -17,7 +17,7 @@ export const api = {
   overview: (p: Params) => request<Overview>(`/overview${qs(p)}`),
   concerns: (p: Params) => request<Paged<QueueRow>>(`/concerns${qs(p)}`),
   concern: (id: string) => request<ConcernDetail>(`/concerns/${id}`),
-  concernAction: (id: string, action: "review" | "confirm" | "dismiss" | "clarify" | "respond" | "assign" | "notes" | "resolve" | "reopen", body: object) =>
+  concernAction: (id: string, action: "review" | "confirm" | "dismiss" | "clarify" | "respond" | "assign" | "notes" | "evidence" | "resolve" | "reopen", body: object) =>
     request<ConcernDetail>(`/concerns/${id}/${action}`, { method: "POST", json: body }),
   runDetection: (method: string) => request<{ created: string[]; skipped_existing: number; method: string; method_label: string }>("/detection/run", { method: "POST", json: { method } }),
 
