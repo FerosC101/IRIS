@@ -178,3 +178,11 @@ class ResetIn(BaseModel):
     scenario_ids: list[str] | None = None
     #: The caller must type RESET: resetting deletes every change made in the demo.
     confirm: str | None = Field(default=None, max_length=20)
+
+
+class LeadReviewIn(BaseModel):
+    lead_type: Literal["model_a_alert", "zero_report", "plan_action"]
+    lead_id: str = Field(min_length=3, max_length=200)
+    status: Literal["in_review", "confirmed", "not_a_problem"]
+    note: str | None = Field(default="", max_length=4000)
+    evidence: str | None = Field(default="", max_length=2000)

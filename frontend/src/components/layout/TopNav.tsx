@@ -1,7 +1,7 @@
 import * as D from "@radix-ui/react-dialog";
 import * as Menu from "@radix-ui/react-dropdown-menu";
 import { Check, HelpCircle, Info, Menu as MenuIcon, Settings, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSession } from "@/hooks/useSession";
 import { useToast } from "@/hooks/useToast";
@@ -142,10 +142,23 @@ function MobileMenu() {
   );
 }
 
-/** Floating pill navigation: brand, the five sections, and the account chip. */
+/** Once the page has scrolled, the pinned nav casts a shadow so it reads as above the content. */
+function useScrolled() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 4);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+  return scrolled;
+}
+
+/** Floating pill navigation, pinned to the top: brand, the five sections, and the account chip. */
 export function TopNav() {
+  const scrolled = useScrolled();
   return (
-    <header className="iris-nav-wrap">
+    <header className="iris-nav-wrap" data-scrolled={scrolled || undefined}>
       <div className="iris-nav">
         <Link to="/" className="flex min-h-11 shrink-0 items-center rounded-md" aria-label="IRIS dashboard">
           <Logo surface="dark" />

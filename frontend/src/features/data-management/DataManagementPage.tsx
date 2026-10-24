@@ -158,7 +158,7 @@ export function DataManagementPage() {
   ];
   return (
     <>
-      <ScreenHeader screen="data" />
+      <ScreenHeader screen="data" filterBar={{ hide: ["region", "disease", "weeks", "group"] }} />
       <div className="mt-[25px]" />
       <Tabs value={tab} onValueChange={(v) => setParams((prev) => mergeSearch(prev, { tab: v }))}>
         <TabsList label="Data management sections" tabs={tabs} />

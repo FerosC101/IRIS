@@ -76,6 +76,8 @@ def test_filters_affect_records(client):
     missing = client.get("/api/datasets/DS-DEMO-FACILITY/records?status=not_received", headers=RESU).json()
     assert 0 < missing["total"] < all_rows
     assert all(r["status"] == "not_received" for r in missing["rows"])
+    # A missing submission has no timestamp: null, never the text "NaT".
+    assert all(r["received_at"] is None for r in missing["rows"])
     one = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-HIRAYA&page_size=5&page=2", headers=RESU).json()
     assert one["page"] == 2 and all(r["unit_id"] == "RHU-HIRAYA" for r in one["rows"])
     s = client.get("/api/datasets/DS-DEMO-FACILITY/records?search=luntian", headers=RESU).json()
@@ -86,6 +88,17 @@ def test_recovery_not_calculable_without_expectations(client):
     r = client.get("/api/recovery?dataset_id=DS-DEMO-PROVINCIAL", headers=RESU).json()
     assert r["completeness_available"] is False
     assert any("Not calculable" in m for m in r["messages"])
+
+
+def test_recovery_windows_do_not_overlap_and_name_overlapping_concerns(fresh):
+    rows = fresh.get("/api/recovery", headers=RESU).json()["before_after"]
+    for r in rows:
+        if r["during"] and r["after"]:
+            assert r["after"]["weeks"][0] > r["during"]["weeks"][1]
+    # Sampaguita's forms were complete after the fix; its later dip comes from the Tahimik hub outage, which is named.
+    samp = next(r for r in rows if r["concern_id"] == "C-0005")
+    assert samp["after"]["incomplete"] == 0
+    assert any(o["id"] == "C-0008" for o in samp["after_overlaps"])
 
 
 def test_budget_affects_plan_and_approval_creates_follow_up(fresh):
@@ -180,6 +193,13 @@ def test_network_and_unit_detail(client):
     assert g["defined"] and all(e["simulated"] for e in g["edges"])
     ids = {n["id"] for n in g["nodes"]}
     assert all(e["source"] in ids and e["target"] in ids for e in g["edges"])
+    # Every status follows the cutoffs the API reports, so the legend and panels can quote them.
+    t = g["status_thresholds"]
+    for n in g["nodes"]:
+        if n["status"] == "missing":
+            assert n["completeness"] < t["completeness"]
+        elif n["status"] in ("delayed", "normal"):
+            assert n["completeness"] >= t["completeness"] and (n["timeliness"] < t["timeliness"]) == (n["status"] == "delayed")
     u = client.get("/api/network/units/HUB-THM", headers=RESU).json()
     assert u["unit"]["unit_type"] == "hub" and len(u["history"]) == 26
 

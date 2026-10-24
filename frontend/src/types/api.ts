@@ -160,6 +160,8 @@ export type RelationshipType = "reports_through" | "specimen_referral" | "shared
 export interface NetworkGraphData {
   defined: boolean; message?: string; nodes: NetworkNode[]; edges: NetworkEdge[];
   relationship_types: { type: RelationshipType; description: string }[]; status_labels: Record<string, string>;
+  /** Below these shares a unit is "missing" (arrived) or "delayed" (on time). */
+  status_thresholds: { completeness: number; timeliness: number };
   window: { from: number; to: number }; note: string;
   geography?: { available: boolean; width: number; height: number; provinces: { name: string; outline: [number, number][] }[]; note: string };
 }
@@ -287,6 +289,8 @@ export interface Recovery {
   before_after: {
     assignment_id: string; title: string; concern_id: string; target_unit_ids: string[]; completed_at: string | null;
     before: WindowMetrics | null; during: WindowMetrics | null; after: WindowMetrics | null; after_message: string | null;
+    /** Other concerns on the same units during the "after" weeks. */
+    after_overlaps: { id: string; title: string }[];
     change_vs_during: number | null; outcomes: { status: OutcomeStatus; source: string; summary: string; recorded_at: string }[]; data_label: string;
   }[];
   causality_note?: string;
@@ -391,3 +395,59 @@ export interface DetectionSummary {
   disclaimer?: string;
   note?: string;
 }
+
+// ---- Real-data models (read-only pipeline outputs) ----------------------------------------------------------
+
+export type LeadType = "model_a_alert" | "zero_report" | "plan_action";
+export type LeadReviewStatus = "in_review" | "confirmed" | "not_a_problem";
+export interface LeadReview { status: LeadReviewStatus; status_label: string; note: string; evidence: string; by: string; role: Role; at: string; model_run_id: string | null; id?: number }
+export interface RealOutputStatus { available: boolean; generated_at?: string; run_id?: string; model_a_run_id?: string; count?: number | null; disclaimer?: string; error?: unknown }
+export interface RealStatus { source: string; contract_dir: string; available: boolean; review_statuses: Record<LeadReviewStatus, string>; min_reason: number; min_evidence: number; outputs: Record<"alerts" | "zero_priority" | "plan" | "metrics", RealOutputStatus> }
+interface RealPage<T> { items: T[]; total: number; page: number; page_size: number; pages: number; disclaimer: string; run_id: string | null; generated_at: string }
+export interface RealRegion { id: string; name: string }
+
+export type ZeroBand = "High" | "Medium" | "Low" | "Missing report (not ranked)";
+export interface ZeroReportItem {
+  alert_id: string; location_id: string; location_name: string; region_id: string; region_name: string; week_start: string; mw?: number; mw_year?: number;
+  report_status: "reported" | "missing"; cases?: number | null; expected?: number | null; p_low?: number | null; model_a_flag?: number | null;
+  priority_score?: number | null; priority: ZeroBand; rank_in_week: number | null; p_priority?: number | null; p_priority_low?: number | null; p_priority_high?: number | null;
+  data_sufficiency?: string; top_indicators: string[]; explanation?: string; data_warnings: string[]; verification_steps: string[];
+  components: Record<string, number>; model_version: string; review: LeadReview | null;
+}
+export interface ZeroWeek { week_start: string; mw: number | null; mw_year: number | null; zero_reports: number; high: number; medium: number; low: number; missing: number; reviewed: number }
+export interface ZeroReports extends RealPage<ZeroReportItem> {
+  week: string | null; weeks: ZeroWeek[]; regions: RealRegion[]; model_a_run_id: string; indicator_labels: Record<string, string>;
+  model: { version: string; weights: Record<string, number>; bands: { High: number; Medium: number }; hist_weeks: number; min_hist: number };
+}
+
+export interface ModelAAlert {
+  alert_id: string; disease: string; location_id: string; location_name: string; region_id: string | null; region_name: string | null; hub_id: string | null;
+  period_start: string; resolution: string; cases: number; expected: number; pi_low: number; pi_high: number; p_low: number; p_fail: number | null;
+  shortfall: number | null; hub_p: number | null; priority: number | null; model_version: string; review: LeadReview | null;
+}
+export interface ModelAAlerts extends RealPage<ModelAAlert> {
+  diseases: string[]; disease: string; years: number[]; year: string; regions: RealRegion[]; weekly: { week_start: string; flags: number }[]; threshold: { rule: string; tau: number; alert_budget: number };
+}
+
+export interface PlanAction {
+  lead_id: string; action: string; action_label: string; target: string; target_name: string; region_id: string; region_name: string | null;
+  hours: number; expected_cases_recovered: number; locations: string[]; location_names: string[]; missing_reports: number; reported_cases: number;
+  expected_cases: number; shortfall: number; p_fail_max: number; hub_p: number; P_region: number; review: LeadReview | null;
+}
+export interface RealPlan {
+  week: string; weeks: { week_start: string; hours_used: number; expected_cases_recovered: number | null; actions: number }[];
+  hours_per_week: number; hours_used: number; expected_cases_recovered: number | null; actions: PlanAction[]; disclaimer: string; run_id: string; generated_at: string;
+}
+
+export type MetricCell = string | number | null | (number | null)[];
+export type MetricRow = Record<string, MetricCell>;
+export interface ZeroMethodResult { auc: number | null; average_precision: number | null; high_band_recall: number | null; high_band_false_alert_rate: number | null }
+export interface RealMetrics {
+  model_a: { objectives: MetricRow[]; detection_real_swaps_2020: MetricRow[]; detection_injected_2020: MetricRow[]; recovery: MetricRow[];
+    model_a_done_when: MetricRow[]; thresholds: Record<string, number>; run_id: string; generated_at: string; disclaimer: string } | null;
+  model_b_zero: { model: ZeroReports["model"]; run_id: string | null; generated_at: string; disclaimer: string;
+    summary: { results: Record<string, { kind: "real" | "synthetic"; zero_reports: number; positives: number; methods: Record<string, ZeroMethodResult> }>;
+      diagnostics: { normal_zeros: Record<string, { count: number; mean_region_other_zero_share: number; share_above_high_cut: number }>;
+        swaps_2020: { weeks_with_swaps: number; max_swaps_in_a_week: number; max_zero_reports_in_a_week: number; locations: number } } } } | null;
+}
+export interface LeadReviewResult { lead_type: LeadType; lead_id: string; review: LeadReview; history: LeadReview[] }

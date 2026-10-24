@@ -1,4 +1,4 @@
-"""JSON files for the IRIS app (React + FastAPI): alerts, plan, network, metrics.
+"""JSON files for the IRIS app (React + FastAPI): alerts, plan, network, metrics, zero_priority.
 
 Each file is an envelope {schema, generated_at, run_id, disclaimer, ...} validated against a JSON Schema
 (draft 2020-12) in outputs/contract/schemas/ before it is written. Missing values are null, never NaN.
@@ -66,6 +66,24 @@ PLAN_ACTION = {
     },
     "additionalProperties": False,
 }
+ZERO_ITEM = {
+    "type": "object",
+    "required": ["alert_id", "location_id", "week_start", "report_status", "priority", "status", "model_version"],
+    "properties": {
+        "alert_id": STR, "location_id": STR, "location_name": {"type": ["string", "null"]}, "region_id": {"type": ["string", "null"]},
+        "region_name": {"type": ["string", "null"]}, "week_start": DATE, "mw_year": {"type": ["integer", "null"]},
+        "mw": {"type": ["integer", "null"]}, "report_status": {"enum": ["reported", "missing"]},
+        "cases": {"type": ["integer", "null"], "minimum": 0}, "expected": NUM, "p_low": PROB,
+        "model_a_flag": {"type": ["integer", "null"]}, "priority_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+        "priority": {"enum": ["High", "Medium", "Low", "Missing report (not ranked)"]},
+        "rank_in_week": {"type": ["integer", "null"], "minimum": 1}, "p_priority": PROB, "p_priority_low": PROB,
+        "p_priority_high": PROB, "data_sufficiency": {"type": ["string", "null"]}, "top_indicators": {"type": "array", "items": STR},
+        "explanation": {"type": ["string", "null"]}, "data_warnings": {"type": "array", "items": STR},
+        "verification_steps": {"type": "array", "items": STR}, "components": {"type": "object"},
+        "status": {"const": "lead_to_verify"}, "model_version": STR,
+    },
+    "additionalProperties": False,
+}
 SCHEMAS = {
     "alerts": _envelope("alerts", {"threshold": {"type": "object"}, "count": {"type": "integer"},
                                    "items": {"type": "array", "items": ALERT}}, ["threshold", "count", "items"]),
@@ -88,7 +106,54 @@ SCHEMAS = {
     "metrics": _envelope("metrics", {"objectives": {"type": "array"}, "detection_real_swaps_2020": {"type": "array"},
                                      "shared_source_identification": {"type": "array"}, "recovery": {"type": "array"}},
                          ["objectives", "detection_real_swaps_2020", "shared_source_identification", "recovery"]),
+    "zero_priority": _envelope("zero_priority", {"model_run_id": STR, "model": {"type": "object"}, "summary": {"type": "object"},
+                                                 "count": {"type": "integer"}, "items": {"type": "array", "items": ZERO_ITEM}},
+                               ["model_run_id", "model", "summary", "count", "items"]),
 }
+ZERO_DISCLAIMER = ("Zero-report priorities are leads to verify, not confirmed errors. The data has no testing, timeliness or "
+                   "submission records, so the cause of a zero cannot be determined. Real HDX/DOH dengue data; model "
+                   "evaluation also uses synthetic failures, reported separately.")
+
+
+def _zero_priority_doc(head) -> dict | None:
+    """Model B · zero-report prioritizer outputs (outputs/zero_priority/), if that step has been run."""
+    zp = OUT_DIR / "zero_priority"
+    if not (zp / "ranked_alerts_2020.csv").exists():
+        return None
+    from .zero_priority.score import COMPONENTS
+    r = pd.read_csv(zp / "ranked_alerts_2020.csv", keep_default_na=False, na_values=[""])
+    model = json.loads((zp / "model.json").read_text(encoding="utf-8"))
+    met = json.loads((zp / "metrics.json").read_text(encoding="utf-8"))
+    cfg = json.loads((zp / "config.json").read_text(encoding="utf-8"))
+    split = lambda v: [x.strip() for x in str(v).split("|") if x.strip()] if isinstance(v, str) else []  # noqa: E731
+    num = lambda v: None if pd.isna(v) else float(v)  # noqa: E731
+    integer = lambda v: None if pd.isna(v) else int(v)  # noqa: E731
+    items = [{
+        "alert_id": f"dengue|{x.location_id}|{x.week_start}|zero_priority", "location_id": x.location_id,
+        "location_name": x.location, "region_id": x.region_id, "region_name": x.region, "week_start": x.week_start,
+        "mw_year": integer(x.mw_year), "mw": integer(x.mw), "report_status": x.report_status, "cases": integer(x.cases),
+        "expected": num(x.expected), "p_low": num(x.p_low), "model_a_flag": integer(x.model_a_flag),
+        "priority_score": num(x.priority_score), "priority": x.priority, "rank_in_week": integer(x.rank_in_week),
+        "p_priority": num(x.p_priority), "p_priority_low": num(x.p_priority_low), "p_priority_high": num(x.p_priority_high),
+        "data_sufficiency": None if pd.isna(x.data_sufficiency) else x.data_sufficiency,
+        "top_indicators": [t.strip() for t in str(x.top_indicators).split(";") if t.strip()] if isinstance(x.top_indicators, str) else [],
+        "explanation": None if pd.isna(x.explanation) else x.explanation,
+        "data_warnings": split(x.data_warnings), "verification_steps": split(x.verification_steps),
+        "components": {k: num(getattr(x, f"c_{k}")) for k in COMPONENTS}, "status": "lead_to_verify", "model_version": x.model_version,
+    } for x in r.itertuples(index=False)]
+    res = met["results"]
+    head_metrics = {name: {"kind": v["kind"], "zero_reports": v["zero_reports"], "positives": v["positives"],
+                           "methods": {m: {"auc": mv["auc"], "average_precision": mv["average_precision"],
+                                           "high_band_recall": mv["high_band"]["recall"],
+                                           "high_band_false_alert_rate": mv["high_band"]["false_alert_rate"]}
+                                       for m, mv in v["methods"].items()}}
+                    for name, v in res.items()}
+    return {**head("zero_priority"), "disclaimer": ZERO_DISCLAIMER, "model_run_id": cfg["run_id"],
+            "model": {"version": cfg["model_version"], "weights": model["weights"], "bands": model["bands"],
+                      "hist_weeks": model["hist_weeks"], "min_hist": model["min_hist"], "streak_saturation": model["streak_saturation"],
+                      "real_share": model["calibration"]["real_share"]},
+            "summary": {"results": head_metrics, "diagnostics": met.get("diagnostics", {}), "tuning": met.get("tuning", {})},
+            "count": len(items), "items": items}
 
 
 def _clean(v):
@@ -164,6 +229,9 @@ def build() -> dict:
     docs["metrics"] = {**head("metrics"), **{k: res[k] for k in ("objectives", "detection_real_swaps_2020",
                                                                  "detection_injected_2020", "shared_source_identification",
                                                                  "recovery", "model_a_done_when", "thresholds")}}
+    zp_doc = _zero_priority_doc(head)
+    if zp_doc is not None:
+        docs["zero_priority"] = zp_doc
     for name, doc in docs.items():
         doc = _clean(doc)
         validate_doc(name, doc)
@@ -217,6 +285,22 @@ The simulated reporting network (`simulated: true`): facilities, provincial repo
 
 The proposal's results: objectives scorecard, detection metrics on real 2020 errors, shared-source identification with
 and without the graph, and recovery efficiency per planning policy. Same numbers as `outputs/results/RESULTS.md`.
+
+## `zero_priority.json`
+
+Model B · zero-report prioritizer (written when `python -m iris_pipeline zero-priority` has been run): every 2020 zero-case
+dengue report, ranked within its week, plus missing weeks returned as `Missing report (not ranked)`. Its own `disclaimer`
+replaces the shared one.
+
+| field | meaning |
+|---|---|
+| `priority_score`, `rank_in_week` | 0-100 ranking score and the order to verify within the week |
+| `priority` | High / Medium / Low (bands set on real 2019 normal zeros), or `Missing report (not ranked)` |
+| `p_priority`, `p_priority_low`, `p_priority_high` | calibrated share of comparable zeros expected to be wrong, 90% interval |
+| `top_indicators`, `explanation` | why the report was ranked where it is |
+| `data_warnings`, `verification_steps` | what the data can't show, and what to check |
+| `components` | each indicator's 0-1 value |
+| `model`, `summary` | weights and bands; results on real and synthetic sets, reported separately |
 
 ## Serving from FastAPI (example, not added to the team's code)
 

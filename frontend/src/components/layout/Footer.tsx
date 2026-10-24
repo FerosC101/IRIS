@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { DesignationBadge } from "@/components/data-display/badges";
 import { Dialog, DialogTrigger, SheetContent } from "@/components/ui/dialog";
 import { ErrorState, Loading } from "@/components/ui/states";
@@ -56,11 +56,13 @@ function ProvenanceDrawer({ open, onOpenChange }: { open: boolean; onOpenChange:
 /** Dark footer with the standing disclaimer on every screen. */
 export function Footer() {
   const [open, setOpen] = useState(false);
+  // The real-data page is the one screen not built on the synthetic demo records.
+  const real = useLocation().pathname.startsWith("/reports/dengue");
   return (
     <footer className="iris-footer">
       <div className="iris-container iris-footer__inner">
         <p className="text-white">IRIS <span aria-hidden>/</span> Integrated Reporting Intervention System</p>
-        <p className="text-white">Synthetic demo records · Not verified public-health statistics · PHT (UTC+8)</p>
+        <p className="text-white">{real ? "Real HDX / DOH dengue reports · Model output is a lead to verify" : "Synthetic demo records · Not verified public-health statistics"} · PHT (UTC+8)</p>
         <ProvenanceDrawer open={open} onOpenChange={setOpen} />
       </div>
     </footer>

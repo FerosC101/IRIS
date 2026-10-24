@@ -34,7 +34,7 @@ export function Legend({ series }: { series: SeriesDef[] }) {
   );
 }
 
-function TipBox({ title, rows }: { title: string; rows: { label: string; value: string; i: number }[] }) {
+export function TipBox({ title, rows }: { title: string; rows: { label: string; value: string; i: number }[] }) {
   return (
     <div className="rounded-md border border-line bg-white px-3 py-2 text-xs shadow-sm">
       <p className="mb-1 font-medium text-ink">{title}</p>

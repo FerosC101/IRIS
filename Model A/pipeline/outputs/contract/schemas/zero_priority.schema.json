@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IRIS zero_priority",
+  "type": "object",
+  "required": [
+    "schema",
+    "generated_at",
+    "run_id",
+    "disclaimer",
+    "model_run_id",
+    "model",
+    "summary",
+    "count",
+    "items"
+  ],
+  "properties": {
+    "schema": {
+      "const": "iris.zero_priority/1.0"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "disclaimer": {
+      "type": "string"
+    },
+    "model_run_id": {
+      "type": "string"
+    },
+    "model": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "count": {
+      "type": "integer"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "alert_id",
+          "location_id",
+          "week_start",
+          "report_status",
+          "priority",
+          "status",
+          "model_version"
+        ],
+        "properties": {
+          "alert_id": {
+            "type": "string"
+          },
+          "location_id": {
+            "type": "string"
+          },
+          "location_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "region_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "region_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "week_start": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "mw_year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "mw": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "report_status": {
+            "enum": [
+              "reported",
+              "missing"
+            ]
+          },
+          "cases": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "expected": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "p_low": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "model_a_flag": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "priority_score": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "priority": {
+            "enum": [
+              "High",
+              "Medium",
+              "Low",
+              "Missing report (not ranked)"
+            ]
+          },
+          "rank_in_week": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "p_priority": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "p_priority_low": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "p_priority_high": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "data_sufficiency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "top_indicators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "explanation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "data_warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "verification_steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "components": {
+            "type": "object"
+          },
+          "status": {
+            "const": "lead_to_verify"
+          },
+          "model_version": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

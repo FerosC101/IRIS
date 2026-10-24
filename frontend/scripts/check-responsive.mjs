@@ -9,10 +9,10 @@ const SHOTS = process.argv[3] ?? null;
 const WIDTHS = [320, 375, 768, 1024, 1440];
 const PLAN = {
   "U-RESU-1": ["/", "/investigations", "/investigations/C-0008", "/investigations/C-0012", "/network", "/network?unit=HUB-THM", "/data", "/data?tab=trends",
-    "/data/import", "/planner", "/follow-up", "/follow-up?assignment=F-0002", "/recovery", "/evaluation", "/data-management", "/data-management/DS-DEMO-FACILITY", "/settings", "/help"],
+    "/data/import", "/planner", "/follow-up", "/follow-up?assignment=F-0002", "/recovery", "/reports/dengue", "/reports/dengue?tab=flags", "/reports/dengue?tab=plan", "/reports/dengue?tab=results", "/evaluation", "/data-management", "/data-management/DS-DEMO-FACILITY", "/settings", "/help"],
   "U-RHU-HIRAYA": ["/", "/investigations/C-0014", "/data", "/follow-up"],
   "U-PROV-MLY": ["/", "/planner?concern=C-0010", "/investigations/C-0010"],
-  "U-ADMIN": ["/data-management?tab=units", "/data-management?tab=activity", "/network"],
+  "U-ADMIN": ["/data-management?tab=units", "/data-management?tab=activity", "/network", "/reports/dengue"],
 };
 
 if (SHOTS) mkdirSync(SHOTS, { recursive: true });

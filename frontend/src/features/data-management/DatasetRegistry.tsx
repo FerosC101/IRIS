@@ -34,7 +34,7 @@ function DatasetSummary({ dataset: d }: { dataset: Dataset }) {
           { label: "Categories in dataset", value: filters.error ? "Could not load categories" : !filters.data ? "Loading categories…" : filters.data.categories.length ? filters.data.categories.map(categoryName).join(", ") : "Not provided" },
         ]} />
         {filters.error && <Button variant="secondary" onClick={() => filters.refetch()}>Retry categories</Button>}
-        <p className="border-l-2 border-brand-medium pl-3 text-xs leading-relaxed text-ink-2">Origin is recorded as declared. Blank values and explicit zero counts remain distinct; completeness requires a defined reporting schedule.</p>
+        <p className="border-l-2 border-brand-medium pl-3 text-xs leading-relaxed text-ink-2">Origin is recorded as declared. Blank values and explicit zero counts remain distinct; arrival rates need a defined reporting schedule.</p>
         <Link to={`/data/datasets/${d.id}`} className={buttonVariants({ variant: "secondary" })}>Inspect dataset <ArrowRight aria-hidden /></Link>
       </div>
     </Panel>

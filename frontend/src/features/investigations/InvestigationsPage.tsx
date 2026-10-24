@@ -1,12 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Play } from "lucide-react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { mergeSearch } from "@/lib/url";
-import { DataTable, type SortState } from "@/components/data-display/DataTable";
-import { ConcernStatusBadge, SeverityBadge, VerificationBadge } from "@/components/data-display/badges";
-import { fmtDate } from "@/lib/format";
-import type { ConcernStatus, QueueRow } from "@/types/api";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { type SortState } from "@/components/data-display/DataTable";
 import { ChipFilter, FilterBar, FilterField } from "@/components/data-display/FilterBar";
 import { MetricCard } from "@/components/data-display/MetricCard";
 import { ScreenHeader } from "@/components/shell/ScreenHeader";
@@ -16,13 +12,15 @@ import { Field, Input, Select } from "@/components/ui/form";
 import { Pagination } from "@/components/ui/pagination";
 import { Panel } from "@/components/ui/panel";
 import { EmptyState, ErrorState, InlineError, Loading } from "@/components/ui/states";
+import { useGlobalFilters } from "@/hooks/useGlobalFilters";
 import { useSession } from "@/hooks/useSession";
 import { useToast } from "@/hooks/useToast";
 import { SEVERITY } from "@/lib/labels";
+import { mergeSearch } from "@/lib/url";
 import { api } from "@/services/api";
+import { QueueTable } from "../overview/QueueTable";
 
-
-const DEFAULTS = { status: "active", concern_type: "", severity: "", province: "", search: "" };
+const DEFAULTS = { status: "active", concern_type: "", severity: "", search: "" };
 
 export function RunDetection() {
   const [open, setOpen] = useState(false);
@@ -68,7 +66,6 @@ export function InvestigationsPage() {
   const { meta, role, can } = useSession();
   const overview = useQuery({ queryKey: ["overview", "all", "active"], queryFn: () => api.overview({ period: "all", status: "active" }) });
   const counts = overview.data?.counts;
-  const navigate = useNavigate();
   const [url, setUrl] = useSearchParams();
   const f = Object.fromEntries(Object.entries(DEFAULTS).map(([k, v]) => [k, url.get(k) ?? v])) as typeof DEFAULTS;
   const page = Math.max(1, Number(url.get("page")) || 1);
@@ -78,12 +75,17 @@ export function InvestigationsPage() {
   const keepEmpty = Object.keys(DEFAULTS).filter((k) => DEFAULTS[k as keyof typeof DEFAULTS] !== "");
   const setF = (v: typeof DEFAULTS) => setUrl((p) => mergeSearch(p, { ...v, page: null }, keepEmpty), { replace: true });
   const params = { ...f, page, page_size: 20, sort: sort.key, order: sort.order };
-  const q = useQuery({ queryKey: ["concerns", params], queryFn: () => api.concerns(params), placeholderData: (p) => p });
+  // Region comes from the shared filter bar; coordinators and RHU staff are already limited to their own area.
+  const scoped = role === "provincial_coordinator" || role === "rhu_staff";
+  const { filters: g, set: setGlobal } = useGlobalFilters();
+  const query = { ...params, province: scoped ? "" : g.region };
+  const q = useQuery({ queryKey: ["concerns", query], queryFn: () => api.concerns(query), placeholderData: (p) => p });
   const set = (patch: Partial<typeof DEFAULTS>) => setUrl((p) => mergeSearch(p, { ...patch, page: null }, keepEmpty), { replace: true });
-  const hidden = (["concern_type", "severity", "province"] as const).filter((k) => f[k]).length;
+  const hidden = (["concern_type", "severity"] as const).filter((k) => f[k]).length + (!scoped && g.region ? 1 : 0);
   return (
     <>
-      <ScreenHeader screen="investigations">
+      {/* Region sits with this screen's own filters below; it is the shared region, so other screens follow it. */}
+      <ScreenHeader screen="investigations" filterBar={{ hide: ["region", "disease", "weeks", "group"] }}>
         {can("detection.run") && <div className="flex justify-end"><RunDetection /></div>}
       </ScreenHeader>
       <div className="mt-[25px]" />
@@ -105,9 +107,19 @@ export function InvestigationsPage() {
             { value: "closed", label: "Closed" },
             { value: "", label: "All" },
           ]} />
-          <FilterBar activeCount={hidden} onReset={() => set({ concern_type: "", severity: "", province: "" })} label="Filters"
+          <FilterBar activeCount={hidden} onReset={() => setUrl((p) => mergeSearch(p, { concern_type: "", severity: "", region: "", page: null }, keepEmpty), { replace: true })} label="Filters"
             primary={<div className="w-full md:w-72"><label htmlFor="cs" className="sr-only">Search concerns</label>
               <Input id="cs" type="search" placeholder="Search by concern ID or keyword" value={f.search} onChange={(e) => set({ search: e.target.value })} /></div>}>
+            {!scoped && (
+              <FilterField label="Region">
+                {(id) => (
+                  <Select id={id} value={g.region} onChange={(e) => setGlobal({ region: e.target.value })}>
+                    <option value="">All provinces</option>
+                    {meta?.provinces.map((p) => <option key={p}>{p}</option>)}
+                  </Select>
+                )}
+              </FilterField>
+            )}
             <FilterField label="Type">
               {(id) => (
                 <Select id={id} value={f.concern_type} onChange={(e) => set({ concern_type: e.target.value })}>
@@ -116,7 +128,7 @@ export function InvestigationsPage() {
                 </Select>
               )}
             </FilterField>
-            <FilterField label="Priority" className="w-full md:w-40">
+            <FilterField label="Priority" className="md:w-40">
               {(id) => (
                 <Select id={id} value={f.severity} onChange={(e) => set({ severity: e.target.value })}>
                   <option value="">All</option>
@@ -124,33 +136,12 @@ export function InvestigationsPage() {
                 </Select>
               )}
             </FilterField>
-            {role !== "provincial_coordinator" && role !== "rhu_staff" && (
-              <FilterField label="Province" className="w-full md:w-36">
-                {(id) => (
-                  <Select id={id} value={f.province} onChange={(e) => set({ province: e.target.value })}>
-                    <option value="">All</option>
-                    {meta?.provinces.map((p) => <option key={p}>{p}</option>)}
-                  </Select>
-                )}
-              </FilterField>
-            )}
           </FilterBar>
         </div>
         {q.error ? <div className="p-4"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div> : !q.data ? <div className="px-4"><Loading /></div> : (
           <>
-            <DataTable<QueueRow> rows={q.data.rows} caption="Reporting concerns" rowKey={(r) => r.id}
-              onRowClick={(r) => navigate(r.link)} mobileTitle={(r) => <Link to={r.link}>{r.title}</Link>} minWidth={1080}
-              sort={sort} onSort={(v) => setUrl((p) => mergeSearch(p, { sort: v.key, order: v.order, page: null }), { replace: true })}
-              columns={[
-                { key: "id", header: "Concern", cell: (r) => <Link to={r.link} className="font-semibold text-info-ink hover:underline">{r.id}</Link> },
-                { key: "severity", header: "Priority", sortKey: "severity", cell: (r) => <SeverityBadge severity={r.severity} /> },
-                { key: "unit", header: "Affected entities", cell: (r) => r.units_label },
-                { key: "title", header: "Suspected disruption", cell: (r) => <Link to={r.link} className="hover:underline">{r.title}</Link> },
-                { key: "status", header: "Status", cell: (r) => <ConcernStatusBadge status={r.status as ConcernStatus} /> },
-                { key: "verification", header: "Verification", cell: (r) => <VerificationBadge verification={r.verification ?? "unverified"} /> },
-                { key: "assigned", header: "Reviewer", cell: (r) => r.assigned ?? "Unassigned" },
-                { key: "updated", header: "Updated", sortKey: "updated_at", cell: (r) => fmtDate(r.updated_at) },
-              ]}
+            <QueueTable rows={q.data.rows} caption="Reporting concerns" showVerification sort={sort}
+              onSort={(v) => setUrl((p) => mergeSearch(p, { sort: v.key, order: v.order, page: null }), { replace: true })}
               emptyState={<div className="p-4"><EmptyState title="No concerns match" action={<Button size="sm" variant="secondary" onClick={() => { setF(DEFAULTS); }}>Show all open concerns</Button>} /></div>} />
             {q.data.pages > 1 && <div className="border-t border-line px-4 py-3"><Pagination page={q.data.page} pages={q.data.pages} total={q.data.total} pageSize={q.data.page_size} onPage={setPage} /></div>}
           </>

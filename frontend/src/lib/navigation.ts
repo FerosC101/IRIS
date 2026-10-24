@@ -21,6 +21,7 @@ export const NAV: NavItem[] = [
   { to: "/", label: "Dashboard", section: "dashboard", top: true, roles: ALL, description: "What needs attention this week" },
   { to: "/reports", label: "Reports & Analysis", tabLabel: "Weekly reports", section: "reports", top: true, roles: ALL, description: "Submitted reports and missing records" },
   { to: "/reports/analysis", label: "Anomaly analysis", section: "reports", roles: REVIEWERS, description: "Detection results and evidence" },
+  { to: "/reports/dengue", label: "Real dengue data", section: "reports", roles: [...REVIEWERS, "admin"], description: "Model A and B on real DOH dengue reports" },
   { to: "/reports/recovery", label: "Recovery", section: "reports", roles: [...REVIEWERS, "admin"], description: "Is reporting improving?" },
   { to: "/network", label: "Reporting Network", section: "network", top: true, roles: [...REVIEWERS, "admin"], description: "How units are connected" },
   { to: "/investigations", label: "Investigations & Actions", tabLabel: "Investigation queue", section: "investigations", top: true, roles: ["rhu_staff", ...REVIEWERS], description: "Verification and corrective actions" },

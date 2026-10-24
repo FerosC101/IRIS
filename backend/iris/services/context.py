@@ -28,17 +28,17 @@ PERMISSIONS: dict[str, set[str]] = {
     "provincial_coordinator": {
         "concern.note", "concern.respond", "concern.evidence", "concern.review", "concern.confirm", "concern.dismiss", "concern.resolve",
         "concern.clarify", "concern.assign", "concern.reopen", "plan.create", "plan.decide", "assignment.update",
-        "network.view", "recovery.view", "data.view",
+        "network.view", "recovery.view", "data.view", "real.view", "real.review",
     },
     "resu_analyst": {
         "concern.note", "concern.respond", "concern.evidence", "concern.review", "concern.confirm", "concern.dismiss", "concern.resolve",
         "concern.clarify", "concern.assign", "concern.reopen", "plan.create", "plan.decide", "assignment.update",
         "detection.run", "experiment.run", "dataset.import", "network.view", "recovery.view", "data.view",
-        "evaluation.view", "audit.view",
+        "evaluation.view", "audit.view", "real.view", "real.review",
     },
     "admin": {
         "report.submit", "detection.run", "experiment.run", "dataset.import", "units.manage", "audit.view",
-        "network.view", "recovery.view", "data.view", "evaluation.view", "datasets.manage", "concern.note",
+        "network.view", "recovery.view", "data.view", "evaluation.view", "datasets.manage", "concern.note", "real.view",
     },
 }
 

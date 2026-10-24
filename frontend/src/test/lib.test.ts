@@ -1,11 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { fmtPct, fmtPeriod, fmtSigned, setDateStyle } from "@/lib/format";
+import { fmtDate, fmtDateTime, fmtPct, fmtPeriod, fmtSigned, setDateStyle } from "@/lib/format";
 import { canAccess, navFor, sectionTabs, topNavFor } from "@/lib/navigation";
 import { reportSchema } from "@/features/overview/SubmitReportDialog";
 import { metaSchema } from "@/features/data-management/ImportWizard";
 import { reasonSchema } from "@/features/investigations/ActionDialogs";
 
 describe("format", () => {
+  it("shows a dash for a missing or unreadable timestamp, never 'undefined' or 'NaN'", () => {
+    for (const v of [null, undefined, "", "NaT", "not a date"]) {
+      expect(fmtDate(v)).toBe("—");
+      expect(fmtDateTime(v)).toBe("—");
+    }
+    expect(fmtDateTime("2026-10-06T05:27:00")).toMatch(/2026 05:27$/);
+  });
+
   it("formats proportions and missing values", () => {
     expect(fmtPct(0.934)).toBe("93%");
     expect(fmtPct(0.934, 1)).toBe("93.4%");

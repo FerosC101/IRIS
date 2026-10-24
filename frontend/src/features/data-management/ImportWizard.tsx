@@ -137,7 +137,7 @@ export function ImportWizard() {
           <div className="space-y-5 text-sm">
             <p>Map a reporting period and a value column. Keep blank values distinct from observed zero counts.</p>
             <p>Source and data classification are required before confirmation. Declaring real data does not verify its origin.</p>
-            <p className="border-l-2 border-brand-bright pl-3 text-xs text-ink-2">Uploaded files do not create reporting schedules or network relationships. Completeness and some analyses may remain unavailable.</p>
+            <p className="border-l-2 border-brand-bright pl-3 text-xs text-ink-2">Uploaded files do not create reporting schedules or network relationships. Arrival rates and some analyses may remain unavailable.</p>
           </div>
         </Panel>
         </div>

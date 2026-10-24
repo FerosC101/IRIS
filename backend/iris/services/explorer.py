@@ -76,7 +76,7 @@ def apply_filters(t: pd.DataFrame, search: str | None, province: str | None, uni
 
 
 def _clean(v):
-    if v is None:
+    if v is None or v is pd.NaT:
         return None
     if isinstance(v, float) and np.isnan(v):
         return None

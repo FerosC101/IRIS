@@ -81,19 +81,24 @@ describe("Hero", () => {
 describe("GlobalFilterBar", () => {
   it("defaults to dengue and the latest ISO week, and writes choices to the URL", async () => {
     setup(<GlobalFilterBar />, { path: "/reports?tab=x" });
-    expect(screen.getByText("Synthetic demo data")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /ISO week range: ISO W40 · 28 Sep–04 Oct/ })).toBeInTheDocument();
+    expect(screen.getByText("Synthetic data")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Reset" })).toBeNull(); // nothing changed yet
+    expect(screen.getByRole("button", { name: /ISO week range: ISO W40 · Sep 28 – Oct 4/ })).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /^Disease: Dengue/ }));
     const menu = await screen.findByRole("menu");
     expect(within(menu).queryByText("Monthly consultation summary")).toBeNull(); // weekly categories only
     await userEvent.click(within(menu).getByRole("menuitemradio", { name: "Leptospirosis" }));
     expect(screen.getByTestId("location").textContent).toBe("/reports?tab=x&disease=LEPTO");
     await userEvent.click(screen.getByRole("button", { name: /^Region:/ }));
-    await userEvent.click(await screen.findByRole("menuitemradio", { name: "Simulated region · Malaya" }));
+    await userEvent.click(await screen.findByRole("menuitemradio", { name: "Malaya" }));
     expect(screen.getByTestId("location").textContent).toContain("region=Malaya");
-    await userEvent.click(screen.getByRole("button", { name: /^Unit group:/ }));
+    await userEvent.click(screen.getByRole("button", { name: /^Units:/ }));
     await userEvent.click(await screen.findByRole("menuitemradio", { name: "Hospitals" }));
     expect(screen.getByTestId("location").textContent).toContain("group=hospital");
+    // Three filters differ from their defaults; Reset returns all of them.
+    expect(screen.getByLabelText("3 changed")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Reset" }));
+    expect(screen.getByTestId("location").textContent).toBe("/reports?tab=x");
   });
   it("sets a week range from the popover", async () => {
     setup(<GlobalFilterBar />, { path: "/" });

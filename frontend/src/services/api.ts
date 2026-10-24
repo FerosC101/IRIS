@@ -2,6 +2,7 @@ import type {
   Assignment, AuditRow, DetectionSummary, Comparison, ConcernDetail, DatasetDetail, Dataset, DemoScenario, Experiment, ExperimentSummary,
   FilterOptions, ImportPreview, ImportRecord, ImportValidation, Meta, NetworkGraphData, Overview, Paged, Plan, Quality,
   Lineage, QueueRow, RecordDetail, Reminder, Severity, RecordRow, Recovery, SurveillanceSummary, Task, Trends, UnitDetail, UnitRow, CandidateAction, Assumptions,
+  RealStatus, ZeroReports, ModelAAlerts, RealPlan, RealMetrics, LeadReview, LeadReviewResult, LeadType, LeadReviewStatus,
 } from "@/types/api";
 import { qs, request } from "./client";
 
@@ -86,4 +87,14 @@ export const api = {
   experiment: (id: string) => request<Experiment>(`/experiments/${id}`),
   runExperiment: (body: { name?: string; replications: number; base_seed: number }) => request<Experiment>("/experiments", { method: "POST", json: body }),
   audit: (p: Params) => request<Paged<AuditRow>>(`/audit${qs(p)}`),
+
+  // Real HDX/DOH dengue data: read-only pipeline outputs, plus human reviews of their leads.
+  realStatus: () => request<RealStatus>("/real/status"),
+  realZeroReports: (p: Params) => request<ZeroReports>(`/real/zero-reports${qs(p)}`),
+  realAlerts: (p: Params) => request<ModelAAlerts>(`/real/alerts${qs(p)}`),
+  realPlan: (week?: string) => request<RealPlan>(`/real/plan${qs({ week })}`),
+  realMetrics: () => request<RealMetrics>("/real/metrics"),
+  leadHistory: (lead_type: LeadType, lead_id: string) => request<LeadReview[]>(`/real/reviews${qs({ lead_type, lead_id })}`),
+  reviewLead: (body: { lead_type: LeadType; lead_id: string; status: LeadReviewStatus; note?: string; evidence?: string }) =>
+    request<LeadReviewResult>("/real/reviews", { method: "POST", json: body }),
 };

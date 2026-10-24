@@ -155,13 +155,22 @@ def recovery(session: Session, dataset_id: str, province: str | None = None, uni
         done_week = config.week_index(asg.completed_at.date()) if asg.completed_at else None
         before = window_metrics(target, concern.week_start_index - 4, concern.week_start_index - 1)
         during = window_metrics(target, concern.week_start_index, concern.week_end_index)
-        after = window_metrics(target, done_week + 1, done_week + 4) if done_week is not None else None
+        # "After" starts once both the action and the problem period are over, so the three windows never overlap.
+        after_from = max(done_week, concern.week_end_index) + 1 if done_week is not None else None
+        after = window_metrics(target, after_from, after_from + 3) if after_from is not None else None
+        # Other concerns on the same units during the "after" weeks can pull the numbers down for unrelated reasons.
+        overlaps = [] if after is None else [
+            {"id": o.id, "title": o.title} for o in session.execute(select(ReportingConcern).where(
+                ReportingConcern.dataset_id == dataset_id, ReportingConcern.id != concern.id,
+                ReportingConcern.week_start_index <= after_from + 3, ReportingConcern.week_end_index >= after_from)).scalars()
+            if {u.id for u in o.units} & set(asg.target_unit_ids)]
         outcomes = session.execute(select(InterventionOutcome).where(InterventionOutcome.assignment_id == asg.id).order_by(InterventionOutcome.recorded_at)).scalars().all()
         rows.append({
             "assignment_id": asg.id, "title": asg.title, "concern_id": concern.id, "target_unit_ids": asg.target_unit_ids,
             "completed_at": asg.completed_at.isoformat() if asg.completed_at else None,
             "before": before, "during": during, "after": after,
             "after_message": None if after else "Not yet observable in this dataset: no reporting weeks after the action was completed.",
+            "after_overlaps": overlaps,
             "change_vs_during": None if not (after and during) else round(after["completeness"] - during["completeness"], 4),
             "outcomes": [{"status": o.outcome_status, "source": o.source, "summary": o.summary, "recorded_at": o.recorded_at.isoformat()} for o in outcomes],
             "data_label": "Synthetic scenario outcome" if ds.designation == "synthetic" else "Observed in imported data",

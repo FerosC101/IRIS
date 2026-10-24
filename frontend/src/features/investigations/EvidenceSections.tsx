@@ -110,7 +110,7 @@ export function ObservationTimeline({ detail }: { detail: ConcernDetail }) {
           </div>
         </div>
       ))}
-      <p className="text-xs text-ink-2">Each week is reviewed seven days after its due date. Reports arriving later count as not received for detection, but still count toward completeness.</p>
+      <p className="text-xs text-ink-2">Each week is reviewed seven days after its due date. Reports arriving later count as not received for detection, but still count as arrived.</p>
     </div>
   );
 }

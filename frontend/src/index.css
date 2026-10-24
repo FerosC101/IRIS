@@ -90,6 +90,8 @@
     color-scheme: light;
     color: var(--color-ink);
     background: var(--color-page);
+    /* Anchor jumps land below the pinned nav. */
+    scroll-padding-top: 104px;
     font-family: var(--font-sans);
     -webkit-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;

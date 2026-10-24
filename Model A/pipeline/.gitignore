@@ -4,3 +4,4 @@ outputs/**/_cache/
 outputs/network/tuned.pkl
 __pycache__/
 .pytest_cache/
+.venv/

@@ -31,12 +31,12 @@ export function StageTracker({ a }: { a: Assignment }) {
   const done = { proposed: true, approved: a.status !== "cancelled", completed: !!a.completed_at, outcome: a.stage === "outcome_verified" || a.stage === "outcome_observed" };
   const outcomeLabel = a.stage === "outcome_verified" ? "Verified" : a.stage === "outcome_observed" ? "Observed, unverified" : a.completed_at ? "Not yet verified" : "—";
   return (
-    <ol className="grid grid-cols-4 gap-1" aria-label="Progress">
+    <ol className="grid grid-cols-4 gap-x-2" aria-label="Progress">
       {STAGES.map((s) => (
         <li key={s.key} className="min-w-0">
           <div className={cn("h-1.5 rounded-sm", done[s.key] ? "bg-teal-600" : "bg-line")} aria-hidden />
-          <p className={cn("mt-1 flex items-center gap-1 text-[11.5px]", done[s.key] ? "font-medium text-ink" : "text-ink-2")}>
-            {done[s.key] && <Check className="size-3" aria-hidden />}{s.label}<span className="sr-only">{done[s.key] ? " (done)" : " (not yet)"}</span>
+          <p className={cn("mt-1 flex min-w-0 items-start gap-1 text-[11.5px] leading-tight", done[s.key] ? "font-medium text-ink" : "text-ink-2")}>
+            {done[s.key] && <Check className="mt-px size-3 shrink-0" aria-hidden />}<span className="min-w-0">{s.label}</span><span className="sr-only">{done[s.key] ? " (done)" : " (not yet)"}</span>
           </p>
           {s.key === "outcome" && <p className="text-[11px] text-ink-2">{outcomeLabel}</p>}
         </li>
@@ -179,7 +179,7 @@ export function FollowUpPage() {
                     </span>
                   </span>
                   <span className="flex shrink-0 flex-wrap items-center gap-1.5"><AssignmentStatusBadge status={a.status} />{a.overdue && <OverdueBadge />}</span>
-                  <span className="w-full md:w-56"><StageTracker a={a} /></span>
+                  <span className="w-full md:w-80"><StageTracker a={a} /></span>
                 </button>
               </li>
             ))}

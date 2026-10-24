@@ -63,8 +63,8 @@ export function HelpPage() {
         </Panel>
         <Panel id="metrics" title="Metrics">
           <DL items={[
-            ["Completeness", "Received expected submissions ÷ total expected submissions. Not calculable when a dataset defines no reporting schedule."],
-            ["Timeliness", "Submissions received by the due date ÷ total expected submissions. Requires due dates and received timestamps."],
+            ["Arrived (completeness)", "Expected reports that arrived ÷ all expected reports. Not calculable when a dataset defines no reporting schedule."],
+            ["On time (timeliness)", "Expected reports that arrived by the due date ÷ all expected reports. Requires due dates and received timestamps."],
             ["Delay share (detection)", "(½ × late reports + reports not received) ÷ expected reports, for one unit in one week."],
             ["Precision", "Of the unit-weeks a method flagged, the share that were truly disrupted in the simulation."],
             ["Recall", "Of the truly disrupted unit-weeks, the share the method flagged."],

@@ -8,6 +8,9 @@ export function setDateStyle(s: DateStyle) {
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+/** A value that is not a YYYY-MM-DD date (for example a missing timestamp) shows as a dash. */
+const isDate = (value: string) => /^\d{4}-\d{2}-\d{2}/.test(value);
+
 function parts(value: string) {
   const [d, t] = value.split("T");
   const [y, m, day] = d.split("-").map(Number);
@@ -15,14 +18,14 @@ function parts(value: string) {
 }
 
 export function fmtDate(value: string | null | undefined): string {
-  if (!value) return "—";
+  if (!value || !isDate(value)) return "—";
   const { y, m, day } = parts(value);
   if (dateStyle === "iso") return `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
   return `${MONTHS[m - 1]} ${day}, ${y}`;
 }
 
 export function fmtDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
+  if (!value || !isDate(value)) return "—";
   const { t } = parts(value);
   const time = t ? t.slice(0, 5) : "";
   return time ? `${fmtDate(value)} ${time}` : fmtDate(value);
