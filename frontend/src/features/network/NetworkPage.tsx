@@ -9,14 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Panel } from "@/components/ui/panel";
 import { EmptyState, ErrorState, Loading } from "@/components/ui/states";
-import { useGlobalFilters, weekRangeLabel } from "@/hooks/useGlobalFilters";
+import { useGlobalFilters } from "@/hooks/useGlobalFilters";
 import { useSession } from "@/hooks/useSession";
-import { fmtPct } from "@/lib/format";
+import { fmtPct, fmtPeriod } from "@/lib/format";
 import { UNIT_TYPE } from "@/lib/labels";
 import { api } from "@/services/api";
-import type { NetworkNode, UnitType } from "@/types/api";
+import type { NetworkGraphData, NetworkNode, UnitType } from "@/types/api";
 import { EDGE_STYLE, NetworkGraph, STATUS_STYLE } from "./NetworkGraph";
 import { NodeDetails } from "./NodeDetails";
+import { NetworkSummary } from "./NetworkSummary";
 
 const TYPES: UnitType[] = ["rhu", "hospital", "laboratory", "hub"];
 // Legend marks drawn the way the graph draws them.
@@ -28,9 +29,13 @@ const SHAPE_ICON: Record<UnitType, React.ReactNode> = {
 };
 const SHAPE_NAME: Record<UnitType, string> = { rhu: "dot", hospital: "rounded square", laboratory: "diamond", hub: "dark orb" };
 const REL_LEGEND = { reports_through: "Reports through (submission pathway)", specimen_referral: "Sends specimens to (laboratory referral)", shared_resource: "Shares encoder / connection" } as const;
-const STATUS_NOTE = { normal: "", delayed: "timeliness < 75% · dashed ring", missing: "completeness < 80% · pulsing ring", no_schedule: "faded" } as const;
+type Thresholds = NetworkGraphData["status_thresholds"];
+// The cutoffs come from the backend, which sets each unit's status with them.
+const statusNote = (s: "normal" | "delayed" | "missing" | "no_schedule", t: Thresholds) => ({
+  normal: "", delayed: `on time below ${fmtPct(t.timeliness)} · dashed ring`, missing: `arrived below ${fmtPct(t.completeness)} · pulsing ring`, no_schedule: "faded",
+})[s];
 
-function Legend({ labels }: { labels: Record<string, string> }) {
+function Legend({ labels, thresholds }: { labels: Record<string, string>; thresholds: Thresholds }) {
   return (
     <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
       <section>
@@ -51,7 +56,7 @@ function Legend({ labels }: { labels: Record<string, string> }) {
                 {s === "missing" && <circle cx="8" cy="8" r="7" fill="none" stroke={STATUS_STYLE[s].color} strokeWidth="1.3" />}
                 {s === "delayed" && <circle cx="8" cy="8" r="7" fill="none" stroke={STATUS_STYLE[s].color} strokeWidth="1.2" strokeDasharray="2 1.6" />}
               </svg>
-              <span>{labels[s]}{STATUS_NOTE[s] && <span className="ml-1.5 text-xs text-ink-2">{STATUS_NOTE[s]}</span>}</span>
+              <span>{labels[s]}{statusNote(s, thresholds) && <span className="ml-1.5 text-xs text-ink-2">{statusNote(s, thresholds)}</span>}</span>
             </li>
           ))}
         </ul>
@@ -94,6 +99,10 @@ export function NetworkPage() {
   const node = q.data?.nodes.find((n) => n.id === selected) ?? null;
   const ownChanged = (status ? 1 : 0) + (types.size < TYPES.length ? 1 : 0) + (search ? 1 : 0);
   const statusLabels = q.data?.status_labels ?? {};
+  // The selected weeks as words for a sentence, e.g. "the week of Sep 28 – Oct 4, 2026".
+  const wFrom = meta?.weeks.find((w) => w.week === g.from);
+  const wTo = meta?.weeks.find((w) => w.week === g.to);
+  const periodWords = wFrom && wTo ? `${g.from === g.to ? "the week of " : ""}${fmtPeriod(wFrom.start, wTo.end)}` : "the selected weeks";
   const viewSwitch = <div className="flex rounded-md border border-line-strong bg-white p-0.5" role="group" aria-label="View">
       {(["graph", "list"] as const).map((v) => (
         <button key={v} type="button" aria-pressed={view === v} onClick={() => setView(v)}
@@ -127,13 +136,15 @@ export function NetworkPage() {
           </div>
 
           <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+            {/* The legend sits under the graph, in the space beside the taller unit panel. */}
+            <div className="flex min-w-0 flex-col gap-4 self-stretch">
             <Panel title="Reporting relationships" description="Select a unit to inspect its reporting history and connected concerns." motif="network" bodyClassName="p-0" className="min-w-0 overflow-hidden">
               {view === "graph" ? (
                 <>
                   {visibleNodes.length === 0 && <div className="p-4"><EmptyState title="No units match these filters" /></div>}
                   <NetworkGraph nodes={q.data.nodes} edges={q.data.edges} visible={visible} selected={selected} onSelect={setSelected} />
                   <p className="border-t border-line px-4 py-2 text-xs text-ink-2">
-                    Showing {visibleNodes.length} of {q.data.nodes.length} units · status for {weekRangeLabel(meta?.weeks ?? [], g.from, g.to)}. {q.data.note}
+                    Showing {visibleNodes.length} of {q.data.nodes.length} units · status for {periodWords}. {q.data.note}
                   </p>
                 </>
               ) : (
@@ -152,8 +163,8 @@ export function NetworkPage() {
                       { key: "type", header: "Type", cell: (n) => UNIT_TYPE[n.unit_type] },
                       { key: "province", header: "Province", cell: (n) => n.province },
                       { key: "status", header: "Status", cell: (n) => <Badge tone={n.status === "missing" ? "critical" : n.status === "delayed" ? "attention" : "positive"}>{n.status_label}</Badge> },
-                      { key: "comp", header: "Completeness", align: "right", cell: (n) => fmtPct(n.completeness) },
-                      { key: "time", header: "Timeliness", align: "right", cell: (n) => fmtPct(n.timeliness) },
+                      { key: "comp", header: "Arrived", align: "right", cell: (n) => fmtPct(n.completeness) },
+                      { key: "time", header: "On time", align: "right", cell: (n) => fmtPct(n.timeliness) },
                       { key: "conn", header: "Connections", align: "right", cell: (n) => n.degree },
                       { key: "open", header: "Open concerns", align: "right", cell: (n) => n.open_concerns },
                     ]}
@@ -161,11 +172,12 @@ export function NetworkPage() {
                 </div>
               )}
             </Panel>
-            <Panel variant="secondary" motif="verify" title={node ? "Unit details" : "Pick a unit"} className="min-w-0" actions={node ? <Button variant="ghost" size="sm" onClick={() => setSelected(null)}>Clear</Button> : undefined}>
-              {node ? <NodeDetails node={node} /> : <p className="text-sm text-ink-2">Click a shape in the map, or use the List view, to see a unit's reporting and concerns.</p>}
+            <Panel title="Network legend" variant="secondary" className="flex-1"><Legend labels={q.data.status_labels} thresholds={q.data.status_thresholds} /></Panel>
+            </div>
+            <Panel variant="secondary" motif="verify" title={node ? "Unit details" : "Network at a glance"} className="min-w-0" actions={node ? <Button variant="ghost" size="sm" onClick={() => setSelected(null)}>Clear</Button> : undefined}>
+              {node ? <NodeDetails node={node} weeks={periodWords} thresholds={q.data.status_thresholds} /> : <NetworkSummary nodes={visibleNodes} weeks={periodWords} onSelect={setSelected} />}
             </Panel>
           </div>
-          <Panel title="Network legend" variant="secondary"><Legend labels={q.data.status_labels} /></Panel>
         </div>
       )}
     </>

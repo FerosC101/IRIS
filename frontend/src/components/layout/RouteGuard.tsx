@@ -14,6 +14,8 @@ export function RouteGuard({ children }: { children: ReactNode }) {
   const item = navItemFor(loc.pathname);
   return (
     <div className="mx-auto max-w-lg py-10">
+      {/* Every page has a top-level heading, including this one, for screen-reader navigation. */}
+      <h1 className="sr-only">{item?.label ?? "Page"} (not available)</h1>
       <EmptyState icon={<Lock className="size-5" aria-hidden />} title={`${item?.label ?? "This page"} is not available for ${ROLE_LABELS[role]}`}>
         <p>Available to: {item?.roles.map((r) => ROLE_LABELS[r]).join(", ")}.</p>
         <div className="mt-4 text-left"><RoleSelector tone="light" /></div>

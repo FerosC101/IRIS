@@ -163,6 +163,8 @@ export function GlobalFilterBar({ className, hide = [], extra, extraChanged = 0,
   const changed = (shown("region") && filters.region ? 1 : 0) + (shown("disease") && filters.disease !== defaultDisease ? 1 : 0)
     + (shown("weeks") && (filters.from !== last || filters.to !== last) ? 1 : 0) + (shown("group") && filters.group ? 1 : 0) + extraChanged;
   const reset = () => { set({ region: "", disease: "", from: undefined, to: undefined, group: "" }); onResetExtra?.(); };
+  // A screen that uses none of the shared filters and has none of its own shows no bar at all.
+  if ((["region", "disease", "weeks", "group"] as const).every((k) => !shown(k)) && !extra && !trailing) return null;
   return (
     <div role="group" aria-label="Screen filters" className={cn("iris-filterbar", className)}>
       <div className="iris-filterbar__lead">

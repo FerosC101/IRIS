@@ -65,15 +65,24 @@ export function useGlobalFilters() {
   return { filters, set, weeks, categories: weekly, provinces: meta?.provinces ?? [] };
 }
 
+// Fixed month names, so labels never depend on the browser's locale data ("Sept" vs "Sep").
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const day = (iso: string) => `${MONTHS[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(8, 10))}`;
+/** "Sep 28 – Oct 4" or "Sep 14–20": month first, like dates in sentences (fmtPeriod), without the year. */
+const span = (start: string, end: string) => (start.slice(0, 7) === end.slice(0, 7) ? `${day(start)}–${Number(end.slice(8, 10))}` : `${day(start)} – ${day(end)}`);
+
+/** A week as shown in week pickers: "ISO W40 · Sep 28 – Oct 4". */
+export function isoWeekLabel(w: WeekLabel): string {
+  return `ISO W${w.iso_week} · ${span(w.start, w.end)}`;
+}
+
+/** A range of weeks as shown in week pickers: "ISO W37–W40 · Sep 7 – Oct 4". */
 export function weekRangeLabel(weeks: WeekLabel[], from: number, to: number): string {
   const a = weeks.find((w) => w.week === from);
   const b = weeks.find((w) => w.week === to);
   if (!a || !b) return "Choose weeks";
-  if (from === to) return b.iso_label;
-  // Fixed month names, so the label never depends on the browser's locale data ("Sept" vs "Sep").
-  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const day = (iso: string) => `${iso.slice(8, 10)} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`;
-  return `ISO W${a.iso_week}–W${b.iso_week} · ${day(a.start)}–${day(b.end)}`;
+  if (from === to) return isoWeekLabel(b);
+  return `ISO W${a.iso_week}–W${b.iso_week} · ${span(a.start, b.end)}`;
 }
 
 export const UNIT_GROUP_LABELS: Record<UnitGroup, string> = {

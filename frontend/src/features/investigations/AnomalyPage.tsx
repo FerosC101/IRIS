@@ -35,11 +35,11 @@ export function AnomalyPage() {
         {can("detection.run") && <RunDetection />}
       </div>
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-        <Panel title="Reporting completeness and timeliness" description={unit ? "Observed for the selected unit, all available weeks. Completeness = reports received ÷ expected; timeliness = received by the due date ÷ expected." : "Observed across your reporting scope, latest 12 weeks. Completeness = reports received ÷ expected; timeliness = received by the due date ÷ expected."} motif="trends">
+        <Panel title="Reports arriving each week" description={`Share of expected reports that arrived, and that arrived by the due date. ${unit ? "Selected unit, all available weeks." : "Your reporting scope, latest 12 weeks."}`} motif="trends">
           <label htmlFor="analysis-unit" className="mb-1 block text-xs text-ink-2">Reporting unit (chart and list)</label>
           <Select id="analysis-unit" value={unit} onChange={(e) => { setUnit(e.target.value); setPage(1); setPicked(""); }}><option value="">Reporting scope overview</option>{meta?.units.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</Select>
           <p className="my-3 text-xs text-ink-2">Choosing a unit does not change what detection scans. Weeks with no data are left as gaps, not drawn as zero.</p>
-          {signal.error ? <ErrorState error={signal.error} onRetry={() => signal.refetch()} /> : !data ? <Loading label="Loading reporting signal" /> : data.length ? <TrendChart title="Reporting completeness and timeliness by week" data={data} xKey="period_start" series={[{ key: "completeness", label: "Completeness" }, { key: "timeliness", label: "Timeliness" }]} height={310} /> : <EmptyState title="Reporting history unavailable" />}
+          {signal.error ? <ErrorState error={signal.error} onRetry={() => signal.refetch()} /> : !data ? <Loading label="Loading reporting signal" /> : data.length ? <TrendChart title="Share of expected reports that arrived each week" data={data} xKey="period_start" series={[{ key: "completeness", label: "Arrived" }, { key: "timeliness", label: "On time" }]} height={310} /> : <EmptyState title="Reporting history unavailable" />}
         </Panel>
         <Panel title="How flags are raised" variant="secondary" motif="network">
           <ul className="flex flex-col gap-4">{meta && Object.entries(meta.labels.method).map(([id, label]) => <li key={id}><h3 className="text-sm font-semibold">{label}</h3><p className="mt-1 text-xs text-ink-2">{id === "threshold" ? "Robust historical threshold comparison." : id === "ewma" ? "Exponentially weighted reporting signal." : "Reporting signal with connected-peer support."}</p></li>)}</ul>

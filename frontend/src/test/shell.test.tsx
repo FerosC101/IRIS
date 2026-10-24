@@ -83,7 +83,7 @@ describe("GlobalFilterBar", () => {
     setup(<GlobalFilterBar />, { path: "/reports?tab=x" });
     expect(screen.getByText("Synthetic data")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Reset" })).toBeNull(); // nothing changed yet
-    expect(screen.getByRole("button", { name: /ISO week range: ISO W40 · 28 Sep–04 Oct/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /ISO week range: ISO W40 · Sep 28 – Oct 4/ })).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /^Disease: Dengue/ }));
     const menu = await screen.findByRole("menu");
     expect(within(menu).queryByText("Monthly consultation summary")).toBeNull(); // weekly categories only

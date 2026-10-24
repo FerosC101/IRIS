@@ -3,7 +3,6 @@ import { ArrowRight, CalendarDays, FileWarning, MessageSquareReply } from "lucid
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { TrendChart } from "@/components/data-display/charts";
-import { ChipFilter } from "@/components/data-display/FilterBar";
 import { ChoiceFilter, type GlobalFilterKey } from "@/components/shell/GlobalFilterBar";
 import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { Panel } from "@/components/ui/panel";
 import { EmptyState, ErrorState, Loading } from "@/components/ui/states";
 import { useSession } from "@/hooks/useSession";
 import { fmtDate, fmtNum, fmtPct, fmtPeriod } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { canAccess } from "@/lib/navigation";
 import { api } from "@/services/api";
 import type { Task } from "@/types/api";
@@ -81,12 +81,36 @@ function Change({ now, before }: { now: number | null | undefined; before: numbe
   return <span className={`font-medium ${d < 0 ? "text-critical-ink" : "text-positive-ink"}`}>{d > 0 ? "▲" : "▼"} {Math.abs(d)} pts</span>;
 }
 
+/** Status filter for the queue, drawn as tabs on top of the table; the dot matches the stage colour in the open-concerns bar. */
+function QueueTabs({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: { value: string; label: string; count?: number; color?: string }[] }) {
+  return (
+    <div role="group" aria-label="Show" className="flex flex-wrap gap-x-1 border-b border-line px-2 sm:px-3">
+      {options.map((o) => {
+        const on = o.value === value;
+        return (
+          <button key={o.value} type="button" aria-pressed={on} onClick={() => onChange(o.value)}
+            className={cn("relative inline-flex min-h-11 shrink-0 items-center gap-2 px-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:px-3",
+              "after:absolute after:inset-x-2 after:-bottom-px after:h-0.5 after:rounded-full",
+              on ? "text-teal-900 after:bg-teal-900" : "text-ink-2 hover:text-ink after:bg-transparent hover:after:bg-line-strong")}>
+            {o.color && <span className="size-2 shrink-0 rounded-full" style={{ background: o.color }} aria-hidden />}
+            {o.label}
+            {o.count !== undefined && (
+              <span className={cn("min-w-5 rounded-full px-1.5 py-px text-center text-[11px] leading-4 tabular", on ? "bg-teal-900 text-white" : "bg-tint text-ink-2")}>{o.count}</span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function OverviewPage() {
   const { meta, role, unitName } = useSession();
   const [period, setPeriod] = useState("4w");
   const [status, setStatus] = useState("active");
-  const q = useQuery({ queryKey: ["overview", period, status], queryFn: () => api.overview({ period, status }) });
-  const all = useQuery({ queryKey: ["overview", period, "active"], queryFn: () => api.overview({ period, status: "active" }), enabled: status !== "active" });
+  // Keep the last result on screen while a new status or period loads, so only the queue updates.
+  const q = useQuery({ queryKey: ["overview", period, status], queryFn: () => api.overview({ period, status }), placeholderData: (p) => p });
+  const all = useQuery({ queryKey: ["overview", period, "active"], queryFn: () => api.overview({ period, status: "active" }), enabled: status !== "active", placeholderData: (p) => p });
   const active = status === "active" ? q.data : all.data;
   const counts = active?.counts;
   const trend = q.data?.trend ?? [];
@@ -188,14 +212,12 @@ export function OverviewPage() {
             {/* 4. Everything that needs attention. */}
             <Panel id="queue" title={rhu ? "Concerns about your unit" : "Work queue"} motif="records" bodyClassName="p-0"
               description={`Concerns and corrective actions from ${fmtPeriod(q.data.period.start, q.data.period.end)}, overdue first. Open a row to review it.`}>
-              <div className="border-b border-line px-4 py-3">
-                <ChipFilter label="Show" value={status} onChange={setStatus} options={[
-                  { value: "active", label: "All open", count: total }, { value: "open", label: "New", count: counts?.new },
-                  { value: "under_review", label: "Being reviewed", count: counts?.under_review }, { value: "clarification_requested", label: "Waiting for reply", count: counts?.clarification_requested },
-                  { value: "in_investigation", label: "Being fixed", count: counts?.in_investigation }, { value: "all", label: "Include closed" },
-                ]} />
-              </div>
-              <div className="px-4 py-2 md:p-0">
+              <QueueTabs value={status} onChange={setStatus} options={[
+                { value: "active", label: "All open", count: total },
+                ...STAGES.map((st) => ({ value: st.key === "new" ? "open" : st.key, label: st.label, count: counts?.[st.key], color: st.color })),
+                { value: "all", label: "Closed included" },
+              ]} />
+              <div className={cn("px-4 py-2 transition-opacity md:p-0", q.isPlaceholderData && "opacity-50")} aria-busy={q.isPlaceholderData}>
                 <QueueTable rows={q.data.queue} emptyState={<div className="py-4"><EmptyState title={status === "active" ? "Nothing needs attention in this period" : "No matching items"}>{status === "active" ? "No open concerns or actions in this period." : <Button variant="secondary" size="sm" onClick={() => setStatus("active")}>Show all open items</Button>}</EmptyState></div>} />
               </div>
             </Panel>

@@ -23,12 +23,16 @@ STATUS_LABELS = {
 }
 
 
+# A unit is "missing" below this share of expected reports arrived, and "delayed" below this share on time.
+STATUS_THRESHOLDS = {"completeness": 0.8, "timeliness": 0.75}
+
+
 def _status(s: dict) -> str:
     if s["expected"] == 0:
         return "no_schedule"
-    if s["completeness"] < 0.8:
+    if s["completeness"] < STATUS_THRESHOLDS["completeness"]:
         return "missing"
-    if s["timeliness"] < 0.75:
+    if s["timeliness"] < STATUS_THRESHOLDS["timeliness"]:
         return "delayed"
     return "normal"
 
@@ -83,6 +87,7 @@ def graph(session: Session, dataset_id: str, w_from: int, w_to: int) -> dict:
         "defined": True, "nodes": nodes, "edges": edges,
         "relationship_types": [{"type": k, "description": v} for k, v in RELATIONSHIP_TYPES.items()],
         "status_labels": STATUS_LABELS,
+        "status_thresholds": STATUS_THRESHOLDS,
         "window": {"from": w_from, "to": w_to},
         "note": "All units and relationships are simulated. Edges exist only where the simulated network defines them.",
         "geography": _geography(units),

@@ -21,6 +21,7 @@ import { api } from "@/services/api";
 import type { ConcernDetail } from "@/types/api";
 import { QueueTable } from "../overview/QueueTable";
 import { AssignDialog, EvidenceDialog, ReasonDialog } from "./ActionDialogs";
+import { ComparisonTiles, ConcernWeekChart } from "./ConcernComparison";
 import { EvidenceList, ObservationTimeline, TechnicalDetails } from "./EvidenceSections";
 import { WeekStrip } from "./WeekStrip";
 
@@ -67,6 +68,48 @@ function Block({ title, children }: { title: string; children: ReactNode }) {
       <h2 className="mb-3 text-[15px] font-semibold">{title}</h2>
       {children}
     </Panel>
+  );
+}
+
+/** The checks the backend set for this concern; reviewers tick them off. The last one is done by resolving. */
+function Checklist({ d }: { d: ConcernDetail }) {
+  const qc = useQueryClient();
+  const { can } = useSession();
+  const c = d.concern;
+  const closed = c.status === "resolved" || c.status === "dismissed";
+  const tick = useMutation({
+    mutationFn: ({ item, done }: { item: number; done: boolean }) => api.updateChecklist(c.id, item, { done }),
+    onSuccess: (data) => qc.setQueryData(["concern", c.id], data),
+  });
+  const { items, done, total } = d.checklist;
+  if (!total) return null;
+  const editable = can("concern.review") && !closed;
+  return (
+    <section aria-labelledby="checks-title" className="border-t border-line pt-4">
+      <div className="flex items-baseline justify-between gap-2">
+        <h3 id="checks-title" className="text-[13px] font-semibold text-ink">Checks</h3>
+        <span className="text-xs text-ink-2 tabular">{done} of {total} done</span>
+      </div>
+      <div className="mt-2 h-1 rounded-full bg-line" aria-hidden><div className="h-1 rounded-full bg-teal-600" style={{ width: `${(done / total) * 100}%` }} /></div>
+      <ul className="mt-3 flex flex-col gap-2.5">
+        {items.map((it) => {
+          const resolution = it.kind === "resolution";
+          return (
+            <li key={it.id}>
+              <label className={cn("flex items-start gap-2.5 text-[13px]", editable && !resolution && "cursor-pointer")}>
+                <input type="checkbox" className="mt-0.5 size-4 shrink-0 accent-teal-900" checked={it.done} disabled={!editable || resolution || tick.isPending}
+                  onChange={(e) => tick.mutate({ item: it.id, done: e.target.checked })} />
+                <span className="min-w-0">
+                  <span className={cn("block", it.done ? "text-ink-2" : "text-ink")}>{it.label}</span>
+                  <span className="block text-xs text-ink-2">{resolution ? "Done when the concern is resolved." : it.done && it.done_by ? `${it.done_by} · ${fmtDate(it.done_at)}` : it.detail}</span>
+                </span>
+              </label>
+            </li>
+          );
+        })}
+      </ul>
+      <InlineError error={tick.error} />
+    </section>
   );
 }
 
@@ -162,68 +205,66 @@ export function InvestigationPage() {
     <>
       <PageHeader
         breadcrumbs={[{ label: "Investigations", to: "/investigations" }, { label: c.id }]}
-        title="Investigation Review"
-        description="Examine reporting evidence and document verification decisions."
+        title={c.title}
+        description={<>{c.concern_type_label} · {c.units.length > 1 ? `${c.units.length} units` : c.units[0]?.name} · {fmtPeriod(c.period_start, c.period_end)}</>}
         meta={<>
           <ConcernStatusBadge status={c.status} />
           <SeverityBadge severity={c.severity} />
           <VerificationBadge verification={c.verification} />
-          <span className="text-[13px] text-ink-2">{fmtPeriod(c.period_start, c.period_end)}</span>
           {c.simulated && <SimulatedTag />}
         </>}
       />
 
       <div className="iris-workspace-stack">
-        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <Panel variant="secondary" motif="verify" title="Investigation brief">
-          <p className="iris-eyebrow mb-2">{c.id} | {c.concern_type_label}</p>
-          <h2 className="mb-2 text-lg font-semibold">{c.title}</h2>
-          <p className="text-sm leading-relaxed">{c.summary}</p>
-          <p className="mt-3 text-xs text-ink-2">{c.uncertainty_note}</p>
-          <div className="mt-4"><KeyValue columns={2} items={[{ label: "Affected units", value: c.units.map((u) => u.name).join(", ") }, { label: "Detection method", value: c.detection_method_label }, { label: "Investigation owner", value: d.investigation?.owner ?? "Unassigned" }, { label: "Verification", value: <VerificationBadge verification={c.verification} /> }]} /></div>
-        </Panel>
-        <Panel variant="secondary" motif="network" title="Review and verification">
-          <Stepper current={stepIndex(d)} />
-          <div className="mt-4 flex flex-col gap-3">
-            <p className="text-[15px] text-ink"><span className="font-semibold text-teal-900">Next: </span>{hint}</p>
-            <div className="flex flex-wrap gap-2">
-              {primary && (primary.to
-                ? <Link to={primary.to} className={buttonVariants()}>{primary.icon}{primary.label}</Link>
-                : <Button onClick={primary.run} disabled={act.isPending}>{primary.icon}{primary.label}</Button>)}
-              <ActionMenu items={more} />
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_23rem]">
+          {/* What happened, as numbers: the flagged weeks against the weeks before, then week by week. */}
+          <Panel motif="verify" title="What happened" description={`Flagged by the ${c.detection_method_label} check on ${fmtDate(c.created_at)}. Observed reports unless marked as an estimate.`}>
+            <p className="max-w-3xl text-[17px] leading-relaxed text-ink">{c.summary}</p>
+            <div className="mt-5"><ComparisonTiles detail={d} /></div>
+            <div className="mt-6"><ConcernWeekChart detail={d} /></div>
+            <p className="mt-3 text-xs leading-relaxed text-ink-2">{c.uncertainty_note}</p>
+          </Panel>
+
+          {/* What to do about it; stays in view while reading. */}
+          <Panel variant="secondary" motif="network" title="What to do next" className="xl:sticky xl:top-[120px]">
+            <Stepper current={stepIndex(d)} />
+            <div className="mt-4 flex flex-col gap-3">
+              <p className="text-[15px] text-ink"><span className="font-semibold text-teal-900">Next: </span>{hint}</p>
+              <div className="flex flex-wrap gap-2">
+                {primary && (primary.to
+                  ? <Link to={primary.to} className={buttonVariants()}>{primary.icon}{primary.label}</Link>
+                  : <Button onClick={primary.run} disabled={act.isPending}>{primary.icon}{primary.label}</Button>)}
+                <ActionMenu items={more} />
+              </div>
             </div>
-          </div>
-          <InlineError error={act.error} />
-          {(d.investigation || c.follow_up_due) && (
-            <p className="mt-3 border-t border-line pt-3 text-[13px] text-ink-2">
-              {d.investigation && <>Owner: <span className="text-ink">{d.investigation.owner}</span></>}
-              {d.investigation && c.follow_up_due && " · "}
-              {c.follow_up_due && <>Due {fmtDate(c.follow_up_due)}</>}
-            </p>
-          )}
-        </Panel>
+            <InlineError error={act.error} />
+            <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-4 text-[13px]">
+              <div><dt className="text-xs text-ink-2">Owner</dt><dd className={cn("mt-0.5", !d.investigation && "text-ink-2 italic")}>{d.investigation?.owner ?? "Unassigned"}</dd></div>
+              <div><dt className="text-xs text-ink-2">Due</dt><dd className="mt-0.5">{c.follow_up_due ? fmtDate(c.follow_up_due) : <span className="text-ink-2">Not set</span>}</dd></div>
+            </dl>
+            <div className="mt-4"><Checklist d={d} /></div>
+          </Panel>
         </div>
 
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList label="Concern sections" tabs={[
-            { value: "summary", label: "Summary" },
+            { value: "summary", label: "Evidence" },
             { value: "weeks", label: "Week by week" },
             { value: "notes", label: `Notes & history${d.notes.length ? ` (${d.notes.length})` : ""}` },
             { value: "details", label: "More details" },
           ]} />
 
           <TabsContent value="summary" className="flex flex-col gap-4">
-            {/* What happened is the brief above; this tab follows it with the record, the evidence, then what is still open. */}
-            <Block title="What was reported, week by week (observed)"><WeekStrip detail={d} /></Block>
-            <Block title="Evidence behind the flag">
-              <EvidenceList items={observed} />
-            </Block>
-            {unknown.length > 0 && (
-              <Block title="Not yet known: possible explanations and what to check">
-                <p className="mb-3 text-[13px] text-ink-2">These are possibilities, not facts. A person needs to check them.</p>
+            {/* What is known sits beside what is not, so a flag is never read as a finding. */}
+            <div className="grid items-start gap-4 lg:grid-cols-2">
+              <Block title="What we know (observed)">
+                <EvidenceList items={observed} />
+              </Block>
+              <Block title="Not yet known">
+                <p className="mb-3 text-[13px] text-ink-2">Possible explanations and what to check. These are not facts until a person checks them.</p>
                 <EvidenceList items={unknown} />
               </Block>
-            )}
+            </div>
             <Block title={c.units.length > 1 ? `Units involved (${c.units.length})` : "Unit involved"}>
               {d.via_label && <p className="mb-2 text-[13px] text-ink-2">Connected through {d.via_label}.</p>}
               <ul className="flex flex-wrap gap-2">

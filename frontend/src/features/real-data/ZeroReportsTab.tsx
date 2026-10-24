@@ -138,10 +138,10 @@ export function ZeroReportsTab() {
         { label: "Reviewed", value: `${wk.reviewed} of ${wk.zero_reports + wk.missing}`, note: "Leads with a recorded review" },
       ]} />
 
-      <FilterBar activeCount={Object.values(f).filter(Boolean).length} onReset={() => { setF(DEF); setPage(1); }} label="More filters"
-        primary={<ChipFilter label="Priority" value={band} onChange={(v) => { setBand(v); setPage(1); }}
-          options={[{ value: "", label: "All" }, { value: "High", label: "High", count: wk.high, tone: "critical" as const }, { value: "Medium", label: "Medium", count: wk.medium }, { value: "Low", label: "Low", count: wk.low }, ...(wk.missing ? [{ value: MISSING, label: "Missing", count: wk.missing }] : [])]} />}>
-        <FilterField label="Region" className="w-full md:w-64">{(id) => (
+      <ChipFilter label="Priority" value={band} onChange={(v) => { setBand(v); setPage(1); }}
+          options={[{ value: "", label: "All" }, { value: "High", label: "High", count: wk.high, tone: "critical" as const }, { value: "Medium", label: "Medium", count: wk.medium }, { value: "Low", label: "Low", count: wk.low }, ...(wk.missing ? [{ value: MISSING, label: "Missing", count: wk.missing }] : [])]} />
+      <FilterBar activeCount={Object.values(f).filter(Boolean).length} onReset={() => { setF(DEF); setPage(1); }} label="More filters">
+        <FilterField label="Region" className="md:w-64">{(id) => (
           <Select id={id} value={f.region} onChange={(e) => { setF({ ...f, region: e.target.value }); setPage(1); }}><option value="">All regions</option>{d.regions.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</Select>
         )}</FilterField>
         <ReviewFilter value={f.review} onChange={(v) => { setF({ ...f, review: v }); setPage(1); }} />

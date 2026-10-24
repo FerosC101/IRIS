@@ -62,7 +62,7 @@ export function ModelAFlagsTab() {
         { label: "Reviewed on this page", value: `${reviewed} of ${d.items.length}` },
       ]} />
       <FilterBar activeCount={Object.values(f).filter(Boolean).length} onReset={() => { setF(DEF); setPage(1); }} label="More filters">
-        <FilterField label="Region" className="w-full md:w-64">{(id) => <Select id={id} value={f.region} onChange={(e) => { setF({ ...f, region: e.target.value }); setPage(1); }}><option value="">All regions</option>{d.regions.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</Select>}</FilterField>
+        <FilterField label="Region" className="md:w-64">{(id) => <Select id={id} value={f.region} onChange={(e) => { setF({ ...f, region: e.target.value }); setPage(1); }}><option value="">All regions</option>{d.regions.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</Select>}</FilterField>
         <ReviewFilter value={f.review} onChange={(v) => { setF({ ...f, review: v }); setPage(1); }} />
       </FilterBar>
       <Panel bodyClassName="p-0">

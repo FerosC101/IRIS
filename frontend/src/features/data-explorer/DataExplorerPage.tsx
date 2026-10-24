@@ -33,7 +33,7 @@ function Filters({ f, set, opts, reset, rhu }: { f: Filters; set: (p: Partial<Fi
         <FilterField label="Province / area">{(id) => <Select id={id} value={f.province} onChange={(e) => set({ province: e.target.value })}><option value="">All</option>{opts.provinces.map((p) => <option key={p}>{p}</option>)}</Select>}</FilterField>
       )}
       {opts.has_units && opts.units.length > 0 && !rhu && (
-        <FilterField label="Reporting unit" className="w-full md:w-52">{(id) => <Select id={id} value={f.unit_id} onChange={(e) => set({ unit_id: e.target.value })}><option value="">All units</option>{opts.units.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</Select>}</FilterField>
+        <FilterField label="Reporting unit" className="md:w-52">{(id) => <Select id={id} value={f.unit_id} onChange={(e) => set({ unit_id: e.target.value })}><option value="">All units</option>{opts.units.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</Select>}</FilterField>
       )}
       <FilterField label="Category">{(id) => <Select id={id} value={f.category} onChange={(e) => set({ category: e.target.value })}><option value="">All categories</option>{opts.categories.map((c) => <option key={c} value={c}>{categoryName(c)}</option>)}</Select>}</FilterField>
       <FilterField label="Status">
@@ -45,8 +45,13 @@ function Filters({ f, set, opts, reset, rhu }: { f: Filters; set: (p: Partial<Fi
           </Select>
         )}
       </FilterField>
-      <FilterField label="Period from" className="w-full md:w-40">{(id) => <Input id={id} type="date" value={f.date_from} min={opts.date_min ?? undefined} max={opts.date_max ?? undefined} onChange={(e) => set({ date_from: e.target.value })} />}</FilterField>
-      <FilterField label="Period to" className="w-full md:w-40">{(id) => <Input id={id} type="date" value={f.date_to} min={opts.date_min ?? undefined} max={opts.date_max ?? undefined} onChange={(e) => set({ date_to: e.target.value })} />}</FilterField>
+      <FilterField label="Period" className="md:min-w-72">{(id) => (
+        <div className="flex items-center gap-1.5">
+          <Input id={id} type="date" aria-label="Period from" value={f.date_from} min={opts.date_min ?? undefined} max={f.date_to || (opts.date_max ?? undefined)} onChange={(e) => set({ date_from: e.target.value })} />
+          <span className="text-ink-2" aria-hidden>–</span>
+          <Input type="date" aria-label="Period to" value={f.date_to} min={f.date_from || (opts.date_min ?? undefined)} max={opts.date_max ?? undefined} onChange={(e) => set({ date_to: e.target.value })} />
+        </div>
+      )}</FilterField>
     </FilterBar>
   );
 }
@@ -120,8 +125,8 @@ function TrendsTab({ ds, f }: { ds: Dataset; f: Filters }) {
         <div className="sm:w-56"><label htmlFor="tv" className="mb-1 block text-xs font-medium text-ink-2">Variable</label>
           <Select id="tv" value={variable} onChange={(e) => setVariable(e.target.value)}>
             <option value="cases">Reported cases (sum)</option>
-            <option value="completeness">Completeness (received ÷ expected)</option>
-            <option value="timeliness">Timeliness (on time ÷ expected)</option>
+            <option value="completeness">Share of expected reports that arrived</option>
+            <option value="timeliness">Share that arrived on time</option>
           </Select></div>
         <div className="sm:w-48"><label htmlFor="tg" className="mb-1 block text-xs font-medium text-ink-2">One chart per</label>
           <Select id="tg" value={group} onChange={(e) => setGroup(e.target.value)}>
@@ -206,8 +211,8 @@ function MetadataTab({ ds }: { ds: Dataset }) {
           { label: "Coverage", value: ds.coverage_start ? fmtPeriod(ds.coverage_start, ds.coverage_end) : "—" },
           { label: "Rows", value: fmtNum(ds.row_count) },
           { label: "Imported", value: fmtDateTime(ds.imported_at) },
-          { label: "Reporting schedule defined", value: ds.has_expectations ? "Yes — completeness can be calculated" : "No — completeness not calculable" },
-          { label: "Due/received timestamps", value: ds.has_timestamps ? "Yes" : "No — timeliness not calculable" },
+          { label: "Reporting schedule defined", value: ds.has_expectations ? "Yes — arrival rates can be calculated" : "No — arrival rates not calculable" },
+          { label: "Due/received timestamps", value: ds.has_timestamps ? "Yes" : "No — on-time rates not calculable" },
         ]} />
       </Panel>
       <Panel title="Known limitations">
@@ -234,7 +239,7 @@ export function DataExplorerPage() {
 
   return (
     <>
-      <ScreenHeader screen="reports" />
+      <ScreenHeader screen="reports" filterBar={{ hide: ["region", "disease", "weeks", "group"] }} />
       <div className="mt-[25px]" />
       {ds.error ? <ErrorState error={ds.error} onRetry={() => ds.refetch()} /> : !ds.data ? <Loading /> : (
         <div className="flex flex-col gap-4">

@@ -49,9 +49,9 @@ describe("FilterBar", () => {
   it("offers to clear filters only when some are active", async () => {
     const onReset = vi.fn();
     const { rerender } = render(<FilterBar activeCount={0} onReset={onReset}><span>f</span></FilterBar>);
-    expect(screen.queryByRole("button", { name: /clear/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /reset/i })).toBeNull();
     rerender(<FilterBar activeCount={2} onReset={onReset}><span>f</span></FilterBar>);
-    await userEvent.click(screen.getAllByRole("button", { name: /clear/i })[0]);
+    await userEvent.click(screen.getAllByRole("button", { name: /reset/i })[0]);
     expect(onReset).toHaveBeenCalled();
   });
 });

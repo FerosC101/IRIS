@@ -160,6 +160,8 @@ export type RelationshipType = "reports_through" | "specimen_referral" | "shared
 export interface NetworkGraphData {
   defined: boolean; message?: string; nodes: NetworkNode[]; edges: NetworkEdge[];
   relationship_types: { type: RelationshipType; description: string }[]; status_labels: Record<string, string>;
+  /** Below these shares a unit is "missing" (arrived) or "delayed" (on time). */
+  status_thresholds: { completeness: number; timeliness: number };
   window: { from: number; to: number }; note: string;
   geography?: { available: boolean; width: number; height: number; provinces: { name: string; outline: [number, number][] }[]; note: string };
 }
@@ -287,6 +289,8 @@ export interface Recovery {
   before_after: {
     assignment_id: string; title: string; concern_id: string; target_unit_ids: string[]; completed_at: string | null;
     before: WindowMetrics | null; during: WindowMetrics | null; after: WindowMetrics | null; after_message: string | null;
+    /** Other concerns on the same units during the "after" weeks. */
+    after_overlaps: { id: string; title: string }[];
     change_vs_during: number | null; outcomes: { status: OutcomeStatus; source: string; summary: string; recorded_at: string }[]; data_label: string;
   }[];
   causality_note?: string;

@@ -47,7 +47,7 @@ export function ValidationFindings({ validation, children, pending }: { validati
             <p><span className="text-ink-2">Period coverage:</span> {summary.coverage_start ?? "Unavailable"} to {summary.coverage_end ?? "Unavailable"}</p>
             {summary.value_status && <p><span className="text-ink-2">Received values:</span> {fmtNum(summary.value_status.reported)} reported · {fmtNum(summary.value_status.zero)} explicit zero · {fmtNum(summary.value_status.blank)} blank</p>}
             <p><span className="text-ink-2">Timing:</span> {summary.has_timestamps ? "Due and received columns are mapped; delayed submissions can be distinguished where both values exist." : "Delay cannot be determined without due and received timestamps."}</p>
-            <p className="border-l-2 border-brand-bright pl-3 text-xs leading-relaxed text-ink-2">A blank received value is not an explicit zero or a report that was never received. Imported files do not define expected submissions, so reporting completeness is not calculable from this import.</p>
+            <p className="border-l-2 border-brand-bright pl-3 text-xs leading-relaxed text-ink-2">A blank received value is not an explicit zero or a report that was never received. Imported files do not define expected submissions, so arrival rates cannot be calculated from this import.</p>
           </div>
           <div className="overflow-x-auto" role="region" aria-label="Field missingness" tabIndex={0}>
             <table className="w-full min-w-80 text-[13px]">

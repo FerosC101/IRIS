@@ -38,7 +38,7 @@ export function DatasetPage() {
           {!d.is_demo && can("datasets.manage") && <Button variant="danger" onClick={() => setDel(true)}><Trash2 aria-hidden /> Delete</Button>}
         </>} />
       <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <MetricCard label="Received records" value={fmtNum(d.quality.rows)} detail="Stored records; not a measure of reporting completeness." motif="records" />
+        <MetricCard label="Received records" value={fmtNum(d.quality.rows)} detail="Stored records; not a count of how many expected reports arrived." motif="records" />
         <MetricCard label="Explicit zero values" value={fmtNum(d.quality.value_status.zero)} detail="Observed zero counts remain separate from missing data." motif="trends" />
         <MetricCard label="Blank received values" value={fmtNum(d.quality.value_status.blank)} detail="Records received without a reported value." motif="verify" />
       </div>

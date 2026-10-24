@@ -93,7 +93,7 @@ export function ScreenHeader({ screen, eyebrowDetail, children, filterBar }: { s
   const eyebrow = eyebrowDetail ? `${s.eyebrow} / ${eyebrowDetail}` : screen === "dashboard" ? `${s.eyebrow} / ${region}` : s.eyebrow;
   return (
     <div className="flex flex-col gap-[25px]">
-      <Hero variant={s.variant} photo={s.photo} position={s.position} zoom={s.zoom} eyebrow={eyebrow} title={s.title} subtitle={s.subtitle(disease)}
+      <Hero size={screen === "dashboard" ? "full" : "compact"} variant={s.variant} photo={s.photo} position={s.position} zoom={s.zoom} eyebrow={eyebrow} title={s.title} subtitle={s.subtitle(disease)}
         updated={updatedLabel(meta?.as_of)} actions={<ScreenAction screen={screen} />} />
       <GlobalFilterBar {...filterBar} />
       <SectionTabs section={screen} />

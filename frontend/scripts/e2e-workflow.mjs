@@ -111,7 +111,7 @@ await step("concern: start review, confirm with reason, assign, note, resolve", 
   await page.getByRole("button", { name: "Assign an owner" }).click();
   await page.getByRole("dialog").getByRole("combobox").first().selectOption("U-RESU-2");
   await page.getByRole("dialog").getByRole("button", { name: "Assign" }).click();
-  await expect(page.getByText(/Owner: RESU Epidemiologist/)).toBeVisible();
+  await expect(page.locator("dt", { hasText: /^Owner$/ }).locator("xpath=following-sibling::dd")).toContainText("RESU Epidemiologist");
   await page.getByRole("tab", { name: /Notes & history/ }).click();
   await page.getByLabel("Add a note").fill("Encoder returns tomorrow; will re-send.");
   await page.getByRole("button", { name: "Add note" }).click();

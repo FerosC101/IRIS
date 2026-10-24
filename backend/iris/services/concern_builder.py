@@ -311,11 +311,16 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
                 title = f"Possible shared problem — {' and '.join(names[u] for u in unit_ids)} (shared encoder/connection)"
             else:
                 title = f"Possible shared problem — {len(unit_ids)} units via {vn}"
+            # Count every unit-week in the named period, not only each unit's flagged weeks, so the
+            # sentence matches the weekly timeline shown with it.
+            span = results[results["unit_id"].isin(unit_ids) & (results["week"] >= w0) & (results["week"] <= w1)]
+            expected, on_time = int(span["n_expected"].sum()), int(span["n_on_time"].sum())
+            late, missing = int(span["n_late"].sum()), int(span["n_not_received"].sum())
             summary = (f"In {period}, {len(unit_ids)} connected units had late or missing reports at the same time: "
                        f"{missing} of {expected} expected weekly reports were not received and {late} were late.")
             per_unit = []
             for u in unit_ids:
-                r = rows[rows["unit_id"] == u]
+                r = span[span["unit_id"] == u]
                 per_unit.append({"unit_id": u, "name": names[u], "expected": int(r["n_expected"].sum()),
                                  "on_time": int(r["n_on_time"].sum()), "late": int(r["n_late"].sum()),
                                  "not_received": int(r["n_not_received"].sum())})
