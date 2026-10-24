@@ -29,7 +29,7 @@ export function RealDenguePage() {
       <PageHeader title="Real dengue data" description="Reports worth a second look, picked by two models from real Department of Health dengue data. Each one is a lead to check, not a confirmed error."
         meta={<Badge tone="teal">Real data · HDX / DOH, 2016–2021</Badge>} />
       {st.error ? <ErrorState error={st.error} onRetry={() => st.refetch()} /> : !st.data ? <Loading label="Checking model outputs" /> : !st.data.available ? (
-        <EmptyState title="No model outputs yet">Run the pipeline in “Model A/pipeline” (python -m iris_pipeline all). The files are read from {st.data.contract_dir}.</EmptyState>
+        <EmptyState title="No model outputs yet">Run the pipeline in “models/pipeline” (python -m iris_pipeline all). The files are read from {st.data.contract_dir}.</EmptyState>
       ) : (
         <div className="flex flex-col gap-4">
           <details className="rounded-md bg-tint px-4 py-3 text-[13px] text-ink">

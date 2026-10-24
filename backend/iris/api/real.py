@@ -1,4 +1,4 @@
-"""Real-data models (read-only outputs of the pipeline in "Model A/pipeline") and human reviews of their leads."""
+"""Real-data models (read-only outputs of the pipeline in "models/pipeline") and human reviews of their leads."""
 
 from __future__ import annotations
 

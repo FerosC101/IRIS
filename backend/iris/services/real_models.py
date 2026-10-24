@@ -1,6 +1,6 @@
 """Real-data models: Model A v2 flags, the Model B zero-report prioritizer and the Model B v2 weekly plan.
 
-The pipeline in "Model A/pipeline" writes JSON contract files (outputs/contract/*.json), each validated against its
+The pipeline in "models/pipeline" writes JSON contract files (outputs/contract/*.json), each validated against its
 schema before it is written. This service reads them read-only, re-reading a file whenever it changes on disk, and
 joins every lead with its latest human review. Model output is a flag, never a finding: closing a lead (confirmed
 or not a problem) needs a human reason and the evidence that was checked.
@@ -71,7 +71,7 @@ def require(name: str) -> dict:
     if doc is None:
         raise HTTPException(status_code=404, detail={
             "code": "model_output_missing",
-            "message": f"The {name} output has not been produced yet. Run the pipeline in 'Model A/pipeline' "
+            "message": f"The {name} output has not been produced yet. Run the pipeline in 'models/pipeline' "
                        f"(python -m iris_pipeline all, or the zero-priority and contract-json steps).",
         })
     return doc

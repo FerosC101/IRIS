@@ -10,3 +10,7 @@ frontend/dist/
 frontend/qa-screenshots/
 *.tsbuildinfo
 .DS_Store
+# Video project (HyperFrames source and renders); the final cut is docs/media/IRIS-demo.mp4
+video/
+# Local assistant instructions (not part of the project)
+CLAUDE.md

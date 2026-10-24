@@ -1,164 +1,224 @@
-# IRIS — Integrated Reporting Intervention System
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/iris-logo-dark.png">
+    <img src="docs/brand/iris-logo-light.png" alt="IRIS" width="260">
+  </picture>
+</p>
 
-*See the connections. Restore what matters.*
+<h1 align="center">Integrated Reporting Intervention System</h1>
 
-IRIS is a **research prototype** of a decision-support tool for public-health reporting networks: Regional Epidemiology and Surveillance Units (RESUs), Rural Health Units (RHUs) and other authorized personnel. It helps users review reporting irregularities, investigate possibly connected disruptions, prioritize corrective actions and assess reporting recovery.
+<p align="center"><em>See the connections. Restore what matters.</em></p>
 
-> **IRIS is not an officially deployed Department of Health system.** It is not endorsed by any government agency, does not connect to any government system, and has not been validated in real-world use. **All demonstration data is simulated**: the provinces, municipalities, facilities, people and relationships are fictional, and no patient information is used.
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0E6680.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/python-3.11%2B-0A3A4A.svg" alt="Python 3.11+">
+  <img src="https://img.shields.io/badge/react-19-0A3A4A.svg" alt="React 19">
+</p>
 
-The workflow it supports:
+IRIS is a decision-support prototype for public-health reporting networks. It helps Regional Epidemiology and Surveillance Units (RESUs), provincial coordinators and Rural Health Units (RHUs) notice when weekly disease reports go missing or look wrong, check whether several problems share one cause, decide what to fix first with limited staff time, and see whether reporting recovers.
 
-**Review reporting concerns → inspect evidence → verify a concern → investigate possible connections → compare corrective actions → record an intervention → assess recovery.**
+**Team Nex · PJDSC 2026**
 
----
+## Demo video
 
-## Documentation
+[![Watch the IRIS demo (3 min)](docs/media/IRIS-demo-poster.jpg)](docs/media/IRIS-demo.mp4)
 
-- **[User guide (PDF)](docs/IRIS-User-Guide.pdf)**: a screen-by-screen guide with screenshots, for staff and reviewers. Its source is `docs/user-guide.html`. Rebuild it with `node scripts/capture-docs.mjs` then `node scripts/build-user-guide.mjs` (from `frontend/`, with both servers running).
+*Click the image to watch the 3-minute demo ([`docs/media/IRIS-demo.mp4`](docs/media/IRIS-demo.mp4)).*
+
+> **IRIS is a research prototype, not an official Department of Health system.** It is not endorsed by any government agency, does not connect to any government system, and has not been validated in real-world use. The app's demo data is **simulated**: provinces, facilities, people and relationships are fictional, and no patient information is used. The one exception is the read-only *Real dengue data* page, which shows model outputs on public HDX / DOH dengue counts.
+
+## Screens
+
+![IRIS on desktop and phone: dashboard, investigation, RHU home, count-drop investigation and reporting network](docs/IRIS-Snapshots.png)
+
+![IRIS on desktop and phone: network with a hub selected, recovery, real dengue data and the investigation queue](docs/IRIS-Snapshots-2.png)
+
+## Design
+
+![IRIS design system: logo on light, deep teal and dark surfaces; colour palette with roles; status styles; chart series; Space Grotesk and Inter](docs/brand/IRIS-Design-System.png)
+
+The interface is built for people without a data background:
+
+- **One question per screen, one next step per concern.** Each concern shows a four-step progress bar (Review → Verify → Act → Close) with a single main button; everything else sits in *More actions*.
+- **Numbers come with a comparison.** Headline figures show the change from the week before, and concerns compare the flagged weeks with the weeks before them.
+- **Honest labels.** Every value says whether it is *observed*, a *model estimate*, a *flag* or *verified* by a person. Simulated data is marked wherever it appears.
+- **Colour has one job each.** Teal for data, slate for comparisons and estimates, and green, amber and red only for status, always with an icon and a label. Every chart has a table view.
+- **Plain words.** *Arrived* and *On time* rather than completeness and timeliness; dates written as dates.
+
+The concept mockups the app was built from, one per section ([`docs/design/`](docs/design)):
+
+![IRIS concept mockups: Dashboard, Reports & Analysis, Reporting Network, Investigations & Actions, Data & Models](docs/design/IRIS-Mockups.png)
+
+Logo files: [`docs/brand/`](docs/brand) (marks in dark teal, bright teal and white, and the lockups used above). Rebuild the brand images with `node scripts/build-brand.mjs` from `frontend/`.
+
+## What it does
+
+**Flag → investigate → verify → plan actions → follow up → check recovery.**
+
+| Section | Question it answers | What you can do |
+|---|---|---|
+| **Dashboard** | What needs attention this week? | A one-sentence summary, four headline numbers with week-on-week change, the 12-week reporting trend, the top concern, and a work queue table with status tabs. RHU staff also see the reports they still need to send. |
+| **Reports & Analysis** | What arrived, what is missing, and is reporting recovering? | Weekly reports (missing reports listed too), anomaly analysis, the *Real dengue data* page (Model A flags and Model B priorities on real data, with human review of each lead), and recovery before / during / after each corrective action. |
+| **Reporting Network** | What might be connected? | A rotating graph of units, hubs and labs, coloured by reporting status, with a unit panel (arrival rates against the status cutoffs, connections, weekly history, concerns) and a list view. |
+| **Investigations & Actions** | Why was this flagged, and what do we do? | Each concern compares the flagged weeks with the weeks before, shows what is known next to what is not yet known, and gives one next step with a checklist. Plan actions under a staff-hour budget, then track them to an outcome. |
+| **Data & Models** | Can I trust the data and the methods? | Datasets with provenance, CSV import with validation, detection runs, and a synthetic evaluation of the detection methods. |
+
+A detector output is always a **flag**, never a finding. Closing a concern needs a person to verify it and attach evidence.
 
 ## Quick start
 
 Requirements: Python 3.11+ with [uv](https://docs.astral.sh/uv/), Node.js 20+ and npm.
 
 ```bash
-# 1. Backend (FastAPI + SQLite) — http://127.0.0.1:8000
+# Backend (FastAPI + SQLite): http://127.0.0.1:8000
 cd backend
 uv sync
 uv run uvicorn iris.main:app --port 8000
 
-# 2. Frontend (React + Vite) — http://localhost:5180
+# Frontend (React + Vite): http://localhost:5180, proxies /api to :8000
 cd frontend
 npm install
 npm run dev
 ```
 
-Open **http://localhost:5180**. On first start the backend creates `backend/iris.db` and seeds it. Seeding generates the simulated network and data, runs detection, plays the demo storyline and executes one 20-replication evaluation, which takes about 3 seconds. The Vite dev server proxies `/api` to port 8000.
+Open **http://localhost:5180**. On first start the backend creates `backend/iris.db` and seeds it: it simulates the network and its reports, runs detection, plays a demo storyline and runs one evaluation (about 3 seconds).
 
-Use the **Demo role** selector (sidebar on desktop, menu on mobile) to switch between users:
+Switch demo users from the account menu at the top right:
 
-| Demo user | Role | What to try |
+| Demo user | Role | Try this |
 |---|---|---|
-| Hiraya RHU Encoder | RHU reporting staff | Submit missing reports, respond to a clarification request (C-0014) |
-| Malaya Provincial Coordinator | Provincial coordinator | Kalinaw shared-connection investigation (C-0010), overdue follow-up F-0004, planner |
-| RESU Surveillance Analyst (default) | RESU analyst | Everything: network, run detection, model evaluation, approve plans |
+| RESU Surveillance Analyst (default) | RESU analyst | Everything: network, detection runs, evaluation, approving plans |
+| Malaya Provincial Coordinator | Provincial coordinator | The Kalinaw shared-connection investigation (C-0010) and its follow-up |
+| Hiraya RHU Encoder | RHU staff | Send missing reports and answer a clarification request (C-0014) |
 | Data Manager | Administrator | CSV import, unit metadata, system activity |
 
-**Reset the demo** from *Settings* or *Data sources → Demo scenarios* (where you can also choose which scenarios are injected).
+Reset the demo data from *Settings*. Human reviews on the *Real dengue data* page are kept across resets.
+
+## Repository layout
+
+```
+backend/    FastAPI app: simulation, detection, planning, evaluation, recovery, API (Python, uv)
+frontend/   React 19 + TypeScript + Vite app, unit tests and browser QA scripts
+models/     Model A and Model B: data cleaning, notebooks, and the tested pipeline the app reads
+docs/       User guide, screenshots, demo video, proposal and design notes
+```
+
+## Data science
+
+IRIS has two models, built and tested in [`models/`](models/README.md) on real Philippine surveillance data, plus a simulated reporting network for what the real data cannot show. Every number below comes from the pipeline's saved outputs ([`RESULTS.md`](models/pipeline/outputs/results/RESULTS.md)).
+
+```
+clean data  →  Model A: is this count suspiciously low?  →  Model B: what should staff check or fix first?  →  IRIS app
+```
+
+### Data and labels
+
+- **Real data.** HDX / DOH Epidemic-prone Disease Case Surveillance: dengue for 126 provinces and cities in 17 regions, weekly, Jan 2016 – Jan 2021 (126 × 262 = 33,012 location-weeks). Model A also uses national weekly counts for 18 EDCS diseases and WHO TB notifications.
+- **Cleaning rules.** Standardise names and regions, fill the weekly calendar, label problems. Reported numbers are never overwritten, gaps are never filled, rows are never dropped, and a blank stays blank (never 0). Each cleaning script runs its checks and fails if any do (dengue 72, measles 37, TB 32).
+- **Labels found during cleaning.** On 15 Sundays, cases and deaths were swapped for whole regions (581 rows, 527 of them showing 0 cases), and in each affected year a missing regional week followed: a real shared disruption. These are the only real labels of reporting errors; anything else counts as normal, so real error rates are understated.
+- **Synthetic data, kept apart.** A reporting network of 506 fictional facilities over the real 126 locations, reporting through provincial hubs to regional units and referring specimens to labs. Each location's real counts are split across its facilities. Failures (isolated, hub and lab outages) are injected so the truth is known exactly. Synthetic results are always reported separately from real ones.
+
+### How the evaluation stays honest
+
+- **Time-ordered split:** train 2016–2018, tune 2019, test 2020. Every week is predicted from earlier weeks only, and a test checks for leakage.
+- **Choices made before the test:** model variants and thresholds were chosen on 2016–2019 with a rule written down in advance. The 2020 test year was scored twice, and both runs are kept in a test-run log, including the first one, which had a threshold bug.
+- **Uncertainty:** 95% intervals by cluster bootstrap over places; 20 replicates for the simulations.
+- **Baselines:** rolling median, EWMA, CUSUM, zero-streak length, and the earlier version of each model.
+
+### Model A — detect
+
+A negative-binomial count model per place, with trend, yearly seasonality and holidays, fitted on past weeks only. A week is flagged when its count is far below the 90% range the model expected. Signals are pooled across a region and across diseases (correlation-adjusted Stouffer) to catch shared problems, and each flag carries `p_fail`, a calibrated chance that the report is wrong.
+
+v2 follows the recent level of reporting and widens its range for model and epidemic-year uncertainty. On the real 2020 test year:
+
+| | False alerts on normal weeks | Real swapped reports caught | False region-wide alerts | Normal weeks inside the 90% range |
+|---|---|---|---|---|
+| Model A v1 | 12.1% | 49% | 62% | 56% |
+| **Model A v2** | **5.5%** | 9% | **9%** | **79%** |
+| Best simple baseline | 0.6% | 4% | — | — |
+
+v2 trades recall for far fewer false alarms. Once it has followed the COVID-19 drop in 2020, a zero no longer looks unusual, so it catches fewer of the real swaps. Neither version holds the 1% alert budget through 2020. On simulated failures injected into 2020, v2 ranks failures better than v1 (AUC 0.85 vs 0.77).
+
+### Model B — decide
+
+**Zero-report prioritizer.** Every zero-case dengue report gets a 0–100 priority score, a High / Medium / Low band, a calibrated chance of being wrong, the indicators behind it and steps to verify it. It is a transparent weighted score rather than a black box, because the real labels cover only one kind of error. Tuning over 39,348 settings, before 2020 was scored, kept two indicators: *Model A finds this zero unlikely* and *other places in the region are also zero*. Missing reports are kept apart and never treated as zeros.
+
+| Real 2020 test: 1,367 zero reports, 157 known swaps | Average precision | AUC |
+|---|---|---|
+| **Zero-report prioritizer** | **0.48** | **0.92** |
+| Model A v2 alone | 0.17 | 0.66 |
+| Earlier Model B rule | 0.09 | 0.39 |
+
+The regional indicator helps with region-wide errors and hurts with isolated ones: on isolated synthetic failures, Model A alone ranks better (0.51 vs 0.29). IRIS therefore shows both, Model B's rank for zero reports and Model A's flag for single-place drops. Bands set on 2019 do not transfer to the COVID year, so the within-week rank is the signal to use until they are re-set on recent data.
+
+**Network-aware planner.** Each week an integer program (solved exactly with HiGHS) picks the corrective actions with the most expected value for the staff hours and money available. A facility can be credited only once, so fixing a shared hub or lab beats visiting its facilities one by one. In simulation, with 24 staff-hours a week:
+
+| Policy (20 replicates) | Failed reports recovered per year | Weeks to recover a shared failure |
+|---|---|---|
+| **Network-aware (Model B)** | **176** (132–221) | **2.7** |
+| Facility-first (proposal baseline) | 29 (24–34) | 4.7 |
+| Random | 11 (8–13) | 4.7 |
+| Oracle that knows the truth | 333 (290–376) | 1.6 |
+
+With the graph, the right hub is named in 72% of simulated hub outages; without it, in none.
+
+### What did not work, and what it means
+
+- Model A v2 met 1 of its 4 pre-set targets. Missed targets are reported as missed, and nothing was re-tuned on 2020.
+- 2020 contains the COVID-19 drop, a shift larger than anything in 2016–2019, and no version holds its alert budget through it.
+- The network, its failures and recovery effects are simulated. Action hours and success rates are planning assumptions.
+- **Every alert is a lead for a person to verify, not a confirmed error.** In the app, each model output says whether it is observed, an estimate or a flag, and closing a lead needs a reason and the evidence checked.
+
+### From the models to the app
+
+The pipeline writes validated JSON files (`models/pipeline/outputs/contract/*.json`, each with a JSON Schema). The backend serves them read-only on the *Real dengue data* page and re-reads them when they change; human reviews of each lead are stored separately and never change the model outputs.
+
+The simulated demo uses the backend's own detection methods (`backend/iris/detection/`) on the fictional network:
+
+- **Statistical threshold:** robust z-score of the week's *delay share* (½ × late + not received, over expected) against the unit's previous 8 weeks.
+- **Time-series (EWMA):** a smoothed delay share compared with the same baseline.
+- **Network-aware:** the threshold score plus support from connected units delayed in the same weeks. A unit is flagged only if it has some delay of its own; concerns at several units on one hub or shared resource are merged into a *possible shared problem*.
+- **All methods** also flag incomplete records and unexpected drops in counts. A count drop is never presented as proof of under-reporting.
+
+The demo planner (`backend/iris/optimization/`) uses an exact budget-constrained knapsack and compares it with a priority-first baseline. Its benefits are illustrative assumptions, editable in the app.
+
+## Data
+
+- **Simulated facility reporting** (`DS-DEMO-FACILITY`): 26 weekly periods (Apr 6 – Oct 4, 2026) for 20 reporting units and 4 hubs in three fictional provinces, seven reporting categories with explicit schedules, and ten injected scenarios. Each concern can show its simulation answer key. Generated by `backend/iris/data/simulate.py` with a fixed seed.
+- **Simulated provincial aggregates** (`DS-DEMO-PROVINCIAL`): totals without facilities, schedules or timestamps, to show how IRIS behaves when arrival rates cannot be calculated.
+- **Real dengue data:** HDX / DOH Epidemic-prone Disease Case Surveillance, dengue by province and city, weekly, 2016–2021. Only the pipeline's outputs are read; the raw files are not in git (see [`models/README.md`](models/README.md)).
+- **Imported CSVs** keep the origin the importer declares (real, synthetic or unknown). IRIS does not verify it.
 
 ## Tests
 
 ```bash
-cd backend && uv run pytest              # 40 tests: simulation, metrics, detection, planner, evaluation, API workflows, CSV import
-cd frontend && npm test                  # 17 tests: formatting, role access, form validation, API client, table/filter components
-cd frontend && npm run typecheck         # TypeScript strict mode
-cd frontend && npm run build             # production build
+cd backend && uv run pytest                 # simulation, detection, planner, recovery, API workflows, real-data models
+cd frontend && npm test                     # unit tests (vitest)
+cd frontend && npm run typecheck && npm run build
+cd models/pipeline && python -m pytest -q   # pipeline; tests that need the cleaned data skip without it
 
-# Browser checks (both servers running; one-time: npx playwright install chromium)
-cd frontend && npm run qa:e2e                                             # resets the demo, then clicks through the workflows
-cd frontend && npm run qa:responsive -- http://localhost:5180 ./qa-screenshots
+# Browser checks, with both servers running (one-time: npx playwright install chromium)
+cd frontend && npm run qa:e2e               # resets the demo, then clicks through the main workflows
+cd frontend && npm run qa:responsive -- http://localhost:5180 ./qa-screenshots   # 320–1440 px, four roles
 ```
 
-`qa:e2e` drives 11 workflows in a real browser:
-- review → confirm (reason enforced) → assign → note → resolve an investigation
-- dismissal that requires a reason
-- overview filters and their reset
-- budget-dependent planning → save → approve
-- follow-up through evidence, outcome and close
-- network list and node details
-- running an evaluation
-- CSV import, both rejected and accepted
-- RHU report submission and clarification response at phone width
-- the mobile navigation drawer
+## Documentation
 
-The responsive QA script loads 28 routes as four demo roles at 320, 375, 768, 1024 and 1440 px. It fails on horizontal page overflow, console errors, server errors, visible error states or a missing page heading. `scripts/find-overflow.mjs <width> <route>` helps locate an overflowing element.
+- [User guide (PDF)](docs/IRIS-User-Guide.pdf): screen-by-screen guide for staff and reviewers (source: `docs/user-guide.html`).
+- [What is built (PDF)](docs/IRIS-What-Is-Built.pdf): an inventory of every screen with screenshots.
+- [Design audit](docs/IRIS_DESIGN_AUDIT.md): design decisions, tokens and the rules the interface follows.
+- [Project proposal (PDF)](docs/PJDSC26_Nex_Proposal.pdf) and the [model review and roadmap](models/IRIS_MODEL_REVIEW_AND_ROADMAP.md).
 
-## Design for clarity
-
-The interface is built to stay simple for people without a data background:
-- **Plain names.** Main menu items are Home, Concerns, Plan actions, Track actions, Network, Recovery and Data. Advanced pages sit under **More**.
-- **One next step.** Each concern shows a four-step progress bar (Review → Verify → Act → Close) with a single main button; other actions are in a **More actions** menu.
-- **Detail on demand.** Filters hide behind a **Filters** button, and long content sits in tabs or "Show more" sections. The planner suggests a plan automatically from the staff-hours you enter and explains it in one sentence.
-- **Short guide.** Home shows a "How IRIS works" guide that can be dismissed.
-
-## What is implemented
-
-| Section | Purpose | Highlights |
-|---|---|---|
-| **Home** | What needs attention? | Work queue of concerns and follow-up actions (ID, unit, category, period, type, severity, status, updated, assignee), filters by period, province and status, overdue first. Also RHU task list with report submission, compact completeness trend, recently closed concerns, intervention updates |
-| **Concerns** | Why was this flagged? | Searchable list; workspace answers *what happened / what evidence / what is uncertain / what next*; evidence labelled *Observed in dataset*, *Possible explanation*, *Requires verification*, *Confirmed by reviewer*, *Simulated example*; week-by-week timeline; method and uncertainty; review, confirm (reason required), dismiss (reason required), clarify, respond, assign, note, resolve, reopen; activity history; related issues; "Run detection" with method choice |
-| **Network** | What might be connected? | Slowly turning 3D constellation on a canvas (hubs are dark orbs; unit shape = type, colour plus a ring cue = status, line style and moving dots = relationship type; drag to turn, scroll to zoom, hover for a summary; labels by importance; motion stops with reduced motion), legend, filters (province, type, week range, status), fit/zoom/reset, node details with reporting history, accessible list view |
-| **Data** | What does the data show? | Records table that includes expected-but-not-received reports; search, filters, sort, pagination; record inspection with change history; small-multiple trends; data quality (blank vs zero vs not received, field missingness, duplicates, per-unit); metadata and provenance |
-| **CSV import** | — | Upload → column mapping with preview → validation (row/column errors for dates, numbers, negatives, unknown units, duplicates; missingness summary) → required provenance (real / synthetic / unknown) → confirmation. Failed imports are logged with their errors |
-| **Plan actions** | What should we do first? | Candidate actions from open concerns; budget; include/exclude; editable assumptions; exact budget-constrained optimization vs priority-first baseline; selection reasons; save draft; compare saved plans; approve or reject (reason required) |
-| **Track actions** | What happened after we acted? | Proposed → approved → completed → outcome tracking; status transitions with rules (evidence required to complete, outcome required to close, reason required to cancel); notes, follow-up dates, outcomes labelled *not yet verified / observed / verified* and *simulated / observed / reviewer* |
-| **Real dengue data** (Reports & Analysis) | What do the models say about real reports? | Read-only outputs of the pipeline in `Model A/pipeline` on real HDX/DOH dengue data (2016–2021): Model B zero-report priority list per week (band, calibrated chance, indicators, data warnings, how to verify), Model A low-count flags, the Model B v2 weekly plan, and model results with real and synthetic tests kept apart. Coordinators and RESU analysts record a review on any lead (in review / confirmed problem / not a problem); closing needs a reason and the evidence checked. Reviews are append-only, audited, tagged with the model run, and survive a demo reset. RHU staff cannot open it |
-| **Recovery** | Did reporting improve? | Completeness and timeliness over time, open vs closed concerns, time to resolution, before / during / after windows with Wilson 95% CIs and an explicit association-not-causation note; "Not calculable from this dataset" when schedules or timestamps are missing |
-| **Model evaluation** (under More) | Is the method useful? | Run experiments from the UI; precision, recall, false-alarm rate, F1, event detection, detection delay; results by scenario type and severity; false-alarm sources; network vs no-network comparison; shared-cause attribution. Shows "Not evaluated yet" when no experiment exists |
-| **Data sources** (under More) | Can I trust the data? | Datasets with provenance, designation, coverage, validation status, limitations and data dictionary; import history; reporting-unit metadata editing (admin); system activity log; demo scenario configuration |
-| **Settings / Help** | — | Demo role, density, date format, larger text, reduced motion, link underlines, stronger focus, answer-key toggle, reset; glossary, status labels, metric and method definitions, limitations |
-
-### Detection methods (`backend/iris/detection/`)
-
-Every unit-week is assessed seven days after its due date. The *delay share* is (½ × late reports + reports not received) ÷ expected reports.
-
-- **Statistical threshold**: robust z-score of the delay share against the unit's previous 8 weeks (median and MAD, floor 0.15). At least 6 weeks of history are required; otherwise a network-wide default baseline is used and the evidence says so.
-- **Time-series (EWMA)**: an exponentially weighted moving average (λ = 0.5) of the delay share, compared with the same baseline.
-- **Network-aware**: threshold z-score + 3 × the share of *connected* units that were also delayed. Connected means the same reporting hub or a shared-resource edge, and only relationships defined by the dataset count. A unit is flagged only if it has some delay of its own.
-- **Shared by all methods**: incomplete records (≥ 50% of received reports blank or incomplete) and count drops (Poisson lower-tail p < 0.001 versus recent weeks, assessed only when most reports arrived). A count drop is never presented as proof of under-reporting.
-
-Concerns group consecutive flagged weeks. When at least half of a hub's independent units are affected, or both units on a shared resource are, the network-aware method merges them into a *possible shared problem*.
-
-### Evaluation (`backend/iris/evaluation/`)
-
-Each replication re-simulates the network with randomly placed scenarios: a hub outage, a shared-resource failure, isolated problems, incomplete records, a count drop, a holiday delay and a genuine outbreak. Each scenario gets a random severity. All three methods run on identical data. Metrics are computed from that run only: nothing is hard-coded, and results are shown even where the network-aware method does worse. In the seeded run it has the best precision and false-alarm rate but lower recall for isolated problems.
-
-### Intervention optimization (`backend/iris/optimization/`)
-
-Benefit = expected weekly reports at affected units × planning horizon × assumed success probability. Cost = base hours + hours per unit × units. Selection is an exact multiple-choice knapsack over dependency-respecting action subsets per concern. A unit test checks it against brute force. The baseline takes actions in priority order. **All benefits are illustrative simulation assumptions**, editable in the UI and saved with each plan.
-
-## Data provenance
-
-- `DS-DEMO-FACILITY` — *IRIS demo — simulated facility reporting*. Generated by `backend/iris/data/simulate.py` with fixed seed `20260412`. It covers 26 weekly periods (Apr 6 – Oct 4, 2026) plus monthly summaries for 20 reporting units (14 RHUs, 4 hospitals, 2 laboratories) and 4 hubs in three fictional provinces (Masagana, Malaya, Tahimik). There are seven reporting categories with explicit schedules: not every unit reports every category, ILI comes from sentinel sites only, laboratories report confirmations only, and one category is monthly. Ten storyline scenarios are injected (`demo_scenarios` in `simulate.py`); each concern's *Simulation answer key* shows the ground truth.
-- `DS-DEMO-PROVINCIAL` — *Simulated provincial weekly aggregates*. Province-level totals without facility IDs, schedules or timestamps (about 4% of cells deliberately blank). It shows how IRIS behaves when completeness and timeliness are not calculable.
-- *Real dengue data* — HDX / DOH Epidemic-prone Disease Case Surveillance, dengue cases by province and city, weekly, 2016-01-10 to 2021-01-10. It is not loaded into the demo database: the backend reads the pipeline's contract files (`Model A/pipeline/outputs/contract/*.json`, override with `IRIS_MODEL_CONTRACT_DIR`; names from `Model A/data/shared/locations.csv`, override with `IRIS_MODEL_LOCATIONS_FILE`) and re-reads them when they change. Regenerate them with `python -m iris_pipeline all` in `Model A/pipeline`. The reporting network the plan uses is simulated.
-- Imported datasets carry the origin the importer declares (real / synthetic / unknown). IRIS does not verify that declaration.
-
-The demo storyline (reviews, dismissals, plans, outcomes) is played through the same service functions as the API, with timestamps on the simulated timeline. Actions you take are stamped with the current time.
-
-## Architecture
-
-```
-backend/iris/
-  api/            FastAPI routers (meta, concerns, data, interventions, analytics)
-  schemas/        Pydantic request models
-  models/         SQLAlchemy ORM: User, Role, Organization, ReportingUnit, ReportingRelationship, ReportingCategory,
-                  Dataset, DataRecord, ReportingExpectation, ImportRecord, ReportingConcern, EvidenceItem,
-                  Investigation, InvestigationNote, InterventionAction, InterventionPlan, InterventionAssignment,
-                  InterventionOutcome, ExperimentRun, AuditEvent
-  services/       slots (single definition of completeness/timeliness), concern builder & workflow,
-                  interventions, recovery, network, overview, explorer, imports, reports, audit, context (roles)
-  detection/      features + three methods
-  optimization/   knapsack planner + baseline
-  evaluation/     synthetic experiment runner
-  data/           simulated world, simulator, seed/storyline
-  tests/
-frontend/src/
-  app/            router, query client
-  components/     ui/ (shadcn-style primitives on Radix), layout/, data-display/ (tables, filters, charts, badges)
-  features/       overview, investigations, network, data-explorer, interventions, recovery, evaluation,
-                  data-management, settings
-  services/       typed API client      types/   API types      hooks/   session, preferences, toasts
-  lib/            formatting, labels, role-aware navigation
-```
-
-All analytics run in the backend, so the frontend holds no duplicated business logic. Design tokens live in `frontend/src/index.css`, which removes Tailwind's default palette so only IRIS colors can be used. Charts use at most two series: deep teal solid and muted teal dashed. That pair was checked for colour-vision separation. Every chart has a data-table alternative, and wider comparisons use small multiples or labelled tables.
+Rebuild the documents from `frontend/` with both servers running: `node scripts/capture-docs.mjs` then `node scripts/build-user-guide.mjs` (user guide), `node scripts/build-inventory.mjs` (inventory), `node scripts/build-snapshots.mjs` (screen collages).
 
 ## Limitations
 
-- **Prototype only.** Thresholds, scores and planning assumptions are tuned for the simulation and have not been validated on real surveillance data. Evaluation results come from synthetic scenarios with known answers.
-- **No real authentication.** The demo role selector sends a user ID header. The server checks that role's permissions for every action, but anyone can pick any role.
-- **Persistence.** Data lives in a local SQLite file (`backend/iris.db`; set `IRIS_DB_PATH` or `IRIS_DATABASE_URL` to change it). Staged CSV uploads are held in server memory and are lost on restart. Display preferences are stored in the browser's localStorage.
-- **Scale.** Slot and detection computations are cached in memory per dataset and are sized for the demo, not for national data volumes.
-- **Before/after comparisons show association, not causation.** Seeded outcomes are simulated and labelled as such.
-- **Light theme only.**
-- **Port.** The frontend dev server uses port 5180. If it is taken, run `npx vite --port <free port>` and add that origin to the CORS list in `backend/iris/main.py`. CORS is only needed when not using the proxy.
+- **Prototype only.** Thresholds, scores and planning assumptions are tuned on simulated data; model results on real data are leads to verify, not confirmed errors.
+- **No real authentication.** The demo user selector sends a user ID header. The server checks that role's permissions on every action, but anyone can pick any role.
+- **Local storage.** Data lives in a local SQLite file (`backend/iris.db`; set `IRIS_DB_PATH` or `IRIS_DATABASE_URL` to change it). Staged CSV uploads are held in memory until imported.
+- **Association, not causation.** Before/after recovery comparisons show what changed, not why. Seeded outcomes are simulated and labelled as such.
+- **Light theme only**, sized for demo data volumes rather than national ones.
+
+## License
+
+[MIT](LICENSE) for the source code. Third-party data and documents keep their own terms: see each dataset's README under `models/data/`.
