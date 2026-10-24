@@ -6,7 +6,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { useGlobalFilters } from "@/hooks/useGlobalFilters";
 import { useSession } from "@/hooks/useSession";
 import type { SectionKey } from "@/lib/navigation";
-import { GlobalFilterBar } from "./GlobalFilterBar";
+import { GlobalFilterBar, type FilterBarSlots } from "./GlobalFilterBar";
 import { Hero, HeroAction, type HeroVariant } from "./Hero";
 import { SectionTabs } from "./SectionTabs";
 
@@ -83,7 +83,8 @@ function ScreenAction({ screen }: { screen: Screen }) {
 }
 
 /** Hero + global filter bar + section tabs for the five main screens. */
-export function ScreenHeader({ screen, eyebrowDetail, children }: { screen: Screen; eyebrowDetail?: string; children?: ReactNode }) {
+/** `filterBar` lets a screen hide shared filters that do not apply and add its own sections to the same bar. */
+export function ScreenHeader({ screen, eyebrowDetail, children, filterBar }: { screen: Screen; eyebrowDetail?: string; children?: ReactNode; filterBar?: FilterBarSlots }) {
   const { meta } = useSession();
   const { filters, categories } = useGlobalFilters();
   const s = SCREENS[screen];
@@ -94,7 +95,7 @@ export function ScreenHeader({ screen, eyebrowDetail, children }: { screen: Scre
     <div className="flex flex-col gap-[25px]">
       <Hero variant={s.variant} photo={s.photo} position={s.position} zoom={s.zoom} eyebrow={eyebrow} title={s.title} subtitle={s.subtitle(disease)}
         updated={updatedLabel(meta?.as_of)} actions={<ScreenAction screen={screen} />} />
-      <GlobalFilterBar />
+      <GlobalFilterBar {...filterBar} />
       <SectionTabs section={screen} />
       {children}
     </div>

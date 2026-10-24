@@ -81,18 +81,18 @@ function Results({ e }: { e: Experiment }) {
         <p className="mt-4 text-xs text-ink-2">{e.id} | {r.config.replications} replications | base seed {r.config.base_seed} | {r.config.n_weeks} reporting weeks per replication | {fmtNum(r.unit_weeks_per_method)} unit-weeks per method.</p>
       </Panel>
       <div className="iris-toolbar">
-        <p className="text-xs text-ink-2">Metric cards describe the selected method in this experiment. Unavailable means the backend did not return a defined value.</p>
+        <p className="text-xs text-ink-2">The four numbers below are for the method chosen here, in this simulated test.</p>
         <div className="w-full sm:w-64"><label htmlFor="metric-method" className="mb-1 block text-xs text-ink-2">Metric card method</label><Select id="metric-method" value={method} onChange={(event) => setMethod(event.target.value as Method)}>{METHODS.map((m) => <option key={m} value={m}>{r.methods[m].label}</option>)}</Select></div>
       </div>
       <div className="iris-phase4-metrics grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Precision" value={percent(metrics.precision)} detail={`${fmtNum(metrics.tp)} true positives / ${fmtNum(metrics.tp + metrics.fp)} flagged unit-weeks.`} motif="verify" />
         <MetricCard label="Recall" value={percent(metrics.recall)} detail={`${fmtNum(metrics.tp)} detected / ${fmtNum(metrics.tp + metrics.fn)} disrupted unit-weeks.`} motif="trends" />
-        <MetricCard label="F1 score" value={score(metrics.f1)} detail="Backend harmonic-mean score; unavailable values are preserved." motif="network" />
+        <MetricCard label="F1 score" value={score(metrics.f1)} detail="Balance of precision and recall (0 to 1)." motif="network" />
         <MetricCard label="False-alarm rate" value={percent(metrics.false_alarm_rate, 2)} detail={`${fmtNum(metrics.fp)} false flags / ${fmtNum(metrics.fp + metrics.tn)} normal unit-weeks.`} motif="records" />
       </div>
-      <Panel title="Detection method comparison" description="Precision and recall as percentages. Null values are omitted from bars and remain unavailable in the table." motif="trends">
+      <Panel title="Detection method comparison" description="Simulated test: the same synthetic data and known disruptions for every method. Higher is better for both. A method with no value is left out of the bars and shown as — in the table." motif="trends">
         <figure aria-label="Detection precision and recall comparison">
-          <ul className="mb-3 flex flex-wrap gap-4 text-xs text-ink-2" aria-label="Comparison legend"><li>Solid pale teal: precision</li><li>Outlined bright teal: recall</li></ul>
+          <ul className="mb-3 flex flex-wrap gap-4 text-xs text-ink-2" aria-label="Legend"><li className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-[var(--iris-chart-1)]" aria-hidden />Precision (share of flags that were real disruptions)</li><li className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm border-2 border-[var(--iris-chart-2)] bg-[var(--iris-chart-2)]/25" aria-hidden />Recall (share of disruptions flagged)</li></ul>
           <div className="h-72" aria-hidden="true"><ResponsiveContainer width="100%" height="100%"><BarChart data={chart} layout="vertical" margin={{ left: 4, right: 18 }}>
             <CartesianGrid stroke="var(--iris-chart-grid)" horizontal={false} />
             <XAxis type="number" domain={[0, 1]} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} tick={{ fill: "var(--iris-chart-axis)", fontSize: 11 }} />

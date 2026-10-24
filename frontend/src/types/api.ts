@@ -410,7 +410,7 @@ export interface ZeroReportItem {
   data_sufficiency?: string; top_indicators: string[]; explanation?: string; data_warnings: string[]; verification_steps: string[];
   components: Record<string, number>; model_version: string; review: LeadReview | null;
 }
-export interface ZeroWeek { week_start: string; mw: number | null; mw_year: number | null; zero_reports: number; high: number; missing: number; reviewed: number }
+export interface ZeroWeek { week_start: string; mw: number | null; mw_year: number | null; zero_reports: number; high: number; medium: number; low: number; missing: number; reviewed: number }
 export interface ZeroReports extends RealPage<ZeroReportItem> {
   week: string | null; weeks: ZeroWeek[]; regions: RealRegion[]; model_a_run_id: string; indicator_labels: Record<string, string>;
   model: { version: string; weights: Record<string, number>; bands: { High: number; Medium: number }; hist_weeks: number; min_hist: number };
@@ -422,7 +422,7 @@ export interface ModelAAlert {
   shortfall: number | null; hub_p: number | null; priority: number | null; model_version: string; review: LeadReview | null;
 }
 export interface ModelAAlerts extends RealPage<ModelAAlert> {
-  diseases: string[]; disease: string; years: number[]; regions: RealRegion[]; threshold: { rule: string; tau: number; alert_budget: number };
+  diseases: string[]; disease: string; years: number[]; year: string; regions: RealRegion[]; weekly: { week_start: string; flags: number }[]; threshold: { rule: string; tau: number; alert_budget: number };
 }
 
 export interface PlanAction {

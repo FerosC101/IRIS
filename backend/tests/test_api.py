@@ -76,6 +76,8 @@ def test_filters_affect_records(client):
     missing = client.get("/api/datasets/DS-DEMO-FACILITY/records?status=not_received", headers=RESU).json()
     assert 0 < missing["total"] < all_rows
     assert all(r["status"] == "not_received" for r in missing["rows"])
+    # A missing submission has no timestamp: null, never the text "NaT".
+    assert all(r["received_at"] is None for r in missing["rows"])
     one = client.get("/api/datasets/DS-DEMO-FACILITY/records?unit_id=RHU-HIRAYA&page_size=5&page=2", headers=RESU).json()
     assert one["page"] == 2 and all(r["unit_id"] == "RHU-HIRAYA" for r in one["rows"])
     s = client.get("/api/datasets/DS-DEMO-FACILITY/records?search=luntian", headers=RESU).json()

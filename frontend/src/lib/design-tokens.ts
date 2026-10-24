@@ -1,4 +1,4 @@
-/** Canvas renderers (Cytoscape) cannot resolve CSS variables. Keep these
+/** Canvas renderers cannot resolve CSS variables. Keep these
  * literals aligned with the light theme in index.css; use CSS variables for
  * DOM/SVG surfaces whenever possible. */
 export const IRIS_COLORS = {

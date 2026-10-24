@@ -181,12 +181,12 @@ export function PlannerPage() {
           </Panel>
 
           </div>
-          <div className="iris-phase4-metrics grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Compared budget" value={opt ? `${String(opt.budget_hours)} h` : "Unavailable"} detail="Budget submitted for the last explicit comparison." motif="records" />
-            <MetricCard label="Estimated plan cost" value={opt ? `${fmtNum(opt.total_cost_hours, 2)} h` : "Unavailable"} detail="Backend cost under the compared assumptions." motif="verify" />
-            <MetricCard label="Recommended actions" value={opt?.action_ids.length ?? "Unavailable"} detail="Backend selection, separate from user candidate inclusion." motif="network" />
-            <MetricCard label="Estimated reporting benefit" value={opt ? fmtNum(opt.total_expected_benefit, 1) : "Unavailable"} detail="Assumed report-weeks; effectiveness is not validated." motif="trends" />
-          </div>
+          {opt && <div className="iris-phase4-metrics grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <MetricCard label="Compared budget" value={`${String(opt.budget_hours)} h`} detail="Budget submitted for the last explicit comparison." motif="records" />
+            <MetricCard label="Estimated plan cost" value={`${fmtNum(opt.total_cost_hours, 1)} h`} detail="Backend cost under the compared assumptions." motif="verify" />
+            <MetricCard label="Recommended actions" value={opt.action_ids.length} detail="Backend selection, separate from user candidate inclusion." motif="network" />
+            <MetricCard label="Estimated reporting benefit" value={`${fmtNum(opt.total_expected_benefit, 1)} report-weeks`} detail="Assumed report-weeks; effectiveness is not validated." motif="trends" />
+          </div>}
           {changed && <p role="status" className="text-sm text-attention-ink">Inputs changed. Results below describe the previous comparison. Run optimization again before saving.</p>}
           {overBudget && <p role="alert" className="text-sm text-critical-ink">The backend returned a plan above the submitted budget. Saving this recommendation is disabled. Adjust the budget explicitly and compare again.</p>}
           <Panel title="Recommended intervention plan" motif="network" description={pool.length ? undefined : "There are no open concerns that need an action right now."}>

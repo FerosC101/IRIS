@@ -149,12 +149,14 @@ def zero_reports(session: Session, week: str | None, band: str | None, region: s
     weeks = {}
     for i in items:
         w = weeks.setdefault(i["week_start"], {"week_start": i["week_start"], "mw": i.get("mw"), "mw_year": i.get("mw_year"),
-                                                "zero_reports": 0, "high": 0, "missing": 0, "reviewed": 0})
+                                                "zero_reports": 0, "high": 0, "medium": 0, "low": 0, "missing": 0, "reviewed": 0})
         if i["report_status"] == "missing":
             w["missing"] += 1
         else:
             w["zero_reports"] += 1
-            w["high"] += i["priority"] == "High"
+            b = str(i["priority"]).lower()
+            if b in ("high", "medium", "low"):
+                w[b] += 1
         w["reviewed"] += i["alert_id"] in reviews
     week_list = sorted(weeks.values(), key=lambda w: w["week_start"])
     week = week or (week_list[-1]["week_start"] if week_list else None)
@@ -175,7 +177,7 @@ def zero_reports(session: Session, week: str | None, band: str | None, region: s
 
 # ---- Model A v2 flags ---------------------------------------------------------------------------------------
 
-def alerts(session: Session, disease: str, year: int | None, week: str | None, region: str | None, review: str | None,
+def alerts(session: Session, disease: str, year: str | None, week: str | None, region: str | None, review: str | None,
            page: int, page_size: int) -> dict:
     doc = require("alerts")
     locs = locations().set_index("location_id")
@@ -184,6 +186,12 @@ def alerts(session: Session, disease: str, year: int | None, week: str | None, r
     diseases = sorted({i["disease"] for i in items})
     years = sorted({int(i["period_start"][:4]) for i in items if i["disease"] == disease}, reverse=True)
     sel = [i for i in items if i["disease"] == disease]
+    # No year means the year the zero-report list covers (so the tabs agree), else the latest; "all" means every year.
+    if year != "all" and not year:
+        z = load("zero_priority")
+        zy = max((str(i["week_start"])[:4] for i in z["items"]), default=None) if z else None
+        year = zy if zy and int(zy) in years else (str(years[0]) if years else None)
+    year = None if year == "all" else year
     if year:
         sel = [i for i in sel if i["period_start"].startswith(str(year))]
     if week:
@@ -198,8 +206,12 @@ def alerts(session: Session, disease: str, year: int | None, week: str | None, r
                     "review": review_dict(reviews.get(i["alert_id"]))})
     out = _review_filter(out, review)
     out.sort(key=lambda i: (i["period_start"], i["priority"] or 0), reverse=True)
+    weekly: dict[str, int] = {}
+    for i in out:
+        weekly[i["period_start"]] = weekly.get(i["period_start"], 0) + 1
     regions = locs.reset_index()[["region_id", "region"]].drop_duplicates().sort_values("region")
-    return {"diseases": diseases, "disease": disease, "years": years, "threshold": doc["threshold"],
+    return {"diseases": diseases, "disease": disease, "years": years, "year": year or "all", "threshold": doc["threshold"],
+            "weekly": [{"week_start": k, "flags": v} for k, v in sorted(weekly.items())],
             "regions": [{"id": r.region_id, "name": r.region} for r in regions.itertuples()],
             "disclaimer": doc["disclaimer"], "run_id": doc["run_id"], "generated_at": doc["generated_at"], **_page(out, page, page_size)}
 

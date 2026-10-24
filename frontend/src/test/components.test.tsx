@@ -65,8 +65,9 @@ describe("QueueTable", () => {
   };
   it("shows overdue follow-ups with a text label and links to the item", () => {
     render(<SessionContext.Provider value={stubSession}><MemoryRouter><QueueTable rows={[{ ...row, category: "DENGUE" }]} /></MemoryRouter></SessionContext.Provider>);
-    expect(screen.getByText(/Dengue/)).toBeInTheDocument();
+    // The table and its phone card layout both render; each shows the same details.
+    expect(screen.getAllByText(/Dengue/).length).toBeGreaterThan(0);
     expect(screen.getAllByText("Overdue").length).toBeGreaterThan(0);
-    expect(screen.getByRole("link", { name: /Restore connection/ })).toHaveAttribute("href", "/follow-up?assignment=F-0004");
+    for (const link of screen.getAllByRole("link", { name: /Restore connection/ })) expect(link).toHaveAttribute("href", "/follow-up?assignment=F-0004");
   });
 });

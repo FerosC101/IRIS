@@ -70,10 +70,9 @@ export function weekRangeLabel(weeks: WeekLabel[], from: number, to: number): st
   const b = weeks.find((w) => w.week === to);
   if (!a || !b) return "Choose weeks";
   if (from === to) return b.iso_label;
-  const day = (iso: string) => {
-    const d = new Date(`${iso}T00:00:00`);
-    return `${String(d.getDate()).padStart(2, "0")} ${d.toLocaleString("en-GB", { month: "short" })}`;
-  };
+  // Fixed month names, so the label never depends on the browser's locale data ("Sept" vs "Sep").
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const day = (iso: string) => `${iso.slice(8, 10)} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`;
   return `ISO W${a.iso_week}–W${b.iso_week} · ${day(a.start)}–${day(b.end)}`;
 }
 

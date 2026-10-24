@@ -64,11 +64,11 @@ await step("shell: filter bar writes to the URL, survives reloads and page filte
   await shell.getByRole("button", { name: "Disease: Dengue" }).click();
   await shell.getByRole("menuitemradio", { name: "Leptospirosis" }).click();
   await shell.getByRole("button", { name: /^Region:/ }).click();
-  await shell.getByRole("menuitemradio", { name: "Simulated region · Malaya" }).click();
+  await shell.getByRole("menuitemradio", { name: "Malaya" }).click();
   await shell.getByRole("button", { name: /^ISO week range:/ }).click();
   await shell.getByRole("button", { name: "Last 4 weeks" }).click();
   await shell.keyboard.press("Escape");
-  await shell.getByRole("button", { name: /^Unit group:/ }).click();
+  await shell.getByRole("button", { name: /^Units:/ }).click();
   await shell.getByRole("menuitemradio", { name: "Hospitals" }).click();
   const p = search();
   expect([p.get("disease"), p.get("region"), p.get("from"), p.get("to"), p.get("group")]).toEqual(["LEPTO", "Malaya", "22", null, "hospital"]);
@@ -147,7 +147,7 @@ await step("dismissal requires a reason and is recorded", async () => {
 
 await step("home: status chips filter the list", async () => {
   await page.goto(`${BASE}/`);
-  const items = page.locator('ul[aria-label="Work queue"] > li');
+  const items = page.locator('table:has(> caption:text-is("Work queue")) tbody tr');
   await items.first().waitFor();
   const before = await items.count();
   await page.getByRole("button", { name: /^New/ }).click();
@@ -200,8 +200,8 @@ await step("network: list view and node details", async () => {
   await page.getByRole("button", { name: "Tahimik Provincial Reporting Hub" }).click();
   await expect(page.getByText("Units reporting through it")).toBeVisible();
   await expect(page.getByText(/aggregates the units that report through the hub/)).toBeVisible();
-  await page.getByRole("button", { name: /^Filters/ }).click();
-  await page.getByLabel("Province", { exact: true }).selectOption("Malaya");
+  await page.getByRole("button", { name: /^Region:/ }).click();
+  await page.getByRole("menuitemradio", { name: "Malaya" }).click();
   await expect(page.getByRole("button", { name: "Masagana Provincial Hospital" })).toHaveCount(0);
 });
 

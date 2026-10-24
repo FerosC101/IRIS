@@ -1,7 +1,7 @@
-import { ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ConcernStatusBadge, OverdueBadge } from "@/components/data-display/badges";
+import { DataTable } from "@/components/data-display/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { useSession } from "@/hooks/useSession";
 import { fmtDate, fmtPeriod } from "@/lib/format";
@@ -19,43 +19,43 @@ export function QueueStatus({ row }: { row: QueueRow }) {
   return <ConcernStatusBadge status={row.status as ConcernStatus} />;
 }
 
-/**
- * Work items as a simple list: what it is, where, when, and its status.
- * (Kept under the old name so existing imports keep working.)
- */
-export function QueueTable({ rows, caption = "Work queue", emptyState }: { rows: QueueRow[]; caption?: string; emptyState?: ReactNode; sort?: unknown; onSort?: unknown }) {
-  const { categoryName } = useSession();
-  if (!rows.length && emptyState) return <>{emptyState}</>;
+export function PriorityLabel({ severity }: { severity: QueueRow["severity"] }) {
   return (
-    <ul aria-label={caption} className="divide-y divide-line">
-      {rows.map((r) => {
-        const cats = r.category ? r.category.split(", ").map((c) => categoryName(c)).join(", ") : null;
-        return (
-          <li key={r.id} className="density-row">
-            <Link to={r.link} className="group flex items-start gap-3 px-4 py-3 hover:bg-aqua-50/60 focus-visible:bg-aqua-50">
-              <span className={cn("mt-2 size-2.5 shrink-0 rounded-full", DOT[r.severity])} title={SEVERITY[r.severity].label} aria-hidden />
-              <span className="min-w-0 flex-1">
-                <span className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-                  <span className="text-[15px] font-medium text-ink group-hover:text-teal-900">
-                    {r.kind === "follow_up" && <span className="font-normal text-ink-2">Action: </span>}
-                    {r.title}
-                  </span>
-                  <span className="flex shrink-0 flex-wrap items-center gap-1.5"><QueueStatus row={r} />{r.overdue && <OverdueBadge />}</span>
-                </span>
-                <span className="mt-0.5 block text-[13px] text-ink-2">
-                  <span className="sr-only">{SEVERITY[r.severity].label}. </span>
-                  {r.units_label}
-                  {cats && <> · {cats}</>}
-                  {" · "}{fmtPeriod(r.period_start, r.period_end)}
-                  {r.assigned && <> · {r.assigned}</>}
-                  <span className="hidden md:inline"> · updated {fmtDate(r.updated_at)}</span>
-                </span>
-              </span>
-              <ChevronRight className="mt-1 size-4 shrink-0 text-ink-2/60 group-hover:text-teal-900" aria-hidden />
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
+    <span className="inline-flex items-center gap-1.5 text-[13px] whitespace-nowrap text-ink">
+      <span className={cn("size-2 shrink-0 rounded-full", DOT[severity])} aria-hidden />
+      {SEVERITY[severity].label.replace(" priority", "")}
+    </span>
+  );
+}
+
+/**
+ * Work items as a table: priority, what the issue is, which weeks, where it stands and who has it.
+ * Each row opens the item; below the md breakpoint the rows become cards.
+ */
+export function QueueTable({ rows, caption = "Work queue", emptyState }: { rows: QueueRow[]; caption?: string; emptyState?: ReactNode }) {
+  const { categoryName } = useSession();
+  const nav = useNavigate();
+  if (!rows.length && emptyState) return <>{emptyState}</>;
+  const detail = (r: QueueRow) => {
+    const cats = r.category ? r.category.split(", ").map((c) => categoryName(c)).join(", ") : null;
+    return [r.kind === "follow_up" ? "Follow-up action" : r.concern_type_label, cats].filter(Boolean).join(" · ");
+  };
+  return (
+    <DataTable caption={caption} rows={rows} rowKey={(r) => r.id} onRowClick={(r) => nav(r.link)} minWidth={820}
+      mobileTitle={(r) => <Link to={r.link} className="hover:underline">{r.title}</Link>}
+      columns={[
+        { key: "priority", header: "Priority", cell: (r) => <PriorityLabel severity={r.severity} /> },
+        { key: "issue", header: "Issue", hideOnMobile: true, className: "w-[42%] min-w-[18rem]", cell: (r) => (
+          <div className="min-w-0">
+            <Link to={r.link} className="font-medium text-ink hover:text-teal-900 hover:underline">{r.title}</Link>
+            <p className="mt-0.5 text-xs text-ink-2">{detail(r)}</p>
+          </div>
+        ) },
+        { key: "type", header: "Type", mobileLabel: "Type", cell: (r) => <span className="text-[13px] text-ink-2 md:hidden">{detail(r)}</span>, className: "md:hidden" },
+        { key: "weeks", header: "Weeks", cell: (r) => <span className="text-[13px] whitespace-nowrap">{fmtPeriod(r.period_start, r.period_end)}</span> },
+        { key: "status", header: "Status", cell: (r) => <span className="flex flex-wrap items-center gap-1.5 whitespace-nowrap"><QueueStatus row={r} />{r.overdue && <OverdueBadge />}</span> },
+        { key: "owner", header: "Owner", cell: (r) => (r.assigned ? <span className="text-[13px]">{r.assigned.replace(" (demo)", "")}</span> : <span className="text-[13px] text-ink-2 italic">Unassigned</span>) },
+        { key: "updated", header: "Updated", align: "right", hideOnMobile: true, cell: (r) => <span className="text-[13px] whitespace-nowrap text-ink-2">{fmtDate(r.updated_at)}</span> },
+      ]} />
   );
 }

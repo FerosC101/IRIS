@@ -28,7 +28,7 @@ def zero_reports(week: str | None = None, band: str | None = None, region: str |
 
 
 @router.get("/alerts")
-def alerts(disease: str = "dengue", year: int | None = None, week: str | None = None, region: str | None = None,
+def alerts(disease: str = "dengue", year: str | None = Query(None, pattern=r"^(all|\d{4})$"), week: str | None = None, region: str | None = None,
            review: str | None = None, page: int = Query(1, ge=1), page_size: int = Query(25, ge=5, le=200),
            session: Session = Depends(get_session), actor: Actor = Depends(get_actor)) -> dict:
     actor.require("real.view")

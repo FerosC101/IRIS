@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { OutcomeBadge } from "@/components/data-display/badges";
+import { DesignationBadge, OutcomeBadge } from "@/components/data-display/badges";
 import { ProportionBar, TrendChart } from "@/components/data-display/charts";
 import { DataTable } from "@/components/data-display/DataTable";
 import { FilterBar, FilterField } from "@/components/data-display/FilterBar";
@@ -82,7 +82,7 @@ export function RecoveryPage() {
           <p className="iris-eyebrow mb-3">Observed reporting restoration</p>
           <h2 className="text-2xl font-semibold">{d.dataset.name}</h2>
           <p className="mt-3 max-w-2xl text-sm">Examine received submissions and follow-up evidence over time. Reporting changes are observations; they do not establish that an intervention caused improvement.</p>
-          <div className="mt-5"><KeyValue columns={3} items={[{ label: "Reporting scope", value: scope }, { label: "Selected reporting weeks", value: fmtPeriod(weekOpts[Number(f.w_from)]?.start, weekOpts[Number(f.w_to)]?.end) }, { label: "Dataset classification", value: d.dataset.designation }]} /></div>
+          <div className="mt-5"><KeyValue columns={3} items={[{ label: "Reporting scope", value: scope }, { label: "Selected reporting weeks", value: fmtPeriod(weekOpts[Number(f.w_from)]?.start, weekOpts[Number(f.w_to)]?.end) }, { label: "Dataset classification", value: <DesignationBadge designation={d.dataset.designation} /> }]} /></div>
           {d.causality_note && <p className="mt-4 text-xs text-ink-2">{d.causality_note}</p>}
         </Panel>}
         {q.error ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : !d || q.isPlaceholderData ? <Loading label="Loading selected recovery context" /> : !d.completeness_available ? (
@@ -99,7 +99,7 @@ export function RecoveryPage() {
                 <MetricCard label="Reporting completeness" value={d.overall.completeness == null ? "Unavailable" : fmtPct(d.overall.completeness)} detail={`${fmtNum(d.overall.received)} received / ${fmtNum(d.overall.expected)} expected submissions.`} motif="records" />
                 <MetricCard label="Reporting timeliness" value={!d.timeliness_available || d.overall.timeliness == null ? "Unavailable" : fmtPct(d.overall.timeliness)} detail="Received by the due date / expected submissions." motif="trends" />
                 <MetricCard label="Reports not received" value={fmtNum(d.overall.not_received)} detail="Expected submissions missing in the selected reporting period." motif="verify" />
-                <MetricCard label="Open concerns" value={d.concern_totals?.open ?? "Unavailable"} detail="Dataset/unit selection; concern totals are not limited to selected weeks." motif="network" />
+                <MetricCard label="Open concerns" value={d.concern_totals?.open ?? "Unavailable"} detail="Open now in this dataset and unit selection, from any week (not only the selected weeks)." motif="network" />
               </div>
             )}
             <Panel title="Reporting recovery trend" motif="trends" description={`${fmtNum(d.overall?.expected)} expected ${f.category ? categoryName(f.category) : "weekly"} reports. ${d.frequency === "monthly" ? "Monthly series; week filters do not restrict monthly submissions." : "Selected reporting weeks."} Classification: ${d.dataset.designation}.`}>
@@ -114,12 +114,12 @@ export function RecoveryPage() {
                   data={d.concerns.map((c) => ({ ...c, closed: c.resolved + c.dismissed }))} series={[{ key: "open_at_end", label: "Open at end of week" }, { key: "closed", label: "Closed during week" }]} />
                 {!!d.concerns_after_snapshot && <p className="mt-1 text-xs text-ink-2">{d.concerns_after_snapshot} concern(s) were created after the dataset snapshot and are not shown on the timeline.</p>}
               </Panel>
-              <Panel variant="secondary" motif="verify" title="Time to resolution" description="Median days from being flagged to being closed.">
+              <Panel variant="secondary" motif="verify" title="Time to resolution" description="Median days from being flagged to being resolved or dismissed. — means none were closed that way.">
                 {d.resolution.length === 0 ? <p className="text-sm text-ink-2">No concerns in this scope.</p> : (
                   <div className="overflow-x-auto" role="region" aria-label="Concern resolution statistics" tabIndex={0}>
                     <table className="w-full min-w-[30rem] text-sm">
                       <caption className="sr-only">Time to resolution by concern type</caption>
-                      <thead className="text-left text-xs text-ink-2"><tr><th scope="col" className="py-1.5 font-semibold">Concern type</th><th scope="col" className="py-1.5 text-right font-semibold">Resolved</th><th scope="col" className="py-1.5 text-right font-semibold">Median days</th><th scope="col" className="py-1.5 text-right font-semibold">Dismissed</th><th scope="col" className="py-1.5 text-right font-semibold">Median days</th><th scope="col" className="py-1.5 text-right font-semibold">Still open</th></tr></thead>
+                      <thead className="text-left text-xs text-ink-2"><tr><th scope="col" className="py-1.5 font-semibold">Concern type</th><th scope="col" className="py-1.5 pl-3 text-right font-semibold">Resolved</th><th scope="col" className="py-1.5 pl-3 text-right font-semibold">Days to resolve</th><th scope="col" className="py-1.5 pl-3 text-right font-semibold">Dismissed</th><th scope="col" className="py-1.5 pl-3 text-right font-semibold">Days to dismiss</th><th scope="col" className="py-1.5 pl-3 text-right font-semibold">Still open</th></tr></thead>
                       <tbody>{d.resolution.map((r) => (
                         <tr key={r.concern_type} className="border-t border-line"><th scope="row" className="py-1.5 text-left font-medium">{meta?.labels.concern_type[r.concern_type]}</th>
                           <td className="py-1.5 text-right tabular">{r.resolved}</td><td className="py-1.5 text-right tabular">{fmtNum(r.median_days_to_resolution, 1)}</td>

@@ -142,14 +142,14 @@ export function InvestigationsPage() {
               onRowClick={(r) => navigate(r.link)} mobileTitle={(r) => <Link to={r.link}>{r.title}</Link>} minWidth={1080}
               sort={sort} onSort={(v) => setUrl((p) => mergeSearch(p, { sort: v.key, order: v.order, page: null }), { replace: true })}
               columns={[
-                { key: "id", header: "Concern", cell: (r) => <Link to={r.link} className="font-semibold text-info-ink hover:underline">{r.id}</Link> },
-                { key: "severity", header: "Priority", sortKey: "severity", cell: (r) => <SeverityBadge severity={r.severity} /> },
+                { key: "id", header: "Concern", className: "whitespace-nowrap", cell: (r) => <Link to={r.link} className="font-semibold text-info-ink hover:underline">{r.id}</Link> },
+                { key: "severity", header: "Priority", sortKey: "severity", className: "whitespace-nowrap", cell: (r) => <SeverityBadge severity={r.severity} /> },
                 { key: "unit", header: "Affected entities", cell: (r) => r.units_label },
                 { key: "title", header: "Suspected disruption", cell: (r) => <Link to={r.link} className="hover:underline">{r.title}</Link> },
-                { key: "status", header: "Status", cell: (r) => <ConcernStatusBadge status={r.status as ConcernStatus} /> },
-                { key: "verification", header: "Verification", cell: (r) => <VerificationBadge verification={r.verification ?? "unverified"} /> },
+                { key: "status", header: "Status", className: "whitespace-nowrap", cell: (r) => <ConcernStatusBadge status={r.status as ConcernStatus} /> },
+                { key: "verification", header: "Verification", className: "whitespace-nowrap", cell: (r) => <VerificationBadge verification={r.verification ?? "unverified"} /> },
                 { key: "assigned", header: "Reviewer", cell: (r) => r.assigned ?? "Unassigned" },
-                { key: "updated", header: "Updated", sortKey: "updated_at", cell: (r) => fmtDate(r.updated_at) },
+                { key: "updated", header: "Updated", sortKey: "updated_at", className: "whitespace-nowrap", cell: (r) => fmtDate(r.updated_at) },
               ]}
               emptyState={<div className="p-4"><EmptyState title="No concerns match" action={<Button size="sm" variant="secondary" onClick={() => { setF(DEFAULTS); }}>Show all open concerns</Button>} /></div>} />
             {q.data.pages > 1 && <div className="border-t border-line px-4 py-3"><Pagination page={q.data.page} pages={q.data.pages} total={q.data.total} pageSize={q.data.page_size} onPage={setPage} /></div>}

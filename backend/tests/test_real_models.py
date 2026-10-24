@@ -71,6 +71,7 @@ def test_zero_reports_by_week_band_and_rank(client, contract):
     d = client.get("/api/real/zero-reports", headers=RESU).json()
     assert d["week"] == "2020-12-20" and [i["location_id"] for i in d["items"]] == ["R1-A", "R1-B"]
     assert {w["week_start"]: w["missing"] for w in d["weeks"]} == {"2020-12-13": 1, "2020-12-20": 0}
+    assert [(w["high"], w["medium"], w["low"]) for w in d["weeks"]] == [(0, 0, 0), (1, 0, 1)]
     high = client.get("/api/real/zero-reports?week=2020-12-20&band=High", headers=RESU).json()
     assert [i["priority"] for i in high["items"]] == ["High"]
     miss = client.get("/api/real/zero-reports?week=2020-12-13", headers=RESU).json()["items"]
@@ -104,8 +105,10 @@ def test_review_permissions_and_unknown_leads(client, contract):
 
 
 def test_alerts_and_plan_join_names_and_reviews(client, contract):
-    a = client.get("/api/real/alerts?year=2020", headers=RESU).json()
+    a = client.get("/api/real/alerts", headers=RESU).json()
+    assert a["year"] == "2020" and client.get("/api/real/alerts?year=all", headers=RESU).json()["year"] == "all"
     assert a["total"] == 1 and a["items"][0]["region_name"] == "Region One"
+    assert a["weekly"] == [{"week_start": "2020-12-20", "flags": 1}]
     p = client.get("/api/real/plan", headers=RESU).json()
     act = p["actions"][0]
     assert act["target_name"] == "Region One RESU" and act["location_names"] == ["PLACE A", "PLACE B"]

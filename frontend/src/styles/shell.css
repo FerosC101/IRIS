@@ -90,13 +90,43 @@
   .iris-photo-surface[data-variant="teal"] { color: #0A3A4A; background: #DBECEC; }
   .iris-photo-surface[data-variant="teal"] .iris-photo-surface__overlay { background: var(--surface-teal-overlay); }
 
-  /* --- Global filter bar --------------------------------------------- */
-  .iris-filterbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 13px 20px; border: 1px solid #A9BAC0; border-radius: 8px; background: #FFFFFF; }
+  /* --- Filter bar: a "Filters" lead-in, then labelled sections ------- */
+  .iris-filterbar { display: flex; flex-wrap: wrap; align-items: stretch; border: 1px solid #A9BAC0; border-radius: 10px; background: #FFFFFF; box-shadow: 0 1px 2px rgb(10 58 74 / 0.05); overflow: hidden; }
+  .iris-filterbar__lead { display: flex; align-items: center; gap: 8px; padding: 0 18px; background: #E7F1F2; border-right: 1px solid #DCE4E6; color: #0A3A4A; font-size: 13px; font-weight: 600; }
+  .iris-filterbar__lead svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .iris-filterbar__count { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: #0E6680; color: #FFFFFF; font-size: 11px; font-weight: 600; }
+  .iris-filterbar__segments { display: flex; flex: 1 1 auto; flex-wrap: wrap; min-width: 0; }
+  .iris-filter-seg { display: flex; flex-direction: column; justify-content: center; gap: 3px; min-width: 0; max-width: 20rem; min-height: 60px; padding: 9px 18px; border-right: 1px solid #DCE4E6; background: transparent; text-align: left; transition: background-color .15s; }
+  .iris-filter-seg:hover, .iris-filter-seg[data-state="open"], .iris-filter-seg--search:focus-within { background: #F3F8F8; }
+  .iris-filter-seg[data-state="open"], .iris-filter-seg--search:focus-within { box-shadow: inset 0 -2px 0 #0E6680; }
+  .iris-filter-seg:focus-visible { outline: 2px solid #0E6680; outline-offset: -2px; }
+  .iris-filter-seg__label { display: inline-flex; align-items: center; gap: 5px; color: #4F6670; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .iris-filter-seg__label svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .iris-filter-seg__value { display: flex; align-items: center; gap: 6px; min-width: 0; color: #0A3A4A; font-size: 14px; font-weight: 500; white-space: nowrap; }
+  .iris-filter-seg__chev { width: 14px; height: 14px; flex-shrink: 0; color: #4F6670; }
+  .iris-filter-seg__dot { width: 6px; height: 6px; flex-shrink: 0; border-radius: 999px; background: #0E6680; }
+  .iris-filter-seg--changed .iris-filter-seg__value { color: #0E6680; font-weight: 600; }
+  .iris-filter-seg--search { cursor: text; }
+  .iris-filter-seg__input { width: 10rem; padding: 0; border: 0; outline: 0; background: transparent; color: #0A3A4A; font-size: 14px; }
+  .iris-filter-seg__input::placeholder { color: #7C9098; }
+  .iris-filterbar__end { display: flex; align-items: center; gap: 14px; margin-left: auto; padding: 8px 18px; }
+  .iris-filterbar__reset { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; color: #0E6680; font-size: 13px; font-weight: 600; }
+  .iris-filterbar__reset:hover { text-decoration: underline; }
+  .iris-filterbar__reset svg { width: 14px; height: 14px; }
+  @media (max-width: 767px) {
+    .iris-filterbar__lead { width: 100%; min-height: 44px; border-right: 0; border-bottom: 1px solid #DCE4E6; }
+    .iris-filterbar__segments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+    .iris-filter-seg { max-width: none; border-bottom: 1px solid #DCE4E6; }
+    .iris-filter-seg:nth-child(2n) { border-right: 0; }
+    .iris-filter-seg__value .truncate { min-width: 0; }
+    .iris-filter-seg__input { width: 100%; }
+    .iris-filterbar__end { width: 100%; justify-content: space-between; margin-left: 0; }
+  }
+  /* Single chip, still used by the design preview page. */
   .iris-filter-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px; border: 1px solid #A9BAC0; border-radius: 4px; background: #FFFFFF; color: #0A3A4A; font-size: 14px; font-weight: 600; white-space: nowrap; }
   .iris-filter-chip:hover { border-color: #0E6680; }
-  .iris-filter-chip[data-state="open"] { border-color: #0E6680; box-shadow: 0 0 0 3px rgb(14 102 128 / 0.15); }
   .iris-filter-chip svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .iris-data-badge { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 11px; color: #0A3A4A; }
+  .iris-data-badge { display: inline-flex; align-items: center; gap: 8px; color: #4F6670; font-size: 11px; white-space: nowrap; }
   .iris-data-badge::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: #1A9EA0; }
 
   /* --- Section tabs (sub-pages of a top-level section) --------------- */

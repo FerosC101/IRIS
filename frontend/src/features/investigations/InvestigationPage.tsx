@@ -180,7 +180,7 @@ export function InvestigationPage() {
           <h2 className="mb-2 text-lg font-semibold">{c.title}</h2>
           <p className="text-sm leading-relaxed">{c.summary}</p>
           <p className="mt-3 text-xs text-ink-2">{c.uncertainty_note}</p>
-          <div className="mt-4"><KeyValue columns={2} items={[{ label: "Affected entities", value: c.units.map((u) => u.name).join(", ") }, { label: "Detection method", value: c.detection_method_label }, { label: "Investigation owner", value: d.investigation?.owner ?? "Unassigned" }, { label: "Verification", value: c.verification }]} /></div>
+          <div className="mt-4"><KeyValue columns={2} items={[{ label: "Affected units", value: c.units.map((u) => u.name).join(", ") }, { label: "Detection method", value: c.detection_method_label }, { label: "Investigation owner", value: d.investigation?.owner ?? "Unassigned" }, { label: "Verification", value: <VerificationBadge verification={c.verification} /> }]} /></div>
         </Panel>
         <Panel variant="secondary" motif="network" title="Review and verification">
           <Stepper current={stepIndex(d)} />
@@ -213,13 +213,13 @@ export function InvestigationPage() {
           ]} />
 
           <TabsContent value="summary" className="flex flex-col gap-4">
-            <Block title="Reporting timeline"><WeekStrip detail={d} /></Block>
-            <Block title="What happened"><p className="text-sm text-ink">{c.summary}</p></Block>
-            <Block title="What the data shows">
+            {/* What happened is the brief above; this tab follows it with the record, the evidence, then what is still open. */}
+            <Block title="What was reported, week by week (observed)"><WeekStrip detail={d} /></Block>
+            <Block title="Evidence behind the flag">
               <EvidenceList items={observed} />
             </Block>
             {unknown.length > 0 && (
-              <Block title="Not yet known">
+              <Block title="Not yet known: possible explanations and what to check">
                 <p className="mb-3 text-[13px] text-ink-2">These are possibilities, not facts. A person needs to check them.</p>
                 <EvidenceList items={unknown} />
               </Block>
