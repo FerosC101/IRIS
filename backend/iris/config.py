@@ -57,3 +57,9 @@ def weekly_due(index: int) -> datetime:
 
 def week_index(d: date) -> int:
     return (d - FIRST_WEEK_START).days // 7
+
+# ---- Real-data models (Model A v2, Model B zero-report prioritizer, Model B v2 planner) ---------------------------
+# The pipeline in "Model A/pipeline" writes validated JSON contract files; the app reads them read-only.
+REPO_ROOT = BASE_DIR.parent
+MODEL_CONTRACT_DIR = Path(os.environ.get("IRIS_MODEL_CONTRACT_DIR", REPO_ROOT / "Model A" / "pipeline" / "outputs" / "contract"))
+MODEL_LOCATIONS_FILE = Path(os.environ.get("IRIS_MODEL_LOCATIONS_FILE", REPO_ROOT / "Model A" / "data" / "shared" / "locations.csv"))

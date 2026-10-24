@@ -25,3 +25,4 @@ from iris.models.interventions import (  # noqa: F401
     InterventionOutcome,
     InterventionPlan,
 )
+from iris.models.real import LeadReview  # noqa: F401

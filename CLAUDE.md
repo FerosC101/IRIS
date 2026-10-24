@@ -1,6 +1,6 @@
 # IRIS
 
-Monorepo: `backend/` (FastAPI + SQLite, Python 3.11+, uv) and `frontend/` (React 19 + TypeScript + Vite). All demo data is synthetic.
+Monorepo: `backend/` (FastAPI + SQLite, Python 3.11+, uv) and `frontend/` (React 19 + TypeScript + Vite). All demo data is synthetic, except the read-only real-data page (`/reports/dengue`), which serves the `Model A/pipeline` contract files through `/api/real/*`.
 
 ## Commands
 
@@ -19,4 +19,5 @@ cd frontend && npm run dev                           # http://localhost:5180, pr
 - Detector output is a "flag", never a "finding". Resolution requires human verification and attached evidence.
 - A zero-case report is a report; a missing submission is not; a blank field is neither.
 - Weeks are ISO weeks on a fixed simulated calendar (`backend/iris/config.py`). Times are PHT (UTC+8).
+- Real-data model outputs are never written to by the app. Human reviews of their leads go in `lead_reviews` (append-only, kept on demo reset).
 - Design decisions: `docs/IRIS_DESIGN_AUDIT.md`.

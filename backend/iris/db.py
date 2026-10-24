@@ -66,7 +66,11 @@ def add_missing_columns(bind) -> list[str]:
     return added
 
 
+#: Tables a demo reset keeps: reviews of real-data model leads are not demo data.
+KEEP_ON_RESET = {"lead_reviews"}
+
+
 def drop_all() -> None:
     from iris import models  # noqa: F401
 
-    Base.metadata.drop_all(engine)
+    Base.metadata.drop_all(engine, tables=[t for t in Base.metadata.sorted_tables if t.name not in KEEP_ON_RESET])

@@ -24,6 +24,7 @@ const InvestigationPage = lazy(() => import("@/features/investigations/Investiga
 const InvestigationsPage = lazy(() => import("@/features/investigations/InvestigationsPage").then((x) => ({ default: x.InvestigationsPage })));
 const AnomalyPage = lazy(() => import("@/features/investigations/AnomalyPage").then((x) => ({ default: x.AnomalyPage })));
 const NetworkPage = lazy(() => import("@/features/network/NetworkPage").then((x) => ({ default: x.NetworkPage })));
+const RealDenguePage = lazy(() => import("@/features/real-data/RealDenguePage").then((x) => ({ default: x.RealDenguePage })));
 const RecoveryPage = lazy(() => import("@/features/recovery/RecoveryPage").then((x) => ({ default: x.RecoveryPage })));
 const HelpPage = lazy(() => import("@/features/settings/HelpPage").then((x) => ({ default: x.HelpPage })));
 const SettingsPage = lazy(() => import("@/features/settings/SettingsPage").then((x) => ({ default: x.SettingsPage })));
@@ -60,6 +61,7 @@ export const routes: RouteObject[] = [
 
       { path: "/reports", element: guard(<DataExplorerPage />) },
       { path: "/reports/analysis", element: <SectionPage section="reports"><AnomalyPage /></SectionPage> },
+      { path: "/reports/dengue", element: <SectionPage section="reports"><RealDenguePage /></SectionPage> },
       { path: "/reports/recovery", element: <SectionPage section="reports"><RecoveryPage /></SectionPage> },
 
       { path: "/network", element: guard(<NetworkPage />) },
