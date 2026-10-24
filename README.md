@@ -21,9 +21,9 @@ IRIS is a decision-support prototype for public-health reporting networks. It he
 
 ## Demo video
 
-[![Watch the IRIS demo (3 min)](docs/media/IRIS-demo-poster.jpg)](docs/media/IRIS-demo.mp4)
+[![Watch the IRIS demo (3 min)](docs/media/IRIS-demo-poster.jpg)](https://ferosc101.github.io/IRIS/demo.html)
 
-*Click the image to watch the 3-minute demo ([`docs/media/IRIS-demo.mp4`](docs/media/IRIS-demo.mp4)).*
+*Click the image to watch the 3-minute demo in your browser, or [download the MP4](docs/media/IRIS-demo.mp4) (36 MB).*
 
 > **IRIS is a research prototype, not an official Department of Health system.** It is not endorsed by any government agency, does not connect to any government system, and has not been validated in real-world use. The app's demo data is **simulated**: provinces, facilities, people and relationships are fictional, and no patient information is used. The one exception is the read-only *Real dengue data* page, which shows model outputs on public HDX / DOH dengue counts.
 

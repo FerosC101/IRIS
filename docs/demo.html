@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IRIS demo video</title>
+  <meta name="description" content="A 3-minute demo of IRIS, the Integrated Reporting Intervention System (Team Nex, PJDSC 2026).">
+  <link rel="icon" href="brand/iris-mark-bright-teal.png">
+  <style>
+    :root { --deep: #0A3A4A; --night: #04131D; --aqua: #5DD9DB; --mist: #C9D6DA; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 24px; padding: 32px 16px; background: radial-gradient(ellipse at 50% 0%, var(--deep), var(--night) 70%);
+      color: #fff; font: 15px/1.55 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    header { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+    header img { width: 180px; height: auto; }
+    header p { margin: 0; color: var(--mist); }
+    video { width: min(1100px, 100%); aspect-ratio: 16 / 9; border-radius: 14px; background: #000; box-shadow: 0 20px 60px rgb(0 0 0 / .45); }
+    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; }
+    a { color: var(--aqua); font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    small { color: var(--mist); max-width: 720px; text-align: center; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="brand/iris-logo-dark.png" alt="IRIS">
+    <p>Integrated Reporting Intervention System · Team Nex · PJDSC 2026</p>
+  </header>
+  <video controls preload="metadata" playsinline poster="media/IRIS-demo-poster.jpg">
+    <source src="media/IRIS-demo.mp4" type="video/mp4">
+    Your browser cannot play this video. <a href="media/IRIS-demo.mp4">Download the demo (MP4, 36 MB)</a>.
+  </video>
+  <nav>
+    <a href="https://github.com/FerosC101/IRIS">View the code on GitHub</a>
+    <a href="media/IRIS-demo.mp4" download>Download the video (MP4, 36 MB)</a>
+  </nav>
+  <small>IRIS is a research prototype, not an official Department of Health system. The app's demo data is simulated; model results on real dengue data are leads to verify, not confirmed errors.</small>
+</body>
+</html>
