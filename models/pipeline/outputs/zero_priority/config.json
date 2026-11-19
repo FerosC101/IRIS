@@ -1,7 +1,7 @@
 {
-  "run_id": "20261023T151711Z",
+  "run_id": "20261119T200814Z",
   "package_version": "0.2.0",
-  "model_version": "zero_priority_v1",
+  "model_version": "zero_priority_v2",
   "inputs": {
     "dengue_table": "surveillance.csv",
     "sha256": {
@@ -24,7 +24,7 @@
     "test": 2020
   },
   "settings": {
-    "MODEL_VERSION": "zero_priority_v1",
+    "MODEL_VERSION": "zero_priority_v2",
     "P_LOW_SATURATION": 4.0,
     "EXPECTED_SATURATION": 50.0,
     "RECENT_SATURATION": 30.0,
@@ -51,8 +51,31 @@
         0,
         1,
         2
+      ],
+      "region_base_weeks": [
+        4,
+        8,
+        13
+      ],
+      "regional_route": [
+        0,
+        1
+      ],
+      "aggregation": [
+        "mean",
+        "max",
+        "noisy_or"
       ]
     },
+    "LOCAL_COMPONENTS": [
+      "unexpected",
+      "missing_cases",
+      "rare_zero",
+      "streak",
+      "recent_activity",
+      "on_off"
+    ],
+    "REGIONAL_COMPONENT": "regional_excess",
     "TUNING_REAL_YEARS": [
       2016,
       2017
@@ -105,15 +128,22 @@
       "streak": 0,
       "recent_activity": 0,
       "on_off": 0,
-      "regional": 1
+      "regional_excess": 1
     },
+    "region_base_weeks": 13,
+    "aggregation": "mean",
     "bands": {
       "High": 31.70980923533593,
-      "Medium": 19.983968666029238
+      "Medium": 18.761805364384195
     }
   },
   "thresholds_5pct_far_2019": {
     "Model B \u00b7 zero-report prioritizer": 31.70980923533593,
+    "Model B v1 (published)": 31.70980923533593,
+    "Routes averaged (relative regional share)": 31.70980923533593,
+    "Larger of the two routes": 51.78659740756216,
+    "Either route (noisy-OR)": 60.18634305072857,
+    "v1's raw regional share, v2's combination": 31.70980923533593,
     "Equal weights (untuned reference)": 49.58042026304236,
     "Model A v2 alone": 2.0714638963024865,
     "Zero-streak length (baseline)": 5.0,
@@ -134,6 +164,6 @@
     "train_rows": 1552,
     "train_positives": 370
   },
-  "api_check_max_score_gap": 2.4879870736072007e-05,
-  "runtime_s": 19.4
+  "api_check_max_score_gap": 2.487987073962472e-05,
+  "runtime_s": 51.2
 }

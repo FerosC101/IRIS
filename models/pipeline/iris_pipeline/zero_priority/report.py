@@ -12,8 +12,14 @@ from .. import config
 from .score import COMPONENTS, LABELS
 
 MAIN = "Model B · zero-report prioritizer"
+V1 = "Model B v1 (published)"
+ABLATIONS = ["Routes averaged (relative regional share)", "Larger of the two routes", "Either route (noisy-OR)",
+             "v1's raw regional share, v2's combination"]
+COMBINE = {"mean": "a weighted average of the two routes", "max": "the larger of the two routes",
+           "noisy_or": "either route (noisy-OR: high when either route is high, higher still when both are)"}
 BASELINES = ["Model A v2 alone", "Zero-streak length (baseline)", "Historical mean, 26 weeks (baseline)", "Old Model B rule (fixed)"]
 EXTRA = ["Equal weights (untuned reference)", "Supervised GBM on real swap labels (experiment)"]
+ROWS = [MAIN, V1] + ABLATIONS + BASELINES + EXTRA
 
 
 def f(x, d=3, pct=False):
@@ -30,7 +36,7 @@ def table(rows: list[list], head: list[str]) -> str:
 
 def set_table(res: dict, k: int = 5) -> str:
     rows = []
-    for m in [MAIN] + BASELINES + EXTRA:
+    for m in ROWS:
         r = res["methods"][m]
         hb = r["high_band"]
         wk = next(w for w in r["weekly_budget"] if w["k_per_week"] == k)
@@ -55,7 +61,9 @@ def write(path, model, results, ranked, gbm_info, manifest, figs, diag) -> None:
     best_bs = max(BASELINES, key=lambda m: S["methods"][m]["average_precision"])
     k5 = lambda r: next(w for w in r["weekly_budget"] if w["k_per_week"] == 5)
     ci = mR.get("high_band_ci", {})
-    used = [k for k in COMPONENTS if model.weights[k] > 0]
+    used = [k for k in COMPONENTS if model.weights.get(k, 0) > 0]
+    regional_on = model.weights.get(config.ZERO_PRIORITY["REGIONAL_COMPONENT"], 0) > 0
+    local_used = [k for k in used if k in config.ZERO_PRIORITY["LOCAL_COMPONENTS"]]
     sel = model.meta["selection"]
     cal = R.get("calibration", {}).get(MAIN, {})
     z20 = ranked[ranked.priority_score.notna()]
@@ -69,9 +77,27 @@ def write(path, model, results, ranked, gbm_info, manifest, figs, diag) -> None:
     L.append(f"- **What it does.** Every explicit zero-case dengue report gets a 0-100 priority score, a High / Medium / Low band, a calibrated "
              f"share of comparable reports expected to be wrong, the indicators behind the ranking, data warnings and verification steps. "
              f"Missing reports are kept apart: they are certain gaps for the planner, never treated as zeros.")
-    L.append(f"- **What it learned to use.** Tuning chose {len(used)} indicator(s): " + ", ".join(f"*{LABELS[k]}*" for k in used) +
+    ap = lambda res, m: res["methods"][m]["average_precision"]  # noqa: E731
+    L.append(f"- **What changed in v2.** Two changes, each aimed at a weakness the v1 report found. (1) The regional indicator now asks whether "
+             "*more* places in the region are at zero than usual for that region in recent weeks, instead of how many are at zero. (2) How the "
+             "local evidence (Model A, the place's own history) and the regional evidence combine is now a tuned choice among a weighted average "
+             "(v1's form), the larger of the two, and 'either route' (noisy-OR), so that an isolated failure need not be halved by a quiet region. "
+             f"Tuning on 2016-2019 chose {COMBINE.get(model.aggregation, model.aggregation)} (best objective by form: "
+             + ", ".join(f"{k} {f(v)}" for k, v in sel.get("best_objective_by_aggregation", {}).items()) + ")"
+             + ("; so change (2) was not adopted, and the other forms are reported as comparisons." if model.aggregation == "mean" else "."))
+    L.append(f"- **v2 against v1.** Average precision on real 2020 swaps {f(ap(R, MAIN))} vs {f(ap(R, V1))}; on isolated synthetic failures in 2020 "
+             f"{f(ap(S, MAIN))} vs {f(ap(S, V1))}; on the regional gap entered as zero {f(ap(G, MAIN))} vs {f(ap(G, V1))}. High-band false alerts on "
+             f"real 2020 normal zeros: {f(mR['high_band']['false_alert_rate'], pct=True)} vs {f(R['methods'][V1]['high_band']['false_alert_rate'], pct=True)}. "
+             f"Every combination option, and v1's raw regional share under v2's combination, are in the tables below.")
+    L.append("- **2020 is no longer a clean test for v2.** v2 was designed after v1's 2020 results had been read, so its 2020 numbers are a second "
+             "look, not an independent test. Every v2 choice (indicators, weights, windows, bands) was made on 2016-2019 data only, with the same "
+             "pre-registered selection rule as v1, and v1's results stay published next to v2's. A truly independent test needs newer data "
+             "(2021 onward) or the reviews recorded in the IRIS app.")
+    L.append(f"- **What it learned to use.** Tuning chose " + (", ".join(f"*{LABELS[k]}*" for k in local_used) or "no local indicator") +
+             (f" on the local route, and the regional route (*{LABELS[config.ZERO_PRIORITY['REGIONAL_COMPONENT']]}*, against the region's median of the "
+              f"previous {model.region_base_weeks} weeks)" if regional_on else ", without the regional route") +
              f". Among {sel['n_within_tolerance']:,} near-equivalent settings the simplest was kept (pre-registered rule).")
-    L.append(f"- **Real data, 2020 (held-out test).** Among {R['zero_reports']:,} zero reports, {R['positives']} are known swapped reports. "
+    L.append(f"- **Real data, 2020.** Among {R['zero_reports']:,} zero reports, {R['positives']} are known swapped reports. "
              f"Model B's average precision is {f(mR['average_precision'])}, {word(mR['average_precision'], R['methods'][best_b]['average_precision'])} "
              f"the best simple baseline ({best_b}, {f(R['methods'][best_b]['average_precision'])}). "
              f"Checking the top 5 zero reports a week reaches {f(k5(mR)['recall'], pct=True)} of the swaps "
@@ -80,10 +106,12 @@ def write(path, model, results, ranked, gbm_info, manifest, figs, diag) -> None:
              f"while flagging {f(mR['high_band']['false_alert_rate'], pct=True)} of normal zeros.")
     n19, n20 = diag["normal_zeros"]["2019"], diag["normal_zeros"]["2020"]
     orc5 = next(w for w in R["oracle_weekly_budget"] if w["k_per_week"] == 5)
-    L.append(f"- **The bands do not transfer to 2020.** The High cut was set so {f(n19['share_above_high_cut'], pct=True)} of 2019's normal zeros "
-             f"exceed it; {f(n20['share_above_high_cut'], pct=True)} of 2020's do. During COVID-19, other places in the same region were also zero "
-             f"for {f(n20['mean_region_other_zero_share'], pct=True)} of normal zeros on average ({f(n19['mean_region_other_zero_share'], pct=True)} in 2019), "
-             "so the regional indicator lifts many genuine zeros. Use the within-week rank, and re-set the bands on recent data before relying on them.")
+    L.append(f"- **Bands in a changing year.** During COVID-19, other places in the same region were also zero for "
+             f"{f(n20['mean_region_other_zero_share'], pct=True)} of normal zeros on average ({f(n19['mean_region_other_zero_share'], pct=True)} in 2019). "
+             f"The High cut lets through {f(n19['share_above_high_cut'], pct=True)} of 2019's normal zeros and {f(n20['share_above_high_cut'], pct=True)} of "
+             f"2020's (v1: {f(R['methods'][V1]['high_band']['false_alert_rate'], pct=True)} in 2020), because the regional indicator now compares a "
+             "region with its own recent weeks. Bands that follow recent weeks were tried and rejected on 2016-2019 data (design log in config.py): they "
+             "missed most bad zeros after the first bad week. The within-week rank is still the safest order to work through.")
     L.append(f"- **A weekly budget hits a ceiling on these labels.** All {R['positives']} real 2020 swaps fall in {diag['swaps_2020']['weeks_with_swaps']} weeks "
              f"(up to {diag['swaps_2020']['max_swaps_in_a_week']} in one week), so verifying 5 zero reports a week can reach at most "
              f"{f(orc5['recall'], pct=True)} of them even with perfect knowledge; most methods reach close to that, which is why they tie.")
@@ -111,16 +139,20 @@ def write(path, model, results, ranked, gbm_info, manifest, figs, diag) -> None:
     L.append("- **Labels.** There are no verified labels of reporting failures. The only real labels for zero reports are the cleaning plan's "
              "swapped cases/deaths rows (2016: 196, 2017: 174 zeros; 2018-2019: none; 2020: 157). They mark one source error, so they are used "
              "for tuning and testing, not as a general definition of failure. Synthetic failures come from the pipeline's injection file.")
-    L.append("- **Model.** A transparent weighted score, not a black box: no supervised model is deployed, because the available labels cover "
-             "one error type and the tuning year has none. A gradient-boosting model trained on the real swaps is reported as an experiment.")
+    L.append(f"- **Model.** A transparent score, not a black box: {COMBINE.get(model.aggregation, model.aggregation)}, where the local route is "
+             "a weighted mean of Model A and the place's own-history indicators and the regional route is how far the region's share of zeros is "
+             "above its recent level. No supervised model is "
+             "deployed, because the available labels cover one error type and the tuning year has none. A gradient-boosting model trained on the "
+             "real swaps is reported as an experiment.")
     L.append(f"- **Indicators** (past weeks only, except same-week regional context): {', '.join(LABELS[k] for k in COMPONENTS)}. "
              "Each is mapped to 0-1 with fixed, documented anchors (config.ZERO_PRIORITY).")
-    L.append(f"- **Tuning (before 2020 was scored).** Grid of {sel['grid_size']:,} settings (history window, minimum history, streak criterion, "
-             f"weights 0/1/2). Objective: mean average precision on synthetic 2019 ({sel['synthetic_2019']['positives']} injected zeros vs "
+    L.append(f"- **Tuning (2016-2019 data only).** Grid of {sel['grid_size']:,} settings (history window, minimum history, streak criterion, "
+             f"local weights 0/1/2, regional route on/off, the region's baseline window, how the routes combine). Objective: mean average precision on synthetic 2019 ({sel['synthetic_2019']['positives']} injected zeros vs "
              f"{sel['synthetic_2019']['negatives']} real normal zeros) and real 2016-2017 ({sel['real_2016_2017']['positives']} swaps vs "
              f"{sel['real_2016_2017']['negatives']} normal zeros). Chosen objective {f(sel['chosen']['objective'])} (best {f(sel['best_objective'])}; "
-             f"equal weights {f(sel['equal_weights']['objective'])}). Weights: " + ", ".join(f"{LABELS[k]} {model.weights[k]}" for k in COMPONENTS) + ".")
-    unused = [p for p, k in (("history window", "rare_zero"), ("minimum history", "rare_zero"), ("streak criterion", "streak")) if model.weights[k] == 0]
+             f"equal weights {f(sel['equal_weights']['objective']) if sel.get('equal_weights') else '—'}). Weights: "
+             + ", ".join(f"{LABELS[k]} {model.weights[k]}" for k in COMPONENTS if k in model.weights) + ".")
+    unused = [p for p, k in (("history window", "rare_zero"), ("minimum history", "rare_zero"), ("streak criterion", "streak")) if model.weights.get(k, 0) == 0]
     if unused:
         L.append(f"  The {', '.join(sorted(set(unused)))} only affect indicators with weight 0, so their chosen values "
                  f"({model.hist_weeks} weeks, {model.min_hist} reports, {model.streak_saturation} zeros) have no effect on scores.")
@@ -132,8 +164,9 @@ def write(path, model, results, ranked, gbm_info, manifest, figs, diag) -> None:
              f"{len(model.calibration['bootstrap'])} bootstrap refits give the {int(100 * config.ZERO_PRIORITY['PROB_INTERVAL'])}% interval.\n")
 
     L.append("## Results\n")
-    L.append("Thresholds were frozen before 2020 was scored. 95% intervals: cluster bootstrap over locations. 'weeks to detect' counts from the "
-             "first week of an episode (real swaps: location-year; synthetic: injected event).\n")
+    L.append("Thresholds were set on 2019. 95% intervals: cluster bootstrap over "
+             "locations. 'weeks to detect' counts from the first week of an episode (real swaps: location-year; synthetic: injected event). "
+             "v2's 2020 rows are a second look at 2020, not an independent test (see above).\n")
     for title, res, note in (
         ("Real data · 2020 held-out test · swapped zero reports", R, "COVID-19 year: genuine drops and reporting interruptions both occurred."),
         ("Synthetic · 2020 held-out test · failures injected as zeros", S, "Injected into real 2020 data; the truth is known exactly."),
@@ -146,7 +179,7 @@ def write(path, model, results, ranked, gbm_info, manifest, figs, diag) -> None:
         L.append(set_table(res) + "\n")
     L.append("### Limited investigation budget (real 2020)\n")
     rows = []
-    for m in [MAIN] + BASELINES + EXTRA:
+    for m in ROWS:
         rows.append([m] + [f"{f(w['recall'], pct=True)} / {f(w['precision'], pct=True)}" for w in R["methods"][m]["weekly_budget"]])
     rows.append(["*Ceiling (knows the answers)*"] + [f"{f(w['recall'], pct=True)} / {f(w['precision'], pct=True)}" for w in R["oracle_weekly_budget"]])
     L.append(table(rows, ["method"] + [f"top {k}/week: recall / precision" for k in config.ZERO_PRIORITY["WEEKLY_BUDGETS"]]) + "\n")
@@ -194,6 +227,8 @@ def write(path, model, results, ranked, gbm_info, manifest, figs, diag) -> None:
         "Synthetic failures follow the pipeline's injection design (zero-fill, outage, regional outage); real failures may look different.",
         "No testing, timeliness or submission metadata: the cause of a zero cannot be determined, and a genuine absence of cases cannot be ruled out.",
         "Regional context uses region membership only. No real adjacency or reporting-network data exists, so no graph model is used.",
+        "The region's usual level is the median of its previous weeks; a regional problem lasting longer than that window becomes 'usual' and "
+        "stops lifting the regional route (the local route still applies).",
         "2020 is a COVID-19 year: consultations genuinely fell, so more zeros are real and false alerts are expected to be higher.",
         "p_priority assumes the 2016-2018 share of swapped zeros; if the true share differs, the probabilities shift (the ranking does not).",
         "Province/city weekly counts only; facility-level problems that do not change a province's total are invisible.",

@@ -144,7 +144,7 @@ export function OverviewPage() {
                 {latest?.completeness != null ? <>{fmtPct(latest.completeness)} of expected reports arrived. </> : <>Reporting completeness is not available for this scope. </>}
                 {rhu && counts?.tasks ? <>You have {counts.tasks} report{counts.tasks === 1 ? "" : "s"} or repl{counts.tasks === 1 ? "y" : "ies"} to send. </> : null}
                 {openConcerns ? <>{openConcerns} reporting concern{openConcerns === 1 ? " is" : "s are"} open{counts?.new ? <>, {counts.new} not yet looked at</> : null}.</> : <>No reporting concerns are open.</>}
-                {counts?.overdue_follow_ups ? <> {counts.overdue_follow_ups} follow-up {counts.overdue_follow_ups === 1 ? "is" : "are"} overdue.</> : null}
+                {counts?.overdue_follow_ups ? <> {counts.overdue_follow_ups} {counts.overdue_follow_ups === 1 ? "follow-up is" : "follow-ups are"} overdue.</> : null}
               </h2>
               <p className="text-[13px] text-ink-2">
                 {scopeLabel} · dataset {meta?.demo_dataset_id ?? "unavailable"}, snapshot {fmtDate(q.data.dataset_as_of)} · simulated data. Concerns are flags for review, not confirmed problems.

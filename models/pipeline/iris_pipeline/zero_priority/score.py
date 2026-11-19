@@ -1,8 +1,12 @@
 """Transparent priority score for zero-case reports, plus explanations (Model B · zero-report prioritizer).
 
-score = 100 x sum_k(w_k c_k) / sum_k(w_k), where each component c_k is in [0, 1] (0 when it can't be computed).
-Weights, the history window, the minimum history and the streak criterion are tuned on 2019 (tune.py); the
-anchors that map indicators to components are fixed in config.ZERO_PRIORITY.
+Two routes: local = sum_k(w_k c_k) / sum_k(w_k) over the local components (Model A and the place's own history), and
+regional = the regional component (v2: regional_excess) when the regional route is on. Aggregation (tuned):
+  "mean"      100 x sum_k(w_k c_k) / sum_k(w_k) over every used component, regional included (v1's form);
+  "max"       100 x max(local, regional);
+  "noisy_or"  100 x (1 - (1 - local)(1 - regional)): high when either route is high, higher still when both are.
+Each component c_k is in [0, 1] (0 when it can't be computed). Weights, windows and the streak criterion are tuned on
+2016-2019 (tune.py); the anchors that map indicators to components are fixed in config.ZERO_PRIORITY.
 
 The score ranks reports for verification. It is not the probability that a report is wrong; p_priority is the
 calibrated estimate (see calibrate below), and every alert is a lead to verify, never a confirmed failure.
@@ -19,7 +23,8 @@ import pandas as pd
 from .. import config
 
 CFG = config.ZERO_PRIORITY
-COMPONENTS = ["unexpected", "missing_cases", "rare_zero", "streak", "recent_activity", "on_off", "regional"]
+COMPONENTS = ["unexpected", "missing_cases", "rare_zero", "streak", "recent_activity", "on_off", "regional", "regional_excess"]
+LOCAL = CFG["LOCAL_COMPONENTS"]
 LABELS = {
     "unexpected": "Model A finds this zero unlikely",
     "missing_cases": "Cases that may be missing",
@@ -28,10 +33,22 @@ LABELS = {
     "recent_activity": "Cases in recent weeks",
     "on_off": "Switching between zero and non-zero",
     "regional": "Other places in the region also zero",
+    "regional_excess": "More places in the region zero than usual",
 }
 
 
-def components(F: pd.DataFrame, min_hist: int, streak_saturation: int) -> pd.DataFrame:
+def regional_excess(F: pd.DataFrame, base_weeks: int | None) -> np.ndarray:
+    """How far this week's share of other places at zero is above the region's usual share, as a share of the room
+    left: (share - base) / (1 - base), clipped to [0, 1]. NaN when the region has too little history."""
+    col = f"region_zero_base_{base_weeks}"
+    if base_weeks is None or col not in F:
+        return np.full(len(F), np.nan)
+    share, base = F.region_other_zero_share.to_numpy(float), F[col].to_numpy(float)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return np.clip((share - base) / np.maximum(1 - base, 1e-9), 0, 1)
+
+
+def components(F: pd.DataFrame, min_hist: int, streak_saturation: int, base_weeks: int | None = None) -> pd.DataFrame:
     sat = CFG
     with np.errstate(divide="ignore", invalid="ignore"):
         c = pd.DataFrame(index=F.index)
@@ -43,6 +60,7 @@ def components(F: pd.DataFrame, min_hist: int, streak_saturation: int) -> pd.Dat
         c["recent_activity"] = np.clip(np.log1p(F.recent_median.to_numpy(float)) / np.log1p(sat["RECENT_SATURATION"]), 0, 1)
         c["on_off"] = np.clip(F.on_off_flips.to_numpy(float) / sat["ON_OFF_SATURATION"], 0, 1)
         c["regional"] = F.region_other_zero_share.to_numpy(float)
+        c["regional_excess"] = regional_excess(F, base_weeks)
     return c[COMPONENTS]
 
 
@@ -51,25 +69,62 @@ def weighted(c: pd.DataFrame, w: np.ndarray) -> np.ndarray:
     return 100 * (np.nan_to_num(c.to_numpy(float), nan=0.0) @ w) / max(w.sum(), 1e-12)
 
 
+def two_route(c: pd.DataFrame, weights: dict, regional: str = "regional_excess") -> tuple[np.ndarray, np.ndarray]:
+    """(local, regional) route scores, each 0-100. The local route is the weighted mean of the local components; the
+    regional route is one component, used when its weight is above 0."""
+    wl = np.array([weights.get(k, 0) for k in LOCAL], float)
+    local = weighted(c[LOCAL], wl) if wl.sum() > 0 else np.zeros(len(c))
+    reg = 100 * np.nan_to_num(c[regional].to_numpy(float), nan=0.0) if weights.get(regional, 0) > 0 else np.zeros(len(c))
+    return local, reg
+
+
 @dataclass
 class ZeroPriorityModel:
     hist_weeks: int
     min_hist: int
     streak_saturation: int
     weights: dict
+    region_base_weeks: int | None = None                 # v2: weeks behind the region's usual zero share
+    aggregation: str = "mean"                            # "mean" (v1's form), "max" or "noisy_or"
+    regional_component: str = "regional_excess"          # the regional route's component (ablations can swap it)
     bands: dict = field(default_factory=dict)            # {"High": score cut, "Medium": score cut}
     calibration: dict = field(default_factory=dict)      # isotonic breakpoints + prior shift + bootstrap curves
     meta: dict = field(default_factory=dict)
 
     # ---- scoring -----------------------------------------------------------------------------------------
     def w(self) -> np.ndarray:
-        return np.array([self.weights[k] for k in COMPONENTS], float)
+        return np.array([self.weights.get(k, 0) for k in COMPONENTS], float)
 
     def components(self, F: pd.DataFrame) -> pd.DataFrame:
-        return components(F, self.min_hist, self.streak_saturation)
+        return components(F, self.min_hist, self.streak_saturation, self.region_base_weeks)
+
+    def score_from(self, c: pd.DataFrame) -> np.ndarray:
+        if self.aggregation in ("max", "noisy_or"):
+            local, reg = two_route(c, self.weights, self.regional_component)
+            return np.maximum(local, reg) if self.aggregation == "max" else 100 - (100 - local) * (100 - reg) / 100
+        return weighted(c, self.w())
 
     def score(self, F: pd.DataFrame) -> np.ndarray:
-        return weighted(self.components(F), self.w())
+        return self.score_from(self.components(F))
+
+    def contributions(self, c: pd.DataFrame) -> pd.DataFrame:
+        """Points each component adds to the score (rows sum to the score). "max": only the route that set it.
+        "noisy_or": the local route's points, then the regional route's points on what the local route left."""
+        if self.aggregation not in ("max", "noisy_or"):
+            return pd.DataFrame(np.nan_to_num(c.to_numpy(float), nan=0.0) * self.w() / max(self.w().sum(), 1e-12) * 100,
+                                index=c.index, columns=COMPONENTS)
+        local, reg = two_route(c, self.weights, self.regional_component)
+        out = pd.DataFrame(0.0, index=c.index, columns=COMPONENTS)
+        wl = np.array([self.weights.get(k, 0) for k in LOCAL], float)
+        if wl.sum() > 0:
+            out[LOCAL] = np.nan_to_num(c[LOCAL].to_numpy(float), nan=0.0) * wl / wl.sum() * 100
+        if self.aggregation == "noisy_or":
+            out[self.regional_component] = reg * (100 - local) / 100
+            return out
+        regional_wins = reg > local
+        out.loc[regional_wins, LOCAL] = 0.0
+        out.loc[regional_wins, self.regional_component] = reg[regional_wins]
+        return out
 
     def band(self, score: np.ndarray) -> np.ndarray:
         s = np.asarray(score, float)
@@ -122,6 +177,10 @@ def reason(k: str, r: pd.Series) -> str:
         return f"reports switched between zero and non-zero {int(r.on_off_flips)} times in the last {CFG['ON_OFF_WINDOW']} reports"
     if k == "regional":
         return f"{r.region_other_zero_share:.0%} of other places in the region also reported zero this week"
+    if k == "regional_excess":
+        base = r.get("_region_base")
+        usual = f", against a usual {base:.0%} in recent weeks" if pd.notna(base) else ""
+        return f"{r.region_other_zero_share:.0%} of other places in the region reported zero this week{usual}"
     return k
 
 
@@ -149,7 +208,7 @@ def verification_steps(top: list[str], r: pd.Series) -> list[str]:
         steps.append("Ask whether reporting staff, tools or the encoding process changed when the zeros began.")
     if "on_off" in top:
         steps.append("Check whether cases were batched into alternate weeks.")
-    if "regional" in top:
+    if "regional" in top or "regional_excess" in top:
         steps.append("Ask the RESU whether other provinces' submissions were also affected (possible shared reporting problem).")
     if bool(r.covid_period):
         steps.append("Check whether consultations genuinely fell (for example during lockdown) before treating this as a reporting problem.")
@@ -157,7 +216,9 @@ def verification_steps(top: list[str], r: pd.Series) -> list[str]:
 
 
 def explain(model: ZeroPriorityModel, F: pd.DataFrame, c: pd.DataFrame, max_reasons: int = 3) -> pd.DataFrame:
-    contrib = np.nan_to_num(c.to_numpy(float), nan=0.0) * model.w() / max(model.w().sum(), 1e-12) * 100
+    contrib = model.contributions(c).to_numpy(float)
+    base_col = f"region_zero_base_{model.region_base_weeks}"
+    F = F.assign(_region_base=F[base_col] if base_col in F else np.nan)
     rows = []
     for i, (_, r) in enumerate(F.iterrows()):
         order = [COMPONENTS[j] for j in np.argsort(-contrib[i]) if contrib[i, j] > 0.5][:max_reasons]

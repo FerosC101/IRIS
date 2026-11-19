@@ -143,7 +143,7 @@ def options(name: str) -> dict:
 # weeks with real cases. 2019 has no real bad zeros, so the 2016-2017 swaps were added to the objective. 2020 had not
 # been scored. Consequence: 2016-2017 results are in-sample (tuning fit), and 2020 is the only held-out test.
 ZERO_PRIORITY = {
-    "MODEL_VERSION": "zero_priority_v1",
+    "MODEL_VERSION": "zero_priority_v2",
     # Fixed anchors that turn each indicator into a 0-1 component (documented, not tuned).
     "P_LOW_SATURATION": 4.0,        # -log10(p_low) at which "unexpected" reaches 1 (p_low = 1e-4)
     "EXPECTED_SATURATION": 50.0,    # expected cases at which "missing_cases" reaches 1
@@ -157,8 +157,31 @@ ZERO_PRIORITY = {
         "hist_weeks": [26, 52],             # history window for the location's zero share
         "min_hist": [8, 13, 26],            # reported weeks needed before "rare_zero" is computed
         "streak_saturation": [2, 4, 6],     # zeros in a row at which "streak" reaches 1
-        "weights": [0, 1, 2],               # each component's weight
+        "weights": [0, 1, 2],               # each local component's weight
+        "region_base_weeks": [4, 8, 13],    # past weeks behind the region's usual zero share (regional_excess)
+        "regional_route": [0, 1],           # 1 = the regional route is used
+        "aggregation": ["mean", "max", "noisy_or"],  # how the local and regional routes combine
     },
+    # v2 (design log, 2026-11-20). Two changes, both made AFTER 2020 had been scored and its results read, so 2020 is
+    # no longer a clean test of v2; both were chosen and tuned on 2016-2019 only, and the v1 results stay published.
+    # (1) Regional indicator relative to the region's own recent level: v1's raw "share of the region also zero" lifted
+    #     genuine zeros in 2020, when whole regions reported zero for weeks (COVID-19). v2 scores how far this week's
+    #     share is above the region's median of the previous region_base_weeks weeks, as a share of the room left:
+    #     (share - base) / (1 - base), clipped to [0, 1].
+    # (2) How the local route (Model A and the place's own history, weighted mean) and the regional route combine is
+    #     now tuned on 2016-2019 among three forms: "mean" (v1's weighted average), "max" (the larger route) and
+    #     "noisy_or" (1 - (1 - local)(1 - regional): high when either route is high, higher still when both are).
+    #     Motivation: v1's average halved an isolated failure that only Model A could see; on isolated synthetic
+    #     failures Model A alone ranked better than v1 (AP 0.51 vs 0.29 in 2020). A first v2 run fixed "max"; its
+    #     2016-2019 objective was below the averaged form's (0.967 vs 0.971), so the form became a tuned choice.
+    # Bands stay fixed on real 2019 normal zeros (BAND_FAR). Tried and rejected on 2016-2019 data before keeping them:
+    # (a) rolling bands, the 95th / 75th percentiles of all zero reports' scores in the previous 13 weeks: High-band
+    #     recall fell to 18% (real 2016-2017 swaps) and 6% (synthetic 2019), because the window holds the bad zeros
+    #     themselves and the cut rises after the first bad week; (b) the fixed cut shifted by the change in the median
+    #     score over 13 weeks: recall 47% and 38%. The fixed cut with the v2 score kept recall (99.5%, 80%) and cut
+    #     false alerts (8.7% vs v1's 15.7%; 7.7% vs 9.2%).
+    "LOCAL_COMPONENTS": ["unexpected", "missing_cases", "rare_zero", "streak", "recent_activity", "on_off"],
+    "REGIONAL_COMPONENT": "regional_excess",
     # Selection rule: highest tuning objective (mean AP above); among settings within AP_TOLERANCE of the best,
     # prefer the fewest non-zero weights, then the smallest total weight, then the higher objective.
     "TUNING_REAL_YEARS": [2016, 2017],

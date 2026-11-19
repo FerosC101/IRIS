@@ -39,6 +39,7 @@ INDICATOR_LABELS = {
     "recent_activity": "Cases in recent weeks",
     "on_off": "Switching between zero and non-zero",
     "regional": "Other places in the region also zero",
+    "regional_excess": "More places in the region zero than usual",
 }
 MIN_REASON = 10
 MIN_EVIDENCE = 5

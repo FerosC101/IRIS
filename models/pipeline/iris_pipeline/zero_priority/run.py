@@ -1,7 +1,7 @@
 """Model B · zero-report prioritizer: the reproducible pipeline (python -m iris_pipeline zero-priority).
 
 1. Dengue inputs (checked) -> 2. Model A v2 evidence on the real data and the evaluation copy (cached fits)
--> 3. past-only indicators -> 4. tune on 2019 only -> 5. supervised comparison on real swap labels
+-> 3. past-only indicators -> 4. tune on 2016-2019 only -> 5. supervised comparison on real swap labels
 -> 6. one evaluation of every method on real and synthetic sets (2020 scored once)
 -> 7. ranked 2020 investigation list via the public API from scores_v2.csv -> 8. report, metrics, figures.
 """
@@ -24,6 +24,7 @@ from .evidence import model_a_evidence
 from .features import build
 from .inputs import load_dengue
 from .labels import label_frame, sets
+from .score import ZeroPriorityModel
 
 CFG = config.ZERO_PRIORITY
 
@@ -65,10 +66,21 @@ def run(workers: int | None = None) -> dict:
     E = label_frame(feats["eval"][hw], ev["eval_labels"]).merge(_old_b(ev["eval"]), on=["location_id", "week_start"], how="left")
 
     gbm, gbm_info = supervised.fit_select(P)
-    ones = np.ones(len(model.weights))
+    v1 = ZeroPriorityModel.from_json((out_dir / "model_v1.json").read_text(encoding="utf-8"))  # frozen published v1
+    eq = tune.equal_weights(model)
+    reg_k = config.ZERO_PRIORITY["REGIONAL_COMPONENT"]
+    # Ablations: the three ways to combine the routes, and v1's raw regional share under v2's combination.
+    combos = {agg: tune.variant(model, aggregation=agg) for agg in ("mean", "max", "noisy_or")}
+    raw = {k: v for k, v in model.weights.items() if k != reg_k} | {"regional": model.weights.get(reg_k, 0)}
+    raw_regional = tune.variant(model, regional_component="regional", weights=raw)
     methods = {
         "Model B · zero-report prioritizer": lambda d: model.score(d),
-        "Equal weights (untuned reference)": lambda d: tune.score_with(d, model, ones),
+        "Model B v1 (published)": lambda d: v1.score(d),
+        "Routes averaged (relative regional share)": lambda d: combos["mean"].score(d),
+        "Larger of the two routes": lambda d: combos["max"].score(d),
+        "Either route (noisy-OR)": lambda d: combos["noisy_or"].score(d),
+        "v1's raw regional share, v2's combination": lambda d: raw_regional.score(d),
+        "Equal weights (untuned reference)": lambda d: eq.score(d),
         "Model A v2 alone": lambda d: -np.log10(np.clip(d.p_low.astype(float), 1e-300, 1)).to_numpy(),
         "Zero-streak length (baseline)": lambda d: d.zero_streak.to_numpy(float),
         "Historical mean, 26 weeks (baseline)": lambda d: d.hist_mean_26.to_numpy(float),
@@ -79,8 +91,8 @@ def run(workers: int | None = None) -> dict:
     thr = evaluate.thresholds(methods, P, neg19)
     probs = {"Model B · zero-report prioritizer": lambda d: model.probability(model.score(d))[0],
              "Supervised GBM on real swap labels (experiment)": lambda d: supervised.predict(gbm, d)}
-    results = evaluate.run(sets(P, E), methods, thr, probs, ci_for=("Model B · zero-report prioritizer", "Model A v2 alone",
-                                                                     "Old Model B rule (fixed)"))
+    results = evaluate.run(sets(P, E), methods, thr, probs, ci_for=("Model B · zero-report prioritizer", "Model B v1 (published)",
+                                                                     "Model A v2 alone", "Old Model B rule (fixed)"))
     diagnostics = _diagnostics(P, model)
 
     # Ranked 2020 list through the public API, from the Model A contract file.
@@ -98,13 +110,14 @@ def run(workers: int | None = None) -> dict:
     (out_dir / "model.json").write_text(model_json, encoding="utf-8")
     ranked.to_csv(out_dir / "ranked_alerts_2020.csv", index=False, lineterminator="\n", date_format="%Y-%m-%d", float_format="%.6g")
     grid.assign(weights=grid.weights.map(lambda w: " ".join(map(str, w)))).sort_values("objective", ascending=False) \
-        .to_csv(out_dir / "tuning_grid_2019.csv", index=False, lineterminator="\n", float_format="%.6g")
+        .to_csv(out_dir / "tuning_grid.csv", index=False, lineterminator="\n", float_format="%.6g")
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     manifest = {"run_id": run_id, "package_version": __version__, "model_version": CFG["MODEL_VERSION"],
                 "inputs": inp.source, "model_a": {"variant": ev["variant"], "run_id": model.meta["model_a_run_id"]},
                 "split": config.SPLIT, "settings": {k: v for k, v in CFG.items() if k != "GBM_GRID"} | {"GBM_GRID": {k: [str(x) for x in v] for k, v in CFG["GBM_GRID"].items()}},
                 "chosen": {"hist_weeks": model.hist_weeks, "min_hist": model.min_hist, "streak_saturation": model.streak_saturation,
-                           "weights": model.weights, "bands": model.bands},
+                           "weights": model.weights, "region_base_weeks": model.region_base_weeks, "aggregation": model.aggregation,
+                           "bands": model.bands},
                 "thresholds_5pct_far_2019": thr, "supervised": gbm_info, "api_check_max_score_gap": api_gap,
                 "runtime_s": round(time.time() - t0, 1)}
     metrics = {"run_id": run_id, "results": results, "diagnostics": diagnostics, "tuning": model.meta["selection"], "supervised": gbm_info,

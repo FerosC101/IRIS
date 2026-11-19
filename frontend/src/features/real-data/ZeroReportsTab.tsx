@@ -82,7 +82,7 @@ function ZeroDetail({ item, d }: { item: ZeroReportItem; d: ZeroReports }) {
         Reported <strong>0 cases</strong> (observed). Model A expected about <strong>{fmtNum(item.expected, 1)}</strong> (model estimate); if reporting were normal, a zero would happen {fmtChance(item.p_low)} of the time.
       </p>
       <dl className="grid grid-cols-1 gap-3 text-[13px] sm:grid-cols-2">
-        <div><dt className="text-xs text-ink-2">Priority score (for ranking only)</dt><dd className="mt-0.5"><strong className="tabular">{fmtNum(item.priority_score, 0)} of 100</strong>. A weighted average of the signals the score uses (below), times 100. It orders the list; it is not a probability.</dd></div>
+        <div><dt className="text-xs text-ink-2">Priority score (for ranking only)</dt><dd className="mt-0.5"><strong className="tabular">{fmtNum(item.priority_score, 0)} of 100</strong>. Combines this place's own evidence (Model A and its history) with the regional evidence (more places in the region at zero than usual for that region). It orders the list; it is not a probability.</dd></div>
         {item.p_priority != null && <div><dt className="text-xs text-ink-2">Estimated chance of a reporting problem</dt><dd className="mt-0.5"><strong className="tabular">{fmtPct(item.p_priority)}</strong> (range {fmtPct(item.p_priority_low)}–{fmtPct(item.p_priority_high)}). Calibrated on data before 2020, so treat it as a rough guide; see “How well it works”.</dd></div>}
       </dl>
       <Callout variant="model-flag" by="Model B">{item.explanation}</Callout>

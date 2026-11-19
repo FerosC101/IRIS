@@ -21,16 +21,27 @@ Results: `outputs/zero_priority/report.md`.
 - **Explicit zeros and missing reports are different.** Only `report_status = reported` with `cases = 0` is ranked. Missing weeks
   are returned as "Missing report (not ranked)" for the planner.
 
-## Score
+## Score (v2)
 
-`score = 100 × Σ w_k·c_k / Σ w_k` over seven 0–1 components (fixed anchors in `config.ZERO_PRIORITY`): Model A's `p_low`, expected
-cases, how unusual zeros are for the place, zero streak, recent cases, zero/non-zero switching, and the share of other places in the
-region also reporting zero that week. Indicators use past weeks only, except the same-week regional share.
+Two routes, and the higher one sets the priority: `score = 100 × max(local, regional)`.
 
-Tuned before 2020 was scored (`tune.py`), on the mean average precision of synthetic 2019 (injected zeros vs real normal zeros) and
-real 2016–2017 (swaps vs normal zeros), with a pre-registered parsimony rule. Bands (High / Medium) are set so at most 5% / 25% of
-real 2019 normal zeros reach them. `p_priority` is isotonic on the score, prior-shifted to the real 2016–2018 share of swapped zeros,
-capped to 1–99%, with a bootstrap interval. The design log in `config.py` records every change made along the way.
+- **Local route:** `Σ w_k·c_k / Σ w_k` over the place's own evidence: Model A's `p_low`, expected cases, how unusual zeros
+  are for the place, zero streak, recent cases and zero/non-zero switching. Each component is 0–1 with fixed anchors
+  (`config.ZERO_PRIORITY`); indicators use past weeks only.
+- **Regional route:** how far this week's share of other places in the region at zero is above the region's usual share
+  (the median of its previous weeks), as a share of the room left: `(share − usual) / (1 − usual)`, clipped to 0–1.
+
+So a zero ranks high when either a quiet place suddenly reports nothing, or more of its region than usual does at once.
+v1 averaged a raw regional share with the local evidence: it lifted genuine zeros when whole regions were quiet (COVID-19,
+2020) and halved isolated failures that only Model A could see.
+
+Tuned on 2016–2019 only (`tune.py`): mean average precision of synthetic 2019 (injected zeros vs real normal zeros) and real
+2016–2017 (swaps vs normal zeros), with the same pre-registered parsimony rule as v1. **Bands** (High / Medium) are set so
+at most 5% / 25% of real 2019 normal zeros reach them; bands that follow recent weeks were tried and rejected on 2016–2019
+data (they missed most bad zeros after the first bad week; see the design log). `p_priority` is isotonic on the score, prior-shifted to the real
+2016–2018 share of swapped zeros, capped to 1–99%, with a bootstrap interval. The design log in `config.py` records every
+change, including that v2 was designed after v1's 2020 results had been read, so v2's 2020 numbers are a second look,
+not an independent test. The frozen v1 model is kept as `outputs/zero_priority/model_v1.json` and scored alongside v2.
 
 ## Using it
 

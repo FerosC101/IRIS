@@ -69,7 +69,7 @@ def rank_alerts(history: pd.DataFrame, model: ZeroPriorityModel, cal: pd.DataFra
     zero = candidates(sel)
     Z = sel[zero].copy()
     c = model.components(Z)
-    Z["priority_score"] = model.score(Z)
+    Z["priority_score"] = model.score_from(c)
     Z["priority"] = model.band(Z.priority_score)
     Z["p_priority"], Z["p_priority_low"], Z["p_priority_high"] = model.probability(Z.priority_score.to_numpy())
     Z["data_sufficiency"] = data_sufficiency(Z, model.min_hist)
@@ -87,7 +87,7 @@ def rank_alerts(history: pd.DataFrame, model: ZeroPriorityModel, cal: pd.DataFra
         M["data_warnings"] = "Missing is not the same as zero: no count was submitted."
         M["verification_steps"] = "Ask the province/city surveillance officer why the week's report was not submitted."
     out = pd.concat([Z, M], ignore_index=True)
-    out["model_version"] = model.meta.get("model_version", "zero_priority_v1")
+    out["model_version"] = model.meta.get("model_version", "zero_priority")
     for col in OUTPUT_COLUMNS:
         if col not in out:
             out[col] = pd.NA

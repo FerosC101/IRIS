@@ -14,3 +14,5 @@ frontend/qa-screenshots/
 video/
 # Local assistant instructions (not part of the project)
 CLAUDE.md
+# ProRes logo animations (~35 MB each); rebuild with frontend/scripts/build-logo-animation.mjs
+docs/brand/animation/*.mov

@@ -141,15 +141,18 @@ v2 trades recall for far fewer false alarms. Once it has followed the COVID-19 d
 
 ### Model B — decide
 
-**Zero-report prioritizer.** Every zero-case dengue report gets a 0–100 priority score, a High / Medium / Low band, a calibrated chance of being wrong, the indicators behind it and steps to verify it. It is a transparent weighted score rather than a black box, because the real labels cover only one kind of error. Tuning over 39,348 settings, before 2020 was scored, kept two indicators: *Model A finds this zero unlikely* and *other places in the region are also zero*. Missing reports are kept apart and never treated as zeros.
+**Zero-report prioritizer (v2).** Every zero-case dengue report gets a 0–100 priority score, a High / Medium / Low band, a calibrated chance of being wrong, the indicators behind it and steps to verify it. It is a transparent weighted score rather than a black box, because the real labels cover only one kind of error. It combines two indicators: *Model A finds this zero unlikely* and *more places in the region are at zero than usual*, which compares the region with its own previous 13 weeks. Missing reports are kept apart and never treated as zeros.
 
-| Real 2020 test: 1,367 zero reports, 157 known swaps | Average precision | AUC |
-|---|---|---|
-| **Zero-report prioritizer** | **0.48** | **0.92** |
-| Model A v2 alone | 0.17 | 0.66 |
-| Earlier Model B rule | 0.09 | 0.39 |
+v1 used the raw share of the region at zero. That lifted genuine zeros when whole regions went quiet during COVID-19, so v2 measures the jump above the region's usual level. Every v2 choice was made on 2016–2019 data only, with the same pre-registered rule as v1, but v2 was designed after v1's 2020 results were read. So v2's 2020 numbers are a second look, not an independent test.
 
-The regional indicator helps with region-wide errors and hurts with isolated ones: on isolated synthetic failures, Model A alone ranks better (0.51 vs 0.29). IRIS therefore shows both, Model B's rank for zero reports and Model A's flag for single-place drops. Bands set on 2019 do not transfer to the COVID year, so the within-week rank is the signal to use until they are re-set on recent data.
+| Real 2020: 1,367 zero reports, 157 known swaps | Average precision | AUC | False alerts in the High band (all swaps caught) |
+|---|---|---|---|
+| **Zero-report prioritizer v2** | **0.54** | **0.94** | **30%** |
+| Zero-report prioritizer v1 | 0.48 | 0.92 | 47% |
+| Model A v2 alone | 0.17 | 0.66 | — |
+| Earlier Model B rule | 0.09 | 0.39 | — |
+
+Two other ideas were tested on 2016–2019 data and not adopted. One combined the local and regional evidence as "either one" (the larger of the two, or a noisy-OR) instead of averaging them. The other let the bands follow recent weeks. Both are documented in the [prioritizer report](models/pipeline/outputs/zero_priority/report.md). On isolated synthetic failures Model A alone still ranks better (0.51 vs 0.33), so IRIS shows both: Model B's rank for zero reports and Model A's flag for single-place drops.
 
 **Network-aware planner.** Each week an integer program (solved exactly with HiGHS) picks the corrective actions with the most expected value for the staff hours and money available. A facility can be credited only once, so fixing a shared hub or lab beats visiting its facilities one by one. In simulation, with 24 staff-hours a week:
 

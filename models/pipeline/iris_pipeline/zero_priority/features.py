@@ -1,8 +1,8 @@
 """Past-only indicators for every dengue location-week (Model B · zero-report prioritizer).
 
 Each indicator at week t uses reports from weeks before t only, except the regional context, which uses the other
-locations' reports for the same week (available when that week is reviewed). A missing week is never a zero: it
-is NaN in every history and breaks a zero streak.
+locations' reports for the same week (available when that week is reviewed). The region's usual zero share (v2) is
+the median over the weeks before t. A missing week is never a zero: it is NaN in every history and breaks a zero streak.
 """
 
 from __future__ import annotations
@@ -78,6 +78,13 @@ def build(X: pd.DataFrame, cal: pd.DataFrame, hist_weeks: int = 52) -> pd.DataFr
     F["region_others"] = others
     F["region_other_zero_share"] = np.where(others > 0, (tot["_zero"] - F["_zero"]) / others.where(others > 0, 1), np.nan)
     F["region_other_missing_share"] = np.where(others > 0, (tot["_missing"] - F["_missing"]) / others.where(others > 0, 1), np.nan)
+    # The region's usual zero share: median of its whole-region share over the previous K weeks (past only).
+    rw = grp[["_zero", "_listed"]].sum().reset_index().sort_values(["region_id", "week_start"])
+    rw["share"] = rw._zero / rw._listed.where(rw._listed > 0)
+    for k in CFG["GRID"]["region_base_weeks"]:
+        rw[f"region_zero_base_{k}"] = rw.groupby("region_id").share.transform(
+            lambda x, k=k: x.shift(1).rolling(k, min_periods=max(2, k // 2)).median())
+    F = F.merge(rw.drop(columns=["_zero", "_listed", "share"]), on=["region_id", "week_start"], how="left", validate="many_to_one")
     F = F.drop(columns=["_zero", "_missing", "_listed"])
     c = cal[["week_start", "covid_period", "holy_week", "christmas_newyear"]]
     return F.merge(c, on="week_start", how="left", validate="many_to_one")

@@ -1,5 +1,5 @@
 {
-  "run_id": "20261023T151711Z",
+  "run_id": "20261119T200814Z",
   "results": {
     "Real 2020 (test): swapped zeros": {
       "kind": "real",
@@ -9,6 +9,62 @@
       "positive_share": 0.11485003657644477,
       "methods": {
         "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.9396062536189925,
+          "average_precision": 0.5402959852660374,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.3019230769230769,
+            "f1": 0.46381093057607087,
+            "false_alert_rate": 0.3,
+            "tp": 157,
+            "fp": 363,
+            "events": 44,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.07643312101910828,
+              "precision": 0.08053691275167785,
+              "false_alert_rate": 0.11322314049586776
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.1337579617834395,
+              "precision": 0.08860759493670886,
+              "false_alert_rate": 0.17851239669421487
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.2802547770700637,
+              "precision": 0.09843400447427293,
+              "false_alert_rate": 0.3330578512396694
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              1.0,
+              1.0
+            ],
+            "false_alert_rate_ci": [
+              0.24400153508365693,
+              0.3625675636703637
+            ],
+            "f1_ci": [
+              0.3956862283828861,
+              0.5299653293709757
+            ],
+            "auc_ci": [
+              0.9173808261360307,
+              0.9583056282532514
+            ]
+          }
+        },
+        "Model B v1 (published)": {
           "auc": 0.9199057745959889,
           "average_precision": 0.47862545932093864,
           "high_band": {
@@ -64,16 +120,168 @@
             ]
           }
         },
+        "Routes averaged (relative regional share)": {
+          "auc": 0.9396062536189925,
+          "average_precision": 0.5402959852660374,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.3019230769230769,
+            "f1": 0.46381093057607087,
+            "false_alert_rate": 0.3,
+            "tp": 157,
+            "fp": 363,
+            "events": 44,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.07643312101910828,
+              "precision": 0.08053691275167785,
+              "false_alert_rate": 0.11322314049586776
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.1337579617834395,
+              "precision": 0.08860759493670886,
+              "false_alert_rate": 0.17851239669421487
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.2802547770700637,
+              "precision": 0.09843400447427293,
+              "false_alert_rate": 0.3330578512396694
+            }
+          ]
+        },
+        "Larger of the two routes": {
+          "auc": 0.9341527609622572,
+          "average_precision": 0.49836595910841197,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.32983193277310924,
+            "f1": 0.49605055292259087,
+            "false_alert_rate": 0.2636363636363636,
+            "tp": 157,
+            "fp": 319,
+            "events": 44,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.03821656050955414,
+              "precision": 0.040268456375838924,
+              "false_alert_rate": 0.11818181818181818
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.044585987261146494,
+              "precision": 0.029535864978902954,
+              "false_alert_rate": 0.19008264462809918
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.17197452229299362,
+              "precision": 0.06040268456375839,
+              "false_alert_rate": 0.34710743801652894
+            }
+          ]
+        },
+        "Either route (noisy-OR)": {
+          "auc": 0.9346870558509238,
+          "average_precision": 0.49923435841424896,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.32708333333333334,
+            "f1": 0.49293563579277866,
+            "false_alert_rate": 0.26694214876033057,
+            "tp": 157,
+            "fp": 323,
+            "events": 44,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.03821656050955414,
+              "precision": 0.040268456375838924,
+              "false_alert_rate": 0.11818181818181818
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.044585987261146494,
+              "precision": 0.029535864978902954,
+              "false_alert_rate": 0.19008264462809918
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.17197452229299362,
+              "precision": 0.06040268456375839,
+              "false_alert_rate": 0.34710743801652894
+            }
+          ]
+        },
+        "v1's raw regional share, v2's combination": {
+          "auc": 0.9199057745959889,
+          "average_precision": 0.47862545932093864,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.21685082872928177,
+            "f1": 0.3564131668558456,
+            "false_alert_rate": 0.46859504132231405,
+            "tp": 157,
+            "fp": 567,
+            "events": 44,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 149,
+              "recall": 0.07643312101910828,
+              "precision": 0.08053691275167785,
+              "false_alert_rate": 0.11322314049586776
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 237,
+              "recall": 0.1337579617834395,
+              "precision": 0.08860759493670886,
+              "false_alert_rate": 0.17851239669421487
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 447,
+              "recall": 0.2802547770700637,
+              "precision": 0.09843400447427293,
+              "false_alert_rate": 0.3330578512396694
+            }
+          ]
+        },
         "Equal weights (untuned reference)": {
-          "auc": 0.7886982155077118,
-          "average_precision": 0.28230261834410625,
+          "auc": 0.8196873190503764,
+          "average_precision": 0.32102428953217343,
           "high_band": {
             "recall": 0.6560509554140127,
-            "precision": 0.2761394101876676,
-            "f1": 0.38867924528301884,
-            "false_alert_rate": 0.2231404958677686,
+            "precision": 0.3074626865671642,
+            "f1": 0.41869918699186986,
+            "false_alert_rate": 0.19173553719008266,
             "tp": 103,
-            "fp": 270,
+            "fp": 232,
             "events": 44,
             "events_detected": 0.8409090909090909,
             "weeks_to_detect": 0.972972972972973
@@ -354,45 +562,45 @@
       ],
       "calibration": {
         "Model B \u00b7 zero-report prioritizer": {
-          "brier": 0.2082282756819908,
-          "mean_predicted": 0.42654161414672737,
+          "brier": 0.15429510092489726,
+          "mean_predicted": 0.3390900662909829,
           "observed_share": 0.11485003657644477,
           "reliability": [
             {
               "bin": "0.00-0.05",
-              "n": 113,
-              "mean_predicted": 0.005702819411418403,
+              "n": 370,
+              "mean_predicted": 0.004940552775993825,
               "observed_share": 0.0
             },
             {
               "bin": "0.05-0.10",
-              "n": 181,
-              "mean_predicted": 0.06167153809417755,
+              "n": 202,
+              "mean_predicted": 0.08038047714027062,
               "observed_share": 0.0
             },
             {
               "bin": "0.10-0.20",
-              "n": 284,
-              "mean_predicted": 0.19274214856581354,
+              "n": 113,
+              "mean_predicted": 0.15804679165645297,
               "observed_share": 0.0
             },
             {
               "bin": "0.20-0.40",
-              "n": 312,
-              "mean_predicted": 0.3413496583275308,
+              "n": 250,
+              "mean_predicted": 0.2583958876201248,
               "observed_share": 0.0
             },
             {
               "bin": "0.40-0.60",
-              "n": 2,
-              "mean_predicted": 0.5549124107496068,
+              "n": 29,
+              "mean_predicted": 0.4390128144280969,
               "observed_share": 0.0
             },
             {
               "bin": "0.60-1.00",
-              "n": 475,
-              "mean_predicted": 0.8608962760792842,
-              "observed_share": 0.33052631578947367
+              "n": 403,
+              "mean_predicted": 0.8691851829520995,
+              "observed_share": 0.38957816377171217
             }
           ]
         },
@@ -449,6 +657,62 @@
       "positive_share": 0.28637770897832815,
       "methods": {
         "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.9979627132555549,
+          "average_precision": 0.9944703873438928,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.8203991130820399,
+            "f1": 0.9013398294762486,
+            "false_alert_rate": 0.0878524945770065,
+            "tp": 370,
+            "fp": 81,
+            "events": 87,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13513513513513514,
+              "precision": 0.10141987829614604,
+              "false_alert_rate": 0.4804772234273319
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2702702702702703,
+              "precision": 0.12406947890818859,
+              "false_alert_rate": 0.7657266811279827
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              1.0,
+              1.0
+            ],
+            "false_alert_rate_ci": [
+              0.05764847097756554,
+              0.12850217623388352
+            ],
+            "f1_ci": [
+              0.859137342575934,
+              0.9355702962488855
+            ],
+            "auc_ci": [
+              0.9962488476146275,
+              0.9992654184390782
+            ]
+          }
+        },
+        "Model B v1 (published)": {
           "auc": 0.9970276132965937,
           "average_precision": 0.9922413799059133,
           "high_band": {
@@ -504,16 +768,168 @@
             ]
           }
         },
+        "Routes averaged (relative regional share)": {
+          "auc": 0.9979627132555549,
+          "average_precision": 0.9944703873438928,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.8203991130820399,
+            "f1": 0.9013398294762486,
+            "false_alert_rate": 0.0878524945770065,
+            "tp": 370,
+            "fp": 81,
+            "events": 87,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13513513513513514,
+              "precision": 0.10141987829614604,
+              "false_alert_rate": 0.4804772234273319
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2702702702702703,
+              "precision": 0.12406947890818859,
+              "false_alert_rate": 0.7657266811279827
+            }
+          ]
+        },
+        "Larger of the two routes": {
+          "auc": 0.9931890133083192,
+          "average_precision": 0.9733442763164872,
+          "high_band": {
+            "recall": 0.9945945945945946,
+            "precision": 0.8214285714285714,
+            "f1": 0.8997555012224938,
+            "false_alert_rate": 0.08676789587852494,
+            "tp": 368,
+            "fp": 80,
+            "events": 87,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.04597701149425287
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13243243243243244,
+              "precision": 0.09939148073022312,
+              "false_alert_rate": 0.48156182212581344
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2648648648648649,
+              "precision": 0.12158808933002481,
+              "false_alert_rate": 0.7678958785249458
+            }
+          ]
+        },
+        "Either route (noisy-OR)": {
+          "auc": 0.9951280999003341,
+          "average_precision": 0.9784215171136326,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.8428246013667426,
+            "f1": 0.9147095179233622,
+            "false_alert_rate": 0.07483731019522777,
+            "tp": 370,
+            "fp": 69,
+            "events": 87,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13243243243243244,
+              "precision": 0.09939148073022312,
+              "false_alert_rate": 0.48156182212581344
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2648648648648649,
+              "precision": 0.12158808933002481,
+              "false_alert_rate": 0.7678958785249458
+            }
+          ]
+        },
+        "v1's raw regional share, v2's combination": {
+          "auc": 0.9970276132965937,
+          "average_precision": 0.9922413799059133,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.7184466019417476,
+            "f1": 0.8361581920903954,
+            "false_alert_rate": 0.15726681127982647,
+            "tp": 370,
+            "fp": 145,
+            "events": 87,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 310,
+              "recall": 0.08108108108108109,
+              "precision": 0.0967741935483871,
+              "false_alert_rate": 0.3036876355748373
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 493,
+              "recall": 0.13513513513513514,
+              "precision": 0.10141987829614604,
+              "false_alert_rate": 0.4804772234273319
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 806,
+              "recall": 0.2702702702702703,
+              "precision": 0.12406947890818859,
+              "false_alert_rate": 0.7657266811279827
+            }
+          ]
+        },
         "Equal weights (untuned reference)": {
-          "auc": 0.9726358679720936,
-          "average_precision": 0.9461887321764749,
+          "auc": 0.9770563405053644,
+          "average_precision": 0.9540783891064475,
           "high_band": {
             "recall": 0.8891891891891892,
-            "precision": 0.8545454545454545,
-            "f1": 0.8715231788079469,
-            "false_alert_rate": 0.06073752711496746,
+            "precision": 0.8867924528301887,
+            "f1": 0.8879892037786775,
+            "false_alert_rate": 0.0455531453362256,
             "tp": 329,
-            "fp": 56,
+            "fp": 42,
             "events": 87,
             "events_detected": 0.9770114942528736,
             "weeks_to_detect": 0.5411764705882353
@@ -794,39 +1210,45 @@
       ],
       "calibration": {
         "Model B \u00b7 zero-report prioritizer": {
-          "brier": 0.049142513134526326,
-          "mean_predicted": 0.3676731785028529,
+          "brier": 0.02611951950698901,
+          "mean_predicted": 0.32736659399285717,
           "observed_share": 0.28637770897832815,
           "reliability": [
             {
               "bin": "0.00-0.05",
-              "n": 311,
-              "mean_predicted": 0.004167842131134835,
+              "n": 490,
+              "mean_predicted": 0.003323242602491888,
               "observed_share": 0.0
             },
             {
               "bin": "0.05-0.10",
-              "n": 197,
-              "mean_predicted": 0.05992688403728564,
+              "n": 149,
+              "mean_predicted": 0.07997082675494546,
               "observed_share": 0.0
             },
             {
               "bin": "0.10-0.20",
-              "n": 221,
-              "mean_predicted": 0.19052783090331865,
+              "n": 95,
+              "mean_predicted": 0.15617246934188042,
               "observed_share": 0.0
             },
             {
               "bin": "0.20-0.40",
-              "n": 141,
-              "mean_predicted": 0.324146202074345,
-              "observed_share": 0.0070921985815602835
+              "n": 153,
+              "mean_predicted": 0.2537035094438334,
+              "observed_share": 0.0
+            },
+            {
+              "bin": "0.40-0.60",
+              "n": 18,
+              "mean_predicted": 0.43901281442809703,
+              "observed_share": 0.1111111111111111
             },
             {
               "bin": "0.60-1.00",
-              "n": 422,
-              "mean_predicted": 0.8865419110081557,
-              "observed_share": 0.8744075829383886
+              "n": 387,
+              "mean_predicted": 0.8988587730877847,
+              "observed_share": 0.9509043927648578
             }
           ]
         },
@@ -865,6 +1287,62 @@
       "positive_share": 0.6666666666666666,
       "methods": {
         "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.9177494544733188,
+          "average_precision": 0.948455352101141,
+          "high_band": {
+            "recall": 0.7676056338028169,
+            "precision": 0.9437229437229437,
+            "f1": 0.8466019417475729,
+            "false_alert_rate": 0.09154929577464789,
+            "tp": 218,
+            "fp": 13,
+            "events": 202,
+            "events_detected": 0.7524752475247525,
+            "weeks_to_detect": 0.006578947368421052
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5035211267605634,
+              "precision": 0.934640522875817,
+              "false_alert_rate": 0.07042253521126761
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7464788732394366,
+              "precision": 0.8346456692913385,
+              "false_alert_rate": 0.29577464788732394
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9612676056338029,
+              "precision": 0.6982097186700768,
+              "false_alert_rate": 0.8309859154929577
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.6881255119400164,
+              0.8392497868712703
+            ],
+            "false_alert_rate_ci": [
+              0.04309423813734159,
+              0.18615725359911395
+            ],
+            "f1_ci": [
+              0.792930106298733,
+              0.8934851316907392
+            ],
+            "auc_ci": [
+              0.8480435744304358,
+              0.9547524791978161
+            ]
+          }
+        },
+        "Model B v1 (published)": {
           "auc": 0.9107815909541758,
           "average_precision": 0.9455814829224953,
           "high_band": {
@@ -920,9 +1398,161 @@
             ]
           }
         },
+        "Routes averaged (relative regional share)": {
+          "auc": 0.9177494544733188,
+          "average_precision": 0.948455352101141,
+          "high_band": {
+            "recall": 0.7676056338028169,
+            "precision": 0.9437229437229437,
+            "f1": 0.8466019417475729,
+            "false_alert_rate": 0.09154929577464789,
+            "tp": 218,
+            "fp": 13,
+            "events": 202,
+            "events_detected": 0.7524752475247525,
+            "weeks_to_detect": 0.006578947368421052
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5035211267605634,
+              "precision": 0.934640522875817,
+              "false_alert_rate": 0.07042253521126761
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7464788732394366,
+              "precision": 0.8346456692913385,
+              "false_alert_rate": 0.29577464788732394
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9612676056338029,
+              "precision": 0.6982097186700768,
+              "false_alert_rate": 0.8309859154929577
+            }
+          ]
+        },
+        "Larger of the two routes": {
+          "auc": 0.9348095615949217,
+          "average_precision": 0.9602651037849683,
+          "high_band": {
+            "recall": 0.795774647887324,
+            "precision": 0.9535864978902954,
+            "f1": 0.8675623800383878,
+            "false_alert_rate": 0.07746478873239436,
+            "tp": 226,
+            "fp": 11,
+            "events": 202,
+            "events_detected": 0.7821782178217822,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5176056338028169,
+              "precision": 0.9607843137254902,
+              "false_alert_rate": 0.04225352112676056
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7535211267605634,
+              "precision": 0.84251968503937,
+              "false_alert_rate": 0.28169014084507044
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9683098591549296,
+              "precision": 0.7033248081841432,
+              "false_alert_rate": 0.8169014084507042
+            }
+          ]
+        },
+        "Either route (noisy-OR)": {
+          "auc": 0.9286103947629438,
+          "average_precision": 0.9571143557001384,
+          "high_band": {
+            "recall": 0.7816901408450704,
+            "precision": 0.940677966101695,
+            "f1": 0.8538461538461538,
+            "false_alert_rate": 0.09859154929577464,
+            "tp": 222,
+            "fp": 14,
+            "events": 202,
+            "events_detected": 0.7673267326732673,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5035211267605634,
+              "precision": 0.934640522875817,
+              "false_alert_rate": 0.07042253521126761
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.75,
+              "precision": 0.8385826771653543,
+              "false_alert_rate": 0.2887323943661972
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9612676056338029,
+              "precision": 0.6982097186700768,
+              "false_alert_rate": 0.8309859154929577
+            }
+          ]
+        },
+        "v1's raw regional share, v2's combination": {
+          "auc": 0.9107815909541758,
+          "average_precision": 0.9455814829224953,
+          "high_band": {
+            "recall": 0.7746478873239436,
+            "precision": 0.944206008583691,
+            "f1": 0.8510638297872342,
+            "false_alert_rate": 0.09154929577464789,
+            "tp": 220,
+            "fp": 13,
+            "events": 202,
+            "events_detected": 0.7623762376237624,
+            "weeks_to_detect": 0.006493506493506494
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 153,
+              "recall": 0.5,
+              "precision": 0.9281045751633987,
+              "false_alert_rate": 0.07746478873239436
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 254,
+              "recall": 0.7429577464788732,
+              "precision": 0.8307086614173228,
+              "false_alert_rate": 0.3028169014084507
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 391,
+              "recall": 0.9577464788732394,
+              "precision": 0.6956521739130435,
+              "false_alert_rate": 0.8380281690140845
+            }
+          ]
+        },
         "Equal weights (untuned reference)": {
-          "auc": 0.8873239436619719,
-          "average_precision": 0.9382271663442322,
+          "auc": 0.8882910136877603,
+          "average_precision": 0.9386072877468052,
           "high_band": {
             "recall": 0.7183098591549296,
             "precision": 0.9577464788732394,
@@ -1217,6 +1847,62 @@
       "positive_share": 0.19708029197080293,
       "methods": {
         "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.701438628711356,
+          "average_precision": 0.3254535291148705,
+          "high_band": {
+            "recall": 0.5791245791245792,
+            "precision": 0.32452830188679244,
+            "f1": 0.4159613059250303,
+            "false_alert_rate": 0.2958677685950413,
+            "tp": 172,
+            "fp": 358,
+            "events": 223,
+            "events_detected": 0.547085201793722,
+            "weeks_to_detect": 0.02459016393442623
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.2053872053872054,
+              "precision": 0.4295774647887324,
+              "false_alert_rate": 0.06694214876033058
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.3602693602693603,
+              "precision": 0.4553191489361702,
+              "false_alert_rate": 0.10578512396694215
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.6195286195286195,
+              "precision": 0.39913232104121477,
+              "false_alert_rate": 0.22892561983471074
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              0.5097340950189051,
+              0.6498828594621809
+            ],
+            "false_alert_rate_ci": [
+              0.2451029293045785,
+              0.3509017039871748
+            ],
+            "f1_ci": [
+              0.3518518927319447,
+              0.4850595103699642
+            ],
+            "auc_ci": [
+              0.6467548682911893,
+              0.7465973743610017
+            ]
+          }
+        },
+        "Model B v1 (published)": {
           "auc": 0.636828338481231,
           "average_precision": 0.29429014375114315,
           "high_band": {
@@ -1272,41 +1958,193 @@
             ]
           }
         },
-        "Equal weights (untuned reference)": {
-          "auc": 0.6926802459860311,
-          "average_precision": 0.3476758114488374,
+        "Routes averaged (relative regional share)": {
+          "auc": 0.701438628711356,
+          "average_precision": 0.3254535291148705,
           "high_band": {
-            "recall": 0.48148148148148145,
-            "precision": 0.3575,
-            "f1": 0.41032998565279766,
-            "false_alert_rate": 0.21239669421487603,
-            "tp": 143,
-            "fp": 257,
+            "recall": 0.5791245791245792,
+            "precision": 0.32452830188679244,
+            "f1": 0.4159613059250303,
+            "false_alert_rate": 0.2958677685950413,
+            "tp": 172,
+            "fp": 358,
             "events": 223,
-            "events_detected": 0.4439461883408072,
-            "weeks_to_detect": 0.1414141414141414
+            "events_detected": 0.547085201793722,
+            "weeks_to_detect": 0.02459016393442623
           },
           "weekly_budget": [
             {
               "k_per_week": 3,
               "reviews": 156,
-              "recall": 0.21212121212121213,
-              "precision": 0.44680851063829785,
-              "false_alert_rate": 0.06446280991735537
+              "recall": 0.2053872053872054,
+              "precision": 0.4295774647887324,
+              "false_alert_rate": 0.06694214876033058
             },
             {
               "k_per_week": 5,
               "reviews": 260,
-              "recall": 0.35353535353535354,
-              "precision": 0.44871794871794873,
-              "false_alert_rate": 0.10661157024793388
+              "recall": 0.3602693602693603,
+              "precision": 0.4553191489361702,
+              "false_alert_rate": 0.10578512396694215
             },
             {
               "k_per_week": 10,
               "reviews": 515,
-              "recall": 0.6161616161616161,
-              "precision": 0.3952483801295896,
-              "false_alert_rate": 0.23140495867768596
+              "recall": 0.6195286195286195,
+              "precision": 0.39913232104121477,
+              "false_alert_rate": 0.22892561983471074
+            }
+          ]
+        },
+        "Larger of the two routes": {
+          "auc": 0.7312602610123271,
+          "average_precision": 0.35150567780215686,
+          "high_band": {
+            "recall": 0.569023569023569,
+            "precision": 0.3434959349593496,
+            "f1": 0.42839036755386567,
+            "false_alert_rate": 0.26694214876033057,
+            "tp": 169,
+            "fp": 323,
+            "events": 223,
+            "events_detected": 0.515695067264574,
+            "weeks_to_detect": 0.008695652173913044
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.20875420875420875,
+              "precision": 0.4217687074829932,
+              "false_alert_rate": 0.07024793388429752
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.3602693602693603,
+              "precision": 0.4314516129032258,
+              "false_alert_rate": 0.11652892561983472
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.6195286195286195,
+              "precision": 0.38493723849372385,
+              "false_alert_rate": 0.24297520661157024
+            }
+          ]
+        },
+        "Either route (noisy-OR)": {
+          "auc": 0.7200072348832679,
+          "average_precision": 0.34252058348479997,
+          "high_band": {
+            "recall": 0.5656565656565656,
+            "precision": 0.34355828220858897,
+            "f1": 0.4274809160305344,
+            "false_alert_rate": 0.2652892561983471,
+            "tp": 168,
+            "fp": 321,
+            "events": 223,
+            "events_detected": 0.5246636771300448,
+            "weeks_to_detect": 0.017094017094017096
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.20875420875420875,
+              "precision": 0.4217687074829932,
+              "false_alert_rate": 0.07024793388429752
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.37037037037037035,
+              "precision": 0.4435483870967742,
+              "false_alert_rate": 0.1140495867768595
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.6262626262626263,
+              "precision": 0.3891213389121339,
+              "false_alert_rate": 0.2413223140495868
+            }
+          ]
+        },
+        "v1's raw regional share, v2's combination": {
+          "auc": 0.636828338481231,
+          "average_precision": 0.29429014375114315,
+          "high_band": {
+            "recall": 0.6801346801346801,
+            "precision": 0.25093167701863356,
+            "f1": 0.3666061705989111,
+            "false_alert_rate": 0.4983471074380165,
+            "tp": 202,
+            "fp": 603,
+            "events": 223,
+            "events_detected": 0.6502242152466368,
+            "weeks_to_detect": 0.013793103448275862
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.19528619528619529,
+              "precision": 0.4084507042253521,
+              "false_alert_rate": 0.06942148760330578
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.3367003367003367,
+              "precision": 0.425531914893617,
+              "false_alert_rate": 0.1115702479338843
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.5757575757575758,
+              "precision": 0.37093275488069416,
+              "false_alert_rate": 0.2396694214876033
+            }
+          ]
+        },
+        "Equal weights (untuned reference)": {
+          "auc": 0.7127653949967999,
+          "average_precision": 0.3665986440905056,
+          "high_band": {
+            "recall": 0.4377104377104377,
+            "precision": 0.3857566765578635,
+            "f1": 0.41009463722397477,
+            "false_alert_rate": 0.17107438016528925,
+            "tp": 130,
+            "fp": 207,
+            "events": 223,
+            "events_detected": 0.39461883408071746,
+            "weeks_to_detect": 0.14772727272727273
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.2222222222222222,
+              "precision": 0.46808510638297873,
+              "false_alert_rate": 0.06198347107438017
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.367003367003367,
+              "precision": 0.4658119658119658,
+              "false_alert_rate": 0.10330578512396695
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.622895622895623,
+              "precision": 0.39956803455723544,
+              "false_alert_rate": 0.22975206611570248
             }
           ]
         },
@@ -1569,6 +2407,62 @@
       "positive_share": 0.03662420382165605,
       "methods": {
         "Model B \u00b7 zero-report prioritizer": {
+          "auc": 0.919690980955803,
+          "average_precision": 0.1821157849126169,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.11386138613861387,
+            "f1": 0.20444444444444443,
+            "false_alert_rate": 0.2958677685950413,
+            "tp": 46,
+            "fp": 358,
+            "events": 46,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.03571428571428571,
+              "false_alert_rate": 0.06694214876033058
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03759398496240601,
+              "false_alert_rate": 0.10578512396694215
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.03484320557491289,
+              "false_alert_rate": 0.22892561983471074
+            }
+          ],
+          "high_band_ci": {
+            "recall_ci": [
+              1.0,
+              1.0
+            ],
+            "false_alert_rate_ci": [
+              0.2454413814695819,
+              0.3539959153560493
+            ],
+            "f1_ci": [
+              0.17431142691531248,
+              0.23594059405940587
+            ],
+            "auc_ci": [
+              0.8945973694931886,
+              0.9413920369534937
+            ]
+          }
+        },
+        "Model B v1 (published)": {
           "auc": 0.8982572763205174,
           "average_precision": 0.15014591867002144,
           "high_band": {
@@ -1624,16 +2518,168 @@
             ]
           }
         },
+        "Routes averaged (relative regional share)": {
+          "auc": 0.919690980955803,
+          "average_precision": 0.1821157849126169,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.11386138613861387,
+            "f1": 0.20444444444444443,
+            "false_alert_rate": 0.2958677685950413,
+            "tp": 46,
+            "fp": 358,
+            "events": 46,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.03571428571428571,
+              "false_alert_rate": 0.06694214876033058
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03759398496240601,
+              "false_alert_rate": 0.10578512396694215
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.03484320557491289,
+              "false_alert_rate": 0.22892561983471074
+            }
+          ]
+        },
+        "Larger of the two routes": {
+          "auc": 0.9446280991735537,
+          "average_precision": 0.25555555555555554,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.12466124661246612,
+            "f1": 0.2216867469879518,
+            "false_alert_rate": 0.26694214876033057,
+            "tp": 46,
+            "fp": 323,
+            "events": 46,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.03409090909090909,
+              "false_alert_rate": 0.07024793388429752
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03424657534246575,
+              "false_alert_rate": 0.11652892561983472
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.03289473684210526,
+              "false_alert_rate": 0.24297520661157024
+            }
+          ]
+        },
+        "Either route (noisy-OR)": {
+          "auc": 0.9446280991735537,
+          "average_precision": 0.25555555555555554,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.12534059945504086,
+            "f1": 0.2227602905569007,
+            "false_alert_rate": 0.2652892561983471,
+            "tp": 46,
+            "fp": 321,
+            "events": 46,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.03409090909090909,
+              "false_alert_rate": 0.07024793388429752
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03496503496503497,
+              "false_alert_rate": 0.1140495867768595
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.033112582781456956,
+              "false_alert_rate": 0.2413223140495868
+            }
+          ]
+        },
+        "v1's raw regional share, v2's combination": {
+          "auc": 0.8982572763205174,
+          "average_precision": 0.15014591867002144,
+          "high_band": {
+            "recall": 1.0,
+            "precision": 0.07087827426810478,
+            "f1": 0.1323741007194245,
+            "false_alert_rate": 0.4983471074380165,
+            "tp": 46,
+            "fp": 603,
+            "events": 46,
+            "events_detected": 1.0,
+            "weeks_to_detect": 0.0
+          },
+          "weekly_budget": [
+            {
+              "k_per_week": 3,
+              "reviews": 156,
+              "recall": 0.06521739130434782,
+              "precision": 0.034482758620689655,
+              "false_alert_rate": 0.06942148760330578
+            },
+            {
+              "k_per_week": 5,
+              "reviews": 260,
+              "recall": 0.10869565217391304,
+              "precision": 0.03571428571428571,
+              "false_alert_rate": 0.1115702479338843
+            },
+            {
+              "k_per_week": 10,
+              "reviews": 515,
+              "recall": 0.21739130434782608,
+              "precision": 0.03333333333333333,
+              "false_alert_rate": 0.2396694214876033
+            }
+          ]
+        },
         "Equal weights (untuned reference)": {
-          "auc": 0.6249550844412505,
-          "average_precision": 0.05776613232757098,
+          "auc": 0.6813151275601869,
+          "average_precision": 0.07039278102447395,
           "high_band": {
             "recall": 0.34782608695652173,
-            "precision": 0.05860805860805861,
-            "f1": 0.10031347962382445,
-            "false_alert_rate": 0.21239669421487603,
+            "precision": 0.07174887892376682,
+            "f1": 0.11895910780669144,
+            "false_alert_rate": 0.17107438016528925,
             "tp": 16,
-            "fp": 257,
+            "fp": 207,
             "events": 46,
             "events_detected": 0.34782608695652173,
             "weeks_to_detect": 0.0
@@ -1643,22 +2689,22 @@
               "k_per_week": 3,
               "reviews": 156,
               "recall": 0.06521739130434782,
-              "precision": 0.037037037037037035,
-              "false_alert_rate": 0.06446280991735537
+              "precision": 0.038461538461538464,
+              "false_alert_rate": 0.06198347107438017
             },
             {
               "k_per_week": 5,
               "reviews": 260,
               "recall": 0.10869565217391304,
-              "precision": 0.03731343283582089,
-              "false_alert_rate": 0.10661157024793388
+              "precision": 0.038461538461538464,
+              "false_alert_rate": 0.10330578512396695
             },
             {
               "k_per_week": 10,
               "reviews": 515,
               "recall": 0.1956521739130435,
-              "precision": 0.031141868512110725,
-              "false_alert_rate": 0.23140495867768596
+              "precision": 0.0313588850174216,
+              "false_alert_rate": 0.22975206611570248
             }
           ]
         },
@@ -1924,7 +2970,7 @@
       "2020": {
         "count": 1210,
         "mean_region_other_zero_share": 0.35960842188114917,
-        "share_above_high_cut": 0.46859504132231405
+        "share_above_high_cut": 0.3
       }
     },
     "swaps_2020": {
@@ -1935,18 +2981,23 @@
     }
   },
   "tuning": {
-    "grid_size": 39348,
-    "best_objective": 0.9754841159254006,
-    "n_within_tolerance": 3868,
+    "grid_size": 131202,
+    "best_objective": 0.974645601989899,
+    "n_within_tolerance": 16062,
+    "best_objective_by_aggregation": {
+      "max": 0.9699924977867349,
+      "mean": 0.974645601989899,
+      "noisy_or": 0.9695168860157883
+    },
     "chosen": {
-      "objective": 0.9689114314142043,
-      "ap_synthetic_2019": 0.9455814829224953,
-      "ap_real_2016_2017": 0.9922413799059133
+      "objective": 0.9714628697225169,
+      "ap_synthetic_2019": 0.948455352101141,
+      "ap_real_2016_2017": 0.9944703873438928
     },
     "equal_weights": {
-      "objective": 0.9595832619748081,
-      "ap_synthetic_2019": 0.9491508636406017,
-      "ap_real_2016_2017": 0.9700156603090145
+      "objective": 0.9638724042042299,
+      "ap_synthetic_2019": 0.9517696128597178,
+      "ap_real_2016_2017": 0.9759751955487421
     },
     "synthetic_2019": {
       "positives": 284,

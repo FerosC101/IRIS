@@ -16,7 +16,14 @@ import pandas as pd
 from .score import COMPONENTS, LABELS
 
 PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6"]
-COMPONENT_COLOR = dict(zip(COMPONENTS, PALETTE))
+def _colors(model) -> dict:
+    """Fixed categorical order over the components the model uses (never cycled)."""
+    return dict(zip([k for k in COMPONENTS if model.weights.get(k, 0) > 0], PALETTE))
+
+
+def _points(d: pd.DataFrame, model) -> pd.DataFrame:
+    """Points each component adds to each row's score, from the ranked file's c_* columns."""
+    return model.contributions(pd.DataFrame({k: d[f"c_{k}"].astype(float).to_numpy() for k in COMPONENTS}, index=d.index))
 BANDS = {"High": "#103e46", "Medium": "#188f89", "Low": "#b9dcd8"}
 INK, INK2, GRID = "#24383c", "#637579", "#e3e9ea"
 
@@ -36,23 +43,24 @@ def priority_week(ranked: pd.DataFrame, model, path, top: int = 15) -> str:
     counts = z.groupby("week_start").size()
     week = counts[counts >= 8].index.max() if (counts >= 8).any() else counts.idxmax()
     d = z[z.week_start == week].nlargest(top, "priority_score").iloc[::-1]
-    used = [k for k in COMPONENTS if model.weights[k] > 0]
-    wsum = sum(model.weights.values())
+    color = _colors(model)
+    pts = _points(d, model)
     fig, ax = plt.subplots(figsize=(8.2, 0.36 * len(d) + 1.6), dpi=150)
     left = np.zeros(len(d))
-    for k in used:
-        v = d[f"c_{k}"].fillna(0).to_numpy() * model.weights[k] / wsum * 100
-        ax.barh(np.arange(len(d)), v, left=left, height=0.62, color=COMPONENT_COLOR[k], edgecolor="white", linewidth=1.5, label=LABELS[k])
+    for k in color:
+        v = pts[k].to_numpy()
+        ax.barh(np.arange(len(d)), v, left=left, height=0.62, color=color[k], edgecolor="white", linewidth=1.5, label=LABELS[k])
         left += v
     for i, (_, r) in enumerate(d.iterrows()):
         ax.text(r.priority_score + 1, i, f"{r.priority_score:.0f}  {r.priority}", va="center", fontsize=8, color=INK)
     ax.set_yticks(np.arange(len(d)), d.location.str.title(), fontsize=8.5, color=INK)
     ax.set_xlim(0, 112)
     ax.set_xlabel("Priority score (0-100) and the indicators that make it up")
-    ax.axvline(model.bands["High"], color=INK2, lw=0.8, ls=(0, (3, 3)))
-    ax.axvline(model.bands["Medium"], color=INK2, lw=0.8, ls=(0, (1, 2)))
-    ax.text(model.bands["High"], len(d) - 0.2, " High cut", fontsize=7.5, color=INK2, va="bottom")
-    ax.text(model.bands["Medium"], len(d) - 0.2, " Medium cut", fontsize=7.5, color=INK2, va="bottom")
+    hi, med = model.bands["High"], model.bands["Medium"]
+    ax.axvline(hi, color=INK2, lw=0.8, ls=(0, (3, 3)))
+    ax.axvline(med, color=INK2, lw=0.8, ls=(0, (1, 2)))
+    ax.text(hi, len(d) - 0.2, " High cut", fontsize=7.5, color=INK2, va="bottom")
+    ax.text(med, len(d) - 0.2, " Medium cut", fontsize=7.5, color=INK2, va="bottom")
     ax.set_title(f"Zero reports to verify first, week of {week:%d %b %Y} (real data, top {len(d)})", fontsize=10.5, loc="left")
     ax.legend(loc="lower right", fontsize=8, frameon=False)
     ax.grid(axis="x", color=GRID, lw=0.6)
@@ -66,12 +74,12 @@ def priority_week(ranked: pd.DataFrame, model, path, top: int = 15) -> str:
 
 def indicators(ranked: pd.DataFrame, model, path) -> None:
     z = ranked[ranked.priority.isin(["High", "Medium"])]
-    used = [k for k in COMPONENTS if model.weights[k] > 0]
-    wsum = sum(model.weights.values())
+    used = list(_colors(model))
+    pts = _points(z, model)
     fig, axes = plt.subplots(1, 2, figsize=(8.6, 2.6), dpi=150, sharey=True)
     for ax, band in zip(axes, ["High", "Medium"]):
         b = z[z.priority == band]
-        vals = [float((b[f"c_{k}"].fillna(0) * model.weights[k] / wsum * 100).mean()) if len(b) else 0 for k in used]
+        vals = [float(pts.loc[b.index, k].mean()) if len(b) else 0 for k in used]
         ax.barh([LABELS[k] for k in used], vals, color=BANDS[band], height=0.55)
         for i, v in enumerate(vals):
             ax.text(v + 0.5, i, f"{v:.0f}", va="center", fontsize=8, color=INK)
