@@ -21,7 +21,9 @@ export const NAV: NavItem[] = [
   { to: "/", label: "Dashboard", section: "dashboard", top: true, roles: ALL, description: "What needs attention this week" },
   { to: "/reports", label: "Reports & Analysis", tabLabel: "Weekly reports", section: "reports", top: true, roles: ALL, description: "Submitted reports and missing records" },
   { to: "/reports/analysis", label: "Anomaly analysis", section: "reports", roles: REVIEWERS, description: "Detection results and evidence" },
-  { to: "/reports/dengue", label: "Real dengue data", section: "reports", roles: [...REVIEWERS, "admin"], description: "Model A and B on real DOH dengue reports" },
+  { to: "/reports/dengue", label: "Real dengue data", section: "reports", roles: [...REVIEWERS, "admin", "real_data"], description: "Model A and B on real DOH dengue reports" },
+  // The real-data account sees only this page, so it gets it as its one top tab.
+  { to: "/reports/dengue", label: "Real dengue data", section: "reports", top: true, roles: ["real_data"], description: "Model A and B on real DOH dengue reports" },
   { to: "/reports/recovery", label: "Recovery", section: "reports", roles: [...REVIEWERS, "admin"], description: "Is reporting improving?" },
   { to: "/network", label: "Reporting Network", section: "network", top: true, roles: [...REVIEWERS, "admin"], description: "How units are connected" },
   { to: "/investigations", label: "Investigations & Actions", tabLabel: "Investigation queue", section: "investigations", top: true, roles: ["rhu_staff", ...REVIEWERS], description: "Verification and corrective actions" },
@@ -30,8 +32,8 @@ export const NAV: NavItem[] = [
   { to: "/data", label: "Data & Models", tabLabel: "Datasets & detection", section: "data", top: true, roles: ["resu_analyst", "admin"], description: "Datasets, pipeline and detection methods" },
   { to: "/data/import", label: "Import dataset", section: "data", roles: ["resu_analyst", "admin"], description: "Map, validate and import a CSV" },
   { to: "/data/evaluation", label: "Evaluation", section: "data", roles: ["resu_analyst", "admin"], description: "Synthetic evaluation of the detection methods" },
-  { to: "/settings", label: "Settings", section: "system", roles: ALL, description: "Role and display" },
-  { to: "/help", label: "Help", section: "system", roles: ALL, description: "Terms and limitations" },
+  { to: "/settings", label: "Settings", section: "system", roles: [...ALL, "real_data"], description: "Role and display" },
+  { to: "/help", label: "Help", section: "system", roles: [...ALL, "real_data"], description: "Terms and limitations" },
 ];
 
 /** The most specific nav item for a path (longest matching prefix). */
@@ -56,7 +58,8 @@ export function topNavFor(role: Role): NavItem[] {
 
 /** Tabs within a section that this role can open. */
 export function sectionTabs(section: SectionKey, role: Role): NavItem[] {
-  return NAV.filter((n) => n.section === section && section !== "system" && n.roles.includes(role));
+  const seen = new Set<string>();
+  return NAV.filter((n) => n.section === section && section !== "system" && n.roles.includes(role) && !seen.has(n.to) && !!seen.add(n.to));
 }
 
 export function sectionFor(path: string): SectionKey | undefined {

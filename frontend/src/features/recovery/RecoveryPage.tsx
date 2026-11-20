@@ -1,93 +1,64 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { DesignationBadge, OutcomeBadge } from "@/components/data-display/badges";
+import { OutcomeBadge } from "@/components/data-display/badges";
 import { TrendChart } from "@/components/data-display/charts";
 import { FilterBar, FilterField } from "@/components/data-display/FilterBar";
-import { MetricCard } from "@/components/data-display/MetricCard";
-import { PageHeader } from "@/components/data-display/PageHeader";
+import { PageHero } from "@/components/shell/PageHero";
 import { Select } from "@/components/ui/form";
 import { Panel } from "@/components/ui/panel";
 import { EmptyState, ErrorState, Loading } from "@/components/ui/states";
 import { isoWeekLabel } from "@/hooks/useGlobalFilters";
 import { useSession } from "@/hooks/useSession";
 import { fmtDate, fmtNum, fmtPct, fmtPeriod } from "@/lib/format";
-import { OUTCOME_SOURCE, UNIT_TYPE } from "@/lib/labels";
 import { api } from "@/services/api";
-import type { Recovery, WindowMetrics } from "@/types/api";
+import type { Recovery } from "@/types/api";
 
 type Row = Recovery["before_after"][number];
 
-/** One stage of an action's story: the share of expected reports that arrived, as a number and a bar. */
-function Stage({ w, label, short, fallback }: { w: WindowMetrics | null; label: string; short: string; fallback?: string | null }) {
-  return (
-    <div className="min-w-0 flex-1">
-      <p className="text-xs text-ink-2"><span className="sm:hidden">{short}</span><span className="hidden sm:inline">{label}</span></p>
-      {w ? <>
-        <p className="mt-0.5 text-[22px] leading-tight font-semibold text-ink tabular">{fmtPct(w.completeness)}</p>
-        <div className="mt-1.5 h-1.5 rounded-full bg-line" aria-hidden><div className="h-1.5 rounded-full bg-teal-600" style={{ width: `${(w.completeness ?? 0) * 100}%` }} /></div>
-        <p className="mt-1.5 text-xs text-ink-2 tabular">{w.received} of {w.expected} arrived{w.incomplete > 0 && w.incomplete_share !== null ? <><br />{fmtPct(w.incomplete_share)} of forms had blanks</> : null}</p>
-      </> : <p className="mt-1 text-[13px] text-ink-2">{fallback ?? "Not available"}</p>}
-    </div>
-  );
-}
-
-/** "Reports arriving fell from 93% to 52% while the problem lasted, then were 93% after the action." */
-function story(r: Row): string | null {
-  const b = r.before?.completeness, d = r.during?.completeness, a = r.after?.completeness;
-  if (b == null || d == null) return null;
-  const pct = (v: number) => fmtPct(v);
-  const first = d < b - 0.005 ? `fell from ${pct(b)} to ${pct(d)}` : d > b + 0.005 ? `rose from ${pct(b)} to ${pct(d)}` : `stayed at ${pct(d)}`;
-  const then = a == null ? "There is no reporting after the action to compare yet."
-    : a > d + 0.005 ? `After the action it was back up to ${pct(a)}.` : a < d - 0.005 ? `After the action it went down to ${pct(a)}.` : `After the action it was unchanged at ${pct(a)}.`;
-  return `Reports arriving ${first} while the problem lasted. ${then}`;
-}
-
+/** One finished action as a small chart: the share of expected reports that arrived before, during and after. */
 function ActionCard({ r }: { r: Row }) {
   const { unitName } = useSession();
   const outcome = r.outcomes.at(-1);
   const units = r.target_unit_ids.map(unitName);
-  const text = story(r);
+  const bars = [
+    { label: "Before", w: r.before, color: "#7893A8" },
+    { label: "During", w: r.during, color: "#B65F59" },
+    { label: "After", w: r.after, color: "#1A9EA0" },
+  ];
   return (
-    <li className="rounded-lg border border-line bg-white p-4 sm:p-5">
-      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-        <div className="min-w-0">
-          <Link to={`/investigations/follow-up?assignment=${r.assignment_id}`} className="text-[15px] font-semibold text-teal-900 hover:underline">{r.title}</Link>
-          <p className="mt-0.5 text-xs text-ink-2">
-            For <Link to={`/investigations/${r.concern_id}`} className="text-info-ink hover:underline">{r.concern_id}</Link>
-            {" · "}{units.slice(0, 2).join(", ")}{units.length > 2 ? ` and ${units.length - 2} more` : ""}
-            {r.completed_at && <> · done {fmtDate(r.completed_at)}</>}
-          </p>
-        </div>
-        {outcome ? <OutcomeBadge status={outcome.status} /> : <span className="text-xs text-ink-2">No result recorded yet</span>}
+    <li className="flex min-w-0 flex-col gap-3 rounded-lg border border-line bg-white p-4">
+      <div className="min-w-0">
+        <Link to={`/investigations/follow-up?assignment=${r.assignment_id}`} className="line-clamp-2 text-[14px] leading-snug font-semibold text-teal-900 hover:underline">{r.title}</Link>
+        <p className="mt-0.5 truncate text-xs text-ink-2">
+          <Link to={`/investigations/${r.concern_id}`} className="text-info-ink hover:underline">{r.concern_id}</Link>
+          {" · "}{units.slice(0, 2).join(", ")}{units.length > 2 ? ` +${units.length - 2}` : ""}{r.completed_at && <> · done {fmtDate(r.completed_at)}</>}
+        </p>
       </div>
-      {text && <p className="mt-3 text-sm text-ink">{text}</p>}
-      <div className="mt-4 flex items-start gap-2 sm:gap-4">
-        <Stage w={r.before} label="Before the problem" short="Before" />
-        <ArrowRight className="mt-6 size-4 shrink-0 text-ink-2" aria-hidden />
-        <Stage w={r.during} label="During the problem" short="During" />
-        <ArrowRight className="mt-6 size-4 shrink-0 text-ink-2" aria-hidden />
-        <Stage w={r.after} label="After the action" short="After" fallback={r.after_message} />
+      <div className="grid grid-cols-3 items-end gap-3" role="img" aria-label={bars.map((b) => `${b.label}: ${b.w ? fmtPct(b.w.completeness) : "not available"}`).join(", ")}>
+        {bars.map((b) => (
+          <div key={b.label} className="flex flex-col items-center gap-1">
+            <span className="text-[15px] font-semibold tabular" style={{ color: b.label === "During" ? "#9B463F" : "#0A3A4A" }}>{b.w ? fmtPct(b.w.completeness) : "—"}</span>
+            <div className="flex h-24 w-full max-w-[3.5rem] items-end rounded-t bg-tint/60">
+              <div className="w-full rounded-t" style={{ height: `${(b.w?.completeness ?? 0) * 100}%`, background: b.color }} />
+            </div>
+            <span className="text-[11.5px] text-ink-2">{b.label}</span>
+          </div>
+        ))}
       </div>
       {r.after_overlaps.length > 0 && (
-        <p className="mt-3 rounded-md bg-attention-bg px-3 py-2 text-xs text-attention-ink">
-          Another problem affected these units in the weeks after the action, so the “after” figure may be lower for reasons unrelated to it:{" "}
-          {r.after_overlaps.map((o, i) => <span key={o.id}>{i > 0 && ", "}<Link to={`/investigations/${o.id}`} className="font-medium underline">{o.id}</Link> ({o.title})</span>)}.
+        <p className="rounded-md bg-attention-bg px-2.5 py-1.5 text-[11.5px] text-attention-ink">
+          “After” overlaps {r.after_overlaps.map((o, i) => <span key={o.id}>{i > 0 && ", "}<Link to={`/investigations/${o.id}`} className="font-medium underline">{o.id}</Link></span>)}, so it may be lower for another reason.
         </p>
       )}
-      {outcome && (
-        <p className="mt-4 border-t border-line pt-3 text-xs text-ink-2">
-          <span className="font-medium text-ink">Result: </span>{outcome.summary} <span className="whitespace-nowrap">({OUTCOME_SOURCE[outcome.source] ?? outcome.source})</span>
-        </p>
-      )}
+      <div className="mt-auto">{outcome ? <OutcomeBadge status={outcome.status} /> : <span className="text-xs text-ink-2">No result recorded yet</span>}</div>
     </li>
   );
 }
 
 function BeforeAfter({ rows }: { rows: Recovery["before_after"] }) {
   if (!rows.length) return <EmptyState title="No finished corrective actions in this selection">Each action appears here once its follow-up is marked done.</EmptyState>;
-  return <ul className="flex flex-col gap-3">{rows.map((r) => <ActionCard key={r.assignment_id} r={r} />)}</ul>;
+  return <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">{rows.map((r) => <ActionCard key={r.assignment_id} r={r} />)}</ul>;
 }
 
 export function RecoveryPage() {
@@ -101,20 +72,15 @@ export function RecoveryPage() {
   const d = q.data;
   const hasSeries = d?.series.some((row) => row.completeness !== null || row.timeliness !== null);
   const scope = f.unit_id ? meta?.units.find((u) => u.id === f.unit_id)?.name ?? f.unit_id : f.province || "All dataset units";
-  const units = meta?.units.filter((u) => u.unit_type !== "hub" && (!f.province || u.province === f.province) && (!f.unit_type || u.unit_type === f.unit_type)) ?? [];
   const weekOpts = meta?.weeks ?? [];
   const period = fmtPeriod(weekOpts[Number(f.w_from)]?.start, weekOpts[Number(f.w_to)]?.end);
 
   return (
     <>
-      <PageHeader title="Reporting recovery" description="Are reports arriving again after problems were found and acted on?" />
+      <PageHero section="reports" eyebrow="Evidence workspace / Recovery" title="Did reporting come back after each fix?" subtitle={`${scope} · ${period}`} />
       <div className="iris-workspace-stack">
         <FilterBar activeCount={active} onReset={() => setF(DEF)} label="Recovery filters">
-          <FilterField label="Dataset" className="md:w-64">{(id) => <Select id={id} value={f.dataset_id} onChange={(e) => setF({ ...DEF, dataset_id: e.target.value })}>{datasets.data?.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</Select>}</FilterField>
           <FilterField label="Province">{(id) => <Select id={id} value={f.province} onChange={(e) => setF({ ...f, province: e.target.value, unit_id: "" })}><option value="">All</option>{meta?.provinces.map((p) => <option key={p}>{p}</option>)}</Select>}</FilterField>
-          <FilterField label="Unit type" className="md:w-36">{(id) => <Select id={id} value={f.unit_type} onChange={(e) => setF({ ...f, unit_type: e.target.value, unit_id: "" })}><option value="">All</option>{(["rhu", "hospital", "laboratory"] as const).map((t) => <option key={t} value={t}>{UNIT_TYPE[t]}</option>)}</Select>}</FilterField>
-          <FilterField label="Reporting unit" className="md:w-52">{(id) => <Select id={id} value={f.unit_id} onChange={(e) => setF({ ...f, unit_id: e.target.value })}><option value="">All units</option>{units.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</Select>}</FilterField>
-          <FilterField label="Category">{(id) => <Select id={id} value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })}><option value="">All weekly reports</option>{meta?.categories.map((c) => <option key={c.code} value={c.code}>{c.name}{c.frequency === "monthly" ? " (monthly)" : ""}</option>)}</Select>}</FilterField>
           <FilterField label="From">{(id) => <Select id={id} value={f.w_from} onChange={(e) => setF({ ...f, w_from: e.target.value })}>{weekOpts.map((w) => <option key={w.week} value={w.week} disabled={w.week > Number(f.w_to)}>{isoWeekLabel(w)}</option>)}</Select>}</FilterField>
           <FilterField label="To">{(id) => <Select id={id} value={f.w_to} onChange={(e) => setF({ ...f, w_to: e.target.value })}>{weekOpts.map((w) => <option key={w.week} value={w.week} disabled={w.week < Number(f.w_from)}>{isoWeekLabel(w)}</option>)}</Select>}</FilterField>
         </FilterBar>
@@ -129,7 +95,6 @@ export function RecoveryPage() {
                 : <>Arrival rates are not available for this selection. </>}
               {d.concern_totals && <>{d.concern_totals.open} concern{d.concern_totals.open === 1 ? " is" : "s are"} still open and {d.concern_totals.resolved} {d.concern_totals.resolved === 1 ? "has" : "have"} been fixed.</>}
             </h2>
-            <p className="flex flex-wrap items-center gap-2 text-[13px] text-ink-2">{d.dataset.name} <DesignationBadge designation={d.dataset.designation} /></p>
             {d.causality_note && <p className="max-w-4xl text-xs text-ink-2">Improvement after an action does not prove the action caused it. {d.causality_note.replace(/^Before\/after comparisons show association only\. /, "")}</p>}
           </section>
         )}
@@ -142,20 +107,18 @@ export function RecoveryPage() {
           </Panel>
         ) : (
           <>
-            {d.overall && (
-              <div className="iris-phase4-metrics grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <MetricCard label="Reports arrived" value={d.overall.completeness == null ? "Unavailable" : fmtPct(d.overall.completeness)} detail={`${fmtNum(d.overall.received)} of ${fmtNum(d.overall.expected)} expected reports.`} motif="records" />
-                <MetricCard label="Arrived on time" value={!d.timeliness_available || d.overall.timeliness == null ? "Unavailable" : fmtPct(d.overall.timeliness)} detail="Arrived by the due date, out of all expected reports." motif="trends" />
-                <MetricCard label="Never arrived" value={fmtNum(d.overall.not_received)} detail={`Out of ${fmtNum(d.overall.expected)} expected in these weeks.`} motif="verify" />
-                <MetricCard label="Open concerns" value={d.concern_totals?.open ?? "Unavailable"} detail="Open now, from any week, for these units." motif="network" />
-              </div>
-            )}
+            <div data-tour="recovery-actions"><Panel title="After each fix" motif="records" description="Share of expected reports that arrived before the problem, during it, and after the action.">
+              <BeforeAfter rows={d.before_after} />
+            </Panel></div>
             <Panel title="Reports arriving each week" motif="trends" description={`Share of the expected ${f.category ? `${categoryName(f.category)} ` : ""}reports that arrived, and that arrived on time.${d.frequency === "monthly" ? " Monthly reports: the week filters do not apply." : ""}`}>
               {!hasSeries ? <EmptyState title={d.series.length ? "Reporting series unavailable" : "No expected reports in this selection"} /> : (
                 <TrendChart title="Share of expected reports that arrived each week" data={d.series} xKey="period_start" height={300} series={[{ key: "completeness", label: "Arrived" }, { key: "timeliness", label: "On time" }]} />
               )}
               <p className="mt-2 text-xs text-ink-2">The latest week can still receive late reports, so it may rise.</p>
             </Panel>
+            <details className="group rounded-lg border border-line bg-white">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 text-[15px] font-semibold text-teal-900 [&::-webkit-details-marker]:hidden">More detail: concerns over time and days to close<span aria-hidden className="text-ink-2 transition-transform group-open:rotate-180">▾</span></summary>
+              <div className="border-t border-line p-4">
             <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
               <Panel motif="network" title="Concerns over time" description={d.concern_totals ? `${d.concern_totals.open} open now · ${d.concern_totals.resolved} fixed · ${d.concern_totals.dismissed} closed as not a problem.` : undefined}>
                 <TrendChart title="Concerns still open at the end of each week, and closed during it" percent={false} height={220} xKey="period_start"
@@ -178,9 +141,8 @@ export function RecoveryPage() {
                 )}
               </Panel>
             </div>
-            <Panel title="Did reporting come back after each action?" motif="records" description="For each finished action: the share of expected reports that arrived before the problem, during it, and after the action. Each action's own weeks are used, so they can fall outside the filters above.">
-              <BeforeAfter rows={d.before_after} />
-            </Panel>
+              </div>
+            </details>
           </>
         )}
       </div>

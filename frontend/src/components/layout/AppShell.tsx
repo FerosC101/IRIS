@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { ErrorState, Loading } from "@/components/ui/states";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useSession } from "@/hooks/useSession";
+import { TourProvider } from "@/components/tour/Tour";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
@@ -17,6 +18,7 @@ export function AppShell() {
   }, [loc.pathname]);
   return (
     <TooltipProvider>
+      <TourProvider>
       <div className="flex min-h-dvh flex-col bg-page">
         <a href="#main" className="sr-only z-[70] rounded bg-white px-3 py-2 text-sm text-teal-900 focus:not-sr-only focus:fixed focus:top-2 focus:left-2">
           Skip to main content
@@ -29,6 +31,7 @@ export function AppShell() {
         </main>
         <Footer />
       </div>
+      </TourProvider>
     </TooltipProvider>
   );
 }

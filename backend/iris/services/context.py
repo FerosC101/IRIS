@@ -21,6 +21,7 @@ ROLE_LABELS = {
     "provincial_coordinator": "Provincial surveillance coordinator",
     "resu_analyst": "RESU analyst",
     "admin": "System administrator / data manager",
+    "real_data": "Real-data analyst",
 }
 
 PERMISSIONS: dict[str, set[str]] = {
@@ -40,6 +41,8 @@ PERMISSIONS: dict[str, set[str]] = {
         "report.submit", "detection.run", "experiment.run", "dataset.import", "units.manage", "audit.view",
         "network.view", "recovery.view", "data.view", "evaluation.view", "datasets.manage", "concern.note", "real.view",
     },
+    # Sees only the real DOH dengue model outputs; none of the simulated demo region.
+    "real_data": {"real.view", "real.review"},
 }
 
 DEFAULT_USER = "U-RESU-1"

@@ -52,10 +52,12 @@ export function TipBox({ title, rows }: { title: string; rows: { label: string; 
 
 /** Line chart for up to two series over time. */
 export function TrendChart({
-  data: rawData, xKey, series, height = 220, percent = true, title, highlight, yMax,
+  data: rawData, xKey, series, height = 220, percent = true, title, highlight, yMax, incidents,
 }: {
   data: object[]; xKey: string; series: SeriesDef[]; height?: number; percent?: boolean; title: string;
   highlight?: { from: string; to: string; label: string }; yMax?: number;
+  /** Incident periods drawn as red bands with a short label on top (e.g. a hub outage). */
+  incidents?: { from: string; to: string; label: string }[];
 }) {
   const fmt = (v: unknown) => (typeof v === "number" ? (percent ? fmtPct(v) : v.toLocaleString()) : "—");
   const data = rawData as Record<string, unknown>[];
@@ -66,6 +68,10 @@ export function TrendChart({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
             <CartesianGrid stroke={GRID} vertical={false} />
+            {incidents?.map((b) => (
+              <ReferenceArea key={`${b.from}-${b.label}`} x1={b.from} x2={b.to} fill="#B65F59" fillOpacity={0.1} ifOverflow="extendDomain"
+                label={{ value: b.label, position: "insideTop", fontSize: 11.5, fontWeight: 600, fill: "#9B463F" }} />
+            ))}
             {highlight && <ReferenceArea x1={highlight.from} x2={highlight.to} fill="var(--iris-chart-2)" fillOpacity={0.10} ifOverflow="extendDomain" label={{ value: highlight.label, position: "insideTopLeft", fontSize: 11, fill: "var(--iris-chart-axis)" }} />}
             <XAxis dataKey={xKey} tick={AXIS} tickLine={false} axisLine={{ stroke: GRID }} tickFormatter={(v: string) => fmtShortDate(v)} minTickGap={18} />
             <YAxis tick={AXIS} tickLine={false} axisLine={false} domain={percent ? [0, 1] : [0, yMax ?? "auto"]} tickFormatter={(v: number) => (percent ? `${Math.round(v * 100)}%` : String(v))} width={44} />

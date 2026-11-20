@@ -35,11 +35,12 @@ const DesignPreviewPage = import.meta.env.DEV
 
 const guard = (el: ReactNode) => <RouteGuard>{el}</RouteGuard>;
 
-/** A secondary page inside a section: the section's tabs, then the page. */
-function SectionPage({ section, children }: { section: SectionKey; children: ReactNode }) {
+/** A secondary page inside a section: the section's tabs, then the page. Pages with their own photo banner
+ *  (ownHeader) draw the tabs under it themselves. */
+function SectionPage({ section, children, ownHeader = false }: { section: SectionKey; children: ReactNode; ownHeader?: boolean }) {
   return (
     <RouteGuard>
-      <div className="mb-5"><SectionTabs section={section} /></div>
+      {!ownHeader && <div className="mb-5"><SectionTabs section={section} /></div>}
       {children}
     </RouteGuard>
   );
@@ -61,15 +62,15 @@ export const routes: RouteObject[] = [
 
       { path: "/reports", element: guard(<DataExplorerPage />) },
       { path: "/reports/analysis", element: <SectionPage section="reports"><AnomalyPage /></SectionPage> },
-      { path: "/reports/dengue", element: <SectionPage section="reports"><RealDenguePage /></SectionPage> },
-      { path: "/reports/recovery", element: <SectionPage section="reports"><RecoveryPage /></SectionPage> },
+      { path: "/reports/dengue", element: <SectionPage section="reports" ownHeader><RealDenguePage /></SectionPage> },
+      { path: "/reports/recovery", element: <SectionPage section="reports" ownHeader><RecoveryPage /></SectionPage> },
 
       { path: "/network", element: guard(<NetworkPage />) },
 
       { path: "/investigations", element: guard(<InvestigationsPage />) },
-      { path: "/investigations/plan", element: <SectionPage section="investigations"><PlannerPage /></SectionPage> },
+      { path: "/investigations/plan", element: <SectionPage section="investigations" ownHeader><PlannerPage /></SectionPage> },
       { path: "/investigations/follow-up", element: <SectionPage section="investigations"><FollowUpPage /></SectionPage> },
-      { path: "/investigations/:id", element: <SectionPage section="investigations"><InvestigationPage /></SectionPage> },
+      { path: "/investigations/:id", element: <SectionPage section="investigations" ownHeader><InvestigationPage /></SectionPage> },
 
       { path: "/data", element: guard(<DataManagementPage />) },
       { path: "/data/import", element: <SectionPage section="data"><ImportWizard /></SectionPage> },

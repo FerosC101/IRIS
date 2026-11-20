@@ -1,6 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { PageHeader } from "@/components/data-display/PageHeader";
-import { Badge } from "@/components/ui/badge";
+import { PageHero } from "@/components/shell/PageHero";
 import { EmptyState, ErrorState, Loading } from "@/components/ui/states";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { fmtDateTime } from "@/lib/format";
@@ -26,8 +25,8 @@ export function RealDenguePage() {
 
   return (
     <>
-      <PageHeader title="Real dengue data" description="Reports worth a second look, picked by two models from real Department of Health dengue data. Each one is a lead to check, not a confirmed error."
-        meta={<Badge tone="teal">Real data · HDX / DOH, 2016–2021</Badge>} />
+      <PageHero section="reports" tour="real-hero" eyebrow="Real data · HDX / DOH dengue, 2016–2021" title="Real reports worth a second look."
+        subtitle="Picked by two models from public Department of Health data. Each one is a lead to check, not a confirmed error." />
       {st.error ? <ErrorState error={st.error} onRetry={() => st.refetch()} /> : !st.data ? <Loading label="Checking model outputs" /> : !st.data.available ? (
         <EmptyState title="No model outputs yet">Run the pipeline in “models/pipeline” (python -m iris_pipeline all). The files are read from {st.data.contract_dir}.</EmptyState>
       ) : (
@@ -46,7 +45,7 @@ export function RealDenguePage() {
             </div>
           </details>
           <Tabs value={tab} onValueChange={(v) => setSp((p) => mergeSearch(p, { tab: v === "zero" ? null : v }), { replace: true })}>
-            <TabsList label="Real-data views" tabs={TABS} />
+            <div data-tour="real-tabs"><TabsList label="Real-data views" tabs={TABS} /></div>
             <TabsContent value="zero"><ZeroReportsTab /></TabsContent>
             <TabsContent value="flags"><ModelAFlagsTab /></TabsContent>
             <TabsContent value="plan"><WeeklyPlanTab /></TabsContent>

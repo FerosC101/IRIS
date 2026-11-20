@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { Activity, Shapes } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DataTable } from "@/components/data-display/DataTable";
-import { ChoiceFilter, MultiFilter, SearchFilter, type GlobalFilterKey } from "@/components/shell/GlobalFilterBar";
+import { SearchFilter, type GlobalFilterKey } from "@/components/shell/GlobalFilterBar";
 import { ScreenHeader } from "@/components/shell/ScreenHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -98,7 +97,6 @@ export function NetworkPage() {
   const visible = useMemo(() => new Set(visibleNodes.map((n) => n.id)), [visibleNodes]);
   const node = q.data?.nodes.find((n) => n.id === selected) ?? null;
   const ownChanged = (status ? 1 : 0) + (types.size < TYPES.length ? 1 : 0) + (search ? 1 : 0);
-  const statusLabels = q.data?.status_labels ?? {};
   // The selected weeks as words for a sentence, e.g. "the week of Sep 28 – Oct 4, 2026".
   const wFrom = meta?.weeks.find((w) => w.week === g.from);
   const wTo = meta?.weeks.find((w) => w.week === g.to);
@@ -112,9 +110,6 @@ export function NetworkPage() {
   const filterSlots = {
     hide: ["disease", "group"] as GlobalFilterKey[],
     extra: <>
-      <ChoiceFilter label="Status" icon={<Activity aria-hidden />} value={status} onChange={setStatus}
-        options={[{ value: "", label: "Any status" }, ...(["normal", "delayed", "missing", "no_schedule"] as const).map((s) => ({ value: s, label: statusLabels[s] ?? s }))]} />
-      <MultiFilter label="Unit types" icon={<Shapes aria-hidden />} values={types} onChange={setTypes} options={TYPES.map((t) => ({ value: t, label: UNIT_TYPE[t] }))} />
       <SearchFilter label="Find a unit" value={search} onChange={setSearch} placeholder="Name or ID" />
     </>,
     extraChanged: ownChanged,
@@ -127,25 +122,16 @@ export function NetworkPage() {
       <div className="mt-[25px]" />
       {q.error ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : !q.data ? <Loading label="Loading network" /> : !q.data.defined ? <EmptyState title="No network defined">{q.data.message}</EmptyState> : (
         <div className="iris-workspace-stack">
-          <div className="iris-toolbar">
-            <p className="iris-eyebrow">Synthetic reporting dependencies</p>
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="text-xs text-ink-2">{visibleNodes.length} visible units / {q.data.nodes.length} total | {q.data.edges.filter((e) => visible.has(e.source) && visible.has(e.target)).length} defined connections</p>
-              {viewSwitch}
-            </div>
-          </div>
 
           <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
             {/* The legend sits under the graph, in the space beside the taller unit panel. */}
             <div className="flex min-w-0 flex-col gap-4 self-stretch">
-            <Panel title="Reporting relationships" description="Select a unit to inspect its reporting history and connected concerns." motif="network" bodyClassName="p-0" className="min-w-0 overflow-hidden">
+            <div data-tour="network-graph" className="min-w-0"><Panel title="Reporting relationships" description="Click a unit for its history. Simulated network." motif="network" bodyClassName="p-0" className="min-w-0 overflow-hidden" actions={viewSwitch}>
               {view === "graph" ? (
                 <>
                   {visibleNodes.length === 0 && <div className="p-4"><EmptyState title="No units match these filters" /></div>}
                   <NetworkGraph nodes={q.data.nodes} edges={q.data.edges} visible={visible} selected={selected} onSelect={setSelected} />
-                  <p className="border-t border-line px-4 py-2 text-xs text-ink-2">
-                    Showing {visibleNodes.length} of {q.data.nodes.length} units · status for {periodWords}. {q.data.note}
-                  </p>
+
                 </>
               ) : (
                 <div className="p-4 md:p-0">
@@ -171,11 +157,14 @@ export function NetworkPage() {
                   />
                 </div>
               )}
-            </Panel>
-            <Panel title="Network legend" variant="secondary" className="flex-1"><Legend labels={q.data.status_labels} thresholds={q.data.status_thresholds} /></Panel>
+            </Panel></div>
+            <details className="group rounded-lg border border-line bg-white">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-4 text-[13px] font-semibold text-teal-900 [&::-webkit-details-marker]:hidden">Legend<span aria-hidden className="text-ink-2 transition-transform group-open:rotate-180">▾</span></summary>
+              <div className="border-t border-line p-4"><Legend labels={q.data.status_labels} thresholds={q.data.status_thresholds} /></div>
+            </details>
             </div>
-            <Panel variant="secondary" motif="verify" title={node ? "Unit details" : "Network at a glance"} className="min-w-0" actions={node ? <Button variant="ghost" size="sm" onClick={() => setSelected(null)}>Clear</Button> : undefined}>
-              {node ? <NodeDetails node={node} weeks={periodWords} thresholds={q.data.status_thresholds} /> : <NetworkSummary nodes={visibleNodes} weeks={periodWords} onSelect={setSelected} />}
+            <Panel variant="secondary" motif="verify" title={node ? "Unit details" : "This week"} className="min-w-0" actions={node ? <Button variant="ghost" size="sm" onClick={() => setSelected(null)}>Clear</Button> : undefined}>
+              {node ? <NodeDetails node={node} weeks={periodWords} thresholds={q.data.status_thresholds} /> : <NetworkSummary nodes={visibleNodes} weeks={periodWords.charAt(0).toUpperCase() + periodWords.slice(1)} thresholds={q.data.status_thresholds} onSelect={setSelected} />}
             </Panel>
           </div>
         </div>

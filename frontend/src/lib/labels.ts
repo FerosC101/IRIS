@@ -5,6 +5,7 @@ export const ROLE_LABELS: Record<Role, string> = {
   provincial_coordinator: "Provincial coordinator",
   resu_analyst: "RESU analyst",
   admin: "Administrator / data manager",
+  real_data: "Real-data analyst",
 };
 
 export type Tone = "neutral" | "critical" | "attention" | "info" | "positive" | "teal";

@@ -42,6 +42,7 @@ ROLE_DESCRIPTIONS = {
     "provincial_coordinator": "Reviews concerns across units in a province, assigns investigations and coordinates follow-up.",
     "resu_analyst": "Reviews patterns across the regional network, compares methods, prioritises corrective actions and approves plans.",
     "admin": "Imports and validates datasets, manages reporting-unit metadata and reviews system activity.",
+    "real_data": "Reviews leads from the models on real DOH dengue data only. Sees none of the simulated demo region.",
 }
 
 USERS = [
@@ -53,6 +54,7 @@ USERS = [
     ("U-RESU-1", "RESU Surveillance Analyst (demo)", "resu_analyst", "ORG-RESU", None, None),
     ("U-RESU-2", "RESU Epidemiologist (demo)", "resu_analyst", "ORG-RESU", None, None),
     ("U-ADMIN", "Data Manager (demo)", "admin", "ORG-RESU", None, None),
+    ("U-REAL", "Real-Data Analyst", "real_data", "ORG-RESU", None, None),
 ]
 
 DEMO_DICTIONARY = [
@@ -391,3 +393,13 @@ def ensure_seeded() -> None:
     with SessionLocal() as session:
         if session.get(Dataset, config.DEMO_DATASET_ID) is None:
             build(session)
+            return
+        # Roles and demo users added after a database was seeded are filled in without a reset.
+        for rid, label in ROLE_LABELS.items():
+            if session.get(Role, rid) is None:
+                session.add(Role(id=rid, name=label, description=ROLE_DESCRIPTIONS[rid]))
+        session.flush()
+        for uid, name, role, org, unit, prov in USERS:
+            if session.get(User, uid) is None:
+                session.add(User(id=uid, display_name=name, role_id=role, organization_id=org, reporting_unit_id=unit, province=prov))
+        session.commit()

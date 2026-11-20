@@ -17,3 +17,10 @@ export function fmtMetric(v: unknown): string {
   if (typeof v === "number") return Number.isInteger(v) ? fmtNum(v) : Math.abs(v) < 1 ? v.toFixed(3) : fmtNum(v, 2);
   return String(v);
 }
+
+/** "NORTH COTABATO" -> "North Cotabato", "CITY OF ISABELA" -> "City of Isabela". Display only. */
+export function placeName(s: string): string {
+  if (s !== s.toUpperCase()) return s;
+  return s.toLowerCase().replace(/(^|[\s(-])([a-zñ])/g, (_m, a: string, b: string) => a + b.toUpperCase()).replace(/\b(Of|De|Del|And)\b/g, (w) => w.toLowerCase())
+    .replace(/^([a-z])/, (c) => c.toUpperCase()).replace(/\bNcr\b/g, "NCR");
+}

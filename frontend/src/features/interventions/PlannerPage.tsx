@@ -1,14 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Save } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { PlanStatusBadge, SeverityBadge } from "@/components/data-display/badges";
 import { DataTable } from "@/components/data-display/DataTable";
-import { MetricCard } from "@/components/data-display/MetricCard";
 import { parseBudget, withinBudget } from "@/lib/decision-support";
-import { SimpleTable } from "@/components/data-display/charts";
-import { PageHeader } from "@/components/data-display/PageHeader";
-import { Badge } from "@/components/ui/badge";
+import { PageHero } from "@/components/shell/PageHero";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Checkbox, Field, Input, Textarea } from "@/components/ui/form";
@@ -16,7 +13,7 @@ import { Panel } from "@/components/ui/panel";
 import { EmptyState, ErrorState, InlineError, Loading } from "@/components/ui/states";
 import { useSession } from "@/hooks/useSession";
 import { useToast } from "@/hooks/useToast";
-import { fmtDate, fmtNum, fmtPct } from "@/lib/format";
+import { fmtDate, fmtNum } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { api } from "@/services/api";
 import type { Assumptions, CandidateAction, Comparison, Plan, PlanSummary } from "@/types/api";
@@ -116,6 +113,54 @@ function Disclosure({ title, children, count }: { title: string; children: React
   );
 }
 
+const SEV_COLOR: Record<string, string> = { high: "#0A3A4A", medium: "#1A9EA0", low: "#7893A8" };
+
+/** The staff-hour budget as a bar: one block per chosen action, sized by its hours and coloured by the concern's priority. */
+function BudgetBar({ plan, byId, unitName }: { plan: PlanSummary; byId: Map<string, CandidateAction>; unitName: (id: string) => string }) {
+  const used = plan.action_ids.reduce((s, id) => s + (byId.get(id)?.cost_hours ?? 0), 0);
+  const total = Math.max(plan.budget_hours, used);
+  return (
+    <figure aria-label={`${plan.action_ids.length} actions using ${fmtNum(used, 1)} of ${plan.budget_hours} staff-hours`} className="flex flex-col gap-1.5">
+      <div className="flex h-14 gap-[2px] overflow-hidden rounded-md bg-tint">
+        {plan.action_ids.map((id) => {
+          const a = byId.get(id);
+          if (!a || a.cost_hours == null) return null;
+          const label = a.cost_hours >= 3 ? `${unitName(a.unit_ids[0]).replace(/ RHU\b/, "")}${a.unit_ids.length > 1 ? ` +${a.unit_ids.length - 1}` : ""}` : "";
+          return (
+            <div key={id} title={`${a.title} · ${fmtNum(a.cost_hours, 1)} h`} className="flex min-w-0 items-end overflow-hidden px-1.5 pb-1 text-[11px] font-semibold whitespace-nowrap text-white"
+              style={{ flex: `${a.cost_hours} 1 0`, background: SEV_COLOR[a.concern_severity ?? "low"] }}>{label}</div>
+          );
+        })}
+        {total > used && <div style={{ flex: `${total - used} 1 0` }} aria-hidden />}
+      </div>
+      <div className="flex justify-between text-[11px] text-ink-2 tabular" aria-hidden>
+        {[0, 0.25, 0.5, 0.75, 1].map((f) => <span key={f}>{fmtNum(total * f, 0)} h</span>)}
+      </div>
+    </figure>
+  );
+}
+
+/** The plan against doing the highest priority first, as two bars on one scale. */
+function CompareBars({ opt, base }: { opt: PlanSummary; base: PlanSummary }) {
+  const max = Math.max(opt.total_expected_benefit, base.total_expected_benefit, 1);
+  const rows = [
+    { label: "IRIS plan", v: opt.total_expected_benefit, color: "#1A9EA0", strong: true },
+    { label: "Highest priority first", v: base.total_expected_benefit, color: "#7893A8", strong: false },
+  ];
+  return (
+    <div className="flex flex-col gap-2">
+      {rows.map((r) => (
+        <div key={r.label} className="grid grid-cols-[9.5rem_minmax(0,1fr)_3.5rem] items-center gap-3">
+          <span className={cn("text-[13px]", r.strong ? "font-medium text-ink" : "text-ink-2")}>{r.label}</span>
+          <span className="h-3 overflow-hidden rounded-full bg-tint" aria-hidden><span className="block h-full rounded-full" style={{ width: `${(r.v / max) * 100}%`, background: r.color }} /></span>
+          <span className={cn("text-right font-display text-lg tabular", r.strong ? "text-ink" : "text-ink-2")}>{fmtNum(r.v, 0)}</span>
+        </div>
+      ))}
+      <p className="text-xs text-ink-2">Report-weeks likely recovered over the next weeks (estimate), with the same hours and the same open concerns.</p>
+    </div>
+  );
+}
+
 export function PlannerPage() {
   const { can, unitName } = useSession();
   const [params, setParams] = useSearchParams();
@@ -144,6 +189,14 @@ export function PlannerPage() {
   });
   const changed = !!result.data && JSON.stringify(input) !== JSON.stringify(result.variables);
   const current = !!result.data?.optimized && !!result.data?.baseline && !changed && !result.isPending && !result.error;
+  // Make the plan once on arrival so the page opens on a result; later runs are the user's.
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (autoRan.current || !assumptions || !actionsQ.data || parsedBudget === null || !included.length) return;
+    autoRan.current = true;
+    result.mutate({ budget_hours: parsedBudget, action_ids: included, assumptions });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assumptions, actionsQ.data]);
   const save = useMutation({
     mutationFn: (p: PlanSummary) => api.savePlan({ name: planName, method: p.method, budget_hours: p.budget_hours, action_ids: p.action_ids, assumptions: result.data!.assumptions, notes: planNotes }),
     onSuccess: (p) => { qc.invalidateQueries({ queryKey: ["plans"] }); setSaving(null); toast(`Plan ${p.id} saved as a draft.`); setParams((x) => { const n = new URLSearchParams(x); n.set("plan", p.id); return n; }); },
@@ -157,58 +210,44 @@ export function PlannerPage() {
 
   return (
     <>
-      <PageHeader title="Intervention Planner" description="Prioritize reporting recovery actions within available resources." />
+      <PageHero section="investigations" eyebrow="Response workspace / Plan actions" title="Build a response around the resources you have."
+        subtitle="Hours and success rates are planning assumptions, not measured results." />
       {actionsQ.error ? <ErrorState error={actionsQ.error} onRetry={() => actionsQ.refetch()} /> : !actionsQ.data || !assumptions ? <Loading /> : (
         <div className="iris-workspace-stack">
-          <div className="grid items-stretch gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-          <Panel className="iris-decision-hero iris-planner-hero" motif="network" bodyClassName="p-6 lg:p-8">
-            <p className="iris-eyebrow mb-3">Resource-aware reporting response</p>
-            <h2 className="text-2xl font-semibold">{current && opt ? `${opt.action_ids.length} recommended actions for ${opt.units_covered.length} reporting units` : "Build a response around the resources you have."}</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed">Compare a budget-constrained selection with the priority-first baseline, then save a draft for review. Candidates come from open concerns and may still require verification.</p>
-            <div className="mt-5 flex flex-wrap gap-2"><Badge tone="info">Synthetic planning assumptions</Badge><Badge>{current ? "Comparison ready" : "Awaiting explicit comparison"}</Badge></div>
-            <p className="mt-4 text-xs text-ink-2">Estimated benefit is expressed in report-weeks over the planning horizon. It is not a guarantee of recovered submissions or health outcomes.</p>
-          </Panel>
-          <Panel title="Resources and planning controls" variant="secondary" motif="records">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <div className="sm:w-48">
-                <Field label="Staff-hours available" hint="0 to 2,000 staff-hours; fractional values are preserved." error={parsedBudget === null ? "Enter a budget from 0 to 2,000 staff-hours." : undefined}>{(p) => <Input {...p} type="number" min={0} max={2000} step="any" value={budget} disabled={result.isPending} onChange={(e) => setBudget(e.target.value)} />}</Field>
-              </div>
-
+          <div className="flex flex-col gap-3 rounded-lg border border-line bg-white px-4 py-3 sm:flex-row sm:items-end sm:px-5">
+            <div className="sm:w-44">
+              <Field label="Staff-hours this week" error={parsedBudget === null ? "Enter 0 to 2,000 hours." : undefined}>{(p) => <Input {...p} type="number" min={0} max={2000} step="any" value={budget} disabled={result.isPending} onChange={(e) => setBudget(e.target.value)} />}</Field>
             </div>
-            <p className="mt-3 text-xs text-ink-2">Budget unit: staff time, not currency. Existing dependency and candidate rules apply.</p>
-            <Button className="mt-4" disabled={parsedBudget === null || included.length === 0 || result.isPending || save.isPending} onClick={() => { if (parsedBudget !== null) result.mutate({ budget_hours: parsedBudget, action_ids: included, assumptions }); }}>{result.isPending ? "Comparing plans..." : "Run optimization"}</Button>
-            {focus && <div className="mt-3"><Checkbox label={`Only plan for concern ${focus}`} checked={onlyFocus} onChange={setOnlyFocus} /></div>}
-          </Panel>
-
+            <Button disabled={parsedBudget === null || included.length === 0 || result.isPending || save.isPending} onClick={() => { if (parsedBudget !== null) result.mutate({ budget_hours: parsedBudget, action_ids: included, assumptions }); }}>{result.isPending ? "Planning…" : "Make a plan"}</Button>
+            {focus && <Checkbox label={`Only plan for concern ${focus}`} checked={onlyFocus} onChange={setOnlyFocus} />}
+            <p className="text-xs text-ink-2 sm:ml-auto sm:max-w-xs sm:text-right">{pool.length} possible actions from the open concerns.</p>
           </div>
-          {opt && <div className="iris-phase4-metrics grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Compared budget" value={`${String(opt.budget_hours)} h`} detail="Budget submitted for the last explicit comparison." motif="records" />
-            <MetricCard label="Estimated plan cost" value={`${fmtNum(opt.total_cost_hours, 1)} h`} detail="Backend cost under the compared assumptions." motif="verify" />
-            <MetricCard label="Recommended actions" value={opt.action_ids.length} detail="Backend selection, separate from user candidate inclusion." motif="network" />
-            <MetricCard label="Estimated reporting benefit" value={`${fmtNum(opt.total_expected_benefit, 1)} report-weeks`} detail="Assumed report-weeks; effectiveness is not validated." motif="trends" />
-          </div>}
-          {changed && <p role="status" className="text-sm text-attention-ink">Inputs changed. Results below describe the previous comparison. Run optimization again before saving.</p>}
+          {changed && <p role="status" className="text-sm text-attention-ink">Inputs changed. The plan below is for the previous inputs. Make the plan again before saving.</p>}
           {overBudget && <p role="alert" className="text-sm text-critical-ink">The backend returned a plan above the submitted budget. Saving this recommendation is disabled. Adjust the budget explicitly and compare again.</p>}
-          <Panel title="Recommended intervention plan" motif="network" description={pool.length ? undefined : "There are no open concerns that need an action right now."}>
+          <Panel title="The plan" motif="network" description={pool.length ? undefined : "There are no open concerns that need an action right now."}>
             {included.length === 0 ? <p className="text-sm text-ink-2">No actions selected. Open “Choose which actions to consider” below.</p>
               : result.error ? <InlineError error={result.error} />
               : result.isPending ? <Loading label="Comparing intervention plans" />
-              : !opt || !base ? <EmptyState title={result.isSuccess ? "Comparison result unavailable" : "No comparison run yet"}>{result.isSuccess ? "The backend did not return both supported plans. Run optimization again or review the server response." : "Review the candidate pool and assumptions, then choose Run optimization."}</EmptyState> : (
+              : !opt || !base ? <EmptyState title={result.isSuccess ? "Comparison result unavailable" : "No comparison run yet"}>{result.isSuccess ? "The server did not return both plans. Make the plan again." : "Choose Make a plan."}</EmptyState> : (
               <div className={cn("flex flex-col gap-4", result.isPending && "opacity-60")} aria-busy={result.isPending}>
                 {opt.action_ids.length === 0 ? <p className="text-sm text-ink">No action fits in {String(opt.budget_hours)} hours. Try more hours.</p> : (
                   <>
-                    <p className="text-[15px] text-ink">
-                      Do <strong>{opt.action_ids.length} actions</strong> for {opt.concerns_covered.length} concerns, using <strong>{fmtNum(opt.total_cost_hours, 2)} of {String(opt.budget_hours)} hours</strong>.
-                      The model estimates <strong>{fmtNum(opt.total_expected_benefit, 1)} report-weeks of benefit</strong> over the next {r?.assumptions.horizon_weeks} weeks.
-                    </p>
+                    <div data-tour="plan-budget" className="flex flex-col gap-4">
+                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                        <p className="font-display text-xl text-ink">{opt.action_ids.length} actions · {fmtNum(opt.total_cost_hours, 1)} of {String(opt.budget_hours)} h</p>
+                        <span className="text-[13px] text-ink-2">for {opt.concerns_covered.length} concerns</span>
+                        <span className="ml-auto flex gap-3 text-[11.5px] text-ink-2">{(["high", "medium", "low"] as const).map((s) => <span key={s} className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm" style={{ background: SEV_COLOR[s] }} aria-hidden />{s[0].toUpperCase() + s.slice(1)}</span>)}</span>
+                      </div>
+                      <BudgetBar plan={opt} byId={byId} unitName={unitName} />
+                      <CompareBars opt={opt} base={base} />
+                    </div>
                     <ol className="flex flex-col divide-y divide-line rounded-md border border-line">
                       {opt.action_ids.slice(0, showAll ? undefined : 5).map((id, i) => { const a = byId.get(id)!; return (
                         <li key={id} className="flex items-start gap-3 px-3 py-2.5">
                           <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-aqua-50 text-xs font-semibold text-teal-900">{i + 1}</span>
                           <span className="min-w-0 flex-1 text-sm">
                             <span className="font-medium text-ink">{a.title}</span>
-                            <span className="block text-xs text-ink-2">Estimated {fmtNum(a.expected_benefit, 1)} report-weeks | assumed success {fmtPct(a.success_probability)}</span>
-                            <span className="block text-[13px] text-ink-2">{a.unit_ids.map(unitName).slice(0, 2).join(", ")}{a.unit_ids.length > 2 ? ` +${a.unit_ids.length - 2}` : ""} · {fmtNum(a.cost_hours, 1)} h · about {a.time_days} day(s)</span>
+                                                        <span className="block text-[13px] text-ink-2">{a.unit_ids.map(unitName).slice(0, 2).join(", ")}{a.unit_ids.length > 2 ? ` +${a.unit_ids.length - 2}` : ""} · {fmtNum(a.cost_hours, 1)} h · about {a.time_days} day(s)</span>
                           </span>
                         </li>
                       ); })}
@@ -218,10 +257,6 @@ export function PlannerPage() {
                         {showAll ? "Show fewer" : `Show all ${opt.action_ids.length} actions`}
                       </button>
                     )}
-                    <p className="text-[13px] text-ink-2">
-                      {gain > 0.05 ? <>Simply doing the highest-priority items first estimates {fmtNum(base.total_expected_benefit, 1)} report-weeks with the same hours, so the estimated difference is {fmtNum(gain, 1)} report-weeks.</>
-                        : <>Doing the highest-priority items first gives the same result here.</>}
-                    </p>
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <Button onClick={() => { save.reset(); setSaving(opt); setPlanName(`Suggested plan, ${budget} h`); }} disabled={!can("plan.create") || !current || overBudget}><Save aria-hidden /> Save this plan</Button>
                       {gain > 0.05 && <Button variant="ghost" onClick={() => { save.reset(); setSaving(base); setPlanName(`Priority-order plan, ${budget} h`); }} disabled={!can("plan.create") || !current || !withinBudget(base.total_cost_hours, base.budget_hours)}>Save the priority-order plan instead</Button>}
@@ -234,15 +269,10 @@ export function PlannerPage() {
                     </details>
                   </>
                 )}
-                <p className="text-xs text-ink-2">Estimates come from demo assumptions about cost and success, not real-world evidence. No facility is contacted.</p>
               </div>
             )}
           </Panel>
 
-          {opt && base && <Panel title="Matched strategy comparison" description="Same candidate pool and assumptions. The baseline selects highest-priority actions first." motif="trends">
-            <div role="region" aria-label="Plan comparison" tabIndex={0} className="overflow-x-auto"><SimpleTable head={["Strategy", "Cost (staff-hours)", "Actions", "Estimated benefit (report-weeks)", "Remaining hours"]} rows={[opt, base].map((p) => [p.method === "optimized" ? "Optimized" : "Priority-first baseline", p.total_cost_hours, p.action_ids.length, p.total_expected_benefit, p.remaining_hours])} /></div>
-            <p className="mt-3 text-xs text-ink-2">Results use illustrative cost and success assumptions. Backend optimization uses half-hour capacity increments; fractional budgets can yield an over-budget result, which this page flags without changing the entered budget. Saved plans undergo backend validation.</p>
-          </Panel>}
           <Disclosure title="Choose which actions to consider" count={pool.length}>
             <p className="mb-3 text-[13px] text-ink-2">Untick an action to leave it out of the plan.</p>
             <DataTable<CandidateAction>

@@ -1,6 +1,6 @@
 /** Types mirroring the IRIS FastAPI responses. */
 
-export type Role = "rhu_staff" | "provincial_coordinator" | "resu_analyst" | "admin";
+export type Role = "rhu_staff" | "provincial_coordinator" | "resu_analyst" | "admin" | "real_data";
 export type Severity = "high" | "medium" | "low";
 export type ConcernStatus = "open" | "under_review" | "clarification_requested" | "in_investigation" | "resolved" | "dismissed";
 export type Verification = "unverified" | "confirmed" | "dismissed";

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, CalendarDays, FileWarning, MessageSquareReply } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { TrendChart } from "@/components/data-display/charts";
 import { ChoiceFilter, type GlobalFilterKey } from "@/components/shell/GlobalFilterBar";
 import { ScreenHeader } from "@/components/shell/ScreenHeader";
@@ -13,10 +13,10 @@ import { fmtDate, fmtNum, fmtPct, fmtPeriod } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { canAccess } from "@/lib/navigation";
 import { api } from "@/services/api";
-import type { Task } from "@/types/api";
-import { GettingStarted } from "./GettingStarted";
+import type { QueueRow, Task } from "@/types/api";
 import { PriorityLabel, QueueStatus, QueueTable } from "./QueueTable";
 import { SubmitReportDialog } from "./SubmitReportDialog";
+import { UnitTiles } from "./UnitTiles";
 
 function TaskList({ tasks }: { tasks: Task[] }) {
   const [active, setActive] = useState<Task | null>(null);
@@ -63,15 +63,40 @@ const STAGES = [
 ] as const;
 
 /** One headline number: label, value, and a short line of context. */
-function Stat({ label, value, note, tone, children, className }: { label: string; value: string; note?: ReactNode; tone?: "critical"; children?: ReactNode; className?: string }) {
+function Stat({ label, value, note, tone, children, className, spark }: { label: string; value: string; note?: ReactNode; tone?: "critical"; children?: ReactNode; className?: string; spark?: (number | null)[] }) {
   return (
     <div className={`flex min-w-0 flex-col rounded-lg border border-line bg-white px-4 py-3.5 sm:px-5 sm:py-4 ${className ?? ""}`}>
       <dt className="text-[13px] font-medium text-ink-2">{label}</dt>
       <dd className={`mt-1 text-[26px] leading-none sm:text-[32px] font-semibold tracking-tight tabular ${tone === "critical" ? "text-critical-ink" : "text-ink"}`}>{value}</dd>
       {note && <dd className="mt-2 text-xs leading-snug text-ink-2">{note}</dd>}
+      {spark && <dd className="mt-auto pt-3"><Sparkline values={spark} /></dd>}
       {children}
     </div>
   );
+}
+
+/** Twelve weeks as a small filled line; the last week is the dot. Decorative: the number above carries the value. */
+function Sparkline({ values }: { values: (number | null)[] }) {
+  const v = values.map((x) => x ?? NaN);
+  const ok = v.filter((x) => !Number.isNaN(x));
+  if (ok.length < 2) return null;
+  const lo = Math.min(...ok, 0.6), hi = 1, W = 200, H = 34;
+  const pts = v.map((x, i) => [(i / (v.length - 1)) * W, Number.isNaN(x) ? NaN : H - 2 - ((x - lo) / (hi - lo)) * (H - 6)] as const).filter(([, y]) => !Number.isNaN(y));
+  const line = pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const [lx, ly] = pts[pts.length - 1];
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="block h-8 w-full overflow-visible" aria-hidden>
+      <polygon points={`${pts[0][0]},${H} ${line} ${lx},${H}`} fill="#1A9EA0" opacity={0.12} />
+      <polyline points={line} fill="none" stroke="#1A9EA0" strokeWidth={2} vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+      <circle cx={lx} cy={ly} r={3.5} fill="#0A3A4A" vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
+}
+
+/** "Possible shared problem — 5 units via Tahimik Provincial Reporting Hub" -> "5 units via Tahimik hub". */
+function incidentLabel(r: QueueRow): string {
+  const t = r.title.split(" — ").slice(1).join(" — ") || r.title;
+  return t.replace(/\s*\(.*\)$/, "").replace(/ Provincial Reporting Hub| Reporting Hub/, " hub").replace(/^(.*) (\S+) and \1 (\S+)$/, "$1 $2 and $3");
 }
 
 function Change({ now, before }: { now: number | null | undefined; before: number | null | undefined }) {
@@ -105,7 +130,7 @@ function QueueTabs({ value, onChange, options }: { value: string; onChange: (v: 
 }
 
 export function OverviewPage() {
-  const { meta, role, unitName } = useSession();
+  const { role, unitName } = useSession();
   const [period, setPeriod] = useState("4w");
   const [status, setStatus] = useState("active");
   // Keep the last result on screen while a new status or period loads, so only the queue updates.
@@ -122,6 +147,13 @@ export function OverviewPage() {
   const scope = q.data?.scope;
   const scopeLabel = scope?.unit_id ? unitName(scope.unit_id) : scope?.province ?? "All reporting units";
   const rhu = role === "rhu_staff";
+  const reviewer = !!role && canAccess("/network", role);
+  // Shared problems (open or fixed, not dismissed) become shaded bands on the 12-week chart.
+  const shared = useQuery({ queryKey: ["concerns", "shared_problem"], queryFn: () => api.concerns({ concern_type: "shared_problem", page_size: 50 }), enabled: reviewer });
+  const incidents = (shared.data?.rows ?? []).filter((r) => r.status !== "dismissed").flatMap((r) => {
+    const inside = trend.filter((p) => p.period_start >= r.period_start && p.period_start <= r.period_end);
+    return inside.length ? [{ from: inside[0].period_start, to: inside.at(-1)!.period_start, label: incidentLabel(r) }] : [];
+  });
 
   // Only the period applies here; the shared region, disease, week and unit filters do not change this page.
   const filterBar = {
@@ -131,6 +163,8 @@ export function OverviewPage() {
     onResetExtra: () => setPeriod("4w"),
   };
 
+  if (role === "real_data") return <Navigate to="/reports/dengue" replace />;
+
   return (
     <>
       <ScreenHeader screen="dashboard" filterBar={filterBar} />
@@ -138,7 +172,7 @@ export function OverviewPage() {
         {q.error ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : !q.data ? <Loading label="Loading overview" /> : (
           <>
             {/* 1. The story in one paragraph. */}
-            <section aria-labelledby="summary-title" className="flex flex-col gap-2">
+            <section aria-labelledby="summary-title" className="flex flex-col gap-2" data-tour="dash-summary">
               <p className="iris-eyebrow">This week · {latest ? `week of ${fmtDate(latest.period_start)}` : "latest week"}</p>
               <h2 id="summary-title" className="max-w-4xl text-[22px] leading-snug font-semibold text-ink">
                 {latest?.completeness != null ? <>{fmtPct(latest.completeness)} of expected reports arrived. </> : <>Reporting completeness is not available for this scope. </>}
@@ -146,18 +180,16 @@ export function OverviewPage() {
                 {openConcerns ? <>{openConcerns} reporting concern{openConcerns === 1 ? " is" : "s are"} open{counts?.new ? <>, {counts.new} not yet looked at</> : null}.</> : <>No reporting concerns are open.</>}
                 {counts?.overdue_follow_ups ? <> {counts.overdue_follow_ups} {counts.overdue_follow_ups === 1 ? "follow-up is" : "follow-ups are"} overdue.</> : null}
               </h2>
-              <p className="text-[13px] text-ink-2">
-                {scopeLabel} · dataset {meta?.demo_dataset_id ?? "unavailable"}, snapshot {fmtDate(q.data.dataset_as_of)} · simulated data. Concerns are flags for review, not confirmed problems.
-              </p>
+              <p className="text-[13px] text-ink-2">{scopeLabel} · simulated data · concerns are flags to check, not confirmed problems.</p>
             </section>
 
             {/* 2. Headline numbers. */}
-            <dl className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4" aria-label="Reporting indicators">
-              <Stat label="Reports received" value={fmtPct(latest?.completeness)}
-                note={latest?.completeness == null ? "Not available for this scope." : <><Change now={latest.completeness} before={before?.completeness} /> vs the week before. Late reports can still arrive.</>} />
-              <Stat label="Received on time" value={fmtPct(latest?.timeliness)}
-                note={latest?.timeliness == null ? "Not available for this scope." : <><Change now={latest.timeliness} before={before?.timeliness} /> vs the week before.</>} />
-              <Stat label="Open concerns" value={fmtNum(openConcerns)} note="All weeks, in your reporting scope." className="col-span-2 sm:col-span-1">
+            <dl className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4" aria-label="Reporting indicators" data-tour="dash-kpis">
+              <Stat label="Reports received" value={fmtPct(latest?.completeness)} spark={trend.map((p) => p.completeness)}
+                note={latest?.completeness == null ? "Not available for this scope." : <><Change now={latest.completeness} before={before?.completeness} /> vs last week</>} />
+              <Stat label="Received on time" value={fmtPct(latest?.timeliness)} spark={trend.map((p) => p.timeliness)}
+                note={latest?.timeliness == null ? "Not available for this scope." : <><Change now={latest.timeliness} before={before?.timeliness} /> vs last week</>} />
+              <Stat label="Open concerns" value={fmtNum(openConcerns)} note={counts?.new ? `${counts.new} new` : "None new"} className="col-span-2 sm:col-span-1">
                 {!!openConcerns && counts && (
                   <div className="mt-3">
                     <div className="flex h-2 gap-0.5 overflow-hidden rounded-full" aria-hidden>
@@ -174,21 +206,29 @@ export function OverviewPage() {
               {rhu
                 ? <Stat label="Reports and replies due" value={fmtNum(counts?.tasks)} note="Outstanding tasks for your unit." tone={counts?.tasks ? "critical" : undefined} />
                 : <Stat label="Overdue follow-ups" value={fmtNum(counts?.overdue_follow_ups)} tone={counts?.overdue_follow_ups ? "critical" : undefined}
-                    note={<>{fmtNum(counts?.follow_ups_active)} corrective action{counts?.follow_ups_active === 1 ? "" : "s"} in progress.</>} />}
+                    note={<>{fmtNum(counts?.follow_ups_active)} action{counts?.follow_ups_active === 1 ? "" : "s"} in progress</>}>
+                    {!!counts?.follow_ups_active && (
+                      <div className="mt-auto flex h-2 gap-0.5 overflow-hidden rounded-full pt-0" aria-hidden>
+                        <span className="bg-critical" style={{ flexGrow: counts.overdue_follow_ups }} />
+                        <span className="bg-teal-600" style={{ flexGrow: counts.follow_ups_active - counts.overdue_follow_ups }} />
+                      </div>
+                    )}
+                  </Stat>}
             </dl>
             {all.error && status !== "active" && <ErrorState error={all.error} onRetry={() => all.refetch()} title="Scope-wide indicators could not refresh" />}
 
-            {rhu && <Panel id="tasks" title={`Your to-do list (${q.data.tasks.length})`} motif="records"><TaskList tasks={q.data.tasks} /></Panel>}
+            {rhu && <div data-tour="dash-tasks"><Panel id="tasks" title={`Your to-do list (${q.data.tasks.length})`} motif="records"><TaskList tasks={q.data.tasks} /></Panel></div>}
 
             {/* 3. Trend, and the one thing to look at first. */}
             <div className="grid grid-cols-1 items-stretch gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
-              <Panel title="Reporting over the last 12 weeks" description="Share of expected weekly reports that arrived, and that arrived by the due date." motif="trends">
+              <div data-tour="dash-trend" className="min-w-0"><Panel title="Reporting over 12 weeks" description="Share of expected reports that arrived. Red bands: shared problems." motif="trends" className="h-full">
                 {trend.some((point) => point.completeness !== null || point.timeliness !== null) ? (
-                  <TrendChart data={trend} xKey="period_start" series={[{ key: "completeness", label: "Received" }, { key: "timeliness", label: "On time" }]} title="Reporting completeness and timeliness" height={240} />
+                  <TrendChart data={trend} xKey="period_start" series={[{ key: "completeness", label: "Received" }, { key: "timeliness", label: "On time" }]} title="Reporting completeness and timeliness" height={250} incidents={incidents} />
                 ) : <EmptyState title="Reporting trend unavailable">This scope does not provide the reporting expectations needed for these metrics.</EmptyState>}
-                {role && canAccess("/reports/recovery", role) && <Link to="/reports/recovery" className="mt-2 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-teal-900 hover:underline">See recovery after actions <ArrowRight className="size-4" aria-hidden /></Link>}
-              </Panel>
-              <Panel title="Look at this first" description={priority?.severity === "high" ? "The highest-priority open concern in the queue period." : "An open concern from the queue period."} motif="verify" className="iris-priority">
+              </Panel></div>
+              {reviewer ? (
+                <div data-tour="dash-units" className="min-w-0"><Panel title="This week by unit" description="Every reporting unit, grouped by province." motif="network" className="h-full"><UnitTiles /></Panel></div>
+              ) : <Panel title="Look at this first" description={priority?.severity === "high" ? "The highest-priority open concern in the queue period." : "An open concern from the queue period."} motif="verify" className="iris-priority">
                 {priority ? (
                   <div className="flex h-full flex-col gap-4">
                     <div className="flex flex-wrap items-center gap-2"><PriorityLabel severity={priority.severity} /><span className="text-ink-2/50" aria-hidden>·</span><QueueStatus row={priority} /></div>
@@ -206,38 +246,26 @@ export function OverviewPage() {
                     <p className="text-xs text-ink-2">Priority is advisory: a flag is a reason to check, not proof of a reporting failure.</p>
                   </div>
                 ) : <EmptyState title="No open concern in this period">Choose a longer queue period in the filters to see others.</EmptyState>}
-              </Panel>
+              </Panel>}
             </div>
 
-            {/* 4. Everything that needs attention. */}
+            {/* 4. Everything that needs attention: the top five for reviewers, all of it for a unit. */}
+            <div data-tour="dash-queue">
             <Panel id="queue" title={rhu ? "Concerns about your unit" : "Work queue"} motif="records" bodyClassName="p-0"
-              description={`Concerns and corrective actions from ${fmtPeriod(q.data.period.start, q.data.period.end)}, overdue first. Open a row to review it.`}>
-              <QueueTabs value={status} onChange={setStatus} options={[
+              description={rhu ? `Concerns and actions from ${fmtPeriod(q.data.period.start, q.data.period.end)}, overdue first.` : `Top ${Math.min(5, q.data.queue.length)} of ${q.data.queue.length}, overdue first.`}
+              actions={!rhu && role && canAccess("/investigations", role) ? <Link to="/investigations" className="inline-flex min-h-9 items-center gap-1.5 text-sm font-medium text-teal-900 hover:underline">View all <ArrowRight className="size-4" aria-hidden /></Link> : undefined}>
+              {rhu && <QueueTabs value={status} onChange={setStatus} options={[
                 { value: "active", label: "All open", count: total },
                 ...STAGES.map((st) => ({ value: st.key === "new" ? "open" : st.key, label: st.label, count: counts?.[st.key], color: st.color })),
                 { value: "all", label: "Closed included" },
-              ]} />
+              ]} />}
               <div className={cn("px-4 py-2 transition-opacity md:p-0", q.isPlaceholderData && "opacity-50")} aria-busy={q.isPlaceholderData}>
-                <QueueTable rows={q.data.queue} emptyState={<div className="py-4"><EmptyState title={status === "active" ? "Nothing needs attention in this period" : "No matching items"}>{status === "active" ? "No open concerns or actions in this period." : <Button variant="secondary" size="sm" onClick={() => setStatus("active")}>Show all open items</Button>}</EmptyState></div>} />
+                <QueueTable rows={rhu ? q.data.queue : q.data.queue.slice(0, 5)} emptyState={<div className="py-4"><EmptyState title={status === "active" ? "Nothing needs attention in this period" : "No matching items"}>{status === "active" ? "No open concerns or actions in this period." : <Button variant="secondary" size="sm" onClick={() => setStatus("active")}>Show all open items</Button>}</EmptyState></div>} />
               </div>
             </Panel>
-
-            {/* 5. What was closed recently. */}
-            <Panel title="Recently closed" variant="secondary" motif="verify">
-              {q.data.recently_closed.length ? (
-                <ul className="grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
-                  {q.data.recently_closed.slice(0, 4).map((c) => (
-                    <li key={c.id} className="min-w-0 text-sm">
-                      <Link to={`/investigations/${c.id}`} className="font-medium text-teal-900 hover:underline">{c.title}</Link>
-                      <p className="mt-0.5 text-xs text-ink-2">{c.status_label} · {fmtDate(c.closed_at)}</p>
-                    </li>
-                  ))}
-                </ul>
-              ) : <EmptyState title="No recently closed concerns" />}
-            </Panel>
+            </div>
           </>
         )}
-        {role && <GettingStarted role={role} />}
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataTable } from "@/components/data-display/DataTable";
 import { ChipFilter, FilterBar, FilterField } from "@/components/data-display/FilterBar";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +13,8 @@ import { fmtDate, fmtNum, fmtPct } from "@/lib/format";
 import type { Tone } from "@/lib/labels";
 import { api } from "@/services/api";
 import type { ZeroBand, ZeroReportItem, ZeroReports } from "@/types/api";
-import { StatStrip, WeekBars, WeekStepper } from "./charts";
-import { fmtChance } from "./format";
+import { WeekBars, WeekStepper } from "./charts";
+import { fmtChance, placeName } from "./format";
 import { LeadReviewSection, ReviewBadge, useRealStatus } from "./LeadReview";
 
 const MISSING: ZeroBand = "Missing report (not ranked)";
@@ -105,6 +105,22 @@ function ZeroDetail({ item, d }: { item: ZeroReportItem; d: ZeroReports }) {
   );
 }
 
+/** The zero (or count) that was reported, a dashed gap, and the cases Model A expected, on one small scale. */
+export function Gauge({ reported, expected }: { reported?: number | null; expected?: number | null }) {
+  if (reported == null || expected == null) return <span className="text-ink-2">—</span>;
+  const max = Math.max(20, Math.ceil(expected / 5) * 5), x = (v: number) => 6 + (v / max) * 188;
+  return (
+    <svg viewBox="0 0 200 30" className="block h-[30px] w-full max-w-[15rem] overflow-visible" role="img" aria-label={`Reported ${fmtNum(reported)}, about ${fmtNum(expected, 0)} expected`}>
+      <line x1={6} x2={194} y1={19} y2={19} stroke="#E3E9EB" strokeWidth={5} strokeLinecap="round" />
+      <line x1={x(reported)} x2={x(expected)} y1={19} y2={19} stroke="#F2C4BF" strokeWidth={5} strokeLinecap="round" />
+      <circle cx={x(expected)} cy={19} r={5.5} fill="#fff" stroke="#7893A8" strokeWidth={2.2} />
+      <circle cx={x(reported)} cy={19} r={5.5} fill="#B65F59" />
+      <text x={x(expected)} y={8} textAnchor="middle" fontSize={10.5} fill="#4F6670">~{fmtNum(expected, 0)}</text>
+      {x(expected) - x(reported) >= 22 && <text x={x(reported)} y={8} textAnchor="middle" fontSize={10.5} fontWeight={600} fill="#9B463F">{fmtNum(reported)}</text>}
+    </svg>
+  );
+}
+
 export function ZeroReportsTab() {
   const DEF = { region: "", review: "" };
   const [week, setWeek] = useState("");
@@ -118,25 +134,30 @@ export function ZeroReportsTab() {
   // Fresh copy after a review; the row may leave the filtered list, so fall back to the one that was opened.
   const current = open && (d?.items.find((i) => i.alert_id === open.alert_id) ?? open);
   const pick = (w: string) => { setWeek(w); setPage(1); };
+  // Open on the latest week where the models found high-priority leads, not on an empty last week.
+  const opened = useRef(false);
+  useEffect(() => {
+    if (opened.current || !d || week) return;
+    opened.current = true;
+    const peak = Math.max(0, ...d.weeks.map((w) => w.high));
+    const lead = [...d.weeks].reverse().find((w) => peak > 0 && w.high >= peak / 2);
+    if (lead && lead.week_start !== d.week) pick(lead.week_start);
+  }, [d, week]);
 
   if (q.error) return <ErrorState error={q.error} onRetry={() => q.refetch()} />;
   if (!d || !wk) return <Loading label="Loading zero reports" />;
   const weeks = d.weeks.map((w) => ({ ...w, other: w.medium + w.low }));
   return (
     <div className="flex flex-col gap-5">
-      <Panel title="Zero reports each week" description="Places that reported zero dengue cases. Dark bars are the ones most likely to hide a reporting problem. Click a week to see its list.">
+      <div data-tour="real-weeks"><Panel title="Zero reports each week" description="Dark bars: most likely to hide a reporting problem. Click a week.">
         <WeekBars title="Zero reports per week by priority" data={weeks} selected={d.week} onSelect={pick}
           series={[{ key: "high", label: "High priority" }, { key: "other", label: "Medium or low priority" }]} />
-      </Panel>
+      </Panel></div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <WeekStepper weeks={d.weeks.map((w) => w.week_start)} value={d.week ?? ""} onChange={pick} label={(w) => weekLabel(d.weeks.find((x) => x.week_start === w) ?? { week_start: w })} />
+        <p className="text-[13px] text-ink-2 tabular"><span className="font-semibold text-critical-ink">{wk.high} high priority</span> · {wk.zero_reports} zero reports{wk.missing ? ` · ${wk.missing} missing` : ""} · {wk.reviewed} reviewed</p>
       </div>
-      <StatStrip items={[
-        { label: "High priority", value: wk.high, note: "Check these first" },
-        { label: "Zero reports", value: wk.zero_reports, note: wk.missing ? `plus ${wk.missing} missing reports` : "No missing reports" },
-        { label: "Reviewed", value: `${wk.reviewed} of ${wk.zero_reports + wk.missing}`, note: "Leads with a recorded review" },
-      ]} />
 
       <ChipFilter label="Priority" value={band} onChange={(v) => { setBand(v); setPage(1); }}
           options={[{ value: "", label: "All" }, { value: "High", label: "High", count: wk.high, tone: "critical" as const }, { value: "Medium", label: "Medium", count: wk.medium }, { value: "Low", label: "Low", count: wk.low }, ...(wk.missing ? [{ value: MISSING, label: "Missing", count: wk.missing }] : [])]} />
@@ -147,24 +168,24 @@ export function ZeroReportsTab() {
         <ReviewFilter value={f.review} onChange={(v) => { setF({ ...f, review: v }); setPage(1); }} />
       </FilterBar>
 
-      <Panel bodyClassName="p-0">
+      <div data-tour="real-leads"><Panel bodyClassName="p-0">
         <div className="px-4 py-2 md:p-0">
           <DataTable caption="Zero reports ranked for checking" rows={d.items} rowKey={(r) => r.alert_id} onRowClick={setOpen} minWidth={720}
-            mobileTitle={(r) => <span>{r.rank_in_week ? `${r.rank_in_week}. ` : ""}{r.location_name}<span className="block text-xs font-normal text-ink-2">{r.region_name}</span></span>}
+            mobileTitle={(r) => <span>{r.rank_in_week ? `${r.rank_in_week}. ` : ""}{placeName(r.location_name)}<span className="block text-xs font-normal text-ink-2">{r.region_name}</span></span>}
             emptyState={<EmptyState title="No zero reports match these filters" />}
             columns={[
               { key: "rank", header: "#", hideOnMobile: true, cell: (r) => <span className="text-ink-2 tabular">{r.rank_in_week ?? "—"}</span> },
               { key: "place", header: "Place", hideOnMobile: true, className: "min-w-[12rem]", cell: (r) => (
-                <div><button type="button" className="text-left font-medium text-teal-900 hover:underline" onClick={() => setOpen(r)}>{r.location_name}</button><p className="text-xs text-ink-2">{r.region_name}</p></div>
+                <div><button type="button" className="text-left font-medium text-teal-900 hover:underline" onClick={() => setOpen(r)}>{placeName(r.location_name)}</button><p className="text-xs text-ink-2">{r.region_name}</p></div>
               ) },
               { key: "band", header: "Priority", cell: (r) => <BandBadge band={r.priority} /> },
-              { key: "why", header: "Main reason", className: "min-w-[14rem]", cell: (r) => <span className="text-[13px]">{r.top_indicators[0] ?? "—"}</span> },
+              { key: "gauge", header: "Reported vs expected", className: "min-w-[15rem]", cell: (r) => <Gauge reported={r.cases} expected={r.expected} /> },
               { key: "rev", header: "Review", cell: (r) => <ReviewBadge review={r.review} /> },
             ]} />
         </div>
-      </Panel>
+      </Panel></div>
       {d.pages > 1 && <Pagination page={d.page} pages={d.pages} total={d.total} pageSize={d.page_size} onPage={setPage} />}
-      {current && <Drawer open onOpenChange={(o) => !o && setOpen(null)} size="lg" title={current.location_name} description={`${current.region_name} · ${weekLabel(current)}`}>
+      {current && <Drawer open onOpenChange={(o) => !o && setOpen(null)} size="lg" title={placeName(current.location_name)} description={`${current.region_name} · ${weekLabel(current)}`}>
         <ZeroDetail item={current} d={d} />
       </Drawer>}
     </div>

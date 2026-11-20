@@ -294,8 +294,9 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
             if history_n < params.min_history else f" Baseline: the unit's previous {min(history_n, params.history_weeks)} weeks."
         )
         common_uncertainty = (
-            f"Detection method: {method_label}. Peak score {score:.1f}. Scores describe how unusual the reporting pattern is "
-            "compared with the unit's own recent history; they are not probabilities and do not prove a reporting failure."
+            f"Detection method: {method_label}. " + (f"Peak score {score:.1f}. Scores describe how unusual the reporting pattern is "
+            "compared with the unit's own recent history; they" if score >= 0.05 else "Flags") +
+            " are not probabilities and do not prove a reporting failure."
         )
 
         if len(unit_ids) > 1:
@@ -436,7 +437,7 @@ def build_specs(results: pd.DataFrame, slots: pd.DataFrame, peer_groups: dict[st
                 obs = float(rows["total_cases"].sum())
                 exp_ = float(np.nansum(rows["count_expected"].to_numpy(dtype=float)))
                 title = f"Unexpected drop in reported counts — {uname}"
-                summary = (f"In {period}, {uname} reported {obs:.0f} cases in total, compared with about {exp_:.0f} expected from its recent weeks. "
+                summary = (f"In {period}, {uname} reported {obs:.0f} {'case' if round(obs) == 1 else 'cases'} in total, compared with about {exp_:.0f} expected from its recent weeks. "
                            "Reports were received, so this is not a missing-report problem.")
                 cats = [b["category"] for b in breakdown if b["expected"] and b["observed"] < 0.5 * b["expected"]][:3]
                 evidence = [

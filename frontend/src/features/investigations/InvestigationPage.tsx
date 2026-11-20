@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Check, CheckCircle2, ClipboardList, Eye, MessageSquare, Paperclip, RotateCcw, UserPlus, XCircle } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { ConcernStatusBadge, SeverityBadge, SimulatedTag, VerificationBadge } from "@/components/data-display/badges";
-import { PageHeader } from "@/components/data-display/PageHeader";
+import { ConcernStatusBadge, VerificationBadge } from "@/components/data-display/badges";
+import { PageHero } from "@/components/shell/PageHero";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/form";
 import { ActionMenu, type MenuItem } from "@/components/ui/menu";
@@ -33,6 +33,7 @@ const NOTE_LABEL: Record<string, string> = {
 };
 
 const STEPS = ["Review", "Verify", "Act", "Close"] as const;
+const SEVERITY_WORD: Record<string, string> = { high: "High", medium: "Medium", low: "Low" };
 
 function stepIndex(d: ConcernDetail): number {
   const c = d.concern;
@@ -203,30 +204,22 @@ export function InvestigationPage() {
 
   return (
     <>
-      <PageHeader
-        breadcrumbs={[{ label: "Investigations", to: "/investigations" }, { label: c.id }]}
-        title={c.title}
-        description={<>{c.concern_type_label} · {c.units.length > 1 ? `${c.units.length} units` : c.units[0]?.name} · {fmtPeriod(c.period_start, c.period_end)}</>}
-        meta={<>
-          <ConcernStatusBadge status={c.status} />
-          <SeverityBadge severity={c.severity} />
-          <VerificationBadge verification={c.verification} />
-          {c.simulated && <SimulatedTag />}
-        </>}
-      />
+      <PageHero section="investigations"
+        eyebrow={<>{c.id} · {c.concern_type_label}{c.simulated ? " · Simulated" : ""}</>}
+        title={c.units.length > 1 ? c.title.split(" — ").slice(1).join(" — ") || c.title : c.units[0]?.name ?? c.title}
+        subtitle={<span className="flex flex-wrap items-center gap-2">{fmtPeriod(c.period_start, c.period_end)} · {SEVERITY_WORD[c.severity]} priority <ConcernStatusBadge status={c.status} /><VerificationBadge verification={c.verification} /></span>} />
 
       <div className="iris-workspace-stack">
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_23rem]">
           {/* What happened, as numbers: the flagged weeks against the weeks before, then week by week. */}
-          <Panel motif="verify" title="What happened" description={`Flagged by the ${c.detection_method_label} check on ${fmtDate(c.created_at)}. Observed reports unless marked as an estimate.`}>
+          <div data-tour="concern-chart" className="min-w-0"><Panel motif="verify" title="What happened" description={`Flagged ${fmtDate(c.created_at)}. Observed reports unless marked as an estimate.`}>
             <p className="max-w-3xl text-[17px] leading-relaxed text-ink">{c.summary}</p>
+            <div className="mt-5"><ConcernWeekChart detail={d} /></div>
             <div className="mt-5"><ComparisonTiles detail={d} /></div>
-            <div className="mt-6"><ConcernWeekChart detail={d} /></div>
-            <p className="mt-3 text-xs leading-relaxed text-ink-2">{c.uncertainty_note}</p>
-          </Panel>
+          </Panel></div>
 
           {/* What to do about it; stays in view while reading. */}
-          <Panel variant="secondary" motif="network" title="What to do next" className="xl:sticky xl:top-[120px]">
+          <div data-tour="concern-next" className="min-w-0 xl:sticky xl:top-[120px]"><Panel variant="secondary" motif="network" title="What to do next">
             <Stepper current={stepIndex(d)} />
             <div className="mt-4 flex flex-col gap-3">
               <p className="text-[15px] text-ink"><span className="font-semibold text-teal-900">Next: </span>{hint}</p>
@@ -238,12 +231,12 @@ export function InvestigationPage() {
               </div>
             </div>
             <InlineError error={act.error} />
-            <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-4 text-[13px]">
+            {(d.investigation || c.follow_up_due) && <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-4 text-[13px]">
               <div><dt className="text-xs text-ink-2">Owner</dt><dd className={cn("mt-0.5", !d.investigation && "text-ink-2 italic")}>{d.investigation?.owner ?? "Unassigned"}</dd></div>
               <div><dt className="text-xs text-ink-2">Due</dt><dd className="mt-0.5">{c.follow_up_due ? fmtDate(c.follow_up_due) : <span className="text-ink-2">Not set</span>}</dd></div>
-            </dl>
+            </dl>}
             <div className="mt-4"><Checklist d={d} /></div>
-          </Panel>
+          </Panel></div>
         </div>
 
         <Tabs value={tab} onValueChange={setTab}>
@@ -265,7 +258,7 @@ export function InvestigationPage() {
                 <EvidenceList items={unknown} />
               </Block>
             </div>
-            <Block title={c.units.length > 1 ? `Units involved (${c.units.length})` : "Unit involved"}>
+            {c.units.length > 1 && <Block title={`Units involved (${c.units.length})`}>
               {d.via_label && <p className="mb-2 text-[13px] text-ink-2">Connected through {d.via_label}.</p>}
               <ul className="flex flex-wrap gap-2">
                 {c.units.map((u) => (
@@ -276,7 +269,7 @@ export function InvestigationPage() {
                   </li>
                 ))}
               </ul>
-            </Block>
+            </Block>}
           </TabsContent>
 
           <TabsContent value="weeks" className="flex flex-col gap-4">

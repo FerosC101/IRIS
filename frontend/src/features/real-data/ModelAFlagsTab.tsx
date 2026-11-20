@@ -12,7 +12,7 @@ import { fmtDate, fmtNum, fmtPct } from "@/lib/format";
 import { api } from "@/services/api";
 import type { ModelAAlert } from "@/types/api";
 import { RangeMarker, StatStrip, WeekBars } from "./charts";
-import { fmtChance } from "./format";
+import { fmtChance, placeName } from "./format";
 import { LeadReviewSection, ReviewBadge } from "./LeadReview";
 import { ReviewFilter } from "./ZeroReportsTab";
 
@@ -68,11 +68,11 @@ export function ModelAFlagsTab() {
       <Panel bodyClassName="p-0">
         <div className="px-4 py-2 md:p-0">
           <DataTable caption="Model A flags, newest first" rows={d.items} rowKey={(r) => r.alert_id} onRowClick={setOpen} minWidth={680}
-            mobileTitle={(r) => r.location_name} emptyState={<EmptyState title="No flags match these filters" />}
+            mobileTitle={(r) => placeName(r.location_name)} emptyState={<EmptyState title="No flags match these filters" />}
             columns={[
               { key: "wk", header: "Week of", cell: (r) => fmtDate(r.period_start) },
               { key: "place", header: "Place", hideOnMobile: true, className: "min-w-[12rem]", cell: (r) => (
-                <div><button type="button" className="text-left font-medium text-teal-900 hover:underline" onClick={() => setOpen(r)}>{r.location_name}</button>{r.region_name && <p className="text-xs text-ink-2">{r.region_name}</p>}</div>
+                <div><button type="button" className="text-left font-medium text-teal-900 hover:underline" onClick={() => setOpen(r)}>{placeName(r.location_name)}</button>{r.region_name && <p className="text-xs text-ink-2">{r.region_name}</p>}</div>
               ) },
               { key: "rep", header: "Reported vs expected cases", cell: (r) => <span className="tabular">{fmtNum(r.cases)} <span className="text-ink-2">vs about {fmtNum(r.expected, 0)} expected</span></span> },
               { key: "rev", header: "Review", cell: (r) => <ReviewBadge review={r.review} /> },
@@ -80,7 +80,7 @@ export function ModelAFlagsTab() {
         </div>
       </Panel>
       {d.pages > 1 && <Pagination page={d.page} pages={d.pages} total={d.total} pageSize={d.page_size} onPage={setPage} />}
-      {current && <Drawer open onOpenChange={(o) => !o && setOpen(null)} size="lg" title={current.location_name} description={`Low count · week of ${fmtDate(current.period_start)}`}>
+      {current && <Drawer open onOpenChange={(o) => !o && setOpen(null)} size="lg" title={placeName(current.location_name)} description={`Low count · week of ${fmtDate(current.period_start)}`}>
         <AlertDetail a={current} />
       </Drawer>}
     </div>

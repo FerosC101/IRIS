@@ -1,12 +1,13 @@
 import * as D from "@radix-ui/react-dialog";
 import * as Menu from "@radix-ui/react-dropdown-menu";
-import { Check, HelpCircle, Info, Menu as MenuIcon, Settings, X } from "lucide-react";
+import { Check, Compass, HelpCircle, Info, Menu as MenuIcon, Settings, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSession } from "@/hooks/useSession";
 import { useToast } from "@/hooks/useToast";
 import { ROLE_LABELS } from "@/lib/labels";
 import { canAccess, sectionFor, topNavFor } from "@/lib/navigation";
+import { useTour } from "@/components/tour/Tour";
 import { cn } from "@/lib/utils";
 import type { Role } from "@/types/api";
 import { Logo } from "./Logo";
@@ -155,6 +156,16 @@ function useScrolled() {
 }
 
 /** Floating pill navigation, pinned to the top: brand, the five sections, and the account chip. */
+/** Starts the step-by-step walkthrough of the screens for the current role. */
+function TourButton() {
+  const { start, active } = useTour();
+  return (
+    <button type="button" className="iris-tour-launch" onClick={start} disabled={active} title="Take the tour: a step-by-step walkthrough of the screens">
+      <Compass className="size-[18px]" aria-hidden /><span className="sr-only">Take the tour</span><span className="hidden 2xl:inline" aria-hidden>Tour</span>
+    </button>
+  );
+}
+
 export function TopNav() {
   const scrolled = useScrolled();
   return (
@@ -165,6 +176,7 @@ export function TopNav() {
         </Link>
         <nav aria-label="Main" className="iris-nav-tabs hidden lg:block"><Tabs /></nav>
         <div className="ml-auto flex items-center gap-3">
+          <TourButton />
           <span className="hidden h-7 w-px bg-white/25 lg:block" aria-hidden />
           <div className="hidden lg:block"><UserMenu /></div>
           <MobileMenu />
