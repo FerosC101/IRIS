@@ -1,0 +1,109 @@
+disease,source,level,location,month_start,year,month,is_december,cases,report_status,source_coverage,source_remarks,qa_label,qa_flag
+tb,who_provisional,national,PHILIPPINES,2020-01-01,2020,1,False,40104,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-02-01,2020,2,False,37042,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-03-01,2020,3,False,28376,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-04-01,2020,4,False,10489,reported,some_units,There might still be some level of underreporting especially from private physicians.,suspect,covid_disruption
+tb,who_provisional,national,PHILIPPINES,2020-05-01,2020,5,False,13726,reported,some_units,There might still be some level of underreporting especially from private physicians.,suspect,covid_disruption
+tb,who_provisional,national,PHILIPPINES,2020-06-01,2020,6,False,20282,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-07-01,2020,7,False,20338,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-08-01,2020,8,False,16938,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-09-01,2020,9,False,18701,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-10-01,2020,10,False,18757,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-11-01,2020,11,False,17100,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2020-12-01,2020,12,True,17605,reported,some_units,There might still be some level of underreporting especially from private physicians.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-01-01,2021,1,False,24679,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-02-01,2021,2,False,24663,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-03-01,2021,3,False,29335,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-04-01,2021,4,False,22354,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-05-01,2021,5,False,23501,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-06-01,2021,6,False,25733,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-07-01,2021,7,False,27894,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-08-01,2021,8,False,26705,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-09-01,2021,9,False,25224,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,ok,
+tb,who_provisional,national,PHILIPPINES,2021-10-01,2021,10,False,24386,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,suspect,source_partial
+tb,who_provisional,national,PHILIPPINES,2021-11-01,2021,11,False,23571,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,suspect,source_partial
+tb,who_provisional,national,PHILIPPINES,2021-12-01,2021,12,True,19748,reported,some_units,Jan to Sep are all units. Oct to Dec are just some units.,suspect,source_partial
+tb,who_provisional,national,PHILIPPINES,2022-01-01,2022,1,False,29412,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-02-01,2022,2,False,32204,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-03-01,2022,3,False,40998,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-04-01,2022,4,False,25236,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-05-01,2022,5,False,35013,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-06-01,2022,6,False,42979,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-07-01,2022,7,False,34115,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-08-01,2022,8,False,38115,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-09-01,2022,9,False,43520,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,ok,
+tb,who_provisional,national,PHILIPPINES,2022-10-01,2022,10,False,34399,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,suspect,source_partial
+tb,who_provisional,national,PHILIPPINES,2022-11-01,2022,11,False,31057,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,suspect,source_partial
+tb,who_provisional,national,PHILIPPINES,2022-12-01,2022,12,True,28132,reported,some_units,Reports are due quarterly. Jan to Sept. are all units.,suspect,source_partial
+tb,who_provisional,national,PHILIPPINES,2023-01-01,2023,1,False,43957,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-02-01,2023,2,False,49398,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-03-01,2023,3,False,57963,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-04-01,2023,4,False,41777,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-05-01,2023,5,False,51352,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-06-01,2023,6,False,47295,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-07-01,2023,7,False,48786,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-08-01,2023,8,False,51994,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-09-01,2023,9,False,48728,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-10-01,2023,10,False,43485,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-11-01,2023,11,False,39452,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2023-12-01,2023,12,True,27884,reported,some_units,,ok,
+tb,who_provisional,national,PHILIPPINES,2024-01-01,2024,1,False,51986,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-02-01,2024,2,False,48541,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-03-01,2024,3,False,47907,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-04-01,2024,4,False,48493,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-05-01,2024,5,False,46159,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-06-01,2024,6,False,40536,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-07-01,2024,7,False,48710,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-08-01,2024,8,False,48681,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-09-01,2024,9,False,47534,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,
+tb,who_provisional,national,PHILIPPINES,2024-10-01,2024,10,False,46451,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,q4_not_final
+tb,who_provisional,national,PHILIPPINES,2024-11-01,2024,11,False,41901,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,q4_not_final
+tb,who_provisional,national,PHILIPPINES,2024-12-01,2024,12,True,31748,reported,some_units,"Updated TB data is from the TB line list generated as of February 2, 2025 using the current data management logic. Although with deduplication methods adapted, possible duplicates and influx of data entry may be included as ITIS' is set to be enhanced to block of duplicates first-hand by 2025.
+
+For Quarter 4 data, validation and inputs of data will be finalized by December.",ok,q4_not_final
+tb,who_provisional,national,PHILIPPINES,2025-01-01,2025,1,False,45795,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-02-01,2025,2,False,47467,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-03-01,2025,3,False,49051,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-04-01,2025,4,False,42378,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-05-01,2025,5,False,45091,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-06-01,2025,6,False,42923,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-07-01,2025,7,False,47222,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-08-01,2025,8,False,43278,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-09-01,2025,9,False,48067,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-10-01,2025,10,False,48707,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-11-01,2025,11,False,40395,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",ok,
+tb,who_provisional,national,PHILIPPINES,2025-12-01,2025,12,True,34689,reported,all_units,"Provisional data for TB in 2025 is sourced from the Integrated Tuberculosis (TB) Information System as of July 8, 2025.",incomplete,latest_months
+tb,who_provisional,national,PHILIPPINES,2026-01-01,2026,1,False,23723,reported,all_units,,incomplete,latest_months
+tb,who_provisional,national,PHILIPPINES,2026-02-01,2026,2,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-03-01,2026,3,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-04-01,2026,4,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-05-01,2026,5,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-06-01,2026,6,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-07-01,2026,7,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-08-01,2026,8,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-09-01,2026,9,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-10-01,2026,10,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-11-01,2026,11,False,,missing,all_units,,,
+tb,who_provisional,national,PHILIPPINES,2026-12-01,2026,12,True,,missing,all_units,,,

@@ -1,4 +1,4 @@
-# Data licenses are not yet confirmed (plan/FINAL_CLEANING_PLAN.md 1.3).
-# The public repository gets the scripts, the docs and the download links; anyone can rebuild the data.
+# Raw downloads stay out of git: data licenses are not yet confirmed (plan/FINAL_CLEANING_PLAN.md 1.3).
+# Download links are in each data/<disease>/README.md.
+# The cleaned files in data/**/clean/ are derived from them and are committed so Model A can be retrained.
 data/**/raw/
-data/**/clean/
