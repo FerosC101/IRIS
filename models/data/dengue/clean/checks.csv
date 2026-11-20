@@ -1,0 +1,73 @@
+step,check,expected,actual,result
+1 calendar,weeks / last week_start,"(569, '2023-11-19')","(569, '2023-11-19')",PASS
+1 calendar,2017 week 1 starts,2017-01-01,2017-01-01,PASS
+1 calendar,2021 week 1 starts,2021-01-03,2021-01-03,PASS
+1 calendar,2019 week 38 runs,2019-09-15 to 2019-09-21,2019-09-15 to 2019-09-21,PASS
+1 calendar,2020 morbidity weeks,53,53,PASS
+1 calendar,Holy Week starts 2016-2023,"['2016-03-20', '2017-04-09', '2018-03-25', '2019-04-14', '2020-04-05', '2021-03-28', '2022-04-10', '2023-04-02']","['2016-03-20', '2017-04-09', '2018-03-25', '2019-04-14', '2020-04-05', '2021-03-28', '2022-04-10', '2023-04-02']",PASS
+2 locations,locations,126,126,PASS
+2 locations,unique location_raw / location_id,"(126, 126)","(126, 126)",PASS
+2 locations,regions,17,17,PASS
+2 locations,locations in R08,8,8,PASS
+2 locations,locations under two regions,0,0,PASS
+2 locations,location_type city / municipality / province,"(44, 1, 81)","(44, 1, 81)",PASS
+2 locations,Davao Occidental first_week,2017-01-08,2017-01-08,PASS
+2 locations,locations with names still untrimmed or misspelled,0,0,PASS
+3 HDX,HDX data rows,32701,32701,PASS
+3 HDX,raw duplicate location-weeks,0,0,PASS
+3 HDX,raw dates not a Sunday,0,0,PASS
+3 HDX,raw negative cases or deaths,0,0,PASS
+3 HDX,raw date range,"('2016-01-10', '2021-01-10')","('2016-01-10', '2021-01-10')",PASS
+3 HDX,raw blank cases,0,0,PASS
+3 HDX,grid rows (126 x 262),33012,33012,PASS
+7 HDX,report_status reported / missing / not_in_source,"(32701, 259, 52)","(32701, 259, 52)",PASS
+7 HDX,not_in_source rows are all Davao Occidental,['DAVAO OCCIDENTAL'],['DAVAO OCCIDENTAL'],PASS
+7 HDX,missing by week,"{'2016-11-13': 46, '2017-11-12': 41, '2019-01-06': 126, '2020-11-15': 46}","{'2016-11-13': 46, '2017-11-12': 41, '2019-01-06': 126, '2020-11-15': 46}",PASS
+7 HDX,national_gap weeks,['2019-01-06'],['2019-01-06'],PASS
+7 HDX,regional_gap weeks,"['2016-11-13', '2017-11-12', '2020-11-15']","['2016-11-13', '2017-11-12', '2020-11-15']",PASS
+7 HDX,"swapped rows (0 cases, 1-3 cases)","(581, 527, 54)","(581, 527, 54)",PASS
+7 HDX,regions of swapped rows by year (README 6.A.1),"{2016: ['BARMM', 'CAR', 'CARAGA', 'NCR', 'R12'], 2017: ['R06', 'R07', 'R08', 'R09', 'R10', 'R11'], 2020: ['BARMM', 'CAR', 'CARAGA', 'NCR', 'R12']}","{2016: ['BARMM', 'CAR', 'CARAGA', 'NCR', 'R12'], 2017: ['R06', 'R07', 'R08', 'R09', 'R10', 'R11'], 2020: ['BARMM', 'CAR', 'CARAGA', 'NCR', 'R12']}",PASS
+7 HDX,deaths_check rows,"(5, ['AURORA', 'BATANES', 'DAVAO DEL SUR', 'PATEROS', 'QUIRINO'])","(5, ['AURORA', 'BATANES', 'DAVAO DEL SUR', 'PATEROS', 'QUIRINO'])",PASS
+7 HDX,Aurora 2019-09-15 deaths_fixed blank,"(1, True)","(1, True)",PASS
+7 HDX,incomplete rows (all on 2021-01-10),"(126, ['2021-01-10'])","(126, ['2021-01-10'])",PASS
+7 HDX,ok rows,31994,31994,PASS
+7 HDX,2016 deaths raw -> fixed,"(8127, 1064)","(8127, 1064)",PASS
+7 HDX,"zero-case share in ok rows, % (overall, median location, Batanes; 1 decimal)","(8.0, 4.6, 69.2)","(8.0, 4.6, 69.2)",PASS
+7 HDX,HDX repeated_value runs,2,2,PASS
+7 HDX,missing rows with a number in cases / cases_fixed / deaths_fixed,0,0,PASS
+7 HDX,rows with qa_label but not reported,0,0,PASS
+7 HDX,"reported cases unchanged vs raw (sum, rows)","(1149512, 32701)","(1149512, 32701)",PASS
+4 DOH,Sheet1 rows x columns,"(260, 20)","(260, 20)",PASS
+4 DOH,disease columns match the code list,"['Acute Bloody Diarrhea', 'Acute Flaccid Paralysis (AFP)', 'Chikungunya', 'Cholera', 'Dengue', 'Diphtheria', 'Hepatitis A', 'Influenza-Like Illness (ILI)', 'Leptospirosis', 'Measles', 'Meningoccocal Disease', 'Neonatal Tetanus', 'Non-neonatal Tetanus', 'Pertussis', 'Rabies', 'Rotavirus', 'Rubella', 'Typhoid Fever']","['Acute Bloody Diarrhea', 'Acute Flaccid Paralysis (AFP)', 'Chikungunya', 'Cholera', 'Dengue', 'Diphtheria', 'Hepatitis A', 'Influenza-Like Illness (ILI)', 'Leptospirosis', 'Measles', 'Meningoccocal Disease', 'Neonatal Tetanus', 'Non-neonatal Tetanus', 'Pertussis', 'Rabies', 'Rotavirus', 'Rubella', 'Typhoid Fever']",PASS
+4 DOH,dengue blanks: total / blank for all diseases,"(38, 36)","(38, 36)",PASS
+4 DOH,dengue blank for all but rubella,['2017-W52'],['2017-W52'],PASS
+4 DOH,dengue blank for dengue only,['2021-W6'],['2021-W6'],PASS
+4 DOH,"(Year, Week) pairs with no calendar week",0,0,PASS
+7 DOH,DOH weekly rows / dengue missing,"(261, 39)","(261, 39)",PASS
+7 DOH,2020 week 53 row: week / status / cases blank,"('2020-12-27', 'missing', True)","('2020-12-27', 'missing', True)",PASS
+7 DOH,edcs_national_weekly rows (18 x 261),4698,4698,PASS
+5 OpenDengue,extract columns,17,17,PASS
+5 OpenDengue,Philippines Admin0 weekly rows,544,544,PASS
+5 OpenDengue,rows not Sunday-Saturday,0,0,PASS
+5 OpenDengue,duplicate weeks,0,0,PASS
+5 OpenDengue,rows outside the source date ranges,0,0,PASS
+5 OpenDengue,source_detail disagrees with UUID,0,0,PASS
+7 OpenDengue,OpenDengue weeks / missing / edge_week,"(569, 25, 8)","(569, 25, 8)",PASS
+7 OpenDengue,missing weeks match plan step 5.3,"['2014-12-28', '2015-11-22', '2015-11-29', '2015-12-06', '2015-12-13', '2015-12-20', '2015-12-27', '2016-11-06', '2016-11-13', '2016-11-20', '2016-11-27', '2016-12-04', '2016-12-11', '2016-12-18', '2016-12-25', '2017-12-03', '2017-12-10', '2017-12-17', '2017-12-24', '2018-12-23', '2021-12-12', '2021-12-19', '2021-12-26', '2022-12-11', '2022-12-18']","['2014-12-28', '2015-11-22', '2015-11-29', '2015-12-06', '2015-12-13', '2015-12-20', '2015-12-27', '2016-11-06', '2016-11-13', '2016-11-20', '2016-11-27', '2016-12-04', '2016-12-11', '2016-12-18', '2016-12-25', '2017-12-03', '2017-12-10', '2017-12-17', '2017-12-24', '2018-12-23', '2021-12-12', '2021-12-19', '2021-12-26', '2022-12-11', '2022-12-18']",PASS
+7 OpenDengue,edge weeks match plan step 5.4,"['2014-12-21', '2015-11-15', '2016-10-30', '2017-11-26', '2018-12-16', '2020-12-27', '2021-12-05', '2022-12-04']","['2014-12-21', '2015-11-15', '2016-10-30', '2017-11-26', '2018-12-16', '2020-12-27', '2021-12-05', '2022-12-04']",PASS
+7 OpenDengue,2023 below_official / dip_unverified / repeated_value rows,"(47, 6, 3)","(47, 6, 3)",PASS
+7 OpenDengue,OpenDengue repeated_value counts (9-23 Apr 2023),"[1196, 1196, 1197]","[1196, 1196, 1197]",PASS
+7 OpenDengue,"repeated_value rule: same count within 0.1%, 50+",True,True,PASS
+6 comparison (reference),"2016: HDX raw, fixed, weeks, DOH, weeks, OpenDengue, weeks","(209544, 216607, 51, None, 0, 175316, 44)","(209544, 216607, 51, None, 0, 175316, 44)",PASS
+6 comparison (reference),"2017: HDX raw, fixed, weeks, DOH, weeks, OpenDengue, weeks","(152415, 156134, 52, 105976, 51, 132934, 48)","(152415, 156134, 52, 105976, 51, 132934, 48)",PASS
+6 comparison (reference),"2018: HDX raw, fixed, weeks, DOH, weeks, OpenDengue, weeks","(247059, 247059, 52, 186992, 40, 212905, 51)","(247059, 247059, 52, 186992, 40, 212905, 51)",PASS
+6 comparison (reference),"2019: HDX raw, fixed, weeks, DOH, weeks, OpenDengue, weeks","(443846, 443846, 51, 430282, 52, 437777, 52)","(443846, 443846, 51, 430282, 52, 437777, 52)",PASS
+6 comparison (reference),"2020: HDX raw, fixed, weeks, DOH, weeks, OpenDengue, weeks","(94561, 95376, 53, 61359, 28, 84584, 53)","(94561, 95376, 53, 61359, 28, 84584, 53)",PASS
+7 all files,calendar_weeks: negative counts / duplicate keys / week_start not Sunday,"(0, 0, 0)","(0, 0, 0)",PASS
+7 all files,dengue_province_weekly: negative counts / duplicate keys / week_start not Sunday,"(0, 0, 0)","(0, 0, 0)",PASS
+7 all files,dengue_province_weekly: non-reported rows with a case count,0,0,PASS
+7 all files,dengue_national_weekly: negative counts / duplicate keys / week_start not Sunday,"(0, 0, 0)","(0, 0, 0)",PASS
+7 all files,dengue_national_weekly: non-reported rows with a case count,0,0,PASS
+7 all files,edcs_national_weekly: negative counts / duplicate keys / week_start not Sunday,"(0, 0, 0)","(0, 0, 0)",PASS
+7 all files,edcs_national_weekly: non-reported rows with a case count,0,0,PASS
+7 all files,locations: duplicate location_id,0,0,PASS

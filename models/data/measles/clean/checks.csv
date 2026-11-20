@@ -1,0 +1,38 @@
+origin,step,check,expected,actual,result
+plan,3 inputs,edcs_national_weekly: diseases x weeks,"(18, 261, 4698)","(18, 261, 4698)",PASS
+plan,1 weekly,disease_raw kept as Measles / Rubella,"['Measles', 'Rubella']","['Measles', 'Rubella']",PASS
+plan,2 gaps,measles: system_gap weeks,"['2017-W52', '2018-W10', '2018-W11', '2018-W12', '2018-W13', '2018-W14', '2018-W15', '2018-W16', '2018-W17', '2018-W18', '2018-W19', '2018-W26', '2018-W27', '2020-W11', '2020-W12', '2020-W13', '2020-W14', '2020-W15', '2020-W16', '2020-W17', '2020-W18', '2020-W19', '2020-W20', '2020-W21', '2020-W22', '2020-W23', '2020-W24', '2020-W25', '2020-W26', '2020-W35', '2020-W36', '2020-W37', '2020-W38', '2020-W43', '2020-W44', '2020-W45', '2020-W52', '2020-W53']","['2017-W52', '2018-W10', '2018-W11', '2018-W12', '2018-W13', '2018-W14', '2018-W15', '2018-W16', '2018-W17', '2018-W18', '2018-W19', '2018-W26', '2018-W27', '2020-W11', '2020-W12', '2020-W13', '2020-W14', '2020-W15', '2020-W16', '2020-W17', '2020-W18', '2020-W19', '2020-W20', '2020-W21', '2020-W22', '2020-W23', '2020-W24', '2020-W25', '2020-W26', '2020-W35', '2020-W36', '2020-W37', '2020-W38', '2020-W43', '2020-W44', '2020-W45', '2020-W52', '2020-W53']",PASS
+plan,2 gaps,measles: disease_gap weeks,"['2019-W1', '2019-W2', '2019-W3', '2019-W10']","['2019-W1', '2019-W2', '2019-W3', '2019-W10']",PASS
+plan,2 gaps,rubella: system_gap weeks,"['2018-W10', '2018-W11', '2018-W12', '2018-W13', '2018-W14', '2018-W15', '2018-W16', '2018-W17', '2018-W18', '2018-W19', '2018-W26', '2018-W27', '2020-W11', '2020-W12', '2020-W13', '2020-W14', '2020-W15', '2020-W16', '2020-W17', '2020-W18', '2020-W19', '2020-W20', '2020-W21', '2020-W22', '2020-W23', '2020-W24', '2020-W25', '2020-W26', '2020-W35', '2020-W36', '2020-W37', '2020-W38', '2020-W43', '2020-W44', '2020-W45', '2020-W52', '2020-W53']","['2018-W10', '2018-W11', '2018-W12', '2018-W13', '2018-W14', '2018-W15', '2018-W16', '2018-W17', '2018-W18', '2018-W19', '2018-W26', '2018-W27', '2020-W11', '2020-W12', '2020-W13', '2020-W14', '2020-W15', '2020-W16', '2020-W17', '2020-W18', '2020-W19', '2020-W20', '2020-W21', '2020-W22', '2020-W23', '2020-W24', '2020-W25', '2020-W26', '2020-W35', '2020-W36', '2020-W37', '2020-W38', '2020-W43', '2020-W44', '2020-W45', '2020-W52', '2020-W53']",PASS
+plan,2 gaps,rubella: disease_gap weeks,"['2017-W46', '2017-W47', '2019-W1', '2019-W2', '2019-W3']","['2017-W46', '2017-W47', '2019-W1', '2019-W2', '2019-W3']",PASS
+plan,3 hand labels,2019 W8 measles / rubella cases,"(0, 0)","(0, 0)",PASS
+plan,3 hand labels,2019 W8: other diseases reading 0,"['acute_bloody_diarrhea', 'afp', 'chikungunya', 'neonatal_tetanus', 'non_neonatal_tetanus', 'rotavirus']","['acute_bloody_diarrhea', 'afp', 'chikungunya', 'neonatal_tetanus', 'non_neonatal_tetanus', 'rotavirus']",PASS
+plan,3 hand labels,measles 2019 W9 / W11,"(1227, 3710)","(1227, 3710)",PASS
+plan,3 hand labels,measles 2018 W20 = 0 after 10 blank weeks (W10-19),"(0, 10)","(0, 10)",PASS
+plan,3 hand labels,rows with possible_catch_up / review,"(2, 1)","(2, 1)",PASS
+plan,7 weekly,weekly rows (2 diseases x 261 weeks),522,522,PASS
+plan,7 weekly,measles: reported / missing,"(219, 42)","(219, 42)",PASS
+plan,7 weekly,measles: system_gap / disease_gap,"(38, 4)","(38, 4)",PASS
+plan,7 weekly,measles: zero weeks among reported (% to 1 decimal),"(41, 18.7)","(41, 18.7)",PASS
+plan,7 weekly,rubella: reported / missing,"(219, 42)","(219, 42)",PASS
+plan,7 weekly,rubella: system_gap / disease_gap,"(37, 5)","(37, 5)",PASS
+plan,7 weekly,rubella: zero weeks among reported (% to 1 decimal),"(85, 38.8)","(85, 38.8)",PASS
+plan,7 weekly,highest measles week,"(3710, '2019-W11')","(3710, '2019-W11')",PASS
+plan,7 weekly,suspect rows,"['measles 2019-W8', 'rubella 2019-W8']","['measles 2019-W8', 'rubella 2019-W8']",PASS
+added,README 6.A.5,measles zero weeks in 2017 / 2021,"(20, 15)","(20, 15)",PASS
+added,weekly,"cases identical to edcs_national_weekly, blanks included",True,True,PASS
+added,weekly,every hand-labelled row carries the 'found by inspection' note,0,0,PASS
+added,4 yearly,indicator in file,['WHS3_62'],['WHS3_62'],PASS
+plan,3 inputs,WHO yearly: records / first-last year / blank years,"(52, 1974, 2025, [1996])","(52, 1974, 2025, [1996])",PASS
+plan,7 yearly,WHO yearly rows / missing,"(52, 1)","(52, 1)",PASS
+plan,7 yearly,WHO 2019 value,48525,48525,PASS
+plan,7 yearly,weekly sums by year (measles) 2017-2021,"[271, 4087, 33699, 2970, 281]","[271, 4087, 33699, 2970, 281]",PASS
+added,README 6.A.6,weeks with data 2017-2021,"[51, 40, 48, 28, 52]","[51, 40, 48, 28, 52]",PASS
+added,README 6.A.6 / 6.B,"WHO 2014, 2017-2021, 2025","[58848, 2428, 20827, 48525, 3832, 206, 5042]","[58848, 2428, 20827, 48525, 3832, 206, 5042]",PASS
+plan,7 all files,measles_national_weekly: negative counts / duplicate keys / week_start not Sunday,"(0, 0, 0)","(0, 0, 0)",PASS
+added,all files,measles_national_weekly: `missing` rows with a number in cases,0,0,PASS
+plan,7 all files,measles_national_yearly: negative counts / duplicate keys / week_start not Sunday,"(0, 0, 0)","(0, 0, 0)",PASS
+added,all files,measles_national_yearly: `missing` rows with a number in cases,0,0,PASS
+plan,7 all files,measles_national_monthly: negative counts / duplicate keys / week_start not Sunday,"(0, 0, 0)","(0, 0, 0)",PASS
+added,all files,measles_national_monthly: `missing` rows with a number in measles_total,0,0,PASS
+added,all files,measles_national_monthly: `missing` rows with a number in rubella_total,0,0,PASS
