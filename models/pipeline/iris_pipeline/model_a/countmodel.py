@@ -5,6 +5,8 @@ tests/test_v1_reproduces.py checks it against the published scores.csv. Model A 
 
 - recent level (endemic-epidemic term): log1p(median of the last few usable reports up to t - lag). A week whose
   own past-only p_low is tiny is not "usable", so an outage can't pull the expected level down and hide itself.
+  With recent_skip_zero (v3), a zero report is never usable either: a run of zeros (an outage sending zeros, a
+  swapped cases/deaths row) can't lower the expected level, while a genuine fall in cases still moves it.
 - covid_period covariate.
 - honest uncertainty: the predictive negative binomial is widened by the coefficient uncertainty (GLM covariance)
   and by year-to-year variation in epidemic size, via alpha_eff = (1 + alpha) * exp(s2) - 1, which is the exact
@@ -191,7 +193,7 @@ class CountModel:
                     for t in pred:
                         rec[t] = self._recent_value(y, usable, t, lag)
                         X.iat[t, X.columns.get_loc("recent")] = rec[t]
-                        usable[t] = not np.isnan(y[t])
+                        usable[t] = self._usable_raw(y[t])
                 continue
             s_year = 0.0
             if self.opts.get("year_variance") and lv not in ("zero_history",):
@@ -211,7 +213,7 @@ class CountModel:
                 rec[t] = self._recent_value(y, usable, t, lag)
                 X.iat[t, ci] = rec[t]
                 if "recent" in cols and np.isnan(rec[t]):
-                    usable[t] = not np.isnan(y[t])
+                    usable[t] = self._usable_raw(y[t])
                     continue
                 xt = X.iloc[[t]]
                 mu[t] = float(np.exp(np.clip(xt[cols].to_numpy() @ beta.to_numpy(), -20, 20))[0])
@@ -219,7 +221,7 @@ class CountModel:
                 se2 = self._se2(xt, cols, cov)[0] if lv != "zero_history" else 0.0
                 alpha_eff[t] = float(self._alpha_eff(a, np.array([se2 + s_year]))[0])
                 level[t] = lv
-                if np.isnan(y[t]):
+                if not self._usable_raw(y[t]):
                     usable[t] = False
                 else:
                     usable[t] = mid_p_low(y[t], mu[t], alpha_eff[t]) >= opts["recent_exclude_p"]
@@ -238,6 +240,10 @@ class CountModel:
         if lag:
             out["recent"] = rec
         return out
+
+    def _usable_raw(self, v) -> bool:
+        """A report can enter the recent level: it was reported, and (with recent_skip_zero) it is not a zero."""
+        return not np.isnan(v) and not (self.opts.get("recent_skip_zero") and v == 0)
 
     def _recent_value(self, y, usable, t, lag):
         """log1p(median of the last recent_window usable reports among periods <= t - lag); NaN if none."""

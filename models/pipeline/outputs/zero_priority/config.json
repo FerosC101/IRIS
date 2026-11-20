@@ -1,11 +1,11 @@
 {
-  "run_id": "20261119T200814Z",
+  "run_id": "20261120T063000Z",
   "package_version": "0.2.0",
   "model_version": "zero_priority_v2",
   "inputs": {
-    "dengue_table": "surveillance.csv",
+    "dengue_table": "dengue/clean/dengue_province_weekly.csv",
     "sha256": {
-      "surveillance.csv": "d58ede172a8c213f67e04d00700cf49ddd426b885008d90d711a454a7938fecd",
+      "dengue/clean/dengue_province_weekly.csv": "003a1dd85cc8fe6996769b121e5ee0f7d399bbf687ff6d1fd69df7ef36c1e52b",
       "shared/calendar_weeks.csv": "28c20a1f0614fa621f2e3f2b7eb94f9bbc0038b01b4ced83fa3e2616d663b267",
       "shared/locations.csv": "da1aba98fda636a2c97d17f1f696e44d04d99931dd23b82b048eea8831c196f3",
       "synthetic/model_a_injected_failures.csv": "37a646a92a2a9750c3e2b883b8563fa58d9983f8aae115e0688cc41b0ae89e2f"
@@ -13,7 +13,7 @@
   },
   "model_a": {
     "variant": "recent1+uncertainty",
-    "run_id": "20261023T075030Z-73b3e833"
+    "run_id": "20261120T062907Z-688195ce"
   },
   "split": {
     "train": [
@@ -165,5 +165,5 @@
     "train_positives": 370
   },
   "api_check_max_score_gap": 2.487987073962472e-05,
-  "runtime_s": 51.2
+  "runtime_s": 51.0
 }

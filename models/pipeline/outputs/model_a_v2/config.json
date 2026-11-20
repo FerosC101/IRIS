@@ -1,5 +1,5 @@
 {
-  "run_id": "20261023T075030Z-73b3e833",
+  "run_id": "20261120T062907Z-688195ce",
   "model_version": "model_a_v2",
   "package_version": "0.2.0",
   "chosen_variant": "recent1+uncertainty",
@@ -10,11 +10,12 @@
     "covid_flag": false,
     "param_uncertainty": true,
     "year_variance": true,
-    "min_year_weeks": 26
+    "min_year_weeks": 26,
+    "recent_skip_zero": false
   },
   "selection": {
     "chosen": "recent1+uncertainty",
-    "reason": "coverage 0.859 is inside [0.85, 0.95] and it has the best 2019 injected-failure recall (0.398) among those that are",
+    "reason": "coverage 0.859 is inside [0.85, 0.95] and it has the best the mean of 2019 injected-failure recall and 2016-2017 real swap recall (0.610) among those that are",
     "rule": {
       "coverage_years": [
         2017,
@@ -25,7 +26,11 @@
         0.85,
         0.95
       ],
-      "recall_year": 2019
+      "recall_year": 2019,
+      "swap_recall_years": [
+        2016,
+        2017
+      ]
     },
     "candidates": {
       "v1": {},
@@ -58,6 +63,18 @@
         "param_uncertainty": true,
         "year_variance": true
       },
+      "recent1z+uncertainty": {
+        "recent_lag": 1,
+        "recent_skip_zero": true,
+        "param_uncertainty": true,
+        "year_variance": true
+      },
+      "recent2z+uncertainty": {
+        "recent_lag": 2,
+        "recent_skip_zero": true,
+        "param_uncertainty": true,
+        "year_variance": true
+      },
       "covid+uncertainty": {
         "covid_flag": true,
         "param_uncertainty": true,
@@ -74,20 +91,20 @@
     "tune": 2019,
     "test": 2020
   },
-  "alert_budget": 0.01,
-  "TAU_model_a_v2": 0.00012051755366497229,
-  "TAU_model_a_v2_budget_only": 0.000149262140126253,
-  "TAU_model_a_v1": 0.0009031962435337457,
+  "alert_budget": 0.03,
+  "TAU_model_a_v2": 0.0038582157713545574,
+  "TAU_model_a_v2_budget_only": 0.004804794172412634,
+  "TAU_model_a_v1": 0.005617816583551675,
   "BASELINE_THRESHOLDS": {
-    "rolling_median": 4.788884392283826,
-    "ewma": 2.7273297990809353,
-    "cusum": 28.31690955479072
+    "rolling_median": 3.248205499584656,
+    "ewma": 2.094906732595964,
+    "cusum": 22.006572784730018
   },
   "region_week_thresholds": {
-    "v1 / Fisher": 5.633811119070712e-10,
-    "v1 / Stouffer, correlation-adjusted": 0.00022103565840405162,
-    "v2 / Fisher": 1.221062227238827e-08,
-    "v2 / Stouffer, correlation-adjusted": 0.001455755401839547
+    "v1 / Fisher": 1.3000737293797149e-06,
+    "v1 / Stouffer, correlation-adjusted": 0.005200050416017621,
+    "v2 / Fisher": 2.550171625134835e-06,
+    "v2 / Stouffer, correlation-adjusted": 0.009585211971239916
   },
   "stouffer_rho_by_hub": {
     "RESU-BARMM": 0.1682,
@@ -151,7 +168,7 @@
     "shared/calendar_weeks.csv": "28c20a1f0614fa621f2e3f2b7eb94f9bbc0038b01b4ced83fa3e2616d663b267",
     "shared/locations.csv": "da1aba98fda636a2c97d17f1f696e44d04d99931dd23b82b048eea8831c196f3"
   },
-  "scores_sha256": "cc270266de78d55dbb54606ec2c831425be79fa51b0d5e1b0c671831b40901fd",
+  "scores_sha256": "6d2aa9258c52bc3485b2ffaf39e6fe3bbdb081491151a3118226496a12a9838e",
   "versions": {
     "python": "3.13.14",
     "pandas": "2.3.3",
@@ -160,5 +177,5 @@
     "statsmodels": "0.15.0",
     "scikit-learn": "1.7.2"
   },
-  "runtime_seconds": 10.4
+  "runtime_seconds": 3.1
 }

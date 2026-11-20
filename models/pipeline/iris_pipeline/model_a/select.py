@@ -36,7 +36,7 @@ def pre_test_metrics(name: str, lp: pd.DataFrame, le: pd.DataFrame) -> dict:
     yr_p, yr_e = lp.week_start.dt.year, le.week_start.dt.year
     okp = ok_scored(lp)
     tune = lp[(yr_p == config.SPLIT["tune"]) & okp]
-    tau = tune_low(tune.p_low, config.V1["ALERT_BUDGET"])
+    tau = tune_low(tune.p_low, config.V2["ALERT_BUDGET"])
     row = {"candidate": name, "tau_budget_2019": tau}
     for y in (2016, 2017, 2018, 2019):
         s = lp[(yr_p == y) & okp]
@@ -62,11 +62,18 @@ def choose(table: pd.DataFrame) -> tuple[str, str]:
     lo, hi = config.SELECTION["coverage_band"]
     ry = config.SELECTION["recall_year"]
     t = table[table.candidate.isin(config.SELECTABLE)].copy()
+    swap_years = config.SELECTION.get("swap_recall_years")
+    if swap_years:  # v3: the score also answers to the real 2016-2017 swaps
+        t["score"] = (t[f"inj_recall_{ry}"] + t[[f"swap_recall_{y}" for y in swap_years]].mean(axis=1)) / 2
+    else:
+        t["score"] = t[f"inj_recall_{ry}"]
     inside = t[t.coverage90_2017_2019.between(lo, hi)]
     if len(inside):
-        best = inside.sort_values([f"inj_recall_{ry}", "coverage90_2017_2019"], ascending=[False, False]).iloc[0]
+        best = inside.sort_values(["score", "coverage90_2017_2019"], ascending=[False, False]).iloc[0]
+        what = (f"the mean of {ry} injected-failure recall and {swap_years[0]}-{swap_years[-1]} real swap recall ({best.score:.3f})"
+                if swap_years else f"{ry} injected-failure recall ({best.score:.3f})")
         return best.candidate, (f"coverage {best.coverage90_2017_2019:.3f} is inside [{lo}, {hi}] and it has the best "
-                                f"{ry} injected-failure recall ({best[f'inj_recall_{ry}']:.3f}) among those that are")
+                                f"{what} among those that are")
     t["gap"] = (t.coverage90_2017_2019 - 0.90).abs()
     best = t.sort_values(["gap", f"inj_recall_{ry}"], ascending=[True, False]).iloc[0]
     return best.candidate, (f"no candidate reached the coverage band; closest coverage "

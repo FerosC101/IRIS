@@ -17,7 +17,7 @@ def _series(inputs, loc="NCR-QUEZON_CITY"):
     return y, h, g.week_start.dt.year.to_numpy()
 
 
-@pytest.mark.parametrize("variant", ["v1", "recent1+uncertainty", "covid+uncertainty"])
+@pytest.mark.parametrize("variant", ["v1", "recent1+uncertainty", "recent1z+uncertainty", "covid+uncertainty"])
 @pytest.mark.parametrize("cut", [150, 203])  # mid refit block and block boundary
 def test_future_does_not_change_past(inputs, variant, cut):
     y, h, years = _series(inputs)
@@ -42,3 +42,17 @@ def test_answer_key_wall():
 
     with pytest.raises(RuntimeError):
         assert_no_answer_key(pd.DataFrame({"cases": [1], "qa_flag": ["x"]}))
+
+
+def test_skip_zero_keeps_a_run_of_zeros_out_of_the_recent_level():
+    """v3: with recent_skip_zero, zeros never enter the recent level; without it, a run of zeros can lower it."""
+    y = np.array([20.0] * 10 + [0.0] * 4)
+    usable = np.ones(len(y), dtype=bool)
+    on = CountModel(config.V1, config.options("recent1z+uncertainty"))
+    off = CountModel(config.V1, config.options("recent1+uncertainty"))
+    keep_on = np.array([on._usable_raw(v) for v in y])
+    keep_off = np.array([off._usable_raw(v) for v in y])
+    assert on._recent_value(y, usable & keep_on, len(y), 1) == pytest.approx(np.log1p(20))
+    assert off._recent_value(y, usable & keep_off, len(y), 1) == pytest.approx(np.log1p(0))
+    assert not on._usable_raw(np.nan) and not off._usable_raw(np.nan)
+

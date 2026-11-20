@@ -1,11 +1,11 @@
 # IRIS results
 
-Team Nex · PJDSC 2026 · generated 2026-10-23 13:58 UTC by `python -m iris_pipeline results` from the saved outputs (Model A run `20261023T075030Z-73b3e833`).
+Team Nex · PJDSC 2026 · generated 2026-11-20 06:31 UTC by `python -m iris_pipeline results` from the saved outputs (Model A run `20261120T062907Z-688195ce`).
 
 ## In plain words
 
 - **IRIS has two jobs.** Model A spots weekly reports that look wrong. Model B decides what to fix first when staff time is limited.
-- **Spotting (real data, 2020).** Model A v2 cut false alarms from 12% to 5.5% of normal weeks and region-wide false alarms from 62% to 9%, but it catches fewer real errors (49% → 9%). The COVID-19 drop in 2020 is the hardest case: no version holds the 1% alarm budget through it.
+- **Spotting (real data, 2020).** Model A v2 cut false alarms from 23% to 10.1% of normal weeks and region-wide false alarms from 71% to 15%, but it catches fewer real errors (77% → 32%). The COVID-19 drop in 2020 is the hardest case: no version holds the 3% alarm budget through it.
 - **Shared failures (simulation).** Using the reporting network, IRIS names the broken hub in 72% of hub outages; without it, never.
 - **Fixing (simulation).** With the same 24 staff-hours a week, network-aware planning restores about 6x more failed reports than fixing facilities one by one (176 vs 29 a year).
 - **Every alert is a lead to verify**, the network is synthetic, and no real-world recovery effect is claimed.
@@ -14,8 +14,8 @@ Team Nex · PJDSC 2026 · generated 2026-10-23 13:58 UTC by `python -m iris_pipe
 
 | objective (proposal) | status | evidence |
 |---|---|---|
-| 1. Detect reporting anomalies | Partly met | Real 2020 swaps: Model A v2 catches 9% at 5.5% false alerts; v1 49% at 12.1%; best simple baseline 4%. Neither version holds the 1% budget in the COVID year. |
-| 1. Detect shared network disruptions | Met in simulation; partly on real data | Simulation: right hub named in 72% of hub outages (0% without the graph). Real 2020: false region alerts 62% (v1) → 9% (v2). |
+| 1. Detect reporting anomalies | Partly met | Real 2020 swaps: Model A v2 catches 32% at 10.1% false alerts; v1 77% at 22.6%; best simple baseline 8%. Neither version holds the 3% budget in the COVID year. |
+| 1. Detect shared network disruptions | Met in simulation; partly on real data | Simulation: right hub named in 72% of hub outages (0% without the graph). Real 2020: false region alerts 71% (v1) → 15% (v2). |
 | 1. Temporal graph | Met (synthetic network) | Facility → hub → RESU and facility → lab graph of 506 facilities over the real 126 locations; graph ablation done. The real reporting pathways are not available. |
 | 1. Multiple diseases | Met (Model A) | Dengue (province-weekly), 18 EDCS diseases incl. measles and rubella (national weekly), TB (monthly). Measles and TB have few labels. |
 | 2. Recommend actions under limited resources | Met in simulation | Model B v2 integer program: 176 vs 29 failed facility-weeks restored per year (facility-first), same 24 h/week; shared source handled first in 84% of shared failures. Real 2020 plan produced. |
@@ -26,15 +26,15 @@ Team Nex · PJDSC 2026 · generated 2026-10-23 13:58 UTC by `python -m iris_pipe
 
 ### A. Detection on real data: the 158 swapped dengue reports of 2020
 
-Test year 2020, scored once; thresholds frozen on 2019 at a 1% alert budget. 95% intervals: cluster bootstrap over places. Old Model B rules can only flag zero reports.
+Test year 2020; thresholds frozen on 2019 at a 3% alert budget (old Model B rules: 1%). 2020 has been looked at before (see the Model A test-run log). 95% intervals: cluster bootstrap over places. Old Model B rules can only flag zero reports.
 
 | method | precision | recall (95% CI) | F1 | false-alert rate (95% CI) | weeks to detect | AUC |
 |---|---|---|---|---|---|---|
-| Model A v2 | 0.039 | 0.089 (0.010–0.175) | 0.054 | 0.055 (0.036–0.077) | 0.000 | 0.790 |
-| Model A v1 | 0.092 | 0.494 (0.377–0.618) | 0.156 | 0.121 (0.097–0.149) | 0.000 | 0.842 |
-| Rolling median | 0.167 | 0.032 (0.000–0.070) | 0.053 | 0.004 (0.002–0.006) | 0.000 | 0.700 |
-| EWMA | 0.156 | 0.044 (0.014–0.075) | 0.069 | 0.006 (0.004–0.008) | 0.000 | 0.800 |
-| CUSUM | 0.008 | 0.013 (0.000–0.044) | 0.010 | 0.038 (0.021–0.060) | 4.000 | 0.381 |
+| Model A v2 | 0.073 | 0.323 (0.182–0.457) | 0.120 | 0.101 (0.074–0.133) | 0.000 | 0.790 |
+| Model A v1 | 0.078 | 0.772 (0.655–0.883) | 0.142 | 0.226 (0.195–0.262) | 0.000 | 0.842 |
+| Rolling median | 0.068 | 0.051 (0.007–0.101) | 0.058 | 0.017 (0.013–0.022) | 0.000 | 0.700 |
+| EWMA | 0.082 | 0.076 (0.034–0.112) | 0.079 | 0.021 (0.018–0.025) | 0.000 | 0.800 |
+| CUSUM | 0.003 | 0.013 (0.000–0.044) | 0.005 | 0.092 (0.062–0.128) | 4.000 | 0.381 |
 | Old Model B, as published (within-date ranks) | 0.132 | 0.285 (0.160–0.437) | 0.180 | 0.047 (0.037–0.059) | 0.308 | 0.905 |
 | Old Model B, fixed (absolute) | 0.079 | 0.329 (0.197–0.466) | 0.128 | 0.095 (0.079–0.111) | 0.000 | 0.881 |
 
@@ -42,11 +42,11 @@ Test year 2020, scored once; thresholds frozen on 2019 at a 1% alert budget. 95%
 
 | method | precision | recall (95% CI) | F1 | false-alert rate (95% CI) | weeks to detect | AUC |
 |---|---|---|---|---|---|---|
-| Model A v2 | 0.308 | 0.199 (0.139–0.251) | 0.242 | 0.031 (0.018–0.048) | 0.036 | 0.852 |
-| Model A v1 | 0.221 | 0.349 (0.277–0.422) | 0.271 | 0.084 (0.066–0.108) | 0.000 | 0.769 |
-| Rolling median | 0.595 | 0.054 (0.030–0.078) | 0.099 | 0.003 (0.001–0.004) | 0.000 | 0.859 |
-| EWMA | 0.761 | 0.125 (0.094–0.159) | 0.215 | 0.003 (0.001–0.004) | 0.000 | 0.892 |
-| CUSUM | 0.066 | 0.042 (0.018–0.070) | 0.051 | 0.040 (0.018–0.066) | 0.067 | 0.609 |
+| Model A v2 | 0.299 | 0.388 (0.324–0.460) | 0.338 | 0.062 (0.042–0.085) | 0.000 | 0.852 |
+| Model A v1 | 0.164 | 0.526 (0.453–0.593) | 0.250 | 0.184 (0.153–0.216) | 0.006 | 0.769 |
+| Rolling median | 0.439 | 0.143 (0.106–0.174) | 0.215 | 0.012 (0.009–0.016) | 0.000 | 0.859 |
+| EWMA | 0.611 | 0.243 (0.200–0.282) | 0.348 | 0.011 (0.008–0.013) | 0.000 | 0.892 |
+| CUSUM | 0.080 | 0.108 (0.066–0.160) | 0.092 | 0.085 (0.050–0.119) | 0.026 | 0.609 |
 
 ### B. Shared-source identification, with and without the graph (simulation, 20 replicates)
 
@@ -69,12 +69,12 @@ Test year 2020, scored once; thresholds frozen on 2019 at a 1% alert budget. 95%
 
 ## Model A v2 against the roadmap's targets
 
-1 of 4 met:
+2 of 4 met:
 
 | target (roadmap step 2) | Model A v1 | Model A v2 | met |
 |---|---|---|---|
-| 2020 false-alert rate close to 1% (≤ 2%) | 0.121 | 0.055 | no |
-| 2020 recall on real swaps well above the baselines (best baseline 0.044) | 0.494 | 0.089 (CI 0.010–0.175) | no |
+| 2020 false-alert rate close to 1% (≤ 2%) | 0.226 | 0.101 | no |
+| 2020 recall on real swaps well above the baselines (best baseline 0.076) | 0.772 | 0.323 (CI 0.182–0.457) | yes |
 | 85–95% of normal weeks inside the 90% range, 2017–2019 (selection years) | 0.750 | 0.859 | yes |
 | 85–95% of normal weeks inside the 90% range, 2020 (test year) | 0.556 | 0.793 | no |
 

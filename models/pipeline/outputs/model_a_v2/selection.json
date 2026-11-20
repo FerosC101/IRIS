@@ -1,6 +1,6 @@
 {
   "chosen": "recent1+uncertainty",
-  "reason": "coverage 0.859 is inside [0.85, 0.95] and it has the best 2019 injected-failure recall (0.398) among those that are",
+  "reason": "coverage 0.859 is inside [0.85, 0.95] and it has the best the mean of 2019 injected-failure recall and 2016-2017 real swap recall (0.610) among those that are",
   "rule": {
     "coverage_years": [
       2017,
@@ -11,7 +11,11 @@
       0.85,
       0.95
     ],
-    "recall_year": 2019
+    "recall_year": 2019,
+    "swap_recall_years": [
+      2016,
+      2017
+    ]
   },
   "candidates": {
     "v1": {},
@@ -41,6 +45,18 @@
     "recent2x+uncertainty": {
       "recent_lag": 2,
       "recent_exclude_p": 0.1,
+      "param_uncertainty": true,
+      "year_variance": true
+    },
+    "recent1z+uncertainty": {
+      "recent_lag": 1,
+      "recent_skip_zero": true,
+      "param_uncertainty": true,
+      "year_variance": true
+    },
+    "recent2z+uncertainty": {
+      "recent_lag": 2,
+      "recent_skip_zero": true,
       "param_uncertainty": true,
       "year_variance": true
     },

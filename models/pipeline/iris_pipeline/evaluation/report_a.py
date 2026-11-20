@@ -11,11 +11,13 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
+from .. import config  # noqa: E402
 from ..model_a.labels import ok_scored  # noqa: E402
 from ..paths import MODEL_A_V2_DIR  # noqa: E402
 
 HEADLINE = ["dengue 2020: real swaps", "dengue 2020: regional gap filled with 0", "dengue 2020 (test): injected, all types"]
 FAR_TARGET = 0.02  # "close to 1%": at most 2 false alerts per 100 normal location-weeks (set before the test run)
+BUDGET = config.V2["ALERT_BUDGET"]  # the alert budget of this run (v2's; v1's own report used 1%)
 
 
 def md(df: pd.DataFrame, floats: int = 3) -> str:
@@ -85,21 +87,31 @@ def test_run_log(out: dict) -> list[str]:
         r = next(x for x in sets[key] if x["method"] == "Model A v2")
         return r["recall"], r["false_alert_rate"]
 
+    runs = [("run 1 (cap bug, 1% budget)", m1["sets"], c1["TAU_model_a_v2"])]
+    run2 = MODEL_A_V2_DIR / "test_runs" / "run2_metrics.json"
+    if run2.exists():
+        m2 = json.loads(run2.read_text(encoding="utf-8"))
+        c2 = json.loads((MODEL_A_V2_DIR / "test_runs" / "run2_config.json").read_text(encoding="utf-8"))
+        runs.append(("run 2 (published v2, 1% budget)", m2["sets"], c2["TAU_model_a_v2"]))
+    runs.append((f"run {len(runs) + 1} (this report, {BUDGET:.0%} budget)", {k: v.to_dict("records") for k, v in out["R"].items()}, out["taus"]["v2"]))
     rows = []
-    for name, sets, tau in (("run 1 (cap bug)", m1["sets"], c1["TAU_model_a_v2"]),
-                            ("run 2 (this report)", {k: v.to_dict("records") for k, v in out["R"].items()}, out["taus"]["v2"])):
+    for name, sets, tau in runs:
         rs, fs = pick(sets, "dengue 2020: real swaps")
         ri, fi = pick(sets, "dengue 2020 (test): injected, all types")
         rows.append({"test run": name, "v2 tau": f"{tau:.3g}", "2020 swaps recall": rs, "2020 false-alert rate": fs,
                      "2020 injected recall": ri, "2020 false-alert rate (eval copy)": fi})
     return [
         "### Test-run log", "",
-        "The 2020 test year was scored twice. **Run 1** had an implementation bug in the threshold rule: the 1% "
+        f"The 2020 test year has been scored {len(rows)} times. **Run 1** had an implementation bug in the threshold rule: the 1% "
         "false-alert cap was counted on the evaluation copy's normal weeks, whose injected failures widen the model, "
         "instead of on the real 2019 stream. The bug is visible on 2019 alone: run 1's tau flagged 1.7% of real 2019 "
         "normal weeks, above the stated 1% budget. **Run 2** counts the cap on the real 2019 stream, as the rule says "
-        "and as v1 does. Nothing else changed; no setting was chosen by looking at 2020. Run 1's full outputs are kept "
-        "in `test_runs/`.", "", md(pd.DataFrame(rows)),
+        "and as v1 does; it is the published v2. "
+        + (f"**Run 3** raises the alert budget from 1% to {BUDGET:.0%} of 2019 normal weeks, at the team's request, after run 2's "
+           "2020 results had been read. The budget was chosen from a 2016–2019 comparison only (design log in config.py), but "
+           "2020 is no longer an independent test for run 3: its 2020 numbers are a second look. "
+           if len(rows) > 2 else "")
+        + "Every run's full outputs are kept in `test_runs/`.", "", md(pd.DataFrame(rows)),
     ]
 
 
@@ -122,7 +134,7 @@ def figures(out: dict) -> list[str]:
         thr = out["taus"][k]
         w = d.assign(a=d.p_low < thr).groupby("week_start").a.mean()
         ax.plot(w.index, w.values, color=color, lw=1.4, label=f"Model A {k}")
-    ax.axhline(0.01, color="grey", ls="--", lw=1, label="1% budget")
+    ax.axhline(BUDGET, color="grey", ls="--", lw=1, label=f"{BUDGET:.0%} budget")
     ax.axvline(pd.Timestamp("2020-03-15"), color="black", lw=0.8, ls=":")
     ax.text(pd.Timestamp("2020-03-22"), ax.get_ylim()[1] * 0.9, "COVID-19 lockdown", fontsize=8)
     ax.set_ylabel("share of normal weeks flagged")
@@ -147,7 +159,7 @@ def figures(out: dict) -> list[str]:
     ax.plot(c.false_alert_rate, c.f1, color="#2ca02c", label="F1")
     sel = c.loc[(c.tau - out["taus"]["v2"]).abs().idxmin()]
     ax.scatter([sel.false_alert_rate], [sel.f1], color="black", zorder=3, label=f"chosen tau = {out['taus']['v2']:.2g}")
-    ax.set_xlabel("false-alert rate on 2019 normal weeks (capped at the 1% budget)")
+    ax.set_xlabel(f"false-alert rate on 2019 normal weeks (capped at the {BUDGET:.0%} budget)")
     ax.set_title("Threshold on the 2019 tuning year (injected failures)")
     ax.legend(fontsize=8)
     save(fig, "3_threshold_curve_2019.png")
@@ -225,8 +237,12 @@ def write(out: dict, manifest: dict) -> None:
         f"itself and for some years being bigger epidemics than others. (3) Its threshold was set on 2019 using simulated "
         f"failures. (4) Every week now carries `p_fail`, a probability that the report is a real failure, and `shortfall`, "
         f"the cases likely missing. (5) Region-wide evidence is pooled allowing for places that move together.",
+        *([f"- **Alert budget {BUDGET:.0%} (run 3).** The share of normal weeks Model A may flag was raised from 1% to {BUDGET:.0%} at "
+           "the team's request, chosen on 2016–2019 only (design log in config.py). It catches more real errors for more false "
+           "alerts; the 2020 numbers below are a second look at 2020, not an independent test (see the test-run log)."]
+          if BUDGET != 0.01 else []),
         f"- **False alarms in 2020** (normal weeks wrongly flagged): v1 {sw.loc['Model A v1','false_alert_rate']:.1%} → "
-        f"v2 {sw.loc['Model A v2','false_alert_rate']:.1%} (budget 1%).",
+        f"v2 {sw.loc['Model A v2','false_alert_rate']:.1%} (budget {BUDGET:.0%}).",
         f"- **Real swapped reports caught in 2020:** v1 {sw.loc['Model A v1','recall']:.0%}, v2 {sw.loc['Model A v2','recall']:.0%}, "
         f"best simple baseline {sw.drop(index=['Model A v1','Model A v2']).recall.max():.0%}. "
         f"Simulated failures caught in 2020: v1 {inj.loc['Model A v1','recall']:.0%}, v2 {inj.loc['Model A v2','recall']:.0%}.",
@@ -241,7 +257,7 @@ def write(out: dict, manifest: dict) -> None:
         f"regions {v1_rg:.0%} → {v2_rg:.0%}) and ranks simulated failures better (AUC "
         f"{inj.loc['Model A v1','auc']:.2f} → {inj.loc['Model A v2','auc']:.2f}), but it catches far fewer of the real "
         f"2020 swaps, because once it has followed the COVID-era low counts a zero no longer looks unusual. Neither version "
-        f"holds the 1% budget through the April–June 2020 drop: a level change that sudden and that large is outside "
+        f"holds the {BUDGET:.0%} budget through the April–June 2020 drop: a level change that sudden and that large is outside "
         f"anything in 2016–2019. Use v2's region (hub) evidence for shared failures; treat single-week alerts in a "
         f"period of sudden real change with caution.", "",
         "## Roadmap step 2: done-when checklist", "", md(dw), "",
@@ -249,7 +265,8 @@ def write(out: dict, manifest: dict) -> None:
         "- **Split:** train 2016–2018 (history only), tune 2019, test 2020. Scores are rolling-origin: each week is "
         "predicted from earlier weeks only (`tests/test_no_leakage.py` checks this).",
         f"- **Model choice before the test:** {len(sel_table)} variants were compared on 2016–2019 only, with a rule fixed in "
-        f"advance (90% range coverage 85–95% on 2017–2019, then the best 2019 recall on injected failures). "
+        f"advance (90% range coverage 85–95% on 2017–2019, then the best 2019 recall on injected failures; since run 3 the score "
+        f"also includes recall on the real 2016–2017 swaps, at the {BUDGET:.0%} budget). "
         f"Chosen: **`{out['chosen']}`**: {out['selection']['reason']}. The choice was written to `selection.json` before "
         "any 2020 metric was computed.",
         "- **Same failures for both versions:** v1's injected failures are re-read from "
@@ -262,10 +279,10 @@ def write(out: dict, manifest: dict) -> None:
         "95% intervals are cluster-bootstrap intervals (whole places resampled, 400 draws). Thresholds frozen on 2019.", "",
         md(head), "",
         "## Threshold", "",
-        f"- v1: tau = {out['taus']['v1']:.3g} (1% of 2019 normal weeks).",
+        f"- v1: tau = {out['taus']['v1']:.3g} ({BUDGET:.0%} of 2019 normal weeks).",
         f"- v2: tau = **{out['taus']['v2']:.3g}**: the best F1 on 2019 injected failures among thresholds whose 2019 "
-        f"false-alert rate is within 1%. (At exactly 1% of 2019 normal weeks it would be {out['taus']['v2_budget']:.3g}.)",
-        f"- Baselines: {', '.join(f'{k} > {v:.3g}' for k, v in out['H'].items())} (1% of 2019 normal weeks).", "",
+        f"false-alert rate is within {BUDGET:.0%}. (At exactly {BUDGET:.0%} of 2019 normal weeks it would be {out['taus']['v2_budget']:.3g}.)",
+        f"- Baselines: {', '.join(f'{k} > {v:.3g}' for k, v in out['H'].items())} ({BUDGET:.0%} of 2019 normal weeks).", "",
         "![threshold](figures/3_threshold_curve_2019.png)", "",
         "## Calibration of the 90% range", "", "**Model A v1**", "", md(out["CAL"]["v1"]), "", "**Model A v2**", "",
         md(out["CAL"]["v2"]), "", "![pit](figures/2_pit_v1_vs_v2.png)", "",
@@ -282,7 +299,7 @@ def write(out: dict, manifest: dict) -> None:
         "Real data has no reporting-hub table, so each region's RESU is used as the hub (`hub_id = RESU-<region>`). "
         "Fisher pooling (v1) treats the places in a region as independent witnesses; correlation-adjusted Stouffer (v2) "
         "discounts them by their average correlation on normal 2016–2018 weeks. Every (model, pooling) pair gets its own "
-        "region-week threshold at 1% of clean 2019 region-weeks; the first row repeats v1's own report.", "",
+        f"region-week threshold at {BUDGET:.0%} of clean 2019 region-weeks; the first row repeats v1's own report (at its 1%).", "",
         md(rg), "", "![region](figures/6_region_false_alerts_2020.png)", "",
         "## COVID flag (sensitivity analysis, not selectable)", "",
         "`covid_period` is 0 before 2020, so 2016–2019 cannot judge it; it is shown here only for transparency.", "",

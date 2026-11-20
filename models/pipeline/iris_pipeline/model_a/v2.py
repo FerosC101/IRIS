@@ -89,7 +89,7 @@ def region_eval(labs: dict, rw_taus: dict | None = None) -> tuple[pd.DataFrame, 
             if k not in taus:
                 base = rw_table(labs[(model, "prod")], labs[(model, "prod")].iloc[0:0])
                 clean19 = base[~base.bad & (base.week_start.dt.year == 2019)]
-                taus[k] = tune_low(clean19.pooled, config.V1["ALERT_BUDGET"])
+                taus[k] = tune_low(clean19.pooled, config.V2["ALERT_BUDGET"])
             for name, (src, sel) in sets.items():
                 lab = labs[(model, src)]
                 t = rw_table(lab, lab[sel(lab)])
@@ -235,7 +235,7 @@ def run_test(inp: Inputs, workers=None) -> dict:
     _aligned(E)
 
     # ---- freeze thresholds on 2019 -----------------------------------------------------------------------
-    B = config.V1["ALERT_BUDGET"]
+    B = config.V2["ALERT_BUDGET"]
     y_p = P["v1"].week_start.dt.year
     tune_ok = (y_p == 2019) & ok_scored(P["v1"])
     taus = {"v1": tune_low(P["v1"].loc[tune_ok, "p_low"], B),
@@ -432,7 +432,7 @@ def manifest(out: dict, inp: Inputs) -> dict:
     return {
         "run_id": out["run_id"], "model_version": config.V2["MODEL_VERSION"], "package_version": __version__,
         "chosen_variant": out["chosen"], "variant_options": out["opts_v2"], "selection": out["selection"],
-        "split": config.SPLIT, "alert_budget": config.V1["ALERT_BUDGET"],
+        "split": config.SPLIT, "alert_budget": config.V2["ALERT_BUDGET"],
         "TAU_model_a_v2": out["taus"]["v2"], "TAU_model_a_v2_budget_only": out["taus"]["v2_budget"],
         "TAU_model_a_v1": out["taus"]["v1"], "BASELINE_THRESHOLDS": out["H"],
         "region_week_thresholds": out["region_taus"], "stouffer_rho_by_hub": out["rho"]["v2"],

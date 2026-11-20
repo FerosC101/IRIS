@@ -53,7 +53,7 @@ export function ModelAFlagsTab() {
     <div className="flex flex-col gap-5">
       <ChipFilter label="Year" value={shownYear} onChange={(v) => { setYear(v); setPage(1); }}
         options={[...d.years.map((y) => ({ value: String(y), label: String(y) })), { value: "all", label: "All years" }]} />
-      <Panel title="Low dengue counts flagged by Model A, per week" description="Places whose reported weekly count was far below what Model A expected from their own history and season. The threshold is set so about 1 in 100 normal weeks would be flagged by chance.">
+      <Panel title="Low dengue counts flagged by Model A, per week" description={`Places whose reported weekly count was far below what Model A expected from their own history and season. The threshold is set so about ${Math.round(d.threshold.alert_budget * 100)} in 100 normal weeks would be flagged by chance.`}>
         <WeekBars title="Model A flags per week" data={d.weekly} series={[{ key: "flags", label: "Places flagged" }]} />
       </Panel>
       <StatStrip items={[

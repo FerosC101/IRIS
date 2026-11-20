@@ -44,6 +44,7 @@ MODEL_OPTIONS_OFF = {
     "param_uncertainty": False,  # widen the predictive distribution by the coefficient uncertainty
     "year_variance": False,    # ... and by year-to-year variation in epidemic size
     "min_year_weeks": 26,      # a training year needs this many reported weeks to enter the year-variance estimate
+    "recent_skip_zero": False,  # v3: zero reports never enter the recent level
 }
 
 V2_CANDIDATES = {
@@ -56,6 +57,12 @@ V2_CANDIDATES = {
     # a stricter exclusion keeps weeks that already look low out of it. Still chosen on 2016-2019 only.
     "recent1x+uncertainty": {"recent_lag": 1, "recent_exclude_p": 0.10, "param_uncertainty": True, "year_variance": True},
     "recent2x+uncertainty": {"recent_lag": 2, "recent_exclude_p": 0.10, "param_uncertainty": True, "year_variance": True},
+    # v3 (design log, 2026-11-20): added AFTER v2's 2020 results had been read, so 2020 is no longer a clean test
+    # of v3; chosen on 2016-2019 only. The 2016-2019 table already showed the recent level cutting real swap recall
+    # (2016: v1+uncertainty 0.50 vs recent1+uncertainty 0.18; 2017: 0.73 vs 0.45): a run of zeros that Model A did
+    # not flag at once enters the recent level and lowers what it expects. These variants keep zeros out of it.
+    "recent1z+uncertainty": {"recent_lag": 1, "recent_skip_zero": True, "param_uncertainty": True, "year_variance": True},
+    "recent2z+uncertainty": {"recent_lag": 2, "recent_skip_zero": True, "param_uncertainty": True, "year_variance": True},
     # covid_period is 0 before 2020, so 2016-2019 can't tell this variant apart from v1+uncertainty:
     # it is reported on 2020 as a sensitivity analysis only, never selected.
     "covid+uncertainty": {"covid_flag": True, "param_uncertainty": True, "year_variance": True},
@@ -67,11 +74,20 @@ SELECTION = {
     "coverage_years": [2017, 2018, 2019],
     "coverage_band": [0.85, 0.95],
     "recall_year": 2019,
+    # v3: the real 2016-2017 swaps join the score (mean of 2019 injected recall and the 2016-2017 swap recall), so
+    # the choice also answers to real errors. Pre-2020 data only; changed after v2's 2020 results (design log above).
+    "swap_recall_years": [2016, 2017],
 }
 
 V2 = {
     **V1,
     "MODEL_VERSION": "model_a_v2",
+    # Alert budget (design log, 2026-11-20): raised from 1% to 3% of 2019 normal weeks after v2's 2020 results had
+    # been read, at the team's request ("too strict, misses a lot"). Chosen from a 2016-2019 comparison of 1/2/3/5/10%:
+    # at 3%, 2019 injected recall 0.40 -> 0.60 and real swap recall 2016 0.18 -> 0.50, 2017 0.45 -> 0.73, with false
+    # alerts on 2016-2017 normal weeks of about 2%. v1 keeps its own 1% (V1) so its published scores still reproduce;
+    # in a v2 run every method (v1, baselines, COVID variant) is compared at this same budget.
+    "ALERT_BUDGET": 0.03,
     "STOUFFER_RHO_YEARS": [2016, 2017, 2018],
     "CALIBRATION_PRIOR_YEARS": [2016, 2017, 2018],
 }

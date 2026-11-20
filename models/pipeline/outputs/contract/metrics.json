@@ -1,18 +1,18 @@
 {
  "schema": "iris.metrics/1.0",
- "generated_at": "2026-10-23T13:58:14Z",
- "run_id": "20261023T075030Z-73b3e833",
+ "generated_at": "2026-11-20T06:31:47Z",
+ "run_id": "20261120T062907Z-688195ce",
  "disclaimer": "Alerts and plan items are leads for surveillance staff to verify, not confirmed errors. The reporting network is simulated. No real-world recovery effect is claimed.",
  "objectives": [
   {
    "objective (proposal)": "1. Detect reporting anomalies",
    "status": "Partly met",
-   "evidence": "Real 2020 swaps: Model A v2 catches 9% at 5.5% false alerts; v1 49% at 12.1%; best simple baseline 4%. Neither version holds the 1% budget in the COVID year."
+   "evidence": "Real 2020 swaps: Model A v2 catches 32% at 10.1% false alerts; v1 77% at 22.6%; best simple baseline 8%. Neither version holds the 3% budget in the COVID year."
   },
   {
    "objective (proposal)": "1. Detect shared network disruptions",
    "status": "Met in simulation; partly on real data",
-   "evidence": "Simulation: right hub named in 72% of hub outages (0% without the graph). Real 2020: false region alerts 62% (v1) \u2192 9% (v2)."
+   "evidence": "Simulation: right hub named in 72% of hub outages (0% without the graph). Real 2020: false region alerts 71% (v1) \u2192 15% (v2)."
   },
   {
    "objective (proposal)": "1. Temporal graph",
@@ -43,46 +43,46 @@
  "detection_real_swaps_2020": [
   {
    "method": "Model A v2",
-   "precision": 0.038781163434903045,
-   "recall (95% CI)": "0.089 (0.010\u20130.175)",
-   "F1": 0.05394990366088632,
-   "false-alert rate (95% CI)": "0.055 (0.036\u20130.077)",
+   "precision": 0.07348703170028818,
+   "recall (95% CI)": "0.323 (0.182\u20130.457)",
+   "F1": 0.11971830985915492,
+   "false-alert rate (95% CI)": "0.101 (0.074\u20130.133)",
    "weeks to detect": 0.0,
    "AUC": 0.7901870817480637
   },
   {
    "method": "Model A v1",
-   "precision": 0.0924170616113744,
-   "recall (95% CI)": "0.494 (0.377\u20130.618)",
-   "F1": 0.15568862275449102,
-   "false-alert rate (95% CI)": "0.121 (0.097\u20130.149)",
+   "precision": 0.0782552918537524,
+   "recall (95% CI)": "0.772 (0.655\u20130.883)",
+   "F1": 0.14210832847990681,
+   "false-alert rate (95% CI)": "0.226 (0.195\u20130.262)",
    "weeks to detect": 0.0,
    "AUC": 0.8417611846250788
   },
   {
    "method": "Rolling median",
-   "precision": 0.16666666666666666,
-   "recall (95% CI)": "0.032 (0.000\u20130.070)",
-   "F1": 0.05319148936170213,
-   "false-alert rate (95% CI)": "0.004 (0.002\u20130.006)",
+   "precision": 0.06779661016949153,
+   "recall (95% CI)": "0.051 (0.007\u20130.101)",
+   "F1": 0.05797101449275362,
+   "false-alert rate (95% CI)": "0.017 (0.013\u20130.022)",
    "weeks to detect": 0.0,
    "AUC": 0.7004304156397311
   },
   {
    "method": "EWMA",
-   "precision": 0.15555555555555556,
-   "recall (95% CI)": "0.044 (0.014\u20130.075)",
-   "F1": 0.06896551724137931,
-   "false-alert rate (95% CI)": "0.006 (0.004\u20130.008)",
+   "precision": 0.08163265306122448,
+   "recall (95% CI)": "0.076 (0.034\u20130.112)",
+   "F1": 0.07868852459016393,
+   "false-alert rate (95% CI)": "0.021 (0.018\u20130.025)",
    "weeks to detect": 0.0,
    "AUC": 0.8000985060579232
   },
   {
    "method": "CUSUM",
-   "precision": 0.00819672131147541,
+   "precision": 0.003401360544217687,
    "recall (95% CI)": "0.013 (0.000\u20130.044)",
-   "F1": 0.009950248756218905,
-   "false-alert rate (95% CI)": "0.038 (0.021\u20130.060)",
+   "F1": 0.005361930294906166,
+   "false-alert rate (95% CI)": "0.092 (0.062\u20130.128)",
    "weeks to detect": 4.0,
    "AUC": 0.38129471656576774
   },
@@ -108,47 +108,47 @@
  "detection_injected_2020": [
   {
    "method": "Model A v2",
-   "precision": 0.30798479087452474,
-   "recall (95% CI)": "0.199 (0.139\u20130.251)",
-   "F1": 0.24179104477611943,
-   "false-alert rate (95% CI)": "0.031 (0.018\u20130.048)",
-   "weeks to detect": 0.03636363636363636,
+   "precision": 0.29867674858223064,
+   "recall (95% CI)": "0.388 (0.324\u20130.460)",
+   "F1": 0.33760683760683763,
+   "false-alert rate (95% CI)": "0.062 (0.042\u20130.085)",
+   "weeks to detect": 0.0,
    "AUC": 0.8518817512252961
   },
   {
    "method": "Model A v1",
-   "precision": 0.22118380062305296,
-   "recall (95% CI)": "0.349 (0.277\u20130.422)",
-   "F1": 0.27073403241182076,
-   "false-alert rate (95% CI)": "0.084 (0.066\u20130.108)",
-   "weeks to detect": 0.0,
+   "precision": 0.1637337413925019,
+   "recall (95% CI)": "0.526 (0.453\u20130.593)",
+   "F1": 0.249708284714119,
+   "false-alert rate (95% CI)": "0.184 (0.153\u20130.216)",
+   "weeks to detect": 0.006097560975609756,
    "AUC": 0.7689131496571322
   },
   {
    "method": "Rolling median",
-   "precision": 0.5945945945945946,
-   "recall (95% CI)": "0.054 (0.030\u20130.078)",
-   "F1": 0.0990990990990991,
-   "false-alert rate (95% CI)": "0.003 (0.001\u20130.004)",
+   "precision": 0.4393939393939394,
+   "recall (95% CI)": "0.143 (0.106\u20130.174)",
+   "F1": 0.21521335807050096,
+   "false-alert rate (95% CI)": "0.012 (0.009\u20130.016)",
    "weeks to detect": 0.0,
    "AUC": 0.8594911800601078
   },
   {
    "method": "EWMA",
-   "precision": 0.7611940298507462,
-   "recall (95% CI)": "0.125 (0.094\u20130.159)",
-   "F1": 0.21518987341772153,
-   "false-alert rate (95% CI)": "0.003 (0.001\u20130.004)",
+   "precision": 0.6111111111111112,
+   "recall (95% CI)": "0.243 (0.200\u20130.282)",
+   "F1": 0.3479789103690686,
+   "false-alert rate (95% CI)": "0.011 (0.008\u20130.013)",
    "weeks to detect": 0.0,
    "AUC": 0.8919626118750845
   },
   {
    "method": "CUSUM",
-   "precision": 0.06614785992217899,
-   "recall (95% CI)": "0.042 (0.018\u20130.070)",
-   "F1": 0.05120481927710843,
-   "false-alert rate (95% CI)": "0.040 (0.018\u20130.066)",
-   "weeks to detect": 0.06666666666666667,
+   "precision": 0.08043875685557587,
+   "recall (95% CI)": "0.108 (0.066\u20130.160)",
+   "F1": 0.09224318658280924,
+   "false-alert rate (95% CI)": "0.085 (0.050\u20130.119)",
+   "weeks to detect": 0.02631578947368421,
    "AUC": 0.6094246991402352
   }
  ],
@@ -871,15 +871,15 @@
  "model_a_done_when": [
   {
    "target (roadmap step 2)": "2020 false-alert rate close to 1% (\u2264 2%)",
-   "Model A v1": "0.121",
-   "Model A v2": "0.055",
+   "Model A v1": "0.226",
+   "Model A v2": "0.101",
    "met": "no"
   },
   {
-   "target (roadmap step 2)": "2020 recall on real swaps well above the baselines (best baseline 0.044)",
-   "Model A v1": "0.494",
-   "Model A v2": "0.089 (CI 0.010\u20130.175)",
-   "met": "no"
+   "target (roadmap step 2)": "2020 recall on real swaps well above the baselines (best baseline 0.076)",
+   "Model A v1": "0.772",
+   "Model A v2": "0.323 (CI 0.182\u20130.457)",
+   "met": "yes"
   },
   {
    "target (roadmap step 2)": "85\u201395% of normal weeks inside the 90% range, 2017\u20132019 (selection years)",
@@ -895,7 +895,7 @@
   }
  ],
  "thresholds": {
-  "model_a_v2_tau": 0.00012051755366497229,
-  "alert_budget": 0.01
+  "model_a_v2_tau": 0.0038582157713545574,
+  "alert_budget": 0.03
  }
 }

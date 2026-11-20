@@ -1,0 +1,2756 @@
+{
+  "run_id": "20261023T075030Z-73b3e833",
+  "chosen_variant": "recent1+uncertainty",
+  "done_when": [
+    {
+      "target (roadmap step 2)": "2020 false-alert rate close to 1% (\u2264 2%)",
+      "Model A v1": "0.121",
+      "Model A v2": "0.055",
+      "met": "no"
+    },
+    {
+      "target (roadmap step 2)": "2020 recall on real swaps well above the baselines (best baseline 0.044)",
+      "Model A v1": "0.494",
+      "Model A v2": "0.089 (CI 0.010\u20130.175)",
+      "met": "no"
+    },
+    {
+      "target (roadmap step 2)": "85\u201395% of normal weeks inside the 90% range, 2017\u20132019 (selection years)",
+      "Model A v1": "0.750",
+      "Model A v2": "0.859",
+      "met": "yes"
+    },
+    {
+      "target (roadmap step 2)": "85\u201395% of normal weeks inside the 90% range, 2020 (test year)",
+      "Model A v1": "0.556",
+      "Model A v2": "0.793",
+      "met": "no"
+    }
+  ],
+  "headline": [
+    {
+      "failure set": "2020: real swaps",
+      "method": "Model A v1",
+      "positives": 158,
+      "recall (95% CI)": "0.494 (0.377\u20130.618)",
+      "false-alert rate (95% CI)": "0.121 (0.097\u20130.149)",
+      "precision": 0.0924170616113744,
+      "F1": 0.15568862275449102,
+      "AUC": 0.8417611846250788,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: real swaps",
+      "method": "Model A v2",
+      "positives": 158,
+      "recall (95% CI)": "0.089 (0.010\u20130.175)",
+      "false-alert rate (95% CI)": "0.055 (0.036\u20130.077)",
+      "precision": 0.038781163434903045,
+      "F1": 0.05394990366088632,
+      "AUC": 0.7901870817480637,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: real swaps",
+      "method": "Rolling median",
+      "positives": 158,
+      "recall (95% CI)": "0.032 (0.000\u20130.070)",
+      "false-alert rate (95% CI)": "0.004 (0.002\u20130.006)",
+      "precision": 0.16666666666666666,
+      "F1": 0.05319148936170213,
+      "AUC": 0.7004304156397311,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: real swaps",
+      "method": "EWMA",
+      "positives": 158,
+      "recall (95% CI)": "0.044 (0.014\u20130.075)",
+      "false-alert rate (95% CI)": "0.006 (0.004\u20130.008)",
+      "precision": 0.15555555555555556,
+      "F1": 0.06896551724137931,
+      "AUC": 0.8000985060579232,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: real swaps",
+      "method": "CUSUM",
+      "positives": 158,
+      "recall (95% CI)": "0.013 (0.000\u20130.044)",
+      "false-alert rate (95% CI)": "0.038 (0.021\u20130.060)",
+      "precision": 0.00819672131147541,
+      "F1": 0.009950248756218905,
+      "AUC": 0.38129471656576774,
+      "weeks to detect": 4.0
+    },
+    {
+      "failure set": "2020: regional gap filled with 0",
+      "method": "Model A v1",
+      "positives": 46,
+      "recall (95% CI)": "0.152 (0.065\u20130.275)",
+      "false-alert rate (95% CI)": "0.084 (0.066\u20130.108)",
+      "precision": 0.013806706114398421,
+      "F1": 0.025316455696202535,
+      "AUC": 0.7317937984382661,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: regional gap filled with 0",
+      "method": "Model A v2",
+      "positives": 46,
+      "recall (95% CI)": "0.000 (0.000\u20130.000)",
+      "false-alert rate (95% CI)": "0.031 (0.018\u20130.048)",
+      "precision": 0.0,
+      "F1": 0.0,
+      "AUC": 0.6970572952877205,
+      "weeks to detect": NaN
+    },
+    {
+      "failure set": "2020: regional gap filled with 0",
+      "method": "Rolling median",
+      "positives": 46,
+      "recall (95% CI)": "0.000 (0.000\u20130.000)",
+      "false-alert rate (95% CI)": "0.003 (0.001\u20130.004)",
+      "precision": 0.0,
+      "F1": 0.0,
+      "AUC": 0.574114663758846,
+      "weeks to detect": NaN
+    },
+    {
+      "failure set": "2020: regional gap filled with 0",
+      "method": "EWMA",
+      "positives": 46,
+      "recall (95% CI)": "0.000 (0.000\u20130.000)",
+      "false-alert rate (95% CI)": "0.003 (0.001\u20130.004)",
+      "precision": 0.0,
+      "F1": 0.0,
+      "AUC": 0.7306045681081358,
+      "weeks to detect": NaN
+    },
+    {
+      "failure set": "2020: regional gap filled with 0",
+      "method": "CUSUM",
+      "positives": 46,
+      "recall (95% CI)": "0.022 (0.000\u20130.070)",
+      "false-alert rate (95% CI)": "0.040 (0.018\u20130.066)",
+      "precision": 0.004149377593360996,
+      "F1": 0.006968641114982578,
+      "AUC": 0.25995477265575256,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: injected, all types",
+      "method": "Model A v1",
+      "positives": 407,
+      "recall (95% CI)": "0.349 (0.277\u20130.422)",
+      "false-alert rate (95% CI)": "0.084 (0.066\u20130.108)",
+      "precision": 0.22118380062305296,
+      "F1": 0.27073403241182076,
+      "AUC": 0.7689131496571322,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: injected, all types",
+      "method": "Model A v2",
+      "positives": 407,
+      "recall (95% CI)": "0.199 (0.139\u20130.251)",
+      "false-alert rate (95% CI)": "0.031 (0.018\u20130.048)",
+      "precision": 0.30798479087452474,
+      "F1": 0.24179104477611943,
+      "AUC": 0.8518817512252961,
+      "weeks to detect": 0.03636363636363636
+    },
+    {
+      "failure set": "2020: injected, all types",
+      "method": "Rolling median",
+      "positives": 407,
+      "recall (95% CI)": "0.054 (0.030\u20130.078)",
+      "false-alert rate (95% CI)": "0.003 (0.001\u20130.004)",
+      "precision": 0.5945945945945946,
+      "F1": 0.0990990990990991,
+      "AUC": 0.8594911800601078,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: injected, all types",
+      "method": "EWMA",
+      "positives": 407,
+      "recall (95% CI)": "0.125 (0.094\u20130.159)",
+      "false-alert rate (95% CI)": "0.003 (0.001\u20130.004)",
+      "precision": 0.7611940298507462,
+      "F1": 0.21518987341772153,
+      "AUC": 0.8919626118750845,
+      "weeks to detect": 0.0
+    },
+    {
+      "failure set": "2020: injected, all types",
+      "method": "CUSUM",
+      "positives": 407,
+      "recall (95% CI)": "0.042 (0.018\u20130.070)",
+      "false-alert rate (95% CI)": "0.040 (0.018\u20130.066)",
+      "precision": 0.06614785992217899,
+      "F1": 0.05120481927710843,
+      "AUC": 0.6094246991402352,
+      "weeks to detect": 0.06666666666666667
+    }
+  ],
+  "sets": {
+    "dengue 2016: real swaps": [
+      {
+        "method": "Model A v1",
+        "positives": 225,
+        "events": 46,
+        "recall": 0.39111111111111113,
+        "detection_rate": 0.4782608695652174,
+        "weeks_to_detect": 0.5454545454545454,
+        "precision": 0.6518518518518519,
+        "f1": 0.48888888888888893,
+        "false_alert_rate": 0.010208514335360555,
+        "auc": 0.9472757988222802,
+        "tp": 88,
+        "fp": 47,
+        "fn": 137,
+        "tn": 4557
+      },
+      {
+        "method": "Model A v2",
+        "positives": 225,
+        "events": 46,
+        "recall": 0.17777777777777778,
+        "detection_rate": 0.30434782608695654,
+        "weeks_to_detect": 0.2857142857142857,
+        "precision": 0.8,
+        "f1": 0.2909090909090909,
+        "false_alert_rate": 0.002172024326672459,
+        "auc": 0.9405849985519837,
+        "tp": 40,
+        "fp": 10,
+        "fn": 185,
+        "tn": 4594
+      },
+      {
+        "method": "Rolling median",
+        "positives": 225,
+        "events": 46,
+        "recall": 0.06666666666666667,
+        "detection_rate": 0.2608695652173913,
+        "weeks_to_detect": 0.8333333333333334,
+        "precision": 0.35714285714285715,
+        "f1": 0.11235955056179775,
+        "false_alert_rate": 0.0058644656820156385,
+        "auc": 0.8389839752871899,
+        "tp": 15,
+        "fp": 27,
+        "fn": 210,
+        "tn": 4577
+      },
+      {
+        "method": "EWMA",
+        "positives": 225,
+        "events": 46,
+        "recall": 0.10222222222222223,
+        "detection_rate": 0.5,
+        "weeks_to_detect": 0.0,
+        "precision": 0.42592592592592593,
+        "f1": 0.16487455197132617,
+        "false_alert_rate": 0.006733275412684622,
+        "auc": 0.8953866203301477,
+        "tp": 23,
+        "fp": 31,
+        "fn": 202,
+        "tn": 4573
+      },
+      {
+        "method": "CUSUM",
+        "positives": 225,
+        "events": 46,
+        "recall": 0.017777777777777778,
+        "detection_rate": 0.021739130434782608,
+        "weeks_to_detect": 2.0,
+        "precision": 0.07692307692307693,
+        "f1": 0.028880866425992777,
+        "false_alert_rate": 0.010425716768027803,
+        "auc": 0.6544347910029926,
+        "tp": 4,
+        "fp": 48,
+        "fn": 221,
+        "tn": 4556
+      }
+    ],
+    "dengue 2017: real swaps": [
+      {
+        "method": "Model A v1",
+        "positives": 198,
+        "events": 41,
+        "recall": 0.6212121212121212,
+        "detection_rate": 0.6585365853658537,
+        "weeks_to_detect": 0.0,
+        "precision": 0.7454545454545455,
+        "f1": 0.6776859504132231,
+        "false_alert_rate": 0.006535947712418301,
+        "auc": 0.9781254813934552,
+        "tp": 123,
+        "fp": 42,
+        "fn": 75,
+        "tn": 6384
+      },
+      {
+        "method": "Model A v2",
+        "positives": 198,
+        "events": 41,
+        "recall": 0.4393939393939394,
+        "detection_rate": 0.5365853658536586,
+        "weeks_to_detect": 0.18181818181818182,
+        "precision": 0.9354838709677419,
+        "f1": 0.5979381443298969,
+        "false_alert_rate": 0.0009337068160597573,
+        "auc": 0.9724965182481522,
+        "tp": 87,
+        "fp": 6,
+        "fn": 111,
+        "tn": 6420
+      },
+      {
+        "method": "Rolling median",
+        "positives": 198,
+        "events": 41,
+        "recall": 0.06060606060606061,
+        "detection_rate": 0.17073170731707318,
+        "weeks_to_detect": 0.8571428571428571,
+        "precision": 0.23076923076923078,
+        "f1": 0.096,
+        "false_alert_rate": 0.006224712107065048,
+        "auc": 0.8157701352145796,
+        "tp": 12,
+        "fp": 40,
+        "fn": 186,
+        "tn": 6386
+      },
+      {
+        "method": "EWMA",
+        "positives": 198,
+        "events": 41,
+        "recall": 0.09090909090909091,
+        "detection_rate": 0.43902439024390244,
+        "weeks_to_detect": 0.0,
+        "precision": 0.25,
+        "f1": 0.13333333333333333,
+        "false_alert_rate": 0.008403361344537815,
+        "auc": 0.8264232741356924,
+        "tp": 18,
+        "fp": 54,
+        "fn": 180,
+        "tn": 6372
+      },
+      {
+        "method": "CUSUM",
+        "positives": 198,
+        "events": 41,
+        "recall": 0.015151515151515152,
+        "detection_rate": 0.024390243902439025,
+        "weeks_to_detect": 4.0,
+        "precision": 0.016666666666666666,
+        "f1": 0.015873015873015876,
+        "false_alert_rate": 0.027544351073762838,
+        "auc": 0.6154723393285485,
+        "tp": 3,
+        "fp": 177,
+        "fn": 195,
+        "tn": 6249
+      }
+    ],
+    "dengue 2020: real swaps": [
+      {
+        "method": "Model A v1",
+        "positives": 158,
+        "events": 44,
+        "recall": 0.4936708860759494,
+        "detection_rate": 0.5681818181818182,
+        "weeks_to_detect": 0.0,
+        "precision": 0.0924170616113744,
+        "f1": 0.15568862275449102,
+        "false_alert_rate": 0.12066792690611217,
+        "auc": 0.8417611846250788,
+        "tp": 78,
+        "fp": 766,
+        "fn": 80,
+        "tn": 5582
+      },
+      {
+        "method": "Model A v2",
+        "positives": 158,
+        "events": 44,
+        "recall": 0.08860759493670886,
+        "detection_rate": 0.11363636363636363,
+        "weeks_to_detect": 0.0,
+        "precision": 0.038781163434903045,
+        "f1": 0.05394990366088632,
+        "false_alert_rate": 0.05466288594833018,
+        "auc": 0.7901870817480637,
+        "tp": 14,
+        "fp": 347,
+        "fn": 144,
+        "tn": 6001
+      },
+      {
+        "method": "Rolling median",
+        "positives": 158,
+        "events": 44,
+        "recall": 0.03164556962025317,
+        "detection_rate": 0.06818181818181818,
+        "weeks_to_detect": 0.0,
+        "precision": 0.16666666666666666,
+        "f1": 0.05319148936170213,
+        "false_alert_rate": 0.003938248267170762,
+        "auc": 0.7004304156397311,
+        "tp": 5,
+        "fp": 25,
+        "fn": 153,
+        "tn": 6323
+      },
+      {
+        "method": "EWMA",
+        "positives": 158,
+        "events": 44,
+        "recall": 0.04430379746835443,
+        "detection_rate": 0.1590909090909091,
+        "weeks_to_detect": 0.0,
+        "precision": 0.15555555555555556,
+        "f1": 0.06896551724137931,
+        "false_alert_rate": 0.0059861373660995585,
+        "auc": 0.8000985060579232,
+        "tp": 7,
+        "fp": 38,
+        "fn": 151,
+        "tn": 6310
+      },
+      {
+        "method": "CUSUM",
+        "positives": 158,
+        "events": 44,
+        "recall": 0.012658227848101266,
+        "detection_rate": 0.022727272727272728,
+        "weeks_to_detect": 4.0,
+        "precision": 0.00819672131147541,
+        "f1": 0.009950248756218905,
+        "false_alert_rate": 0.03812224322621298,
+        "auc": 0.38129471656576774,
+        "tp": 2,
+        "fp": 242,
+        "fn": 156,
+        "tn": 6106
+      }
+    ],
+    "dengue 2016: regional gap filled with 0": [
+      {
+        "method": "Model A v1",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.1956521739130435,
+        "detection_rate": 0.1956521739130435,
+        "weeks_to_detect": 0.0,
+        "precision": 0.16071428571428573,
+        "f1": 0.17647058823529413,
+        "false_alert_rate": 0.010208514335360555,
+        "auc": 0.9292675556227099,
+        "tp": 9,
+        "fp": 47,
+        "fn": 37,
+        "tn": 4557
+      },
+      {
+        "method": "Model A v2",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.043478260869565216,
+        "detection_rate": 0.043478260869565216,
+        "weeks_to_detect": 0.0,
+        "precision": 0.16666666666666666,
+        "f1": 0.06896551724137931,
+        "false_alert_rate": 0.002172024326672459,
+        "auc": 0.9198759113058588,
+        "tp": 2,
+        "fp": 10,
+        "fn": 44,
+        "tn": 4594
+      },
+      {
+        "method": "Rolling median",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.0058644656820156385,
+        "auc": 0.6899151966154194,
+        "tp": 0,
+        "fp": 27,
+        "fn": 46,
+        "tn": 4577
+      },
+      {
+        "method": "EWMA",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.006733275412684622,
+        "auc": 0.8235135798738337,
+        "tp": 0,
+        "fp": 31,
+        "fn": 46,
+        "tn": 4573
+      },
+      {
+        "method": "CUSUM",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.021739130434782608,
+        "detection_rate": 0.021739130434782608,
+        "weeks_to_detect": 0.0,
+        "precision": 0.02040816326530612,
+        "f1": 0.021052631578947368,
+        "false_alert_rate": 0.010425716768027803,
+        "auc": 0.5989829260000755,
+        "tp": 1,
+        "fp": 48,
+        "fn": 45,
+        "tn": 4556
+      }
+    ],
+    "dengue 2017: regional gap filled with 0": [
+      {
+        "method": "Model A v1",
+        "positives": 41,
+        "events": 41,
+        "recall": 0.43902439024390244,
+        "detection_rate": 0.43902439024390244,
+        "weeks_to_detect": 0.0,
+        "precision": 0.3157894736842105,
+        "f1": 0.36734693877551017,
+        "false_alert_rate": 0.006069094304388422,
+        "auc": 0.9567875930860149,
+        "tp": 18,
+        "fp": 39,
+        "fn": 23,
+        "tn": 6387
+      },
+      {
+        "method": "Model A v2",
+        "positives": 41,
+        "events": 41,
+        "recall": 0.2926829268292683,
+        "detection_rate": 0.2926829268292683,
+        "weeks_to_detect": 0.0,
+        "precision": 0.6666666666666666,
+        "f1": 0.4067796610169492,
+        "false_alert_rate": 0.0009337068160597573,
+        "auc": 0.9484487561962455,
+        "tp": 12,
+        "fp": 6,
+        "fn": 29,
+        "tn": 6420
+      },
+      {
+        "method": "Rolling median",
+        "positives": 41,
+        "events": 41,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.006069094304388422,
+        "auc": 0.6531222244995559,
+        "tp": 0,
+        "fp": 39,
+        "fn": 41,
+        "tn": 6387
+      },
+      {
+        "method": "EWMA",
+        "positives": 41,
+        "events": 41,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.008403361344537815,
+        "auc": 0.7676094828175173,
+        "tp": 0,
+        "fp": 54,
+        "fn": 41,
+        "tn": 6372
+      },
+      {
+        "method": "CUSUM",
+        "positives": 41,
+        "events": 41,
+        "recall": 0.024390243902439025,
+        "detection_rate": 0.024390243902439025,
+        "weeks_to_detect": 0.0,
+        "precision": 0.005917159763313609,
+        "f1": 0.009523809523809525,
+        "false_alert_rate": 0.026143790849673203,
+        "auc": 0.5203669543698238,
+        "tp": 1,
+        "fp": 168,
+        "fn": 40,
+        "tn": 6258
+      }
+    ],
+    "dengue 2020: regional gap filled with 0": [
+      {
+        "method": "Model A v1",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.15217391304347827,
+        "detection_rate": 0.15217391304347827,
+        "weeks_to_detect": 0.0,
+        "precision": 0.013806706114398421,
+        "f1": 0.025316455696202535,
+        "false_alert_rate": 0.0841609156707625,
+        "auc": 0.7317937984382661,
+        "tp": 7,
+        "fp": 500,
+        "fn": 39,
+        "tn": 5441
+      },
+      {
+        "method": "Model A v2",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.030634573304157548,
+        "auc": 0.6970572952877205,
+        "tp": 0,
+        "fp": 182,
+        "fn": 46,
+        "tn": 5759
+      },
+      {
+        "method": "Rolling median",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.002524827470122875,
+        "auc": 0.574114663758846,
+        "tp": 0,
+        "fp": 15,
+        "fn": 46,
+        "tn": 5926
+      },
+      {
+        "method": "EWMA",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.0026931493014644,
+        "auc": 0.7306045681081358,
+        "tp": 0,
+        "fp": 16,
+        "fn": 46,
+        "tn": 5925
+      },
+      {
+        "method": "CUSUM",
+        "positives": 46,
+        "events": 46,
+        "recall": 0.021739130434782608,
+        "detection_rate": 0.021739130434782608,
+        "weeks_to_detect": 0.0,
+        "precision": 0.004149377593360996,
+        "f1": 0.006968641114982578,
+        "false_alert_rate": 0.040397239521966,
+        "auc": 0.25995477265575256,
+        "tp": 1,
+        "fp": 240,
+        "fn": 45,
+        "tn": 5701
+      }
+    ],
+    "dengue 2019 (tuning): injected zero_fill": [
+      {
+        "method": "Model A v1",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.58,
+        "detection_rate": 0.58,
+        "weeks_to_detect": 0.0,
+        "precision": 0.6444444444444445,
+        "f1": 0.6105263157894737,
+        "false_alert_rate": 0.007985360173016137,
+        "auc": 0.9705905839294626,
+        "tp": 87,
+        "fp": 48,
+        "fn": 63,
+        "tn": 5963
+      },
+      {
+        "method": "Model A v2",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.62,
+        "detection_rate": 0.62,
+        "weeks_to_detect": 0.0,
+        "precision": 0.7622950819672131,
+        "f1": 0.6838235294117647,
+        "false_alert_rate": 0.004824488437863916,
+        "auc": 0.9824066988299229,
+        "tp": 93,
+        "fp": 29,
+        "fn": 57,
+        "tn": 5982
+      },
+      {
+        "method": "Rolling median",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.19333333333333333,
+        "detection_rate": 0.19333333333333333,
+        "weeks_to_detect": 0.0,
+        "precision": 0.3815789473684211,
+        "f1": 0.25663716814159293,
+        "false_alert_rate": 0.007818998502744968,
+        "auc": 0.9314739643986025,
+        "tp": 29,
+        "fp": 47,
+        "fn": 121,
+        "tn": 5964
+      },
+      {
+        "method": "EWMA",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.4266666666666667,
+        "detection_rate": 0.4266666666666667,
+        "weeks_to_detect": 0.0,
+        "precision": 0.6530612244897959,
+        "f1": 0.5161290322580645,
+        "false_alert_rate": 0.005656296789219764,
+        "auc": 0.9713880108689624,
+        "tp": 64,
+        "fp": 34,
+        "fn": 86,
+        "tn": 5977
+      },
+      {
+        "method": "CUSUM",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.02,
+        "detection_rate": 0.02,
+        "weeks_to_detect": 0.0,
+        "precision": 0.03409090909090909,
+        "f1": 0.025210084033613443,
+        "false_alert_rate": 0.01414074197304941,
+        "auc": 0.6569871901513891,
+        "tp": 3,
+        "fp": 85,
+        "fn": 147,
+        "tn": 5926
+      }
+    ],
+    "dengue 2019 (tuning): injected partial": [
+      {
+        "method": "Model A v1",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.08,
+        "detection_rate": 0.08,
+        "weeks_to_detect": 0.0,
+        "precision": 0.2,
+        "f1": 0.11428571428571428,
+        "false_alert_rate": 0.007985360173016137,
+        "auc": 0.7711617589973937,
+        "tp": 12,
+        "fp": 48,
+        "fn": 138,
+        "tn": 5963
+      },
+      {
+        "method": "Model A v2",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.06,
+        "detection_rate": 0.06,
+        "weeks_to_detect": 0.0,
+        "precision": 0.23684210526315788,
+        "f1": 0.09574468085106382,
+        "false_alert_rate": 0.004824488437863916,
+        "auc": 0.879301280984861,
+        "tp": 9,
+        "fp": 29,
+        "fn": 141,
+        "tn": 5982
+      },
+      {
+        "method": "Rolling median",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.07333333333333333,
+        "detection_rate": 0.07333333333333333,
+        "weeks_to_detect": 0.0,
+        "precision": 0.1896551724137931,
+        "f1": 0.10576923076923078,
+        "false_alert_rate": 0.007818998502744968,
+        "auc": 0.8311778406255199,
+        "tp": 11,
+        "fp": 47,
+        "fn": 139,
+        "tn": 5964
+      },
+      {
+        "method": "EWMA",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.17333333333333334,
+        "detection_rate": 0.17333333333333334,
+        "weeks_to_detect": 0.0,
+        "precision": 0.43333333333333335,
+        "f1": 0.24761904761904763,
+        "false_alert_rate": 0.005656296789219764,
+        "auc": 0.9015393999889092,
+        "tp": 26,
+        "fp": 34,
+        "fn": 124,
+        "tn": 5977
+      },
+      {
+        "method": "CUSUM",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.02,
+        "detection_rate": 0.02,
+        "weeks_to_detect": 0.0,
+        "precision": 0.03409090909090909,
+        "f1": 0.025210084033613443,
+        "false_alert_rate": 0.01414074197304941,
+        "auc": 0.5955847612710031,
+        "tp": 3,
+        "fp": 85,
+        "fn": 147,
+        "tn": 5926
+      }
+    ],
+    "dengue 2019 (tuning): injected outage": [
+      {
+        "method": "Model A v1",
+        "positives": 96,
+        "events": 30,
+        "recall": 0.4583333333333333,
+        "detection_rate": 0.4666666666666667,
+        "weeks_to_detect": 0.0,
+        "precision": 0.4782608695652174,
+        "f1": 0.4680851063829787,
+        "false_alert_rate": 0.007985360173016137,
+        "auc": 0.9827035850939944,
+        "tp": 44,
+        "fp": 48,
+        "fn": 52,
+        "tn": 5963
+      },
+      {
+        "method": "Model A v2",
+        "positives": 96,
+        "events": 30,
+        "recall": 0.53125,
+        "detection_rate": 0.5333333333333333,
+        "weeks_to_detect": 0.0,
+        "precision": 0.6375,
+        "f1": 0.5795454545454545,
+        "false_alert_rate": 0.004824488437863916,
+        "auc": 0.9765707314368103,
+        "tp": 51,
+        "fp": 29,
+        "fn": 45,
+        "tn": 5982
+      },
+      {
+        "method": "Rolling median",
+        "positives": 96,
+        "events": 30,
+        "recall": 0.13541666666666666,
+        "detection_rate": 0.2,
+        "weeks_to_detect": 0.16666666666666666,
+        "precision": 0.21666666666666667,
+        "f1": 0.16666666666666669,
+        "false_alert_rate": 0.007818998502744968,
+        "auc": 0.8765033203016691,
+        "tp": 13,
+        "fp": 47,
+        "fn": 83,
+        "tn": 5964
+      },
+      {
+        "method": "EWMA",
+        "positives": 96,
+        "events": 30,
+        "recall": 0.15625,
+        "detection_rate": 0.5,
+        "weeks_to_detect": 0.0,
+        "precision": 0.30612244897959184,
+        "f1": 0.20689655172413796,
+        "false_alert_rate": 0.005656296789219764,
+        "auc": 0.8642523429268563,
+        "tp": 15,
+        "fp": 34,
+        "fn": 81,
+        "tn": 5977
+      },
+      {
+        "method": "CUSUM",
+        "positives": 96,
+        "events": 30,
+        "recall": 0.041666666666666664,
+        "detection_rate": 0.1,
+        "weeks_to_detect": 2.0,
+        "precision": 0.0449438202247191,
+        "f1": 0.043243243243243246,
+        "false_alert_rate": 0.01414074197304941,
+        "auc": 0.6813359535296402,
+        "tp": 4,
+        "fp": 85,
+        "fn": 92,
+        "tn": 5926
+      }
+    ],
+    "dengue 2019 (tuning): injected region_outage": [
+      {
+        "method": "Model A v1",
+        "positives": 19,
+        "events": 3,
+        "recall": 0.5263157894736842,
+        "detection_rate": 1.0,
+        "weeks_to_detect": 0.0,
+        "precision": 0.1724137931034483,
+        "f1": 0.25974025974025977,
+        "false_alert_rate": 0.007985360173016137,
+        "auc": 0.9656069136407813,
+        "tp": 10,
+        "fp": 48,
+        "fn": 9,
+        "tn": 5963
+      },
+      {
+        "method": "Model A v2",
+        "positives": 19,
+        "events": 3,
+        "recall": 0.5263157894736842,
+        "detection_rate": 0.6666666666666666,
+        "weeks_to_detect": 0.0,
+        "precision": 0.2564102564102564,
+        "f1": 0.3448275862068965,
+        "false_alert_rate": 0.004824488437863916,
+        "auc": 0.9671129245506046,
+        "tp": 10,
+        "fp": 29,
+        "fn": 9,
+        "tn": 5982
+      },
+      {
+        "method": "Rolling median",
+        "positives": 19,
+        "events": 3,
+        "recall": 0.21052631578947367,
+        "detection_rate": 1.0,
+        "weeks_to_detect": 0.0,
+        "precision": 0.0784313725490196,
+        "f1": 0.11428571428571428,
+        "false_alert_rate": 0.007818998502744968,
+        "auc": 0.9120384558134648,
+        "tp": 4,
+        "fp": 47,
+        "fn": 15,
+        "tn": 5964
+      },
+      {
+        "method": "EWMA",
+        "positives": 19,
+        "events": 3,
+        "recall": 0.47368421052631576,
+        "detection_rate": 1.0,
+        "weeks_to_detect": 0.0,
+        "precision": 0.20930232558139536,
+        "f1": 0.2903225806451613,
+        "false_alert_rate": 0.005656296789219764,
+        "auc": 0.9813499811748636,
+        "tp": 9,
+        "fp": 34,
+        "fn": 10,
+        "tn": 5977
+      },
+      {
+        "method": "CUSUM",
+        "positives": 19,
+        "events": 3,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.01414074197304941,
+        "auc": 0.5895594918088767,
+        "tp": 0,
+        "fp": 85,
+        "fn": 19,
+        "tn": 5926
+      }
+    ],
+    "dengue 2019 (tuning): injected, all types": [
+      {
+        "method": "Model A v1",
+        "positives": 415,
+        "events": 333,
+        "recall": 0.3686746987951807,
+        "detection_rate": 0.3483483483483483,
+        "weeks_to_detect": 0.0,
+        "precision": 0.7611940298507462,
+        "f1": 0.4967532467532467,
+        "false_alert_rate": 0.007985360173016137,
+        "auc": 0.9010817517282572,
+        "tp": 153,
+        "fp": 48,
+        "fn": 262,
+        "tn": 5963
+      },
+      {
+        "method": "Model A v2",
+        "positives": 415,
+        "events": 333,
+        "recall": 0.3927710843373494,
+        "detection_rate": 0.36036036036036034,
+        "weeks_to_detect": 0.0,
+        "precision": 0.8489583333333334,
+        "f1": 0.5370675453047776,
+        "false_alert_rate": 0.004824488437863916,
+        "auc": 0.9430894765219587,
+        "tp": 163,
+        "fp": 29,
+        "fn": 252,
+        "tn": 5982
+      },
+      {
+        "method": "Rolling median",
+        "positives": 415,
+        "events": 333,
+        "recall": 0.13734939759036144,
+        "detection_rate": 0.14714714714714713,
+        "weeks_to_detect": 0.02040816326530612,
+        "precision": 0.5480769230769231,
+        "f1": 0.21965317919075145,
+        "false_alert_rate": 0.007818998502744968,
+        "auc": 0.8816164341277938,
+        "tp": 57,
+        "fp": 47,
+        "fn": 358,
+        "tn": 5964
+      },
+      {
+        "method": "EWMA",
+        "positives": 415,
+        "events": 333,
+        "recall": 0.2746987951807229,
+        "detection_rate": 0.32432432432432434,
+        "weeks_to_detect": 0.0,
+        "precision": 0.7702702702702703,
+        "f1": 0.40497335701598575,
+        "false_alert_rate": 0.005656296789219764,
+        "auc": 0.9218144245589912,
+        "tp": 114,
+        "fp": 34,
+        "fn": 301,
+        "tn": 5977
+      },
+      {
+        "method": "CUSUM",
+        "positives": 415,
+        "events": 333,
+        "recall": 0.024096385542168676,
+        "detection_rate": 0.02702702702702703,
+        "weeks_to_detect": 0.6666666666666666,
+        "precision": 0.10526315789473684,
+        "f1": 0.03921568627450981,
+        "false_alert_rate": 0.01414074197304941,
+        "auc": 0.637338974931501,
+        "tp": 10,
+        "fp": 85,
+        "fn": 405,
+        "tn": 5926
+      }
+    ],
+    "dengue 2020 (test): injected zero_fill": [
+      {
+        "method": "Model A v1",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.4066666666666667,
+        "detection_rate": 0.4066666666666667,
+        "weeks_to_detect": 0.0,
+        "precision": 0.10873440285204991,
+        "f1": 0.17158931082981718,
+        "false_alert_rate": 0.0841609156707625,
+        "auc": 0.8076014139033832,
+        "tp": 61,
+        "fp": 500,
+        "fn": 89,
+        "tn": 5441
+      },
+      {
+        "method": "Model A v2",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.21333333333333335,
+        "detection_rate": 0.21333333333333335,
+        "weeks_to_detect": 0.0,
+        "precision": 0.14953271028037382,
+        "f1": 0.1758241758241758,
+        "false_alert_rate": 0.030634573304157548,
+        "auc": 0.8798675868260113,
+        "tp": 32,
+        "fp": 182,
+        "fn": 118,
+        "tn": 5759
+      },
+      {
+        "method": "Rolling median",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.06666666666666667,
+        "detection_rate": 0.06666666666666667,
+        "weeks_to_detect": 0.0,
+        "precision": 0.4,
+        "f1": 0.1142857142857143,
+        "false_alert_rate": 0.002524827470122875,
+        "auc": 0.8906676765976547,
+        "tp": 10,
+        "fp": 15,
+        "fn": 140,
+        "tn": 5926
+      },
+      {
+        "method": "EWMA",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.18,
+        "detection_rate": 0.18,
+        "weeks_to_detect": 0.0,
+        "precision": 0.627906976744186,
+        "f1": 0.2797927461139897,
+        "false_alert_rate": 0.0026931493014644,
+        "auc": 0.9142781798799304,
+        "tp": 27,
+        "fp": 16,
+        "fn": 123,
+        "tn": 5925
+      },
+      {
+        "method": "CUSUM",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.02666666666666667,
+        "detection_rate": 0.02666666666666667,
+        "weeks_to_detect": 0.0,
+        "precision": 0.01639344262295082,
+        "f1": 0.020304568527918784,
+        "false_alert_rate": 0.040397239521966,
+        "auc": 0.616420916792908,
+        "tp": 4,
+        "fp": 240,
+        "fn": 146,
+        "tn": 5701
+      }
+    ],
+    "dengue 2020 (test): injected partial": [
+      {
+        "method": "Model A v1",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.19333333333333333,
+        "detection_rate": 0.19333333333333333,
+        "weeks_to_detect": 0.0,
+        "precision": 0.054820415879017016,
+        "f1": 0.085419734904271,
+        "false_alert_rate": 0.0841609156707625,
+        "auc": 0.6617763563934242,
+        "tp": 29,
+        "fp": 500,
+        "fn": 121,
+        "tn": 5441
+      },
+      {
+        "method": "Model A v2",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.06666666666666667,
+        "detection_rate": 0.06666666666666667,
+        "weeks_to_detect": 0.0,
+        "precision": 0.052083333333333336,
+        "f1": 0.058479532163742694,
+        "false_alert_rate": 0.030634573304157548,
+        "auc": 0.7739168490153173,
+        "tp": 10,
+        "fp": 182,
+        "fn": 140,
+        "tn": 5759
+      },
+      {
+        "method": "Rolling median",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.03333333333333333,
+        "detection_rate": 0.03333333333333333,
+        "weeks_to_detect": 0.0,
+        "precision": 0.25,
+        "f1": 0.058823529411764705,
+        "false_alert_rate": 0.002524827470122875,
+        "auc": 0.8201301688829041,
+        "tp": 5,
+        "fp": 15,
+        "fn": 145,
+        "tn": 5926
+      },
+      {
+        "method": "EWMA",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.12,
+        "detection_rate": 0.12,
+        "weeks_to_detect": 0.0,
+        "precision": 0.5294117647058824,
+        "f1": 0.19565217391304346,
+        "false_alert_rate": 0.0026931493014644,
+        "auc": 0.8703181282612354,
+        "tp": 18,
+        "fp": 16,
+        "fn": 132,
+        "tn": 5925
+      },
+      {
+        "method": "CUSUM",
+        "positives": 150,
+        "events": 150,
+        "recall": 0.05333333333333334,
+        "detection_rate": 0.05333333333333334,
+        "weeks_to_detect": 0.0,
+        "precision": 0.03225806451612903,
+        "f1": 0.04020100502512562,
+        "false_alert_rate": 0.040397239521966,
+        "auc": 0.5824984570498793,
+        "tp": 8,
+        "fp": 240,
+        "fn": 142,
+        "tn": 5701
+      }
+    ],
+    "dengue 2020 (test): injected outage": [
+      {
+        "method": "Model A v1",
+        "positives": 86,
+        "events": 30,
+        "recall": 0.45348837209302323,
+        "detection_rate": 0.4666666666666667,
+        "weeks_to_detect": 0.0,
+        "precision": 0.07235621521335807,
+        "f1": 0.1248,
+        "false_alert_rate": 0.0841609156707625,
+        "auc": 0.8643032454797759,
+        "tp": 39,
+        "fp": 500,
+        "fn": 47,
+        "tn": 5441
+      },
+      {
+        "method": "Model A v2",
+        "positives": 86,
+        "events": 30,
+        "recall": 0.313953488372093,
+        "detection_rate": 0.3333333333333333,
+        "weeks_to_detect": 0.2,
+        "precision": 0.1291866028708134,
+        "f1": 0.18305084745762712,
+        "false_alert_rate": 0.030634573304157548,
+        "auc": 0.9182210339657798,
+        "tp": 27,
+        "fp": 182,
+        "fn": 59,
+        "tn": 5759
+      },
+      {
+        "method": "Rolling median",
+        "positives": 86,
+        "events": 30,
+        "recall": 0.08139534883720931,
+        "detection_rate": 0.13333333333333333,
+        "weeks_to_detect": 0.0,
+        "precision": 0.3181818181818182,
+        "f1": 0.12962962962962965,
+        "false_alert_rate": 0.002524827470122875,
+        "auc": 0.8676383664170545,
+        "tp": 7,
+        "fp": 15,
+        "fn": 79,
+        "tn": 5926
+      },
+      {
+        "method": "EWMA",
+        "positives": 86,
+        "events": 30,
+        "recall": 0.046511627906976744,
+        "detection_rate": 0.13333333333333333,
+        "weeks_to_detect": 0.0,
+        "precision": 0.2,
+        "f1": 0.07547169811320754,
+        "false_alert_rate": 0.0026931493014644,
+        "auc": 0.8814387993564626,
+        "tp": 4,
+        "fp": 16,
+        "fn": 82,
+        "tn": 5925
+      },
+      {
+        "method": "CUSUM",
+        "positives": 86,
+        "events": 30,
+        "recall": 0.023255813953488372,
+        "detection_rate": 0.03333333333333333,
+        "weeks_to_detect": 1.0,
+        "precision": 0.008264462809917356,
+        "f1": 0.012195121951219511,
+        "false_alert_rate": 0.040397239521966,
+        "auc": 0.6526483287207933,
+        "tp": 2,
+        "fp": 240,
+        "fn": 84,
+        "tn": 5701
+      }
+    ],
+    "dengue 2020 (test): injected region_outage": [
+      {
+        "method": "Model A v1",
+        "positives": 21,
+        "events": 3,
+        "recall": 0.6190476190476191,
+        "detection_rate": 1.0,
+        "weeks_to_detect": 0.0,
+        "precision": 0.025341130604288498,
+        "f1": 0.04868913857677902,
+        "false_alert_rate": 0.0841609156707625,
+        "auc": 0.8671860597462347,
+        "tp": 13,
+        "fp": 500,
+        "fn": 8,
+        "tn": 5441
+      },
+      {
+        "method": "Model A v2",
+        "positives": 21,
+        "events": 3,
+        "recall": 0.5714285714285714,
+        "detection_rate": 1.0,
+        "weeks_to_detect": 0.0,
+        "precision": 0.061855670103092786,
+        "f1": 0.11162790697674418,
+        "false_alert_rate": 0.030634573304157548,
+        "auc": 0.9371999262590073,
+        "tp": 12,
+        "fp": 182,
+        "fn": 9,
+        "tn": 5759
+      },
+      {
+        "method": "Rolling median",
+        "positives": 21,
+        "events": 3,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.002524827470122875,
+        "auc": 0.8845873309768277,
+        "tp": 0,
+        "fp": 15,
+        "fn": 21,
+        "tn": 5926
+      },
+      {
+        "method": "EWMA",
+        "positives": 21,
+        "events": 3,
+        "recall": 0.09523809523809523,
+        "detection_rate": 0.3333333333333333,
+        "weeks_to_detect": 0.0,
+        "precision": 0.1111111111111111,
+        "f1": 0.10256410256410256,
+        "false_alert_rate": 0.0026931493014644,
+        "auc": 0.9302666698727968,
+        "tp": 2,
+        "fp": 16,
+        "fn": 19,
+        "tn": 5925
+      },
+      {
+        "method": "CUSUM",
+        "positives": 21,
+        "events": 3,
+        "recall": 0.14285714285714285,
+        "detection_rate": 0.6666666666666666,
+        "weeks_to_detect": 0.0,
+        "precision": 0.012345679012345678,
+        "f1": 0.022727272727272728,
+        "false_alert_rate": 0.040397239521966,
+        "auc": 0.574770962079496,
+        "tp": 3,
+        "fp": 240,
+        "fn": 18,
+        "tn": 5701
+      }
+    ],
+    "dengue 2020 (test): injected, all types": [
+      {
+        "method": "Model A v1",
+        "positives": 407,
+        "events": 333,
+        "recall": 0.3488943488943489,
+        "detection_rate": 0.3213213213213213,
+        "weeks_to_detect": 0.0,
+        "precision": 0.22118380062305296,
+        "f1": 0.27073403241182076,
+        "false_alert_rate": 0.0841609156707625,
+        "auc": 0.7689131496571322,
+        "tp": 142,
+        "fp": 500,
+        "fn": 265,
+        "tn": 5441
+      },
+      {
+        "method": "Model A v2",
+        "positives": 407,
+        "events": 333,
+        "recall": 0.19901719901719903,
+        "detection_rate": 0.16516516516516516,
+        "weeks_to_detect": 0.03636363636363636,
+        "precision": 0.30798479087452474,
+        "f1": 0.24179104477611943,
+        "false_alert_rate": 0.030634573304157548,
+        "auc": 0.8518817512252961,
+        "tp": 81,
+        "fp": 182,
+        "fn": 326,
+        "tn": 5759
+      },
+      {
+        "method": "Rolling median",
+        "positives": 407,
+        "events": 333,
+        "recall": 0.05405405405405406,
+        "detection_rate": 0.057057057057057055,
+        "weeks_to_detect": 0.0,
+        "precision": 0.5945945945945946,
+        "f1": 0.0990990990990991,
+        "false_alert_rate": 0.002524827470122875,
+        "auc": 0.8594911800601078,
+        "tp": 22,
+        "fp": 15,
+        "fn": 385,
+        "tn": 5926
+      },
+      {
+        "method": "EWMA",
+        "positives": 407,
+        "events": 333,
+        "recall": 0.12530712530712532,
+        "detection_rate": 0.15015015015015015,
+        "weeks_to_detect": 0.0,
+        "precision": 0.7611940298507462,
+        "f1": 0.21518987341772153,
+        "false_alert_rate": 0.0026931493014644,
+        "auc": 0.8919626118750845,
+        "tp": 51,
+        "fp": 16,
+        "fn": 356,
+        "tn": 5925
+      },
+      {
+        "method": "CUSUM",
+        "positives": 407,
+        "events": 333,
+        "recall": 0.04176904176904177,
+        "detection_rate": 0.04504504504504504,
+        "weeks_to_detect": 0.06666666666666667,
+        "precision": 0.06614785992217899,
+        "f1": 0.05120481927710843,
+        "false_alert_rate": 0.040397239521966,
+        "auc": 0.6094246991402352,
+        "tp": 17,
+        "fp": 240,
+        "fn": 390,
+        "tn": 5701
+      }
+    ],
+    "dengue 2020: real swaps [covid sensitivity]": [
+      {
+        "method": "Model A v1",
+        "positives": 158,
+        "events": 44,
+        "recall": 0.4936708860759494,
+        "detection_rate": 0.5681818181818182,
+        "weeks_to_detect": 0.0,
+        "precision": 0.0924170616113744,
+        "f1": 0.15568862275449102,
+        "false_alert_rate": 0.12066792690611217,
+        "auc": 0.8417611846250788,
+        "tp": 78,
+        "fp": 766,
+        "fn": 80,
+        "tn": 5582
+      },
+      {
+        "method": "Model A v1 + covid flag (sensitivity)",
+        "positives": 158,
+        "events": 44,
+        "recall": 0.36075949367088606,
+        "detection_rate": 0.29545454545454547,
+        "weeks_to_detect": 0.0,
+        "precision": 0.21673003802281368,
+        "f1": 0.2707838479809976,
+        "false_alert_rate": 0.03245116572148708,
+        "auc": 0.8705732095427245,
+        "tp": 57,
+        "fp": 206,
+        "fn": 101,
+        "tn": 6142
+      },
+      {
+        "method": "Model A v2",
+        "positives": 158,
+        "events": 44,
+        "recall": 0.08860759493670886,
+        "detection_rate": 0.11363636363636363,
+        "weeks_to_detect": 0.0,
+        "precision": 0.038781163434903045,
+        "f1": 0.05394990366088632,
+        "false_alert_rate": 0.05466288594833018,
+        "auc": 0.7901870817480637,
+        "tp": 14,
+        "fp": 347,
+        "fn": 144,
+        "tn": 6001
+      }
+    ],
+    "dengue 2020 (test): injected, all types [covid sensitivity]": [
+      {
+        "method": "Model A v1",
+        "positives": 407,
+        "events": 125,
+        "recall": 0.3488943488943489,
+        "detection_rate": 0.48,
+        "weeks_to_detect": 4.433333333333334,
+        "precision": 0.22118380062305296,
+        "f1": 0.27073403241182076,
+        "false_alert_rate": 0.0841609156707625,
+        "auc": 0.7689131496571322,
+        "tp": 142,
+        "fp": 500,
+        "fn": 265,
+        "tn": 5441
+      },
+      {
+        "method": "Model A v1 + covid flag (sensitivity)",
+        "positives": 407,
+        "events": 125,
+        "recall": 0.26044226044226043,
+        "detection_rate": 0.408,
+        "weeks_to_detect": 3.0588235294117645,
+        "precision": 0.4818181818181818,
+        "f1": 0.33811802232854865,
+        "false_alert_rate": 0.01918868877293385,
+        "auc": 0.8269035358750895,
+        "tp": 106,
+        "fp": 114,
+        "fn": 301,
+        "tn": 5827
+      },
+      {
+        "method": "Model A v2",
+        "positives": 407,
+        "events": 125,
+        "recall": 0.19901719901719903,
+        "detection_rate": 0.32,
+        "weeks_to_detect": 5.075,
+        "precision": 0.30798479087452474,
+        "f1": 0.24179104477611943,
+        "false_alert_rate": 0.030634573304157548,
+        "auc": 0.8518817512252961,
+        "tp": 81,
+        "fp": 182,
+        "fn": 326,
+        "tn": 5759
+      }
+    ],
+    "measles: 2019 W8 group zero (real)": [
+      {
+        "method": "Model A v1",
+        "positives": 1,
+        "events": 1,
+        "recall": 1.0,
+        "detection_rate": 1.0,
+        "weeks_to_detect": 0.0,
+        "precision": 0.25,
+        "f1": 0.4,
+        "false_alert_rate": 0.014285714285714285,
+        "auc": 0.9952380952380953,
+        "tp": 1,
+        "fp": 3,
+        "fn": 0,
+        "tn": 207
+      },
+      {
+        "method": "Model A v2",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.004761904761904762,
+        "auc": 0.9857142857142858,
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "tn": 209
+      },
+      {
+        "method": "Rolling median",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.8333333333333334,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 210
+      },
+      {
+        "method": "EWMA",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.9,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 210
+      },
+      {
+        "method": "CUSUM",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.6476190476190476,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 210
+      }
+    ],
+    "measles: blank weeks filled with 0": [
+      {
+        "method": "Model A v1",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.07142857142857142,
+        "detection_rate": 0.07142857142857142,
+        "weeks_to_detect": 0.0,
+        "precision": 0.75,
+        "f1": 0.13043478260869565,
+        "false_alert_rate": 0.004761904761904762,
+        "auc": 0.8909297052154195,
+        "tp": 3,
+        "fp": 1,
+        "fn": 39,
+        "tn": 209
+      },
+      {
+        "method": "Model A v2",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.004761904761904762,
+        "auc": 0.8537414965986394,
+        "tp": 0,
+        "fp": 1,
+        "fn": 42,
+        "tn": 209
+      },
+      {
+        "method": "Rolling median",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.7265873015873016,
+        "tp": 0,
+        "fp": 0,
+        "fn": 42,
+        "tn": 210
+      },
+      {
+        "method": "EWMA",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.6674603174603174,
+        "tp": 0,
+        "fp": 0,
+        "fn": 42,
+        "tn": 210
+      },
+      {
+        "method": "CUSUM",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.7756802721088435,
+        "tp": 0,
+        "fp": 0,
+        "fn": 42,
+        "tn": 210
+      }
+    ],
+    "rubella: 2019 W8 group zero (real)": [
+      {
+        "method": "Model A v1",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.7380952380952381,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 210
+      },
+      {
+        "method": "Model A v2",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.6095238095238096,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 210
+      },
+      {
+        "method": "Rolling median",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.8476190476190476,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 210
+      },
+      {
+        "method": "EWMA",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.004761904761904762,
+        "auc": 0.9714285714285714,
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "tn": 209
+      },
+      {
+        "method": "CUSUM",
+        "positives": 1,
+        "events": 1,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.7380952380952381,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 210
+      }
+    ],
+    "rubella: blank weeks filled with 0": [
+      {
+        "method": "Model A v1",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.8806122448979592,
+        "tp": 0,
+        "fp": 0,
+        "fn": 42,
+        "tn": 210
+      },
+      {
+        "method": "Model A v2",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.8795918367346939,
+        "tp": 0,
+        "fp": 0,
+        "fn": 42,
+        "tn": 210
+      },
+      {
+        "method": "Rolling median",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.658390022675737,
+        "tp": 0,
+        "fp": 0,
+        "fn": 42,
+        "tn": 210
+      },
+      {
+        "method": "EWMA",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.023809523809523808,
+        "detection_rate": 0.023809523809523808,
+        "weeks_to_detect": 0.0,
+        "precision": 1.0,
+        "f1": 0.046511627906976744,
+        "false_alert_rate": 0.0,
+        "auc": 0.6171201814058956,
+        "tp": 1,
+        "fp": 0,
+        "fn": 41,
+        "tn": 210
+      },
+      {
+        "method": "CUSUM",
+        "positives": 42,
+        "events": 42,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.6369614512471655,
+        "tp": 0,
+        "fp": 0,
+        "fn": 42,
+        "tn": 210
+      }
+    ],
+    "measles 2017 + 2021: injected, all types": [
+      {
+        "method": "Model A v1",
+        "positives": 18,
+        "events": 11,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.010362694300518135,
+        "auc": 0.5569948186528497,
+        "tp": 0,
+        "fp": 2,
+        "fn": 18,
+        "tn": 191
+      },
+      {
+        "method": "Model A v2",
+        "positives": 18,
+        "events": 11,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.0051813471502590676,
+        "auc": 0.6070811744386874,
+        "tp": 0,
+        "fp": 1,
+        "fn": 18,
+        "tn": 192
+      },
+      {
+        "method": "Rolling median",
+        "positives": 18,
+        "events": 11,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.683649971214738,
+        "tp": 0,
+        "fp": 0,
+        "fn": 18,
+        "tn": 193
+      },
+      {
+        "method": "EWMA",
+        "positives": 18,
+        "events": 11,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.7564766839378239,
+        "tp": 0,
+        "fp": 0,
+        "fn": 18,
+        "tn": 193
+      },
+      {
+        "method": "CUSUM",
+        "positives": 18,
+        "events": 11,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.5151122625215889,
+        "tp": 0,
+        "fp": 0,
+        "fn": 18,
+        "tn": 193
+      }
+    ],
+    "TB: 8 suspect months, method 1 (previous year / 12)": [
+      {
+        "method": "Model A v1",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.25,
+        "detection_rate": 0.25,
+        "weeks_to_detect": 0.0,
+        "precision": 1.0,
+        "f1": 0.4,
+        "false_alert_rate": 0.0,
+        "auc": 0.6825396825396826,
+        "tp": 2,
+        "fp": 0,
+        "fn": 6,
+        "tn": 63
+      },
+      {
+        "method": "Model A v2",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.125,
+        "detection_rate": 0.125,
+        "weeks_to_detect": 0.0,
+        "precision": 1.0,
+        "f1": 0.2222222222222222,
+        "false_alert_rate": 0.0,
+        "auc": 0.6825396825396826,
+        "tp": 1,
+        "fp": 0,
+        "fn": 7,
+        "tn": 63
+      },
+      {
+        "method": "Rolling median",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.015873015873015872,
+        "auc": 0.7450396825396826,
+        "tp": 0,
+        "fp": 1,
+        "fn": 8,
+        "tn": 62
+      },
+      {
+        "method": "EWMA",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.125,
+        "detection_rate": 0.125,
+        "weeks_to_detect": 0.0,
+        "precision": 0.3333333333333333,
+        "f1": 0.18181818181818182,
+        "false_alert_rate": 0.031746031746031744,
+        "auc": 0.7807539682539683,
+        "tp": 1,
+        "fp": 2,
+        "fn": 7,
+        "tn": 61
+      },
+      {
+        "method": "CUSUM",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.4156746031746032,
+        "tp": 0,
+        "fp": 0,
+        "fn": 8,
+        "tn": 63
+      }
+    ],
+    "TB: 8 suspect months, method 2 (count model, 2021 on)": [
+      {
+        "method": "Model A v1",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.045454545454545456,
+        "auc": 0.5,
+        "tp": 0,
+        "fp": 2,
+        "fn": 8,
+        "tn": 42
+      },
+      {
+        "method": "Model A v2",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.022727272727272728,
+        "auc": 0.13068181818181818,
+        "tp": 0,
+        "fp": 1,
+        "fn": 8,
+        "tn": 43
+      },
+      {
+        "method": "Rolling median",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": 0.0,
+        "f1": 0.0,
+        "false_alert_rate": 0.022727272727272728,
+        "auc": 0.6960227272727273,
+        "tp": 0,
+        "fp": 1,
+        "fn": 8,
+        "tn": 43
+      },
+      {
+        "method": "EWMA",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.125,
+        "detection_rate": 0.125,
+        "weeks_to_detect": 0.0,
+        "precision": 0.3333333333333333,
+        "f1": 0.18181818181818182,
+        "false_alert_rate": 0.045454545454545456,
+        "auc": 0.7386363636363636,
+        "tp": 1,
+        "fp": 2,
+        "fn": 7,
+        "tn": 42
+      },
+      {
+        "method": "CUSUM",
+        "positives": 8,
+        "events": 8,
+        "recall": 0.0,
+        "detection_rate": 0.0,
+        "weeks_to_detect": NaN,
+        "precision": NaN,
+        "f1": 0.0,
+        "false_alert_rate": 0.0,
+        "auc": 0.3125,
+        "tp": 0,
+        "fp": 0,
+        "fn": 8,
+        "tn": 44
+      }
+    ]
+  },
+  "bootstrap_ci": {
+    "dengue 2020: real swaps": {
+      "Model A v1": {
+        "recall_ci": [
+          0.3767898005884276,
+          0.617839923920736
+        ],
+        "false_alert_rate_ci": [
+          0.09696820258346119,
+          0.14864058018630588
+        ],
+        "f1_ci": [
+          0.10820188395295693,
+          0.20703178642109937
+        ],
+        "auc_ci": [
+          0.8044619774616489,
+          0.8717141308349514
+        ]
+      },
+      "Model A v2": {
+        "recall_ci": [
+          0.010176056338028197,
+          0.17535332314744076
+        ],
+        "false_alert_rate_ci": [
+          0.03629354847443498,
+          0.07700389294524784
+        ],
+        "f1_ci": [
+          0.007215287200361847,
+          0.10904424522845574
+        ],
+        "auc_ci": [
+          0.7426141846819334,
+          0.8277506906900723
+        ]
+      },
+      "Rolling median": {
+        "recall_ci": [
+          0.0,
+          0.07005921052631574
+        ],
+        "false_alert_rate_ci": [
+          0.0023688730446412096,
+          0.0058044011183321295
+        ],
+        "f1_ci": [
+          0.0,
+          0.11766287160025297
+        ],
+        "auc_ci": [
+          0.6579110594417886,
+          0.7417107745896337
+        ]
+      },
+      "EWMA": {
+        "recall_ci": [
+          0.013788411916490736,
+          0.07501179245283017
+        ],
+        "false_alert_rate_ci": [
+          0.003923150282836776,
+          0.008216514134030942
+        ],
+        "f1_ci": [
+          0.021612995974698103,
+          0.11431746031746028
+        ],
+        "auc_ci": [
+          0.7622191680683822,
+          0.8319617774901212
+        ]
+      },
+      "CUSUM": {
+        "recall_ci": [
+          0.0,
+          0.04380367110347788
+        ],
+        "false_alert_rate_ci": [
+          0.020529425016728373,
+          0.05994709709943331
+        ],
+        "f1_ci": [
+          0.0,
+          0.03115305255492171
+        ],
+        "auc_ci": [
+          0.3270204397966821,
+          0.43000865259920923
+        ]
+      }
+    },
+    "dengue 2020: regional gap filled with 0": {
+      "Model A v1": {
+        "recall_ci": [
+          0.06514945652173915,
+          0.27456195244055065
+        ],
+        "false_alert_rate_ci": [
+          0.06596345104999982,
+          0.1076087806540533
+        ],
+        "f1_ci": [
+          0.010343496776483115,
+          0.04229555236728837
+        ],
+        "auc_ci": [
+          0.6777722753214093,
+          0.7758041766073177
+        ]
+      },
+      "Model A v2": {
+        "recall_ci": [
+          0.0,
+          0.0
+        ],
+        "false_alert_rate_ci": [
+          0.017885248202833548,
+          0.04755940476608312
+        ],
+        "f1_ci": [
+          0.0,
+          0.0
+        ],
+        "auc_ci": [
+          0.6463263563958216,
+          0.7405293973737122
+        ]
+      },
+      "Rolling median": {
+        "recall_ci": [
+          0.0,
+          0.0
+        ],
+        "false_alert_rate_ci": [
+          0.0010111223458038423,
+          0.004398702796017557
+        ],
+        "f1_ci": [
+          0.0,
+          0.0
+        ],
+        "auc_ci": [
+          0.5345114065060083,
+          0.6093617409129461
+        ]
+      },
+      "EWMA": {
+        "recall_ci": [
+          0.0,
+          0.0
+        ],
+        "false_alert_rate_ci": [
+          0.0013554669805019624,
+          0.004204038192465888
+        ],
+        "f1_ci": [
+          0.0,
+          0.0
+        ],
+        "auc_ci": [
+          0.6704183853420626,
+          0.7793628524460783
+        ]
+      },
+      "CUSUM": {
+        "recall_ci": [
+          0.0,
+          0.06980897009966773
+        ],
+        "false_alert_rate_ci": [
+          0.01755067862815685,
+          0.06643202003601663
+        ],
+        "f1_ci": [
+          0.0,
+          0.024038177521784068
+        ],
+        "auc_ci": [
+          0.20553564650437817,
+          0.3133567972542616
+        ]
+      }
+    },
+    "dengue 2020 (test): injected, all types": {
+      "Model A v1": {
+        "recall_ci": [
+          0.27705411857588635,
+          0.42233434466019415
+        ],
+        "false_alert_rate_ci": [
+          0.06596345104999982,
+          0.1076087806540533
+        ],
+        "f1_ci": [
+          0.21701257606490873,
+          0.31827411082878154
+        ],
+        "auc_ci": [
+          0.7420036659990253,
+          0.7964984740261548
+        ]
+      },
+      "Model A v2": {
+        "recall_ci": [
+          0.13860089580386611,
+          0.25064699291381504
+        ],
+        "false_alert_rate_ci": [
+          0.017885248202833548,
+          0.04755940476608312
+        ],
+        "f1_ci": [
+          0.18328209363863016,
+          0.2915714770309683
+        ],
+        "auc_ci": [
+          0.8246899417097735,
+          0.87455315653939
+        ]
+      },
+      "Rolling median": {
+        "recall_ci": [
+          0.030431970425224997,
+          0.07843688037012557
+        ],
+        "false_alert_rate_ci": [
+          0.0010111223458038423,
+          0.004398702796017557
+        ],
+        "f1_ci": [
+          0.057633603867889245,
+          0.1405904549319728
+        ],
+        "auc_ci": [
+          0.8409779252217481,
+          0.8746798494477471
+        ]
+      },
+      "EWMA": {
+        "recall_ci": [
+          0.09445378306487368,
+          0.15939361496853544
+        ],
+        "false_alert_rate_ci": [
+          0.0013554669805019624,
+          0.004204038192465888
+        ],
+        "f1_ci": [
+          0.16577289120416758,
+          0.26498655913978486
+        ],
+        "auc_ci": [
+          0.8777843352726347,
+          0.9051910251684621
+        ]
+      },
+      "CUSUM": {
+        "recall_ci": [
+          0.017541672135450846,
+          0.07029620893583564
+        ],
+        "false_alert_rate_ci": [
+          0.01755067862815685,
+          0.06643202003601663
+        ],
+        "f1_ci": [
+          0.026248442228947844,
+          0.07183485322505491
+        ],
+        "auc_ci": [
+          0.5858186727195338,
+          0.6337863438021137
+        ]
+      }
+    }
+  },
+  "calibration_by_year": {
+    "v1": [
+      {
+        "year": 2016,
+        "ok weeks scored": 5104.0,
+        "inside 90% range": 0.6630094043887147,
+        "p_low < 0.05": 0.13028996865203762,
+        "p_low > 0.95": 0.23471786833855798,
+        "alerts (p_low < tau)": 0.014106583072100314
+      },
+      {
+        "year": 2017,
+        "ok weeks scored": 6430.0,
+        "inside 90% range": 0.7867807153965786,
+        "p_low < 0.05": 0.07682737169517885,
+        "p_low > 0.95": 0.15847589424572317,
+        "alerts (p_low < tau)": 0.006531881804043546
+      },
+      {
+        "year": 2018,
+        "ok weeks scored": 6552.0,
+        "inside 90% range": 0.7307692307692307,
+        "p_low < 0.05": 0.026556776556776556,
+        "p_low > 0.95": 0.260989010989011,
+        "alerts (p_low < tau)": 0.001678876678876679
+      },
+      {
+        "year": 2019,
+        "ok weeks scored": 6426.0,
+        "inside 90% range": 0.7315592903828197,
+        "p_low < 0.05": 0.11360099595393713,
+        "p_low > 0.95": 0.16900093370681607,
+        "alerts (p_low < tau)": 0.009959539371304078
+      },
+      {
+        "year": 2020,
+        "ok weeks scored": 6348.0,
+        "inside 90% range": 0.555765595463138,
+        "p_low < 0.05": 0.4803087586641462,
+        "p_low > 0.95": 0.011814744801512287,
+        "alerts (p_low < tau)": 0.12066792690611217
+      },
+      {
+        "year": 2021,
+        "ok weeks scored": 126.0,
+        "inside 90% range": 0.8015873015873016,
+        "p_low < 0.05": 0.21428571428571427,
+        "p_low > 0.95": 0.015873015873015872,
+        "alerts (p_low < tau)": 0.007936507936507936
+      }
+    ],
+    "v2": [
+      {
+        "year": 2016,
+        "ok weeks scored": 4604.0,
+        "inside 90% range": 0.7015638575152042,
+        "p_low < 0.05": 0.11272806255430061,
+        "p_low > 0.95": 0.20894874022589052,
+        "alerts (p_low < tau)": 0.002172024326672459
+      },
+      {
+        "year": 2017,
+        "ok weeks scored": 6426.0,
+        "inside 90% range": 0.8493619670090259,
+        "p_low < 0.05": 0.06100217864923747,
+        "p_low > 0.95": 0.111577964519141,
+        "alerts (p_low < tau)": 0.0009337068160597573
+      },
+      {
+        "year": 2018,
+        "ok weeks scored": 6552.0,
+        "inside 90% range": 0.885989010989011,
+        "p_low < 0.05": 0.030067155067155068,
+        "p_low > 0.95": 0.0992063492063492,
+        "alerts (p_low < tau)": 0.0006105006105006105
+      },
+      {
+        "year": 2019,
+        "ok weeks scored": 6426.0,
+        "inside 90% range": 0.8404917522564581,
+        "p_low < 0.05": 0.09523809523809523,
+        "p_low > 0.95": 0.07500778089013384,
+        "alerts (p_low < tau)": 0.00902583255524432
+      },
+      {
+        "year": 2020,
+        "ok weeks scored": 6348.0,
+        "inside 90% range": 0.7925330812854442,
+        "p_low < 0.05": 0.19139886578449905,
+        "p_low > 0.95": 0.04410838059231254,
+        "alerts (p_low < tau)": 0.05466288594833018
+      },
+      {
+        "year": 2021,
+        "ok weeks scored": 126.0,
+        "inside 90% range": 0.9126984126984127,
+        "p_low < 0.05": 0.07936507936507936,
+        "p_low > 0.95": 0.03968253968253968,
+        "alerts (p_low < tau)": 0.015873015873015872
+      }
+    ]
+  },
+  "region": [
+    {
+      "model": "Model A v1 (as in its report: Fisher p < tau)",
+      "pooling": "Fisher",
+      "failure set": "real swaps 2020 (test)",
+      "region-weeks": 24,
+      "detected": 1.0,
+      "false region alerts (clean region-weeks)": 0.6187134502923977
+    },
+    {
+      "model": "Model A v1",
+      "pooling": "Fisher",
+      "failure set": "real swaps 2017",
+      "region-weeks": 30,
+      "detected": 0.9666666666666667,
+      "false region alerts (clean region-weeks)": 0.003468208092485549
+    },
+    {
+      "model": "Model A v1",
+      "pooling": "Fisher",
+      "failure set": "real swaps 2020 (test)",
+      "region-weeks": 24,
+      "detected": 0.75,
+      "false region alerts (clean region-weeks)": 0.17777777777777778
+    },
+    {
+      "model": "Model A v1",
+      "pooling": "Fisher",
+      "failure set": "regional gap filled with 0, 2017 + 2020",
+      "region-weeks": 11,
+      "detected": 0.5454545454545454,
+      "false region alerts (clean region-weeks)": 0.05024424284717376
+    },
+    {
+      "model": "Model A v1",
+      "pooling": "Fisher",
+      "failure set": "injected region outage, 2019 + 2020",
+      "region-weeks": 6,
+      "detected": 0.8333333333333334,
+      "false region alerts (clean region-weeks)": 0.06613047363717604
+    },
+    {
+      "model": "Model A v1",
+      "pooling": "Stouffer, correlation-adjusted",
+      "failure set": "real swaps 2017",
+      "region-weeks": 30,
+      "detected": 1.0,
+      "false region alerts (clean region-weeks)": 0.0
+    },
+    {
+      "model": "Model A v1",
+      "pooling": "Stouffer, correlation-adjusted",
+      "failure set": "real swaps 2020 (test)",
+      "region-weeks": 24,
+      "detected": 0.7916666666666666,
+      "false region alerts (clean region-weeks)": 0.18011695906432748
+    },
+    {
+      "model": "Model A v1",
+      "pooling": "Stouffer, correlation-adjusted",
+      "failure set": "regional gap filled with 0, 2017 + 2020",
+      "region-weeks": 11,
+      "detected": 0.5454545454545454,
+      "false region alerts (clean region-weeks)": 0.05303558967201675
+    },
+    {
+      "model": "Model A v1",
+      "pooling": "Stouffer, correlation-adjusted",
+      "failure set": "injected region outage, 2019 + 2020",
+      "region-weeks": 6,
+      "detected": 0.8333333333333334,
+      "false region alerts (clean region-weeks)": 0.07238605898123325
+    },
+    {
+      "model": "Model A v2",
+      "pooling": "Fisher",
+      "failure set": "real swaps 2017",
+      "region-weeks": 30,
+      "detected": 0.9666666666666667,
+      "false region alerts (clean region-weeks)": 0.0
+    },
+    {
+      "model": "Model A v2",
+      "pooling": "Fisher",
+      "failure set": "real swaps 2020 (test)",
+      "region-weeks": 24,
+      "detected": 0.375,
+      "false region alerts (clean region-weeks)": 0.1111111111111111
+    },
+    {
+      "model": "Model A v2",
+      "pooling": "Fisher",
+      "failure set": "regional gap filled with 0, 2017 + 2020",
+      "region-weeks": 11,
+      "detected": 0.45454545454545453,
+      "false region alerts (clean region-weeks)": 0.02721563154221912
+    },
+    {
+      "model": "Model A v2",
+      "pooling": "Fisher",
+      "failure set": "injected region outage, 2019 + 2020",
+      "region-weeks": 6,
+      "detected": 0.8333333333333334,
+      "false region alerts (clean region-weeks)": 0.03663985701519214
+    },
+    {
+      "model": "Model A v2",
+      "pooling": "Stouffer, correlation-adjusted",
+      "failure set": "real swaps 2017",
+      "region-weeks": 30,
+      "detected": 1.0,
+      "false region alerts (clean region-weeks)": 0.0011560693641618498
+    },
+    {
+      "model": "Model A v2",
+      "pooling": "Stouffer, correlation-adjusted",
+      "failure set": "real swaps 2020 (test)",
+      "region-weeks": 24,
+      "detected": 0.3333333333333333,
+      "false region alerts (clean region-weeks)": 0.08771929824561403
+    },
+    {
+      "model": "Model A v2",
+      "pooling": "Stouffer, correlation-adjusted",
+      "failure set": "regional gap filled with 0, 2017 + 2020",
+      "region-weeks": 11,
+      "detected": 0.5454545454545454,
+      "false region alerts (clean region-weeks)": 0.020237264480111653
+    },
+    {
+      "model": "Model A v2",
+      "pooling": "Stouffer, correlation-adjusted",
+      "failure set": "injected region outage, 2019 + 2020",
+      "region-weeks": 6,
+      "detected": 1.0,
+      "false region alerts (clean region-weeks)": 0.02770330652368186
+    }
+  ],
+  "brier": {
+    "model": 0.05183614668683068,
+    "base_rate_only": 0.023695500542477335,
+    "base_rate": 0.024285275130648633
+  },
+  "pfail_reliability": {
+    "2020 production rows (real swaps vs ok weeks)": [
+      {
+        "bin": "(-0.001, 0.01]",
+        "rows": 4226,
+        "mean_p_fail": 0.0028350333147915637,
+        "observed_failure_share": 0.007335541883577852
+      },
+      {
+        "bin": "(0.01, 0.05]",
+        "rows": 1144,
+        "mean_p_fail": 0.03214512970895731,
+        "observed_failure_share": 0.044580419580419584
+      },
+      {
+        "bin": "(0.05, 0.1]",
+        "rows": 266,
+        "mean_p_fail": 0.08394719423430587,
+        "observed_failure_share": 0.045112781954887216
+      },
+      {
+        "bin": "(0.1, 0.25]",
+        "rows": 300,
+        "mean_p_fail": 0.15442621747319735,
+        "observed_failure_share": 0.09666666666666666
+      },
+      {
+        "bin": "(0.25, 0.5]",
+        "rows": 391,
+        "mean_p_fail": 0.4243082363642757,
+        "observed_failure_share": 0.0792838874680307
+      },
+      {
+        "bin": "(0.5, 1.0]",
+        "rows": 179,
+        "mean_p_fail": 0.8887240472702663,
+        "observed_failure_share": 0.0223463687150838
+      }
+    ]
+  },
+  "figures": [
+    "1_weekly_false_alerts_2019_2020.png",
+    "2_pit_v1_vs_v2.png",
+    "3_threshold_curve_2019.png",
+    "4_pfail_reliability_2020.png",
+    "5_example_series_2019_2020.png",
+    "6_region_false_alerts_2020.png"
+  ]
+}

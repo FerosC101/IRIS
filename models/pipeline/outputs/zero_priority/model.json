@@ -9947,7 +9947,7 @@
     "negatives_for_bands": 142,
     "model_version": "zero_priority_v2",
     "model_a_variant": "recent1+uncertainty",
-    "model_a_run_id": "20261023T075030Z-73b3e833",
-    "tau_model_a_v2": 0.00012051755366497229
+    "model_a_run_id": "20261120T062907Z-688195ce",
+    "tau_model_a_v2": 0.0038582157713545574
   }
 }

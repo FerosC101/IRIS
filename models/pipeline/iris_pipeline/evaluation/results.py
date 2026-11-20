@@ -125,7 +125,7 @@ def build() -> dict:
         {"objective (proposal)": "1. Detect reporting anomalies", "status": "Partly met",
          "evidence": f"Real 2020 swaps: Model A v2 catches {dv.loc['Model A v2','_recall']:.0%} at {dv.loc['Model A v2','_far']:.1%} "
                      f"false alerts; v1 {dv.loc['Model A v1','_recall']:.0%} at {dv.loc['Model A v1','_far']:.1%}; best simple baseline "
-                     f"{det[det.method.isin(['Rolling median','EWMA','CUSUM'])]._recall.max():.0%}. Neither version holds the 1% budget in the COVID year."},
+                     f"{det[det.method.isin(['Rolling median','EWMA','CUSUM'])]._recall.max():.0%}. Neither version holds the {config.V2['ALERT_BUDGET']:.0%} budget in the COVID year."},
         {"objective (proposal)": "1. Detect shared network disruptions", "status": "Met in simulation; partly on real data",
          "evidence": f"Simulation: right hub named in {abl[G]['hub source identified'][0]:.0%} of hub outages (0% without the graph). "
                      f"Real 2020: false region alerts {reg_v1:.0%} (v1) → {reg_v2:.0%} (v2)."},
@@ -157,7 +157,7 @@ def build() -> dict:
         f"- **Spotting (real data, 2020).** Model A v2 cut false alarms from {dv.loc['Model A v1','_far']:.0%} to "
         f"{dv.loc['Model A v2','_far']:.1%} of normal weeks and region-wide false alarms from {reg_v1:.0%} to {reg_v2:.0%}, "
         f"but it catches fewer real errors ({dv.loc['Model A v1','_recall']:.0%} → {dv.loc['Model A v2','_recall']:.0%}). "
-        "The COVID-19 drop in 2020 is the hardest case: no version holds the 1% alarm budget through it.",
+        f"The COVID-19 drop in 2020 is the hardest case: no version holds the {config.V2['ALERT_BUDGET']:.0%} alarm budget through it.",
         f"- **Shared failures (simulation).** Using the reporting network, IRIS names the broken hub in "
         f"{abl[G]['hub source identified'][0]:.0%} of hub outages; without it, never.",
         f"- **Fixing (simulation).** With the same {config.PLAN['STAFF_HOURS_PER_WEEK']:.0f} staff-hours a week, network-aware "
@@ -167,7 +167,8 @@ def build() -> dict:
         "## Proposal objectives", "", md(score), "",
         "## The results table", "",
         "### A. Detection on real data: the 158 swapped dengue reports of 2020", "",
-        "Test year 2020, scored once; thresholds frozen on 2019 at a 1% alert budget. 95% intervals: cluster bootstrap "
+        f"Test year 2020; thresholds frozen on 2019 at a {config.V2['ALERT_BUDGET']:.0%} alert budget (old Model B rules: 1%). "
+        "2020 has been looked at before (see the Model A test-run log). 95% intervals: cluster bootstrap "
         "over places. Old Model B rules can only flag zero reports.", "",
         md(show(det), 3), "",
         "### A2. Detection on simulated failures injected into real 2020 data (407 location-weeks)", "",
